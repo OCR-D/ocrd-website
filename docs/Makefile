@@ -36,6 +36,10 @@ build-processors:
 build-site:
 	jekyll build -d $(BUILDDIR)
 
+# build the site
+build-site-continuously:
+	jekyll build --watch -d $(BUILDDIR)
+
 deploy: build
 	git add .
 	git commit -m 'Update `date`'
