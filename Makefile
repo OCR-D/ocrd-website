@@ -4,25 +4,42 @@ JEKYLL = jekyll
 # Where to build site. Default '$(BUILDDIR)'
 BUILDDIR = docs
 
+# Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)
+KWALITEE_CONFIG = kwalitee.yml
+
 # BEGIN-EVAL makefile-parser --make-help Makefile
 
 help:
 	@echo ""
 	@echo "  Targets"
 	@echo ""
-	@echo "    build-modules     Build module information"
-	@echo "    build-processors  Build processor information"
-	@echo "    build-site        build the site"
+	@echo "    bootstrap                Set up the repos, site and tools"
+	@echo "    data                     Build data"
+	@echo "    build-modules            Build module information"
+	@echo "    build-processors         Build processor information"
+	@echo "    build-site               build the site"
+	@echo "    build-site-continuously  build the site"
 	@echo ""
 	@echo "  Variables"
 	@echo ""
-	@echo "    JEKYLL    Which jekyll binary to use. Default '$(JEKYLL)'"
-	@echo "    BUILDDIR  Where to build site. Default '$(BUILDDIR)'"
+	@echo "    JEKYLL           Which jekyll binary to use. Default '$(JEKYLL)'"
+	@echo "    BUILDDIR         Where to build site. Default '$(BUILDDIR)'"
+	@echo "    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)"
 
 # END-EVAL
 
-ocrd-kwalitee/repos.json:
-	cd $(dir $@); make -B repos.json
+# Set up the repos, site and tools
+bootstrap:
+	git submodule sync
+	git submodule update
+	cd repo/ocrd-kwalitee ; pip install .
+
+# Build data
+data: _data/ocrd-repo.json
+
+_data/ocrd-repo.json: $(KWALITEE_CONFIG)
+	mkdir -p $(dir $@)
+	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
 # Build module information
 build-modules: ocrd-kwalitee.json
