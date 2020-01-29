@@ -37,6 +37,10 @@ bootstrap:
 # Build data
 data: _data/ocrd-repo.json
 
+# Build gt-guidelines
+gt-guidelines: repo/gt-guidelines
+	cd $<  && make markdown GT_DOC_OUT=$(PWD)/gt-guidelines ANT_OPTS=""
+
 _data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
