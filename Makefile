@@ -42,5 +42,5 @@ build-site-continuously:
 
 deploy:
 	git add .
-	git commit -m 'Update `date`'
+	git commit -m "Update `date`"
 	git push

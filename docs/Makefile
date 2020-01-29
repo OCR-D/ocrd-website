@@ -40,7 +40,7 @@ build-site:
 build-site-continuously:
 	jekyll build --watch -d $(BUILDDIR)
 
-deploy: build
+deploy:
 	git add .
-	git commit -m 'Update `date`'
+	git commit -m "Update `date`"
 	git push
