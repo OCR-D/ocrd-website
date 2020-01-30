@@ -6,11 +6,13 @@
   <body>
     {%- include header.html -%}
     <div class="columns">
+      {% if page.toc %}
       <aside class="column is-one-third menu">
         {% include toc.html html=content class="menu-list.column.is-one-third" h_min=1 %}
       </aside>
+      {% endif %}
 
-      <main class="container content column is-two-thirds" aria-label="Content">
+      <main class="container content column {% if page.toc %}is-two-thirds{% endif %}" aria-label="Content">
         {{ content }}
       </main>
     </div>
