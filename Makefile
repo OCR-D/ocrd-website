@@ -47,9 +47,6 @@ bootstrap:
 	cd repo/ocrd-kwalitee && pip install -e .
 	cd repo/gt-guidelines && make deps
 
-# Build data
-data: _data/ocrd-repo.json
-
 # Build gt-guidelines
 gt-guidelines: repo/gt-guidelines
 	make -C repo/gt-guidelines \
@@ -58,7 +55,10 @@ gt-guidelines: repo/gt-guidelines
 	ANT_OPTS="" \
 	build
 
-_data/ocrd-repo.json: $(KWALITEE_CONFIG)
+# Build data
+data: $(SRCDIR)/_data/ocrd-repo.json
+
+$(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
@@ -86,3 +86,11 @@ deploy:
 	git add .
 	git commit -m "Update `date`"
 	git push
+
+core-docs:
+	rm -rf site/core
+	mkdir -p repo/ocrd_all/core/docs/_templates
+	shinclude layout.html > repo/ocrd_all/core/docs/_templates/layout.html
+	cd repo/ocrd_all/core && make docs
+	cp -r repo/ocrd_all/core/docs/build/html site/core
+

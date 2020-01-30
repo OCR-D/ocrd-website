@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd_models.ocrd_page &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+ 
+<!-- BEGIN-INCLUDE site/_includes/head.html -->
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+
+<!-- END-INCLUDE -->
+
+  </head><body>
+
+<!-- BEGIN-INCLUDE site/_includes/header.html -->
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Users</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="gt-guidelines">Ground Truth Guidelines</a>
+        </div>
+      </div>
+
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Developers</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/core">OCR-D/core apidocs</a>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="/glossary">Glossary</a>
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        <a href="https://github.com/OCR-D"><img src="https://www.vectorlogo.zone/logos/github/github-tile.svg"/></a>
+         
+        <a href="https://hub.docker.com/r/ocrd"><img src="https://www.vectorlogo.zone/logos/docker/docker-tile.svg"/></a>
+         
+        <a href="https://ocr-d.de"><img src="https://www.vectorlogo.zone/logos/fileformatinfo/fileformatinfo-tile.svg"/></a>
+      </span>
+
+    </div>
+  </div>
+</nav>
+
+<!-- END-INCLUDE -->
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_models.ocrd_page</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API to PAGE-XML, generated with generateDS from XML schema.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;parse&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;parseString&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;AlternativeImageType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CoordsType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GlyphType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ImageRegionType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LabelType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LabelsType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MathsRegionType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MetadataType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MetadataItemType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NoiseRegionType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;OrderedGroupType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PageType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PcGtsType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ReadingOrderType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RegionRefIndexedType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SeparatorRegionType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TextEquivType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TextLineType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TextStyleType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TextRegionType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WordType&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;to_xml&#39;</span>
+<span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">.ocrd_page_generateds</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">parse</span><span class="p">,</span>
+    <span class="n">parseString</span><span class="p">,</span>
+
+    <span class="n">AlternativeImageType</span><span class="p">,</span>
+    <span class="n">CoordsType</span><span class="p">,</span>
+    <span class="n">GlyphType</span><span class="p">,</span>
+    <span class="n">ImageRegionType</span><span class="p">,</span>
+    <span class="n">LabelType</span><span class="p">,</span>
+    <span class="n">LabelsType</span><span class="p">,</span>
+    <span class="n">MathsRegionType</span><span class="p">,</span>
+    <span class="n">MetadataType</span><span class="p">,</span>
+    <span class="n">MetadataItemType</span><span class="p">,</span>
+    <span class="n">NoiseRegionType</span><span class="p">,</span>
+    <span class="n">OrderedGroupType</span><span class="p">,</span>
+    <span class="n">PageType</span><span class="p">,</span>
+    <span class="n">PcGtsType</span><span class="p">,</span>
+    <span class="n">ReadingOrderType</span><span class="p">,</span>
+    <span class="n">RegionRefIndexedType</span><span class="p">,</span>
+    <span class="n">SeparatorRegionType</span><span class="p">,</span>
+    <span class="n">TextEquivType</span><span class="p">,</span>
+    <span class="n">TextLineType</span><span class="p">,</span>
+    <span class="n">TextRegionType</span><span class="p">,</span>
+    <span class="n">TextStyleType</span><span class="p">,</span>
+    <span class="n">WordType</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="n">NAMESPACES</span>
+
+<div class="viewcode-block" id="to_xml"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.to_xml">[docs]</a><span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serialize ``pc:PcGts`` document</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">el</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">sio</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;PcGts&#39;</span><span class="p">,</span>
+            <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;xmlns:pc=&quot;</span><span class="si">%s</span><span class="s1">&quot;  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">/pagecontent.xsd&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
+                <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
+                <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">]</span>
+            <span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">sio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+<!-- BEGIN-INCLUDE site/_includes/footer.html -->
+<footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+
+<!-- END-INCLUDE -->
+
+  </body>
+</html>

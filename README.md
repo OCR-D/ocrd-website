@@ -17,6 +17,7 @@ To ensure a complete setup for Debian/Ubuntu based Linuxes: `make bootstrap`
 * `docs`: This is where the site will be built. Never touch it.
 * `site`: This is the jekyll site. Posts and Pages live here.
 * `repo`: Contains required subrepos
+* `layout.html`: Template for the layout for sphinx-doc to use. to be run through shinclude
 
 ## Rebuild gt-guidelines
 

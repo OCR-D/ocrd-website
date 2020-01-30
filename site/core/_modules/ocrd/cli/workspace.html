@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd.cli.workspace &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+ 
+<!-- BEGIN-INCLUDE site/_includes/head.html -->
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+
+<!-- END-INCLUDE -->
+
+  </head><body>
+
+<!-- BEGIN-INCLUDE site/_includes/header.html -->
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Users</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="gt-guidelines">Ground Truth Guidelines</a>
+        </div>
+      </div>
+
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Developers</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/core">OCR-D/core apidocs</a>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="/glossary">Glossary</a>
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        <a href="https://github.com/OCR-D"><img src="https://www.vectorlogo.zone/logos/github/github-tile.svg"/></a>
+         
+        <a href="https://hub.docker.com/r/ocrd"><img src="https://www.vectorlogo.zone/logos/docker/docker-tile.svg"/></a>
+         
+        <a href="https://ocr-d.de"><img src="https://www.vectorlogo.zone/logos/fileformatinfo/fileformatinfo-tile.svg"/></a>
+      </span>
+
+    </div>
+  </div>
+</nav>
+
+<!-- END-INCLUDE -->
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.cli.workspace</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">relpath</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">ocrd</span> <span class="k">import</span> <span class="n">Resolver</span><span class="p">,</span> <span class="n">Workspace</span><span class="p">,</span> <span class="n">WorkspaceValidator</span><span class="p">,</span> <span class="n">WorkspaceBackupManager</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">pushd_popd</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="k">import</span> <span class="n">TMP_PREFIX</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.workspace&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WorkspaceCtx"><a class="viewcode-back" href="../../../api/ocrd/ocrd.cli.workspace.html#ocrd.cli.workspace.WorkspaceCtx">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceCtx</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mets_basename</span> <span class="o">=</span> <span class="n">mets_basename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span> <span class="o">=</span> <span class="n">automatic_backup</span></div>
+
+<span class="n">pass_workspace</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">make_pass_decorator</span><span class="p">(</span><span class="n">WorkspaceCtx</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;workspace&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--directory&#39;</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="s1">&#39;WORKSPACE_DIR&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;WORKSPACE_DIR&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Changes the workspace folder location.&#39;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-M&#39;</span><span class="p">,</span> <span class="s1">&#39;--mets-basename&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mets.xml&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The basename of the METS file.&#39;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--backup&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Backup mets.xml whenever it is saved.&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+<span class="k">def</span> <span class="nf">workspace_cli</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">backup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Working with workspace</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">WorkspaceCtx</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">),</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">backup</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace validate</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;validate&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+
+<span class="s1">    Validate a workspace</span>
+
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--download&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Download all files&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--skip&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Tests to skip&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;imagefilename&#39;</span><span class="p">,</span> <span class="s1">&#39;dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;mets_unique_identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;mets_file_group_names&#39;</span><span class="p">,</span> <span class="s1">&#39;mets_files&#39;</span><span class="p">,</span> <span class="s1">&#39;pixel_density&#39;</span><span class="p">,</span> <span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">]))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--page-strictness&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;How strict to check PAGE consistency&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="s1">&#39;lax&#39;</span><span class="p">,</span> <span class="s1">&#39;fix&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">]),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;mets_url&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">validate_workspace</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">skip</span><span class="p">,</span> <span class="n">page_strictness</span><span class="p">):</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
+        <span class="n">mets_url</span><span class="p">,</span>
+        <span class="n">src_dir</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+        <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
+        <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">,</span>
+        <span class="n">page_strictness</span><span class="o">=</span><span class="n">page_strictness</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_xml</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace clone</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;clone&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--clobber-mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite existing METS file&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--download&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Download all files and change location in METS file after cloning&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;mets_url&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;workspace_dir&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_clone</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">workspace_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a workspace from a METS_URL and return the directory</span>
+
+<span class="sd">    METS_URL can be a URL, an absolute path or a path relative to $PWD.</span>
+
+<span class="sd">    If WORKSPACE_DIR is not provided, creates a temporary directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span>
+        <span class="n">mets_url</span><span class="p">,</span>
+        <span class="n">dst_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">workspace_dir</span> <span class="k">if</span> <span class="n">workspace_dir</span> <span class="k">else</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">TMP_PREFIX</span><span class="p">)),</span>
+        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
+        <span class="n">clobber_mets</span><span class="o">=</span><span class="n">clobber_mets</span><span class="p">,</span>
+        <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace init</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--clobber-mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Clobber mets.xml if it exists&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_create</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a workspace with an empty METS file in DIRECTORY.</span>
+
+<span class="sd">    Use &#39;.&#39; for $PWD&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_nothing</span><span class="p">(</span>
+        <span class="n">directory</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">),</span>
+        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
+        <span class="n">clobber_mets</span><span class="o">=</span><span class="n">clobber_mets</span>
+    <span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace add</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-G&#39;</span><span class="p">,</span> <span class="s1">&#39;--file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;fileGrp USE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--file-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID for the file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mimetype&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Media type of the file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;--page-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID of the physical page&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--force&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If file with ID already exists, replace it&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;local_filename&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_add_file</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add a file LOCAL_FILENAME to METS in a workspace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+
+    <span class="c1">#  log.warning(ctx.directory)</span>
+    <span class="c1">#  log.error(local_filename)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">local_filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; is not in workspace, copying&quot;</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">)</span>
+        <span class="n">local_filename</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="n">file_grp</span><span class="p">)</span>
+    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">relpath</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+
+    <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
+        <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
+        <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span>
+        <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+        <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span>
+    <span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace find</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;find&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-G&#39;</span><span class="p">,</span> <span class="s1">&#39;--file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;fileGrp USE&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mimetype&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Media type to look for&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;--page-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Page ID&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--file-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span>
+<span class="c1"># pylint: disable=bad-continuation</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-k&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-field&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output field. Repeat for multiple fields, will be joined with tab&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+        <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mimetype&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pageId&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;basename&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;basename_without_extension&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;local_filename&#39;</span><span class="p">,</span>
+        <span class="p">]))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--download&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Download found files to workspace and change location in METS file &quot;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_find</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">output_field</span><span class="p">,</span> <span class="n">download</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
+            <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
+            <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
+            <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">download</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">output_field</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace remove</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;remove&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--force&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Also delete file in storage if applicable&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_remove_file</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete file by ID from mets.xml</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">id</span><span class="p">:</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace remove-group</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;remove-group&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    Delete a file group</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--recursive&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Delete any files in the group before the group itself&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--force&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Also delete local files&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;GROUP&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">remove_group</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">remove_file_group</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace prune-files</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;prune-files&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    Removes mets:files that point to non-existing local files</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">prune_files</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">):</span>
+                    <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Error removing </span><span class="si">%f</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace list-group</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-group&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    List fileGrp USE attributes</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">list_groups</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">))</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace list-pages</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-page&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    List page IDs</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">list_pages</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">))</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace get-id</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;get-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    Get METS id if any</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+    <span class="n">ID</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span>
+    <span class="k">if</span> <span class="n">ID</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace set-id</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;set-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">    Set METS ID.</span>
+
+<span class="s2">    If one of the supported identifier mechanisms is used, will set this identifier.</span>
+
+<span class="s2">    Otherwise will create a new &lt;mods:identifier type=&quot;purl&quot;&gt;{{ ID }}&lt;/mods:identifier&gt;.</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">set_id</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>   <span class="c1"># pylint: disable=redefined-builtin</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span> <span class="o">=</span> <span class="nb">id</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd workspace backup</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;backup&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+<span class="k">def</span> <span class="nf">workspace_backup_cli</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Backing and restoring workspaces - dev edition</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_backup_add</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new backup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+
+<span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_backup_list</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List backups</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backup_manager</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;restore&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--choose-first&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Restore first matching version if more than one&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;bak&#39;</span><span class="p">)</span> <span class="c1">#, type=click.Path(dir_okay=False, readable=True, resolve_path=True))</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_backup_restore</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">choose_first</span><span class="p">,</span> <span class="n">bak</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Restore backup BAK</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">bak</span><span class="p">,</span> <span class="n">choose_first</span><span class="p">)</span>
+
+<span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_backup_undo</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Restore the last backup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+<!-- BEGIN-INCLUDE site/_includes/footer.html -->
+<footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+
+<!-- END-INCLUDE -->
+
+  </body>
+</html>

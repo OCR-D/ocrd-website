@@ -1,0 +1,513 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd_models.ocrd_mets &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+ 
+<!-- BEGIN-INCLUDE site/_includes/head.html -->
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+
+<!-- END-INCLUDE -->
+
+  </head><body>
+
+<!-- BEGIN-INCLUDE site/_includes/header.html -->
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Users</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="gt-guidelines">Ground Truth Guidelines</a>
+        </div>
+      </div>
+
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Developers</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/core">OCR-D/core apidocs</a>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="/glossary">Glossary</a>
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        <a href="https://github.com/OCR-D"><img src="https://www.vectorlogo.zone/logos/github/github-tile.svg"/></a>
+         
+        <a href="https://hub.docker.com/r/ocrd"><img src="https://www.vectorlogo.zone/logos/docker/docker-tile.svg"/></a>
+         
+        <a href="https://ocr-d.de"><img src="https://www.vectorlogo.zone/logos/fileformatinfo/fileformatinfo-tile.svg"/></a>
+      </span>
+
+    </div>
+  </div>
+</nav>
+
+<!-- END-INCLUDE -->
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_models.ocrd_mets</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API to METS</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">is_local_filename</span><span class="p">,</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">VERSION</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span><span class="p">,</span>
+    <span class="n">TAG_METS_AGENT</span><span class="p">,</span>
+    <span class="n">TAG_METS_DIV</span><span class="p">,</span>
+    <span class="n">TAG_METS_FILE</span><span class="p">,</span>
+    <span class="n">TAG_METS_FILEGRP</span><span class="p">,</span>
+    <span class="n">TAG_METS_FILESEC</span><span class="p">,</span>
+    <span class="n">TAG_METS_FPTR</span><span class="p">,</span>
+    <span class="n">TAG_METS_METSHDR</span><span class="p">,</span>
+    <span class="n">TAG_METS_STRUCTMAP</span><span class="p">,</span>
+    <span class="n">IDENTIFIER_PRIORITY</span><span class="p">,</span>
+    <span class="n">TAG_MODS_IDENTIFIER</span><span class="p">,</span>
+    <span class="n">METS_XML_EMPTY</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.ocrd_xml_base</span> <span class="k">import</span> <span class="n">OcrdXmlDocument</span><span class="p">,</span> <span class="n">ET</span>
+<span class="kn">from</span> <span class="nn">.ocrd_file</span> <span class="k">import</span> <span class="n">OcrdFile</span>
+<span class="kn">from</span> <span class="nn">.ocrd_agent</span> <span class="k">import</span> <span class="n">OcrdAgent</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_models.ocrd_mets&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdMets"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets">[docs]</a><span class="k">class</span> <span class="nc">OcrdMets</span><span class="p">(</span><span class="n">OcrdXmlDocument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to a single METS file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OcrdMets.empty_mets"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.empty_mets">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">empty_mets</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an empty METS file from bundled template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tpl</span> <span class="o">=</span> <span class="n">METS_XML_EMPTY</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">tpl</span> <span class="o">=</span> <span class="n">tpl</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;{{ VERSION }}&#39;</span><span class="p">,</span> <span class="n">VERSION</span><span class="p">)</span>
+        <span class="n">tpl</span> <span class="o">=</span> <span class="n">tpl</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;{{ NOW }}&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">OcrdMets</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">tpl</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_by_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            file_by_id (dict): Cache mapping file ID to OcrdFile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OcrdMets</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_by_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_by_id</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span> <span class="o">=</span> <span class="n">file_by_id</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        String representation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;OcrdMets[fileGrps=</span><span class="si">%s</span><span class="s1">,files=</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_files</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unique_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the unique identifier by looking through ``mods:identifier``</span>
+
+<span class="sd">        See `specs &lt;https://ocr-d.github.io/mets#unique-id-for-the-document-processed&gt;`_ for details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">IDENTIFIER_PRIORITY</span><span class="p">:</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//mods:identifier[@type=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">found</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="nd">@unique_identifier</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">unique_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">purl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the unique identifier by looking through ``mods:identifier``</span>
+
+<span class="sd">        See `specs &lt;https://ocr-d.github.io/mets#unique-id-for-the-document-processed&gt;`_ for details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">id_el</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">IDENTIFIER_PRIORITY</span><span class="p">:</span>
+            <span class="n">id_el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//mods:identifier[@type=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">id_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">id_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mods</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//mods:mods&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+            <span class="n">id_el</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">mods</span><span class="p">,</span> <span class="n">TAG_MODS_IDENTIFIER</span><span class="p">)</span>
+            <span class="n">id_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;purl&#39;</span><span class="p">)</span>
+        <span class="n">id_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">purl</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">agents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all `OcrdAgent &lt;/../../ocrd_models/ocrd_models.ocrd_agent.html&gt;`_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">OcrdAgent</span><span class="p">(</span><span class="n">el_agent</span><span class="p">)</span> <span class="k">for</span> <span class="n">el_agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;mets:metsHdr/mets:agent&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="OcrdMets.add_agent"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.add_agent">[docs]</a>    <span class="k">def</span> <span class="nf">add_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an `OcrdAgent &lt;/../../ocrd_models/ocrd_models.ocrd_agent.html&gt;`_ to the list of agents in the metsHdr.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">el_metsHdr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//mets:metsHdr&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_metsHdr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_metsHdr</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">TAG_METS_METSHDR</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">el_metsHdr</span><span class="p">)</span>
+        <span class="c1">#  assert(el_metsHdr is not None)</span>
+        <span class="n">el_agent</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_metsHdr</span><span class="p">,</span> <span class="n">TAG_METS_AGENT</span><span class="p">)</span>
+        <span class="c1">#  print(ET.tostring(el_metsHdr))</span>
+        <span class="k">return</span> <span class="n">OcrdAgent</span><span class="p">(</span><span class="n">el_agent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List the ``USE`` attributes of all ``mets:fileGrp``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;USE&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//mets:fileGrp&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="OcrdMets.find_files"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.find_files">[docs]</a>    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search ``mets:file`` in this METS document.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ID (string) : ID of the file</span>
+<span class="sd">            fileGrp (string) : USE of the fileGrp to list files of</span>
+<span class="sd">            pageId (string) : ID of physical page manifested by matching files</span>
+<span class="sd">            url (string) : @xlink:href of mets:Flocat of mets:file</span>
+<span class="sd">            mimetype (string) : MIMETYPE of matching files</span>
+<span class="sd">            local (boolean) : Whether to restrict results to local files</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            List of files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fileGrp_clause</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">fileGrp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;[@USE=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">fileGrp</span>
+        <span class="n">file_clause</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_clause</span> <span class="o">+=</span> <span class="s1">&#39;[@ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">ID</span>
+        <span class="k">if</span> <span class="n">mimetype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_clause</span> <span class="o">+=</span> <span class="s1">&#39;[@MIMETYPE=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">mimetype</span>
+        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_clause</span> <span class="o">+=</span> <span class="s1">&#39;[mets:FLocat[@xlink:href = &quot;</span><span class="si">%s</span><span class="s1">&quot;]]&#39;</span> <span class="o">%</span> <span class="n">url</span>
+        <span class="c1"># TODO lxml says invalid predicate. I disagree</span>
+        <span class="c1">#  if local_only:</span>
+        <span class="c1">#      file_clause += &quot;[mets:FLocat[starts-with(@xlink:href, &#39;file://&#39;)]]&quot;</span>
+
+        <span class="c1"># Search</span>
+        <span class="n">file_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s2">&quot;//mets:fileGrp</span><span class="si">%s</span><span class="s2">/mets:file</span><span class="si">%s</span><span class="s2">/@ID&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileGrp_clause</span><span class="p">,</span> <span class="n">file_clause</span><span class="p">),</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pageId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">by_pageid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//mets:div[@TYPE=&quot;page&quot;][@ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]/mets:fptr/@FILEID&#39;</span> <span class="o">%</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">)</span>
+            <span class="n">file_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">by_pageid</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">file_ids</span><span class="p">]</span>
+
+        <span class="c1"># instantiate / get from cache</span>
+        <span class="k">for</span> <span class="n">file_id</span> <span class="ow">in</span> <span class="n">file_ids</span><span class="p">:</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//mets:file[@ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">[</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">OcrdFile</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+            <span class="c1"># If only local resources should be returned and file is not a file path: skip the file</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">[</span><span class="n">file_id</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
+            <span class="k">if</span> <span class="n">local_only</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">[</span><span class="n">file_id</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="OcrdMets.add_file_group"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.add_file_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_file_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new ``mets:fileGrp``.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            fileGrp (string): ``USE`` attribute of the new filegroup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">fileGrp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;fileGrp must not contain commas&#39;</span><span class="p">)</span>
+        <span class="n">el_fileSec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:fileSec&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_fileSec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_fileSec</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">(),</span> <span class="n">TAG_METS_FILESEC</span><span class="p">)</span>
+        <span class="n">el_fileGrp</span> <span class="o">=</span> <span class="n">el_fileSec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:fileGrp[@USE=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_fileGrp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_fileGrp</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_fileSec</span><span class="p">,</span> <span class="n">TAG_METS_FILEGRP</span><span class="p">)</span>
+            <span class="n">el_fileGrp</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;USE&#39;</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">el_fileGrp</span></div>
+
+<div class="viewcode-block" id="OcrdMets.remove_file_group"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.remove_file_group">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">USE</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a fileGrp.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            USE (string): USE attribute of the fileGrp to delete</span>
+<span class="sd">            recursive (boolean): Whether to recursively delete all files in the group</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">el_fileSec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:fileSec&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_fileSec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No fileSec!&quot;</span><span class="p">)</span>
+        <span class="n">el_fileGrp</span> <span class="o">=</span> <span class="n">el_fileSec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:fileGrp[@USE=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">USE</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_fileGrp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>   <span class="c1"># pylint: disable=len-as-condition</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No such fileGrp: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">USE</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">el_fileGrp</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;mets:file&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pylint: disable=len-as-condition</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;fileGrp </span><span class="si">%s</span><span class="s2"> is not empty and recursive wasn&#39;t set&quot;</span> <span class="o">%</span> <span class="n">USE</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">))</span>
+        <span class="n">el_fileGrp</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">el_fileGrp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OcrdMets.add_file"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a `OcrdFile &lt;/../../ocrd_models/ocrd_models.ocrd_file.html&gt;`_.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            fileGrp (string): Add file to ``mets:fileGrp`` with this ``USE`` attribute</span>
+<span class="sd">            mimetype (string):</span>
+<span class="sd">            url (string):</span>
+<span class="sd">            ID (string):</span>
+<span class="sd">            pageId (string):</span>
+<span class="sd">            force (boolean): Whether to add the file even if a ``mets:file`` with the same ``ID`` already exists.</span>
+<span class="sd">            local_filename (string):</span>
+<span class="sd">            mimetype (string):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ID</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must set ID of the mets:file&quot;</span><span class="p">)</span>
+        <span class="n">el_fileGrp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//mets:fileGrp[@USE=&#39;</span><span class="si">%s</span><span class="s2">&#39;]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileGrp</span><span class="p">),</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_fileGrp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_fileGrp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_file_group</span><span class="p">(</span><span class="n">fileGrp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;File with ID=&#39;</span><span class="si">%s</span><span class="s2">&#39; already exists&quot;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">)</span>
+            <span class="n">mets_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">ID</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mets_file</span> <span class="o">=</span> <span class="n">OcrdFile</span><span class="p">(</span><span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_fileGrp</span><span class="p">,</span> <span class="n">TAG_METS_FILE</span><span class="p">),</span> <span class="n">mets</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">mets_file</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="n">mets_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
+        <span class="n">mets_file</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="n">mets_file</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
+        <span class="n">mets_file</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">local_filename</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">mets_file</span>
+
+        <span class="k">return</span> <span class="n">mets_file</span></div>
+
+<div class="viewcode-block" id="OcrdMets.remove_file"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a `OcrdFile &lt;/../../ocrd_models/ocrd_models.ocrd_file.html&gt;`_.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;remove_file(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="n">ocrd_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ocrd_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;File not found: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="n">ocrd_file</span> <span class="o">=</span> <span class="n">ocrd_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Delete the physical page ref</span>
+        <span class="k">for</span> <span class="n">fptr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//mets:fptr[@FILEID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Delete fptr element </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">fptr</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+            <span class="n">page_div</span> <span class="o">=</span> <span class="n">fptr</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+            <span class="n">page_div</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fptr</span><span class="p">)</span>
+            <span class="c1"># TODO delete empty pages</span>
+            <span class="c1">#  if not page_div.getchildren():</span>
+            <span class="c1">#      log.info(&quot;Delete empty page %s&quot;, page_div)</span>
+            <span class="c1">#      page_div.getparent().remove(page_div)</span>
+
+        <span class="c1"># Delete the file reference</span>
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="n">ocrd_file</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">_el</span><span class="p">)</span>
+
+        <span class="c1"># Uncache</span>
+        <span class="k">if</span> <span class="n">ID</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_by_id</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ocrd_file</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">physical_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all page IDs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s1">&#39;mets:structMap[@TYPE=&quot;PHYSICAL&quot;]/mets:div[@TYPE=&quot;physSequence&quot;]/mets:div[@TYPE=&quot;page&quot;]/@ID&#39;</span><span class="p">,</span>
+            <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdMets.set_physical_page_for_file"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.set_physical_page_for_file">[docs]</a>    <span class="k">def</span> <span class="nf">set_physical_page_for_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orderlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new physical page</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#  print(pageId, ocrd_file)</span>
+        <span class="c1"># delete any page mapping for this file.ID</span>
+        <span class="k">for</span> <span class="n">el_fptr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+                <span class="s1">&#39;mets:structMap[@TYPE=&quot;PHYSICAL&quot;]/mets:div[@TYPE=&quot;physSequence&quot;]/mets:div[@TYPE=&quot;page&quot;]/mets:fptr[@FILEID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span>
+                <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">):</span>
+            <span class="n">el_fptr</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">el_fptr</span><span class="p">)</span>
+
+        <span class="c1"># find/construct as necessary</span>
+        <span class="n">el_structmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:structMap[@TYPE=&quot;PHYSICAL&quot;]&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_structmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_structmap</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">(),</span> <span class="n">TAG_METS_STRUCTMAP</span><span class="p">)</span>
+            <span class="n">el_structmap</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;TYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;PHYSICAL&#39;</span><span class="p">)</span>
+        <span class="n">el_seqdiv</span> <span class="o">=</span> <span class="n">el_structmap</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:div[@TYPE=&quot;physSequence&quot;]&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_seqdiv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_seqdiv</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_structmap</span><span class="p">,</span> <span class="n">TAG_METS_DIV</span><span class="p">)</span>
+            <span class="n">el_seqdiv</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;TYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;physSequence&#39;</span><span class="p">)</span>
+        <span class="n">el_pagediv</span> <span class="o">=</span> <span class="n">el_seqdiv</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:div[@ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_pagediv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_pagediv</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_seqdiv</span><span class="p">,</span> <span class="n">TAG_METS_DIV</span><span class="p">)</span>
+            <span class="n">el_pagediv</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;TYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;page&#39;</span><span class="p">)</span>
+            <span class="n">el_pagediv</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="n">pageId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">order</span><span class="p">:</span>
+                <span class="n">el_pagediv</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orderlabel</span><span class="p">:</span>
+                <span class="n">el_pagediv</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;ORDERLABEL&#39;</span><span class="p">,</span> <span class="n">orderlabel</span><span class="p">)</span>
+        <span class="n">el_fptr</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">el_pagediv</span><span class="p">,</span> <span class="n">TAG_METS_FPTR</span><span class="p">)</span>
+        <span class="n">el_fptr</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;FILEID&#39;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OcrdMets.get_physical_page_for_file"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_mets.html#ocrd_models.ocrd_mets.OcrdMets.get_physical_page_for_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_physical_page_for_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pageId for a ocrd_file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s1">&#39;/mets:mets/mets:structMap[@TYPE=&quot;PHYSICAL&quot;]/mets:div[@TYPE=&quot;physSequence&quot;]/mets:div[@TYPE=&quot;page&quot;][./mets:fptr[@FILEID=&quot;</span><span class="si">%s</span><span class="s1">&quot;]]/@ID&#39;</span> <span class="o">%</span>
+            <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+<!-- BEGIN-INCLUDE site/_includes/footer.html -->
+<footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+
+<!-- END-INCLUDE -->
+
+  </body>
+</html>

@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd_validators.page_validator &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+ 
+<!-- BEGIN-INCLUDE site/_includes/head.html -->
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+
+<!-- END-INCLUDE -->
+
+  </head><body>
+
+<!-- BEGIN-INCLUDE site/_includes/header.html -->
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Users</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="gt-guidelines">Ground Truth Guidelines</a>
+        </div>
+      </div>
+
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Developers</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/core">OCR-D/core apidocs</a>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="/glossary">Glossary</a>
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        <a href="https://github.com/OCR-D"><img src="https://www.vectorlogo.zone/logos/github/github-tile.svg"/></a>
+         
+        <a href="https://hub.docker.com/r/ocrd"><img src="https://www.vectorlogo.zone/logos/docker/docker-tile.svg"/></a>
+         
+        <a href="https://ocr-d.de"><img src="https://www.vectorlogo.zone/logos/fileformatinfo/fileformatinfo-tile.svg"/></a>
+      </span>
+
+    </div>
+  </div>
+</nav>
+
+<!-- END-INCLUDE -->
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_validators.page_validator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API for validating `OcrdPage &lt;../ocrd_models/ocrd_models.ocrd_page.html&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="k">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="k">import</span> <span class="n">page_from_file</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">PcGtsType</span><span class="p">,</span>
+    <span class="n">PageType</span><span class="p">,</span>
+    <span class="n">TextEquivType</span><span class="p">,</span>
+    <span class="n">TextRegionType</span><span class="p">,</span>
+    <span class="n">TextLineType</span><span class="p">,</span>
+    <span class="n">WordType</span><span class="p">,</span>
+    <span class="n">GlyphType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.report</span> <span class="k">import</span> <span class="n">ValidationReport</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator&#39;</span><span class="p">)</span>
+
+<span class="n">_HIERARCHY</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;Page&#39;</span><span class="p">,</span>       <span class="s1">&#39;get_TextRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">TextRegionType</span><span class="p">,</span> <span class="s1">&#39;TextRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;get_TextLine&#39;</span><span class="p">,</span>   <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">TextLineType</span><span class="p">,</span>   <span class="s1">&#39;TextLine&#39;</span><span class="p">,</span>   <span class="s1">&#39;get_Word&#39;</span><span class="p">,</span>       <span class="s1">&#39; &#39;</span><span class="p">),</span>  <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">WordType</span><span class="p">,</span>       <span class="s1">&#39;Word&#39;</span><span class="p">,</span>       <span class="s1">&#39;get_Glyph&#39;</span><span class="p">,</span>      <span class="s1">&#39;&#39;</span><span class="p">),</span>   <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">GlyphType</span><span class="p">,</span>      <span class="s1">&#39;Glyph&#39;</span><span class="p">,</span>      <span class="kc">None</span><span class="p">,</span>             <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="ConsistencyError"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.ConsistencyError">[docs]</a><span class="k">class</span> <span class="nc">ConsistencyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception representing a consistency error in transcription level of a PAGE-XML.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new ConsistencyError.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            tag (string): Level of the inconsistent element</span>
+<span class="sd">            ID (string): ``ID`` of the inconsistent element</span>
+<span class="sd">            actual (string):</span>
+<span class="sd">            expected (string):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actual</span> <span class="o">=</span> <span class="n">actual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConsistencyError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;INCONSISTENCY in </span><span class="si">%s</span><span class="s2"> ID &#39;</span><span class="si">%s</span><span class="s2">&#39;: text results &#39;</span><span class="si">%s</span><span class="s2">&#39; != concatenated &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="compare_without_whitespace"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.compare_without_whitespace">[docs]</a><span class="k">def</span> <span class="nf">compare_without_whitespace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare two strings, ignoring all whitespace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="handle_inconsistencies"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.handle_inconsistencies">[docs]</a><span class="k">def</span> <span class="nf">handle_inconsistencies</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">report</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check whether the text results on an element is consistent with its child element text results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PcGtsType</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">GlyphType</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">report</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">concatenate_with</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_HIERARCHY</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">children_are_consistent</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">getter</span><span class="p">)()</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+        <span class="n">errors_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+        <span class="n">handle_inconsistencies</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">errors_before</span><span class="p">:</span>
+            <span class="n">children_are_consistent</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">concatenate_with</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">concatenated_children</span> <span class="o">=</span> <span class="n">concatenate_children</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">concatenate_with</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="n">text_results</span> <span class="o">=</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">concatenated_children</span> <span class="ow">and</span> <span class="n">text_results</span> <span class="ow">and</span> <span class="n">concatenated_children</span> <span class="o">!=</span> <span class="n">text_results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">strictness</span> <span class="o">==</span> <span class="s1">&#39;fix&#39;</span><span class="p">:</span>
+                <span class="n">set_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">concatenated_children</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+                <span class="c1">#  if children_are_consistent:</span>
+                <span class="c1">#  else:</span>
+                <span class="c1">#      # TODO fix text results recursively</span>
+                <span class="c1">#      report.add_warning(&quot;Fixing inconsistencies recursively not implemented&quot;)</span>
+            <span class="k">elif</span> <span class="n">strictness</span> <span class="o">==</span> <span class="s1">&#39;lax&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">compare_without_whitespace</span><span class="p">(</span><span class="n">concatenated_children</span><span class="p">,</span> <span class="n">text_results</span><span class="p">):</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">ConsistencyError</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text_results</span><span class="p">,</span> <span class="n">concatenated_children</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">ConsistencyError</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text_results</span><span class="p">,</span> <span class="n">concatenated_children</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+
+<div class="viewcode-block" id="concatenate_children"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.concatenate_children">[docs]</a><span class="k">def</span> <span class="nf">concatenate_children</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">concatenate_with</span><span class="p">,</span> <span class="n">strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Concatenate children of node according to https://ocr-d.github.io/page#consistency-of-text-results-on-different-levels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">concatenate_with</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_HIERARCHY</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">getter</span><span class="p">)()]</span>
+    <span class="k">return</span> <span class="n">concatenate_with</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="get_text"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.get_text">[docs]</a><span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the most confident text results, either those with @index = 1 or the first text results or empty string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">textEquivs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_TextEquiv</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">textEquivs</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No text results on </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1">#  elif strategy == &#39;index1&#39;:</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">textEquivs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">index1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">textEquivs</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_Unicode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">textEquivs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_Unicode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="set_text"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.set_text">[docs]</a><span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the most confident text results, either those with @index = 1, the first text results or add new one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">textEquivs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_TextEquiv</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">textEquivs</span><span class="p">:</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_TextEquiv</span><span class="p">(</span><span class="n">TextEquivType</span><span class="p">(</span><span class="n">Unicode</span><span class="o">=</span><span class="n">text</span><span class="p">))</span>
+    <span class="c1">#  elif strategy == &#39;index1&#39;:</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">textEquivs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">index1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">textEquivs</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index1</span><span class="p">:</span>
+                <span class="n">index1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_Unicode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="n">textEquivs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_Unicode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PageValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.PageValidator">[docs]</a><span class="k">class</span> <span class="nc">PageValidator</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validator for `OcrdPage &lt;../ocrd_models/ocrd_models.ocrd_page.html&gt;`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PageValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.PageValidator.validate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocrd_page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strictness</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;index1&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates a PAGE file for consistency by filename, OcrdFile or passing OcrdPage directly.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            filename (string): Path to PAGE</span>
+<span class="sd">            ocrd_page (OcrdPage): OcrdPage instance</span>
+<span class="sd">            ocrd_file (OcrdFile): OcrdFile instance wrapping OcrdPage</span>
+<span class="sd">            strictness (string): &#39;strict&#39;, &#39;lax&#39;, &#39;fix&#39; or &#39;off&#39;</span>
+<span class="sd">            strategy (string): Currently only &#39;index1&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            report (:class:`ValidationReport`) Report on the validity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ocrd_page</span><span class="p">:</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="n">PageValidator</span><span class="p">(</span><span class="n">ocrd_page</span><span class="p">,</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ocrd_file</span><span class="p">:</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="n">PageValidator</span><span class="p">(</span><span class="n">page_from_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">),</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="n">PageValidator</span><span class="p">(</span><span class="n">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">silence</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;At least one of ocrd_page, ocrd_file or filename must be set&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">validator</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span> <span class="c1"># pylint: disable=protected-access</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">strictness</span><span class="p">,</span> <span class="n">strategy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            page (OcrdPage): The OcrdPage to validate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;index1&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Element selection strategy </span><span class="si">%s</span><span class="s2"> not implemented&quot;</span> <span class="o">%</span> <span class="n">strategy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">strictness</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="s1">&#39;lax&#39;</span><span class="p">,</span> <span class="s1">&#39;fix&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Strictness level </span><span class="si">%s</span><span class="s2"> not implemented&quot;</span> <span class="o">%</span> <span class="n">strictness</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page</span> <span class="o">=</span> <span class="n">page</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strictness</span> <span class="o">=</span> <span class="n">strictness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">strategy</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do the actual validation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strictness</span> <span class="o">==</span> <span class="s1">&#39;off&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span>
+        <span class="n">handle_inconsistencies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">page</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strictness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+<!-- BEGIN-INCLUDE site/_includes/footer.html -->
+<footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+
+<!-- END-INCLUDE -->
+
+  </body>
+</html>
