@@ -11,3 +11,15 @@ Run `make help` to see a list of commands.
 Activate any virtualenvs before running `make`.
 
 To ensure a complete setup for Debian/Ubuntu based Linuxes: `make bootstrap`
+
+## Directory structure
+
+* `docs`: This is where the site will be built. Never touch it.
+* `site`: This is the jekyll site. Posts and Pages live here.
+* `repo`: Contains required subrepos
+
+## Rebuild gt-guidelines
+
+```
+make gt-guidelines
+```
