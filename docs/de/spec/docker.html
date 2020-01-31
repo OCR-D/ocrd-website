@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent ">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Dokumentation</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/de/gt-guidelines/trans">Ground Truth Richtlinien</a>
+          
+          <a class="navbar-item" href="/de/gt-guidelines/pagexml">PAGE-XML Formatdokumentation</a>
+          
+          <a class="navbar-item" href="/de/spec">Spezifikationen</a>
+          
+        </div>
+      </div>
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Projekt</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/de/blog">Blog</a>
+          
+          <a class="navbar-item" href="/de/contact">Kontakt</a>
+          
+          <a class="navbar-item" href="/de/imprint">Impressum</a>
+          
+          <a class="navbar-item" href="/de/people">Wer wir sind</a>
+          
+          <a class="navbar-item" href="/de/publications">Publikationen</a>
+          
+          <a class="navbar-item" href="/de/advisory-board">Wissenschaftlicher Beirat</a>
+          
+          <a class="navbar-item" href="/de/module-projects">Modulprojekte</a>
+          
+          <a class="navbar-item" href="/de/data">Daten</a>
+          
+          <a class="navbar-item" href="/de/core">OCR-D/core API Dokumentation</a>
+          
+          <a class="navbar-item" href="/de/glossary">Glossar</a>
+          
+        </div>
+      </div>
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+         
+    
+        
+        
+        
+            
+            
+            
+            
+            <a href="/en/spec/docker.html" title="View in en">
+              <img style="height: 100px" src="/assets/en.svg"/>
+            </a>
+            
+            
+        
+    
+         
+      </span>
+
+    </div>
+  </div>
+</nav>
+<div class="columns">
+      
+      <aside class="column is-one-third menu">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#dockerfile-provided-by-mp">Dockerfile provided by MP</a>
+    <ul>
+      <li><a href="#based-on-ocrdcore">Based on ocrd:core</a></li>
+      <li><a href="#shell-entrypoint">Shell entrypoint</a></li>
+      <li><a href="#data-as-volume"><code class="highlighter-rouge">/data</code> as volume</a></li>
+      <li><a href="#example">Example</a></li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="dockerfile-provided-by-mp">Dockerfile provided by MP</h1>
+
+<p>MP should provide a
+<a href="https://docs.docker.com/engine/reference/builder/">Dockerfile</a> that should
+result in a container which bundles the <a href="cli">tools developed by the MP</a> along
+with all requirements.</p>
+
+<h2 id="based-on-ocrdcore">Based on ocrd:core</h2>
+
+<p>Docker containers should be based on the <a href="https://hub.docker.com/r/ocrd/core/">ocrd base
+image</a> which itself is based on Ubuntu
+18.04. For one, this allows MP to use the <code class="highlighter-rouge">ocrd</code> tool to handle recurrent tasks
+in a spec-conformant way. Besides, it locally installed and containerized
+<a href="cli">CLI</a> interchangeable.</p>
+
+<h2 id="shell-entrypoint">Shell entrypoint</h2>
+
+<p>No <code class="highlighter-rouge">CMD</code> should be provided.</p>
+
+<p>No <code class="highlighter-rouge">ENTRYPOINT</code> should be provided.</p>
+
+<p>If <code class="highlighter-rouge">CMD</code> or <code class="highlighter-rouge">ENTRYPOINT</code> are provided, they should be empty arrays.</p>
+
+<h2 id="data-as-volume"><code class="highlighter-rouge">/data</code> as volume</h2>
+
+<p>The directory <code class="highlighter-rouge">/data</code> in the the container should be marked as a volume to
+allow processing host data in the container in a uniform way.</p>
+
+<h2 id="example">Example</h2>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ocrd:core</span>
+<span class="k">VOLUME</span><span class="s"> ["/data"]</span>
+
+<span class="c"># RUN-commands to install requirements, build and install</span>
+<span class="c"># e.g.</span>
+<span class="c"># apt-get install -y curl</span>
+
+<span class="k">ENTRYPOINT</span><span class="s"> []</span>
+</code></pre></div></div>
+
+      </main>
+    </div><footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

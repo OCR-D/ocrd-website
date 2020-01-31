@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent ">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Documentation</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          <a class="navbar-item" href="/en/gt-guidelines/pagexml">PAGE-XML format documentation</a>
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+        </div>
+      </div>
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Project</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          <a class="navbar-item" href="/en/contact">Contact</a>
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+          <a class="navbar-item" href="/en/people">Who we are</a>
+          
+          <a class="navbar-item" href="/en/publications">Publications</a>
+          
+          <a class="navbar-item" href="/en/advisory-board">Academic Advisory Board</a>
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          <a class="navbar-item" href="/en/core">OCR-D/core API Documentation</a>
+          
+          <a class="navbar-item" href="/en/glossary">Glossary</a>
+          
+        </div>
+      </div>
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+         
+    
+        
+        
+        
+            
+            
+            <a href="/de/spec/glossary.html" title="View in de">
+              <img style="height: 100px" src="/assets/de.svg"/>
+            </a>
+            
+            
+            
+            
+        
+    
+         
+      </span>
+
+    </div>
+  </div>
+</nav>
+<div class="columns">
+      
+      <aside class="column is-one-third menu">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#ocr-d-glossary">OCR-D Glossary</a>
+    <ul>
+      <li><a href="#layout-and-typography">Layout and Typography</a>
+        <ul>
+          <li><a href="#block">Block</a></li>
+          <li><a href="#block-type">Block type</a></li>
+          <li><a href="#font-family">Font family</a></li>
+          <li><a href="#glyph">Glyph</a></li>
+          <li><a href="#grapheme-cluster">Grapheme Cluster</a></li>
+          <li><a href="#line">Line</a></li>
+          <li><a href="#reading-order">Reading Order</a></li>
+          <li><a href="#region">Region</a></li>
+          <li><a href="#symbol">Symbol</a></li>
+          <li><a href="#textline">TextLine</a></li>
+          <li><a href="#word">Word</a></li>
+        </ul>
+      </li>
+      <li><a href="#data">Data</a>
+        <ul>
+          <li><a href="#ground-truth">Ground Truth</a>
+            <ul>
+              <li><a href="#reference-data">Reference data</a></li>
+              <li><a href="#evaluation-data">Evaluation data</a></li>
+              <li><a href="#training-data">Training data</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#activities">Activities</a>
+        <ul>
+          <li><a href="#binarization">Binarization</a></li>
+          <li><a href="#dewarping">Dewarping</a></li>
+          <li><a href="#despeckling">Despeckling</a></li>
+          <li><a href="#deskewing">Deskewing</a></li>
+          <li><a href="#font-identification">Font identification</a></li>
+          <li><a href="#grayscale-normalization">Grayscale normalization</a></li>
+          <li><a href="#document-analysis">Document analysis</a></li>
+          <li><a href="#reading-order-detection">Reading order detection</a></li>
+          <li><a href="#cropping">Cropping</a></li>
+          <li><a href="#border-removal">Border removal</a></li>
+          <li><a href="#segmentation">Segmentation</a></li>
+          <li><a href="#block-segmentation">Block segmentation</a></li>
+          <li><a href="#block-classification">Block classification</a></li>
+          <li><a href="#line-segmentation">Line segmentation</a></li>
+          <li><a href="#mp">MP</a></li>
+          <li><a href="#ocr">OCR</a></li>
+          <li><a href="#word-segmentation">Word segmentation</a></li>
+          <li><a href="#glyph-segmentation">Glyph segmentation</a></li>
+          <li><a href="#text-recognition">Text recognition</a></li>
+          <li><a href="#text-optimization">Text optimization</a></li>
+        </ul>
+      </li>
+      <li><a href="#data-persistence">Data Persistence</a>
+        <ul>
+          <li><a href="#software-repository">Software repository</a></li>
+          <li><a href="#ground-truth-repository">Ground Truth repository</a></li>
+          <li><a href="#research-data-repository">Research data repository</a></li>
+          <li><a href="#model-repository">Model repository</a></li>
+        </ul>
+      </li>
+      <li><a href="#ocr-d-modules">OCR-D modules</a>
+        <ul>
+          <li><a href="#image-preprocessing">Image preprocessing</a></li>
+          <li><a href="#layout-analysis">Layout analysis</a></li>
+          <li><a href="#text-recognition-and-optimization">Text recognition and optimization</a></li>
+          <li><a href="#model-training">Model training</a></li>
+          <li><a href="#long-term-preservation-and-persistence">Long-term preservation and persistence</a></li>
+          <li><a href="#quality-assurance">Quality assurance</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="ocr-d-glossary">OCR-D Glossary</h1>
+
+<blockquote>
+  <p>Glossary of terms from the domain of image processing/OCR and how they are used within the OCR-D framework</p>
+</blockquote>
+
+<p>This section is non-normative.</p>
+
+<h2 id="layout-and-typography">Layout and Typography</h2>
+
+<h3 id="block">Block</h3>
+
+<p>A block is a region described by a polygon inside a page.</p>
+
+<h3 id="block-type">Block type</h3>
+
+<p>The semantics or function of a <a href="#block">block</a> such as heading, page number, column, table…</p>
+
+<h3 id="font-family">Font family</h3>
+
+<p>Within OCR-D, <em>font family</em> refers to grouping elements by font similarity. The
+semantics of a <em>font family</em> are up to the data producer.</p>
+
+<h3 id="glyph">Glyph</h3>
+
+<p>Within OCR-D, a glyph is the atomic unit within a <a href="#word">word</a>.</p>
+
+<h3 id="grapheme-cluster">Grapheme Cluster</h3>
+
+<p>See <a href="#glyph">Glyph</a></p>
+
+<h3 id="line">Line</h3>
+
+<p>See <a href="#textline">TextLine</a></p>
+
+<h3 id="reading-order">Reading Order</h3>
+
+<p>Reading order describes the logical sequence of <a href="#block">blocks</a> within a document.</p>
+
+<h3 id="region">Region</h3>
+
+<p>See <a href="#block">Block</a></p>
+
+<h3 id="symbol">Symbol</h3>
+
+<p>See <a href="#glyph">Glyph</a></p>
+
+<h3 id="textline">TextLine</h3>
+
+<p>A TextLine is a <a href="#block">block</a> of text without line break.</p>
+
+<h3 id="word">Word</h3>
+
+<p>A word is a sequence of <a href="#glyph">glyphs</a> not containing any word-bounding whitespace.</p>
+
+<h2 id="data">Data</h2>
+
+<h3 id="ground-truth">Ground Truth</h3>
+
+<p>Ground truth (GT) <a href="http://ocr-d.de/daten">in the context of OCR-D</a> are
+transcriptions, specific structure descriptions and word lists. These are
+essentially available in PAGE XML format in combination with the original
+image. Essential parts of the GT were created manually.</p>
+
+<p>We distinguish different usage scenarios for GT:</p>
+
+<h4 id="reference-data">Reference data</h4>
+
+<p>With the term <em>reference data</em>, we refer to data that illustrates
+different stages of an OCR/OLR process on representative materials. They are
+supposed to support the assessment of commonly encountered difficulties and challenges when
+running certain analysis operations and are therefore manually annotated
+at all levels.</p>
+
+<h4 id="evaluation-data">Evaluation data</h4>
+
+<p><em>Evaluation data</em> are used to quantitatively evaluate the performance of OCR tools
+and/or algorithms. Parts of these data which correspond to the tool(s) under consideration
+are guaranteed to be recorded manually.</p>
+
+<h4 id="training-data">Training data</h4>
+
+<p>Many OCR-related tools need to be adapted to the specific domain of the works which are to
+be processed. This domain adaptation is called <em>training</em>. Data used to guide this process
+are called <em>training data</em>. It is essential that those parts of these data which are fed
+to the training algorithm are captured manually.</p>
+
+<h2 id="activities">Activities</h2>
+
+<h3 id="binarization">Binarization</h3>
+
+<p>Binarization means converting all color or grayscale pixels in an image to either black or white.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">binarized</code> (<code class="highlighter-rouge">comments</code> of a mets:file), <code class="highlighter-rouge">preprocessing/optimization/binarization</code> (<code class="highlighter-rouge">step</code> in ocrd-tool.json)</p>
+
+<p>See <a href="http://felixniklas.com/imageprocessing/binarization">Felix’ Niklas interactive demo</a></p>
+
+<h3 id="dewarping">Dewarping</h3>
+
+<p>Manipulate an image in such a way that all text lines are
+straightened and any geometrical distortions have been corrected.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">preprocessing/optimization/dewarping</code></p>
+
+<p>See <a href="https://mzucker.github.io/2016/08/15/page-dewarping.html">Matt Zucker’s entry on Dewarping</a>.</p>
+
+<h3 id="despeckling">Despeckling</h3>
+
+<p>Remove artifacts such as smudges, ink blots, underlinings etc. from an image. Typically applied to 
+remove “salt-and-pepper” noise resulting from <a href="#Binarization">Binarization</a>.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">preprocessing/optimization/despeckling</code></p>
+
+<h3 id="deskewing">Deskewing</h3>
+
+<p>Rotate an image so that all text lines are horizontal.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">preprocessing/optimization/deskewing</code></p>
+
+<h3 id="font-identification">Font identification</h3>
+
+<p>Detect the font type(s) used in the document, either before or after an OCR run.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">recognition/font-identification</code></p>
+
+<h3 id="grayscale-normalization">Grayscale normalization</h3>
+
+<blockquote>
+  <p>ISSUE: https://github.com/OCR-D/spec/issues/41</p>
+</blockquote>
+
+<p>Controlled term:</p>
+<ul>
+  <li><code class="highlighter-rouge">gray_normalized</code> (<code class="highlighter-rouge">comments</code> in file)</li>
+  <li><code class="highlighter-rouge">preprocessing/optimization/cropping</code> (step)</li>
+</ul>
+
+<p>Gray normalization is similar to binarization but instead of a purely bitonal
+image, the output can also contain shades of gray to avoid inadvertently
+combining glyphs when they are very close together.</p>
+
+<h3 id="document-analysis">Document analysis</h3>
+
+<p>Document analysis is the detection of structure on the document level to e.g. create a table of contents.</p>
+
+<h3 id="reading-order-detection">Reading order detection</h3>
+
+<p>Detect the <a href="#reading-order">reading order</a> of <a href="#block">blocks</a>.</p>
+
+<h3 id="cropping">Cropping</h3>
+
+<p>Detecting the print space in a page, as opposed to the margins. It is a form of
+<a href="#block-segmentation">block segmentation</a>.</p>
+
+<p>Controlled term: <code class="highlighter-rouge">preprocessing/optimization/cropping</code>.</p>
+
+<h3 id="border-removal">Border removal</h3>
+
+<p>–&gt; <a href="#cropping">Cropping</a></p>
+
+<h3 id="segmentation">Segmentation</h3>
+
+<p>Segmentation means detecting areas within an image.</p>
+
+<p>Specific segmentation algorithms are labelled by the semantics of the regions
+they detect not the semantics of the input, i.e. an algorithm that detects
+blocks is called <a href="#block-segmentation">block segmentation</a>.</p>
+
+<h3 id="block-segmentation">Block segmentation</h3>
+
+<p>Segment an image into <a href="#block">blocks</a>. Also determines whether this is a text
+or non-text block (e.g. images).</p>
+
+<p>Controlled term:</p>
+<ul>
+  <li><code class="highlighter-rouge">SEG-BLOCK</code> (<code class="highlighter-rouge">USE</code>)</li>
+  <li><code class="highlighter-rouge">layout/segmentation/region</code> (step)</li>
+</ul>
+
+<h3 id="block-classification">Block classification</h3>
+
+<p>Determine the <a href="#block-type">type</a> of a detected block.</p>
+
+<h3 id="line-segmentation">Line segmentation</h3>
+<p>Segment text <a href="#block">blocks</a> into <a href="#textline">textlines</a>.</p>
+
+<p>Controlled term:</p>
+<ul>
+  <li><code class="highlighter-rouge">SEG-LINE</code> (<code class="highlighter-rouge">USE</code>)</li>
+  <li><code class="highlighter-rouge">layout/segmentation/line</code> (step)</li>
+</ul>
+
+<h3 id="mp">MP</h3>
+
+<p>Module Project, a software project producing one or more tools to OCR-D. There
+are <a href="https://ocr-d.github.io/projects">currently eight MP</a> active in the OCR-D
+community.</p>
+
+<h3 id="ocr">OCR</h3>
+
+<p>Map pixel areas to <a href="#glyph">glyphs</a> and <a href="#words">words</a>.</p>
+
+<h3 id="word-segmentation">Word segmentation</h3>
+
+<p>Segment a <a href="#textline">textline</a> into <a href="#word">words</a></p>
+
+<p>Controlled term:</p>
+<ul>
+  <li><code class="highlighter-rouge">SEG-LINE</code> (<code class="highlighter-rouge">USE</code>)</li>
+  <li><code class="highlighter-rouge">layout/segmentation/word</code> (step)</li>
+</ul>
+
+<h3 id="glyph-segmentation">Glyph segmentation</h3>
+
+<p>Segment a <a href="#textline">textline</a> into <a href="#glyph">glyphs</a></p>
+
+<p>Controlled term: <code class="highlighter-rouge">SEG-GLYPH</code></p>
+
+<h3 id="text-recognition">Text recognition</h3>
+
+<p>See <a href="#ocr">OCR</a>.</p>
+
+<h3 id="text-optimization">Text optimization</h3>
+
+<p>Text optimization encompasses the manipulations to the text based on the steps
+up to and including text recognition. This includes (semi-)automatically correcting
+recognition errors, orthographical harmonization, fixing segmentation errors etc.</p>
+
+<h2 id="data-persistence">Data Persistence</h2>
+
+<h3 id="software-repository">Software repository</h3>
+
+<p>The software repository contains all OCR-D algorithms and tools developed
+during the project including tests. It will also contain the documentation and
+installation instructions for deploying a document analysis workflow.</p>
+
+<h3 id="ground-truth-repository">Ground Truth repository</h3>
+
+<p>Contains all the <a href="#ground-truth">ground truth</a> data.</p>
+
+<h3 id="research-data-repository">Research data repository</h3>
+
+<p>The research data repository may contain the results of all
+<a href="#activities">activities</a> during document analysis. At least it contains the
+end results of every processed document and its full provenance. The research
+data repository must be available locally.</p>
+
+<h3 id="model-repository">Model repository</h3>
+
+<p>Contains all trained (OCR) models for text recognition. The model repository
+has to be available at least locally. Ideally, a publicly available model repository will
+be developed.</p>
+
+<h2 id="ocr-d-modules">OCR-D modules</h2>
+
+<p>The <a href="https://ocr-d.de">OCR-D project</a> divided the various elements of an OCR
+workflow into six modules.</p>
+
+<h3 id="image-preprocessing">Image preprocessing</h3>
+
+<p>Manipulating the input images for subsequent layout analysis and text recognition.</p>
+
+<h3 id="layout-analysis">Layout analysis</h3>
+
+<p>Detection of structure within the page.</p>
+
+<h3 id="text-recognition-and-optimization">Text recognition and optimization</h3>
+
+<p>Recognition of text and post-correction of recognition errors.</p>
+
+<h3 id="model-training">Model training</h3>
+
+<p>Generating data files from aligned ground truth text and images to configure
+the prediction of text and layout recognition engines.</p>
+
+<h3 id="long-term-preservation-and-persistence">Long-term preservation and persistence</h3>
+
+<p>Storing results of OCR and OLR indefinitely, taking into account versioning,
+multiple runs, provenance/parametrization and providing access to these saved
+snapshots in a granular fashion.</p>
+
+<h3 id="quality-assurance">Quality assurance</h3>
+
+<p>Providing measures, algorithms and software to estimate the quality of the <a href="#activities">individual processes</a> within the OCR-D domain.</p>
+
+      </main>
+    </div><footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

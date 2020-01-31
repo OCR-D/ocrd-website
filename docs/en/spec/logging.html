@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent ">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Documentation</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          <a class="navbar-item" href="/en/gt-guidelines/pagexml">PAGE-XML format documentation</a>
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+        </div>
+      </div>
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Project</a>
+        <div class="navbar-dropdown">
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          <a class="navbar-item" href="/en/contact">Contact</a>
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+          <a class="navbar-item" href="/en/people">Who we are</a>
+          
+          <a class="navbar-item" href="/en/publications">Publications</a>
+          
+          <a class="navbar-item" href="/en/advisory-board">Academic Advisory Board</a>
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          <a class="navbar-item" href="/en/core">OCR-D/core API Documentation</a>
+          
+          <a class="navbar-item" href="/en/glossary">Glossary</a>
+          
+        </div>
+      </div>
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+         
+    
+        
+        
+        
+            
+            
+            <a href="/de/spec/logging.html" title="View in de">
+              <img style="height: 100px" src="/assets/de.svg"/>
+            </a>
+            
+            
+            
+            
+        
+    
+         
+      </span>
+
+    </div>
+  </div>
+</nav>
+<div class="columns">
+      
+      <aside class="column is-one-third menu">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#this-is-just-a-first-draft">THIS IS JUST A FIRST DRAFT!</a></li>
+  <li><a href="#conventions-for-logging">Conventions for LOGGING</a>
+    <ul>
+      <li><a href="#target-audience">Target Audience</a></li>
+      <li><a href="#introduction">Introduction</a></li>
+      <li><a href="#log-levels">Log Levels</a>
+        <ul>
+          <li><a href="#trace--all">TRACE / ALL</a></li>
+          <li><a href="#debug">DEBUG</a></li>
+          <li><a href="#info">INFO</a></li>
+          <li><a href="#warn">WARN</a></li>
+          <li><a href="#error">ERROR</a></li>
+        </ul>
+      </li>
+      <li><a href="#format">Format</a></li>
+      <li><a href="#mets">METS</a></li>
+      <li><a href="#ingest-workspace-to-ocr-d-repositorium">Ingest Workspace to OCR-D Repositorium</a></li>
+      <li><a href="#use-cases">Use Cases</a>
+        <ul>
+          <li><a href="#log-during-the-workflow">Log during the Workflow</a></li>
+          <li><a href="#analyze-applications">Analyze applications</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="this-is-just-a-first-draft">THIS IS JUST A FIRST DRAFT!</h1>
+
+<h1 id="conventions-for-logging">Conventions for LOGGING</h1>
+<p>This section specifies how the output of the digitization workflow is logged.</p>
+<h2 id="target-audience">Target Audience</h2>
+<p>Users and developers of digitization workflows in libraries and/or digitization centers.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Logging is essential for developers and users to debug applications.
+You always have to choose between two contradictory goals:</p>
+<ul>
+  <li>Runtime</li>
+  <li>Information</li>
+</ul>
+
+<p>Many issues make troubleshooting easier but have a negative effect on the runtime.
+Therefore, log levels have been introduced to customize the output to suit your needs.</p>
+
+<p>When a workflow is executed, the output of the applications MAY be stored in files.
+All log files were stored in a subfolder ‘metadata/log’.
+The file name SHOULD contain the ID of the activity in the provenance and the name of the stream.
+FILENAME := ACTIVITY_ID + “_” + OUTPUT_STREAM + “.log”
+‘'’Example:’’’ ocrd-kraken-bin_0001_stdout.log</p>
+
+<h2 id="log-levels">Log Levels</h2>
+<p>A more detailed description will be found <a href="https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels/5278006#5278006">here</a></p>
+<h3 id="trace--all">TRACE / ALL</h3>
+<p>This is the most verbose logging level to trace the path of the algorithm.
+E.g.: Start/End/Duration of a method, even loops may be logged. 
+Note that logging within loops can dramatically affect performance.</p>
+<h3 id="debug">DEBUG</h3>
+<p>This level is used if parameters and or the status of an algorithm/method should be logged.</p>
+<h3 id="info">INFO</h3>
+<p>Log information about used settings on application level.</p>
+<h3 id="warn">WARN</h3>
+<p>This level is used to log information about missing/wrong configurations which may lead to errors.</p>
+<h3 id="error">ERROR</h3>
+<p>Log all events that produce no or a wrong result. 
+It is useful to output all the information that helps to determine the cause without the need for further investigation.</p>
+
+<h2 id="format">Format</h2>
+<p>The format of the logging output has to be formatted like this:
+TIMESTAMP LEVEL LOGGERNAME - MESSAGE
+<strong><em>Example:</em></strong>
+08:03:40.017 WARN edu.kit.ocrd.MyTestClass - A warn message</p>
+
+<h2 id="mets">METS</h2>
+<p>The log files are not referenced inside METS.
+If they are listed in the provenance, their content must be included in the provenance.</p>
+
+<h2 id="ingest-workspace-to-ocr-d-repositorium">Ingest Workspace to OCR-D Repositorium</h2>
+<p>No log files will be stored in repository</p>
+
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="log-during-the-workflow">Log during the Workflow</h3>
+<p>All applications executed during workflow have to write there logging to STDERR and STDOUT.
+Since both outputs are also stored in the provenance, only information that is important 
+for later analysis should be provided.
+STDERR only contains error messages that cause the program to terminate (see <a href="#ERROR">Loglevel ERROR</a>).
+STDOUT should only contain outputs that are maximum of the log level INFO (see <a href="#INFO">Loglevel INFO</a>).
+For automated workflows it is recommended to save STDERR only.</p>
+
+<h3 id="analyze-applications">Analyze applications</h3>
+<p>All applications executed during workflow have to write there logging to STDERR and STDOUT.
+Since both outputs are used to analyze the program flow and possible errors and the performance 
+is not important, all information should be output here.</p>
+
+
+      </main>
+    </div><footer class="level">
+
+  <div class="level-item">
+    <p>
+<!-- BEGIN-EVAL echo "Based on <a href="https://github.com/OCR-D/spec/releases/tag/${SPEC_VERSION:-dev}">OCR-D/spec ${SPEC_VERSION:-dev}</a>." -->
+Based on <a href="https://github.com/OCR-D/spec/releases/tag/v3.3.0">OCR-D/spec v3.3.0</a>.
+
+<!-- END-EVAL -->
+    </p>
+     
+
+
+<!-- BEGIN-EVAL echo "<p>Generated on <code>$(date)</code></p>" -->
+<p>Generated on <code>Thu Oct 24 14:05:42 CEST 2019</code></p>
+
+<!-- END-EVAL -->
+  </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>
