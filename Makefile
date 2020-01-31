@@ -46,7 +46,7 @@ bootstrap:
 	cd repo/ocrd-kwalitee && pip install -e .
 	cd repo/gt-guidelines && make deps
 
-# Build gt-guidelines
+# Build gt-guidelines. This takes a few minutes. Be patient.
 gt-guidelines: repo/gt-guidelines
 	rm -rf $(SRCDIR)/{de,en}/gt-guidelines
 	for lang in en de;do \
@@ -58,18 +58,18 @@ gt-guidelines: repo/gt-guidelines
 		(cd site/$$lang/gt-guidelines; find -name '*.html' -exec sed -i "1 i ---\nlayout: page\nlang: de\nlang-ref: {}\n---\n" {} \;) ; \
 	done
 
-# Build data
+# Build ocrd-kwalitee data
 data: $(SRCDIR)/_data/ocrd-repo.json
 
 $(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
-# Build module information
+# TODO Build module information
 build-modules: ocrd-kwalitee.json
 	@echo NIH
 
-# Build processor information
+# TODO Build processor information
 build-processors:
 	@echo NIH
 
@@ -81,15 +81,12 @@ serve-site:
 build-site:
 	jekyll build -s $(SRCDIR) -d $(BUILDDIR)
 
-# build the site
-build-site-continuously:
-	jekyll build --watch -s $(SRCDIR) -d $(BUILDDIR)
-
 deploy:
 	git add .
 	git commit -m "Update `date`"
 	git push
 
+# Build sphinx documentation for core
 core-docs:
 	rm -rf site/core
 	mkdir -p repo/ocrd_all/core/docs/_templates
@@ -97,3 +94,12 @@ core-docs:
 	cd repo/ocrd_all/core && make docs
 	cp -r repo/ocrd_all/core/docs/build/html site/core
 
+# Build the spec documents TODO translate
+spec:
+	for lang in en de;do \
+		mkdir -p $(SRCDIR)/$$lang/spec; \
+		find repo/spec -name '*.md'|while read md;do \
+			basename=$$(basename $$md); \
+			sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md > $(SRCDIR)/$$lang/spec/$$basename; \
+		done; \
+	done
