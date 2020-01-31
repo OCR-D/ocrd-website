@@ -18,7 +18,8 @@
         <a class="navbar-link">{{ toplevel_menuitem.label[page.lang] }}</a>
         <div class="navbar-dropdown">
           {% for child_menuitem in toplevel_menuitem.children %}
-          <a class="navbar-item" href="/{{ page.lang }}/{{ child_menuitem.url }}">{{ child_menuitem.label[page.lang] }}</a>
+          {% assign firstchar = child_menuitem.url | slice: 0, 1 %}
+          <a class="navbar-item" href="{% if firstchar != '/' %}/{{ page.lang }}/{% endif %}{{ child_menuitem.url }}">{{ child_menuitem.label[page.lang] }}</a>
           {% endfor %}
         </div>
       </div>
