@@ -2,7 +2,7 @@
 
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-      <img src="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" height="28"/>
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
     </a>
     <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
       <span></span>
@@ -13,25 +13,16 @@
 
   <div id="ocrd-navbar-menu" class="navbar-menu">
     <div class="navbar-start">
-
+      {% for toplevel_menuitem in site.data.menu.menu_structure %}
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">Users</a>
+        <a class="navbar-link">{{ toplevel_menuitem.label[page.lang] }}</a>
         <div class="navbar-dropdown">
-          <a class="navbar-item" href="gt-guidelines">Ground Truth Guidelines</a>
+          {% for child_menuitem in toplevel_menuitem.children %}
+          <a class="navbar-item" href="/{{ page.lang }}/{{ child_menuitem.url }}">{{ child_menuitem.label[page.lang] }}</a>
+          {% endfor %}
         </div>
       </div>
-
-
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">Developers</a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="/core">OCR-D/core apidocs</a>
-        </div>
-      </div>
-      <a class="navbar-item" href="/contact">Contact</a>
-      <a class="navbar-item" href="/publications">Publications</a>
-
-      <a class="navbar-item" href="/glossary">Glossary</a>
+      {% endfor %}
 
     </div>
 

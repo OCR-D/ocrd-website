@@ -1,4 +1,5 @@
 ---
+layout: post
 lang: de
 title: Kooperation mit Kitodo vereinbart
 tags: [kitodo, kooperation]

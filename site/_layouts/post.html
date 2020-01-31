@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body>
+    {%- include header.html -%}
+
+    {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+    <div class="container">
+      <article class="column is-8 is-offset-2">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content has-text-centered">
+                <p class="title article-title">{{ page.title }}</p>
+                <div class="tags has-addons level-item">
+                  <span class="tag is-rounded is-info">{{ page.author }}</span>
+                  <span class="tag is-rounded">{{ page.date | date: date_format }}</span>
+                  <span class="tag is-rounded is-info">{{ page.tags }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="content">
+              {{ content }}
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    {%- include footer.html -%}
+
+  </body>
+
+</html>

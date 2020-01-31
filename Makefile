@@ -9,7 +9,6 @@ BUILDDIR = docs
 # Where site is stored. Default '$(SRCDIR)'
 SRCDIR = site
 
-
 # Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)
 KWALITEE_CONFIG = kwalitee.yml
 
@@ -49,11 +48,15 @@ bootstrap:
 
 # Build gt-guidelines
 gt-guidelines: repo/gt-guidelines
-	make -C repo/gt-guidelines \
-	GT_DOC_OUT=$(PWD)/$(SRCDIR)/gt-guidelines \
-	DITA_PROPERTY_FILE=<(sed 's, site,$(PWD)/site,' dita-ot-html5.properties) \
-	ANT_OPTS="" \
-	build
+	rm -rf $(SRCDIR)/{de,en}/gt-guidelines
+	for lang in en de;do \
+		make -C repo/gt-guidelines \
+		GT_DOC_OUT=$(PWD)/$(SRCDIR)/$$lang/gt-guidelines \
+		DITA_PROPERTY_FILE=<(sed 's, site,$(PWD)/site,' dita-ot-html5.properties) \
+		ANT_OPTS="" \
+		build; \
+		(cd site/$$lang/gt-guidelines; find -name '*.html' -exec sed -i "1 i ---\nlayout: page\nlang: de\nlang-ref: {}\n---\n" {} \;) ; \
+	done
 
 # Build data
 data: $(SRCDIR)/_data/ocrd-repo.json

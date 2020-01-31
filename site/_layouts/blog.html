@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body>
+    {%- include header.html -%}
+    <section class="columns">
+      <div class="container content column">
+        <div class="tile is-ancestor is-vertical">
+            {% assign posts = site.posts | where:'lang', page.lang %}
+            {%- for post in posts -%}
+            <div class="tile is-parent is-vertical">
+              <article class="tile is-child box">
+                {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+                <p class="subtitle">{{ post.date | date: date_format }}</p>
+                <a class="title" href="{{ post.url | relative_url }}">
+                  {{ post.title | escape }}
+                </a>
+                <div class="content">
+                  {{ post.excerpt }}
+                </div>
+              </article>
+            </div>
+            {%- endfor -%}
+        </div>
+      </div>
+    </section>
+
+      {%- include footer.html -%}
+  </body>
+
+</html>
+
