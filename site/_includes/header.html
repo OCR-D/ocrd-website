@@ -14,6 +14,7 @@
   <div id="ocrd-navbar-menu" class="navbar-menu">
     <div class="navbar-start">
       {% for toplevel_menuitem in site.data.menu.menu_structure %}
+      {% if toplevel_menuitem.children %}
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">{{ toplevel_menuitem.label[page.lang] }}</a>
         <div class="navbar-dropdown">
@@ -23,6 +24,9 @@
           {% endfor %}
         </div>
       </div>
+      {% else %}
+      <a class="navbar-link" href="{% if firstchar != '/' %}/{{ page.lang }}/{% endif %}{{ toplevel_menuitem.url }}">{{ toplevel_menuitem.label[page.lang] }}</a>
+      {% endif %}
       {% endfor %}
 
     </div>
