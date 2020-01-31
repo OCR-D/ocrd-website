@@ -30,21 +30,21 @@
 
       <span class="navbar-item">
          
-    {% if page.layout != 'index' and page.lang-ref %}
-        {% assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' %}
-        {% if posts.size == 0 %}
-          {% assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' %}
-        {% endif %}
-        {% if posts.size != 0 and posts.size != 1 %}
-            {% for post in posts %}
-            {% if page.lang != post.lang and page.lang-ref == post.lang-ref %}
+    {%- if page.layout != 'index' and page.lang-ref -%}
+        {%- assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
+        {%- if posts.size == 0 -%}
+          {%- assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
+        {%- endif -%}
+        {%- if posts.size != 0 and posts.size != 1 -%}
+            {%- for post in posts -%}
+            {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
             <a href="{{ site.base-url }}{{ post.url }}" title="View in {{post.lang}}">
               <img style="height: 100px" src="/assets/{{ post.lang }}.svg"/>
             </a>
-            {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endif %}
+            {%- endif -%}
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endif -%}
          
       </span>
 
