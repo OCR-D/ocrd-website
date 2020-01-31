@@ -2,6 +2,7 @@
 lang: de
 tags: [2016]
 title: Staatsbibliothek zu Berlin ist neuer Partner von OCR-D
+author: Elisa Hermann
 ---
 
 Das Koordinierungsgremium von OCR-D setzt sich aus der Herzog August Bibliothek

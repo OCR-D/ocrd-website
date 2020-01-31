@@ -1,6 +1,7 @@
 ---
 layout: page
 toc: true
+lang: en
 ---
 # Publications
 

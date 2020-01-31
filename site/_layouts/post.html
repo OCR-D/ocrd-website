@@ -7,7 +7,7 @@
     {%- include header.html -%}
 
     {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-    <div class="container">
+    <div class="container columns">
       <article class="column is-8 is-offset-2">
         <div class="card">
           <div class="card-content">
@@ -17,7 +17,13 @@
                 <div class="tags has-addons level-item">
                   <span class="tag is-rounded is-info">{{ page.author }}</span>
                   <span class="tag is-rounded">{{ page.date | date: date_format }}</span>
-                  <span class="tag is-rounded is-info">{{ page.tags }}</span>
+                  {% if page.tags %}
+                  {% for tag in page.tags %}
+                  <span class="tag is-round🏷ed is-info">
+                    🏷&nbsp;{{ tag }}
+                  </span>
+                  {% endfor %}
+                  {% endif %}
                 </div>
               </div>
             </div>

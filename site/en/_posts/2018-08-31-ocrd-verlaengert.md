@@ -1,7 +1,9 @@
 ---
 layout: post
 lang: de
+author: Elisa Hermann
 ---
+
 Die Deutsche Forschungsgemeinschaft (DFG) hat eine Verlängerung des Projekts
 OCR-D für weitere 18 Monate bewilligt. Die neue Förderphase beginnt im Oktober
 2018 und endet demnach im März 2020. Diese erfreuliche Nachricht ermöglicht uns

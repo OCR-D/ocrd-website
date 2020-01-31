@@ -1,8 +1,10 @@
 ---
 layout: post
 lang: de
+lang-ref: kooperation-kitodo
 title: Kooperation mit Kitodo vereinbart
 tags: [kitodo, kooperation]
+author: Elisabeth Engl
 ---
 
 Kitodo und OCR-D haben einen Letter of Intent zur Zusammenarbeit bei der
