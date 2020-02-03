@@ -1,13 +1,51 @@
 ---
 layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
 lang: en
 ---
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>ocrd.resolver &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +53,6 @@ lang: en
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -83,7 +120,7 @@ lang: en
         <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;url&#39; must be a string&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">directory</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;directory&#39; must be a string&quot;</span><span class="p">)</span>  <span class="c1"># acutally Path would also work</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;directory&#39; must be a string&quot;</span><span class="p">)</span>  <span class="c1"># actually Path would also work</span>
 
         <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
         <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -108,7 +145,7 @@ lang: en
                 <span class="c1"># XXX this raises FNFE in Python 3.5 if src_path doesn&#39;t exist but not 3.6+</span>
                 <span class="n">src_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to resolve URL locally: </span><span class="si">%s</span><span class="s2"> --&gt; </span><span class="si">%s</span><span class="s2"> which doesnt&#39; exist&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">src_path</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to resolve URL locally: </span><span class="si">%s</span><span class="s2"> --&gt; &#39;</span><span class="si">%s</span><span class="s2">&#39; which does not exist&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">src_path</span><span class="p">))</span>
                 <span class="k">raise</span> <span class="n">e</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">src_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File path passed as &#39;url&#39; to download_to_directory does not exist: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
@@ -159,6 +196,10 @@ lang: en
         <span class="k">if</span> <span class="n">mets_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass &#39;mets_url&#39; workspace_from_url&quot;</span><span class="p">)</span>
 
+        <span class="c1"># if mets_url is a relative filename, make it absolute</span>
+        <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">mets_url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_url</span><span class="p">)</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+            <span class="n">mets_url</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="n">mets_url</span><span class="p">))</span>
+
         <span class="c1"># if mets_basename is not given, use the last URL segment of the mets_url</span>
         <span class="k">if</span> <span class="n">mets_basename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mets_basename</span> <span class="o">=</span> <span class="n">nth_url_segment</span><span class="p">(</span><span class="n">mets_url</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -174,14 +215,17 @@ lang: en
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deriving dst_dir </span><span class="si">%s</span><span class="s2"> from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_url</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">)</span>
                 <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_url</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating ephemereal workspace &#39;</span><span class="si">%s</span><span class="s2">&#39; for METS @ &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating ephemeral workspace &#39;</span><span class="si">%s</span><span class="s2">&#39; for METS @ &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">)</span>
                 <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">TMP_PREFIX</span><span class="p">)</span>
+        <span class="c1"># XXX Path.resolve is always strict in Python &lt;= 3.5, so create dst_dir unless it exists consistently</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dst_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;workspace_from_url</span><span class="se">\n</span><span class="s2">mets_basename=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">mets_url=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">src_baseurl=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">dst_dir=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;overwrite&#39;</span> <span class="k">if</span> <span class="n">clobber_mets</span> <span class="k">else</span> <span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;overwrite&#39;</span> <span class="k">if</span> <span class="n">clobber_mets</span> <span class="k">else</span> <span class="s1">&#39;skip&#39;</span><span class="p">)</span>
 
         <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="n">src_baseurl</span><span class="p">)</span>
 
@@ -205,7 +249,7 @@ lang: en
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Writing METS to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">)</span>
         <span class="n">mets_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">mets</span><span class="o">.</span><span class="n">to_xml</span><span class="p">(</span><span class="n">xmllint</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -233,7 +277,7 @@ lang: en
     
 
 <p>
-<a class="badge" href="https://travis-ci.org/OCR-D/core">
+<a href="https://travis-ci.org/OCR-D/core">
     <img
         alt="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
         src="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
@@ -263,23 +307,17 @@ lang: en
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -288,8 +326,8 @@ lang: en
       &copy;2018, Kay Wuerzner, Konstantin Baierer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>
 

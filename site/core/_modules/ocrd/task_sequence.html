@@ -1,13 +1,51 @@
 ---
 layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
 lang: en
 ---
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>ocrd.task_sequence &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +53,6 @@ lang: en
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -35,13 +72,16 @@ lang: en
           <div class="body" role="main">
             
   <h1>Source code for ocrd.task_sequence</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">shlex</span> <span class="k">import</span> <span class="n">split</span> <span class="k">as</span> <span class="n">shlex_split</span>
 <span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="k">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span> <span class="c1"># pylint: disable=import-error,no-name-in-module</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">parse_json_string_or_file</span>
 <span class="kn">from</span> <span class="nn">ocrd.processor.base</span> <span class="k">import</span> <span class="n">run_cli</span>
 <span class="kn">from</span> <span class="nn">ocrd.resolver</span> <span class="k">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="k">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">WorkspaceValidator</span><span class="p">,</span> <span class="n">ValidationReport</span>
 
 <div class="viewcode-block" id="ProcessorTask"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask">[docs]</a><span class="k">class</span> <span class="nc">ProcessorTask</span><span class="p">():</span>
 
@@ -73,16 +113,31 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span> <span class="o">=</span> <span class="n">input_file_grps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span> <span class="o">=</span> <span class="n">output_file_grps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span> <span class="o">=</span> <span class="n">parameter_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ocrd_tool_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span>
 
 <div class="viewcode-block" id="ProcessorTask.validate"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Parameter file not readable: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Executable not found in PATH: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Task must have input file group&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Task must have output file group&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Executable not found in PATH: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span></div>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span><span class="p">:</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="n">parse_json_string_or_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span><span class="p">)</span>
+        <span class="n">param_validator</span> <span class="o">=</span> <span class="n">ParameterValidator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool_json</span><span class="p">)</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">param_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;output_file_grp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool_json</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Processor requires output_file_grp but none was provided.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">report</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> -I </span><span class="si">%s</span><span class="s1"> -O </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
@@ -93,24 +148,42 @@ lang: en
             <span class="n">ret</span> <span class="o">+=</span> <span class="s1">&#39; -p </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_path</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
+<div class="viewcode-block" id="validate_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.validate_tasks">[docs]</a><span class="k">def</span> <span class="nf">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">):</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
+    <span class="n">prev_output_file_grps</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span>
+
+    <span class="c1"># first task: check input/output file groups from METS</span>
+    <span class="c1"># TODO disable output_file_grps checks once CLI parameter &#39;overwrite&#39; is implemented</span>
+    <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">,</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+
+    <span class="n">prev_output_file_grps</span> <span class="o">+=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">output_file_grps</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="c1"># check either existing fileGrp or output-file group of previous task matches current input_file_group</span>
+        <span class="k">for</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">prev_output_file_grps</span><span class="p">:</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Input file group not contained in METS or produced by previous steps: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">input_file_grp</span><span class="p">)</span>
+        <span class="c1"># TODO disable output_file_grps checks once CLI parameter &#39;overwrite&#39; is implemented</span>
+        <span class="c1"># XXX Thu Jan 16 20:14:17 CET 2020 still not sufficiently clever.</span>
+        <span class="c1">#  if len(prev_output_file_grps) != len(set(prev_output_file_grps)):</span>
+        <span class="c1">#      report.add_error(&quot;Output file group specified multiple times: %s&quot; % </span>
+        <span class="c1">#          [grp for grp, count in Counter(prev_output_file_grps).items() if count &gt;= 2])</span>
+        <span class="n">prev_output_file_grps</span> <span class="o">+=</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid task sequence input/output file groups: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+
+
 <div class="viewcode-block" id="run_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.run_tasks">[docs]</a><span class="k">def</span> <span class="nf">run_tasks</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">log_level</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">task_strs</span><span class="p">):</span>
     <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
     <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">)</span>
-    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.task_sequence&#39;</span><span class="p">)</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.task_sequence.run_tasks&#39;</span><span class="p">)</span>
     <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProcessorTask</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">task_str</span> <span class="ow">in</span> <span class="n">task_strs</span><span class="p">]</span>
 
+    <span class="n">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">)</span>
+
+    <span class="c1"># Run the tasks</span>
     <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
-
-        <span class="n">task</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
-
-        <span class="c1"># check input file groups are in mets</span>
-        <span class="k">for</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unmet requirement: expected input file group not contained in mets: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">input_file_grp</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Conflict: output file group already contained in mets: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
@@ -141,7 +214,6 @@ lang: en
             <span class="k">if</span> <span class="ow">not</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group not in mets: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span></div>
 
-
 </pre></div>
 
           </div>
@@ -169,7 +241,7 @@ lang: en
     
 
 <p>
-<a class="badge" href="https://travis-ci.org/OCR-D/core">
+<a href="https://travis-ci.org/OCR-D/core">
     <img
         alt="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
         src="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
@@ -199,23 +271,17 @@ lang: en
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -224,8 +290,8 @@ lang: en
       &copy;2018, Kay Wuerzner, Konstantin Baierer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>
 

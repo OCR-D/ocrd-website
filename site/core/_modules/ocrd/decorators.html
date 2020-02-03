@@ -1,13 +1,51 @@
 ---
 layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
+lang: de
+lang-ref: ./layout.html
+---
+
+---
+layout: page
 lang: en
 ---
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>ocrd.decorators &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +53,6 @@ lang: en
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -35,9 +72,7 @@ lang: en
           <div class="body" role="main">
             
   <h1>Source code for ocrd.decorators</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">isfile</span>
+<span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">isfile</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 
@@ -45,12 +80,15 @@ lang: en
     <span class="n">is_local_filename</span><span class="p">,</span>
     <span class="n">get_local_filename</span><span class="p">,</span>
     <span class="n">setOverrideLogLevel</span><span class="p">,</span>
+    <span class="n">parse_json_string_or_file</span><span class="p">,</span>
+
     <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span> <span class="nn">.resolver</span> <span class="k">import</span> <span class="n">Resolver</span>
 <span class="kn">from</span> <span class="nn">.processor.base</span> <span class="k">import</span> <span class="n">run_processor</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="k">import</span> <span class="n">WorkspaceValidator</span>
 
 <span class="k">def</span> <span class="nf">_set_root_logger_version</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
     <span class="n">setOverrideLogLevel</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -60,34 +98,22 @@ lang: en
                                <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;OFF&#39;</span><span class="p">,</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">,</span> <span class="s1">&#39;WARN&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;TRACE&#39;</span><span class="p">]),</span>
                                <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">_set_root_logger_version</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">_parse_json_string_or_file</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">err</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not a valid JSON object: &#39;</span><span class="si">%s</span><span class="s2">&#39; (parsed as &#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ret</span><span class="p">))</span>
-    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error parsing &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">err</span>       <span class="c1"># pylint: disable=raising-bad-type</span>
-    <span class="k">return</span> <span class="n">ret</span>
-
 <span class="n">parameter_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--parameter&#39;</span><span class="p">,</span>
                                 <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Parameters, either JSON string or path to JSON file&quot;</span><span class="p">,</span>
                                 <span class="n">default</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
-                                <span class="n">callback</span><span class="o">=</span><span class="n">_parse_json_string_or_file</span><span class="p">)</span>
+                                <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">parse_json_string_or_file</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ocrd_cli_wrap_processor"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_cli_wrap_processor">[docs]</a><span class="k">def</span> <span class="nf">ocrd_cli_wrap_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ocrd_cli_wrap_processor"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_cli_wrap_processor">[docs]</a><span class="k">def</span> <span class="nf">ocrd_cli_wrap_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_cli_wrap_processor&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dump_json</span><span class="p">:</span>
         <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">help</span><span class="p">:</span>
+        <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">version</span><span class="p">:</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c1"># pylint: disable=bare-except</span>
+            <span class="k">pass</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Version </span><span class="si">%s</span><span class="s2">, ocrd/core </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">OCRD_VERSION</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Error: Missing option &quot;-m&quot; / &quot;--mets&quot;.&#39;</span>
@@ -100,6 +126,11 @@ lang: en
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
         <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">working_dir</span><span class="p">)</span>
+        <span class="c1"># TODO once we implement &#39;overwrite&#39; CLI option and mechanism, disable the</span>
+        <span class="c1"># `output_file_grp_ check by setting to False-y value if &#39;overwrite&#39; is set</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid input/output file grps:</span><span class="se">\n\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
         <span class="n">run_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ocrd_loglevel"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_loglevel">[docs]</a><span class="k">def</span> <span class="nf">ocrd_loglevel</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -123,7 +154,7 @@ lang: en
 <span class="sd">            print(mets_url)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;METS URL to validate&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mets.xml&quot;</span><span class="p">),</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;METS to process&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mets.xml&quot;</span><span class="p">),</span>
         <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--working-dir&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Working Directory&quot;</span><span class="p">),</span>
         <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-I&#39;</span><span class="p">,</span> <span class="s1">&#39;--input-file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File group(s) used as input.&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;INPUT&#39;</span><span class="p">),</span>
         <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File group(s) used as output.&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;OUTPUT&#39;</span><span class="p">),</span>
@@ -131,7 +162,8 @@ lang: en
         <span class="n">parameter_option</span><span class="p">,</span>
         <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-J&#39;</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump tool description as JSON and exit&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
         <span class="n">loglevel_option</span><span class="p">,</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-V&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show version&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-V&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show version&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;This help message&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
         <span class="n">param</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -163,7 +195,7 @@ lang: en
     
 
 <p>
-<a class="badge" href="https://travis-ci.org/OCR-D/core">
+<a href="https://travis-ci.org/OCR-D/core">
     <img
         alt="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
         src="https://secure.travis-ci.org/OCR-D/core.svg?branch=master"
@@ -193,23 +225,17 @@ lang: en
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -218,8 +244,8 @@ lang: en
       &copy;2018, Kay Wuerzner, Konstantin Baierer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>
 
