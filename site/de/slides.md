@@ -9,8 +9,8 @@ toc: true
 
 ## 2017
 
-* [Akademienunion\_2017/slides/ocr-perspektiven.pdf](/slides/Akademienunion_2017)
-* [DH-Kolloquium-2017/dh-kolloquium-2017.pdf](/slides/DH-Kolloquium-2017)
+* [Akademienunion\_2017](/slides/Akademienunion_2017)
+* [DH-Kolloquium-2017](/slides/DH-Kolloquium-2017)
 * [OCR-Workshop-2017](/slides/OCR-Workshop-2017)
 
 ## 2018
@@ -32,5 +32,5 @@ toc: true
 * [2019-05-09-ocrd](https://www.slideshare.net/cneudecker/ocrd-an-endtoend-open-source-ocr-framework-for-historical-printed-documents)
 * [2019-06-14](https://docs.google.com/presentation/d/1d2FYGDWH65iahXobnWibDix0FlXtufA6xAyN5Z73qi0)
 * [2019-icdar](https://hackmd.io/@kba/SyiQKUCUH)
-* [Kurzpraesentation_OCR-D_2019-11/Kurzvorstellung OCR-D_Nov19.pptx](Kurzpräsentation OCR-D)
+* [Kurzpraesentation_OCR-D_2019-11](/slides/Kurzpraesentation_OCR-D_2019-11)
 * [2019-11-19](https://hackmd.io/@kba/S1peIVxhH)
