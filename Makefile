@@ -89,11 +89,15 @@ deploy:
 
 # Build sphinx documentation for core
 core-docs:
-	rm -rf site/core
-	mkdir -p repo/ocrd_all/core/docs/_templates
-	shinclude layout.html > repo/ocrd_all/core/docs/_templates/layout.html
-	cd repo/ocrd_all/core && make docs
-	cp -r repo/ocrd_all/core/docs/build/html site/core
+	rm -rf site/core ; \
+	tempdir=`tempfile -d /tmp/core. -s XXXXX`;  \
+	rm -f "$$tempdir" ; \
+	git clone repo/ocrd_all/core "$$tempdir"; \
+	mkdir -p "$$tempdir"/_templates; \
+	shinclude layout.html > "$$tempdir"/_templates; \
+	cd -- "$$tempdir" && make docs; \
+	mv -- "$$tempdr/docs/build/html" site/core; \
+	rm -rf "$$tempdir"
 
 # Build the spec documents TODO translate
 spec:
@@ -101,6 +105,7 @@ spec:
 		mkdir -p $(SRCDIR)/$$lang/spec; \
 		find repo/spec -name '*.md'|while read md;do \
 			basename=$$(basename $$md); \
-			sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md > $(SRCDIR)/$$lang/spec/$$basename; \
+			sed  "1/^---   ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md \
+			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
 	done
