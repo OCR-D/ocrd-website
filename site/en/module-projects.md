@@ -62,7 +62,6 @@ The second project in the field of layout analysis further develops the semi-aut
 _University of Leipzig  
 Institut für Informatik: Department of Automatic Language Processing_
 
-
 Project participants: Gerhard Heyer, Robert Sachunsky  
 GitHub: [https://github.com/ASVLeipzig/cor-asv-fst](https://github.com/ASVLeipzig/cor-asv-fst)
 
@@ -95,7 +94,7 @@ _Johannes Gutenberg University Mainz
 Gutenberg Institute for World Literature and Writing-Oriented Media: Department of Book Science_
 
 Project participants: Gregory Crane, Nikolaus Weichselbaumer, Saskia Limbach, Andreas Meier, Vincent Christlein, Mathias Seuret, Rui Dong  
-GitHub: [https://github.com/Doreenruirui/okralact](https://github.com/Doreenruirui/okralact) , [https://github.com/seuretm/ocrd_typegroups_classifier](https://github.com/seuretm/ocrd_typegroups_classifier)
+GitHub: [https://github.com/Doreenruirui/okralact](https://github.com/Doreenruirui/okralact), [https://github.com/seuretm/ocrd_typegroups_classifier](https://github.com/seuretm/ocrd_typegroups_classifier)
 
 The recognition models required for OCR are usually trained either on the basis of modern corpora which do not reproduce the specifics of historical prints. Or unfiltered historical corpora are used, whose wide range of fonts, character sets, etc., makes a tailored training impossible. This also hinders the achievement of high recognition rates which are already possible for digital images of modern books. Compiling font specific corpora manually is not realistic, as this requires special knowledge of the history of printing and such an approach scales poorly. Due to the repetitive task, this is also very error-prone. The project aims to enable the historical humanities to use OCR with a manageable amount of effort for specific fonts, i.e. to carry out OCR that fits a font perfectly. A deep residual network is used to calculate local form features of the font from the image files with automatically recognized type mirrors, which are then combined to form a global descriptor. To this end, the project pursues three subgoals: The development of an online training infrastructure that makes it possible to train specific models for these font groups online with manageable effort and simultaneously for different OCR software. The development of a tool for the automatic recognition of fonts in digital images of historical prints. The provision of a model repository in which font-specific OCR models are made available to the community.
 
