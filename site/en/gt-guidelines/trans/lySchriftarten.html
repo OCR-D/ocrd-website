@@ -1,0 +1,144 @@
+---
+layout: page
+lang: de
+lang-ref: ./trans/lySchriftarten.html
+---
+
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../trans/lyTypographie.html"><meta name="DC.creator" content="Matthias Boenig OCR-D, Zentrum Sprache, Berlin-Brandenburgische Akademie der Wissenschaften (BBAW)"><meta name="DC.date.created" content="March, 2017"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="lySchriftarten"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Typeface (TextStyle)</title></head><body id="lySchriftarten"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Typeface (TextStyle)</h1>
+    <div class="body">
+        <p class="p">The information on the font (type) must be documented in all three element areas
+                (<code class="ph codeph">&lt;Word&gt;</code>, <code class="ph codeph">&lt;TextLine&gt;</code> and
+                <code class="ph codeph">&lt;TextRegion&gt;</code>) with the PAGE XML element
+            <span style="font-family: monospace" class="ph tt">&lt;TextStyle&gt;</span>.</p>
+        <p class="p"></p>
+        <div class="example">
+            <pre class="pre codeblock"><code>&lt;TextRegion type="heading" id="r_7_1""&gt;
+            &lt;Coords points="542,306 569,306 569,342 542,342"/&gt;
+            &lt;TextLine id="tl_4" primaryLanguage="German"&gt;
+                &lt;Coords points="543,307 568,307 568,341 543,341"/&gt;
+                &lt;Baseline points="543,350 568,350"/&gt;
+                &lt;Word id="w_w1aab1c13b2b1b1ab1" language="German"&gt;
+                    &lt;Coords points="543,307 568,307 568,341 543,341"/&gt;
+                    &lt;TextEquiv&gt;
+                        &lt;Unicode&gt;I.&lt;/Unicode&gt;
+                    &lt;/TextEquiv&gt;
+                    &lt;TextStyle fontFamily="fraktur" fontSize="53.0" bold="true"/&gt;
+                &lt;/Word&gt;
+                &lt;TextEquiv&gt;
+                    &lt;Unicode&gt;I.&lt;/Unicode&gt;
+                &lt;/TextEquiv&gt;
+                &lt;TextStyle fontFamily="fraktur" fontSize="53.0" bold="true"/&gt;
+            &lt;/TextLine&gt;
+ &lt;/TextRegion&gt;</code></pre>
+            Siehe: <a class="xref" href="http://www.ocr-d.de/sites/all/gt_guidelines/pagecontent_xsd_Complex_Type_pc_TextStyleType.html?hl=textstyle" target="_blank">Complex Type pc:TextStyleType</a>
+        </div>
+    </div>
+    <nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../trans/lyTypographie.html">Typographical Peculiarities</a></div></div></nav><article class="topic nested1" aria-labelledby="ariaid-title2" id="lySchriftarten_cluster">
+        <h2 class="title topictitle2" id="ariaid-title2">Font Family Cluster</h2>
+        <div class="body">
+            <p class="p">With originals from the 16th to 19th century, the typeface cannot always be
+                identified unambiguously. However, the font can be assigned to a particular font
+                family from a cluster of related font groups.</p>
+            <div class="p">We recommend to use the following font families for the
+                documentation of the @<span style="font-family: monospace" class="ph tt">fontFamily</span>: <ul class="ul" id="lySchriftarten_cluster__ul_fts_ssx_1gb">
+                    <li class="li"><code class="ph codeph">textura</code></li>
+                    <li class="li"><code class="ph codeph">rotura</code></li>
+                    <li class="li"><code class="ph codeph">bastarda</code></li>
+                    <li class="li"><code class="ph codeph">antiqua</code></li>
+                    <li class="li"><code class="ph codeph">greek</code></li>
+                    <li class="li"><code class="ph codeph">hebrew</code></li>
+                    <li class="li"><code class="ph codeph">italic</code></li>
+                    <li class="li"><code class="ph codeph">fraktur</code></li>
+                </ul></div>
+            
+            <div class="example">
+                <pre class="pre codeblock"><code>&lt;Word&gt;
+   &lt;TextStyle fontFamily="fraktur"/&gt;
+&lt;/Word&gt;</code></pre>
+            </div> <div class="note note note_note"><span class="note__title">Note:</span> <p class="p">This specification does not restrict the naming of font families. </p></div>
+        </div>
+    </article>
+   
+    <article class="topic nested1" aria-labelledby="ariaid-title3" id="lySchriftarten_confidence">
+        <h2 class="title topictitle2" id="ariaid-title3">Typefaces and Probability of Recognition (Confidence)</h2>
+        <div class="body">
+            <p class="p">By indicating the probability of recognition (confidence) after naming the typeface
+                or font family, several probable typefaces and font families can be named and rated
+                according to their probability.</p>
+            <p class="p">Typeface, font family and confidence are concatenated with a colon (:) followed by a
+                floating point number between <strong class="ph b">0</strong> (information is unlikely) and <strong class="ph b">1</strong>
+                (information is correct or likely).</p>
+            <p class="p">If the confidence of a typeface or font family is not indicated, the value 1 is to be
+                assumed.</p>
+            <div class="note note note_note"><span class="note__title">Note:</span> 
+                <p class="p">Naming multiple typefaces and font families within the <strong class="ph b">PAGE XML-element
+                            </strong><span style="font-family: monospace" class="ph tt"><strong class="ph b">&lt;Word&gt;</strong>
+                    </span>does not mean that the text was set with multiple fonts or families. It
+                    means instead that the text can be assigned to typefaces or font families. The
+                    confidence value shows the most likely match.</p>
+                <p class="p">Naming multiple typefaces and font families within the PAGE XML element <strong class="ph b">PAGE
+                        XML-element <span style="font-family: monospace" class="ph tt">&lt;TextLine&gt;</span> and </strong><span style="font-family: monospace" class="ph tt"><strong class="ph b">&lt;TextRegion&gt;</strong>
+                    </span>means that the text was set in different fonts or families.</p>
+            </div>
+            <div class="example">
+                <pre class="pre codeblock"><code>        &lt;TextRegion type="paragraph" id="TextRegion_1476719787056_252"&gt;
+            &lt;Coords points="980,2090 1529,2090 1741,2098 1741,2149 1529,2156 980,2156"/&gt;
+            &lt;TextLine id="tl_83" primaryLanguage="German"&gt;
+                &lt;Coords points="981,2091 1528,2091 1528,2155 981,2155"/&gt;
+                &lt;Baseline points="981,2154 1528,2154"/&gt;
+                &lt;Word id="w_w1aab1c99b2b1b1ab1" language="German"&gt;
+                    &lt;Coords points="981,2096 1109,2096 1109,2151 981,2151"/&gt;
+                    &lt;TextEquiv&gt;
+                        &lt;Unicode&gt;Troſt&lt;/Unicode&gt;
+                    &lt;/TextEquiv&gt;
+                    &lt;TextStyle fontFamily="Rotunda:0.8,  Bastarda:0.8 " fontSize="53.0"/&gt;
+                &lt;/Word&gt;
+                &lt;Word id="w_w1aab1c99b2b1b1ac13" language="German"&gt;
+                    &lt;Coords points="1121,2097 1189,2097 1189,2139 1121,2139"/&gt;
+                    &lt;TextEquiv&gt;
+                        &lt;Unicode&gt;der&lt;/Unicode&gt;
+                    &lt;/TextEquiv&gt;
+                    &lt;TextStyle fontFamily="Rotunda:0.8,  Bastarda:0.8 " fontSize="53.0"/&gt;
+                &lt;/Word&gt;
+                &lt;Word id="w_w1aab1c99b2b1b1ac21" language="German"&gt;
+                    &lt;Coords points="1209,2093 1540,2093 1540,2151 1209,2151"/&gt;
+                    &lt;TextEquiv&gt;
+                        &lt;Unicode&gt;Seefahrenden.&lt;/Unicode&gt;
+                    &lt;/TextEquiv&gt;
+                    &lt;TextStyle fontFamily="Rotunda:0.8,  Bastarda:0.8 " fontSize="53.0"/&gt;
+                &lt;/Word&gt;
+                &lt;TextEquiv&gt;
+                    &lt;Unicode&gt;Troſt der Seefahrenden.&lt;/Unicode&gt;
+                &lt;/TextEquiv&gt;
+                &lt;TextStyle fontFamily="Rotunda:0.8,  Bastarda:0.8 " fontSize="53.0"/&gt;
+            &lt;/TextLine&gt;
+            &lt;TextLine id="line_1476720742138_2"&gt;
+                &lt;Coords points="1675,2107 1742,2107 1742,2148 1675,2148"/&gt;
+                &lt;Baseline points="1676,2149 1738,2146"/&gt;
+                &lt;Word id="word_1476721009045_26"&gt;
+                    &lt;Coords points="1673,2103 1740,2103 1740,2151 1673,2151"/&gt;
+                    &lt;TextEquiv&gt;
+                        &lt;Unicode&gt;538&lt;/Unicode&gt;
+                    &lt;/TextEquiv&gt;
+                &lt;TextStyle fontFamily="antiqua:0.8" fontSize="53.0"/&gt;
+                &lt;/Word&gt;
+                &lt;TextEquiv&gt;
+                    &lt;Unicode&gt;538&lt;/Unicode&gt;
+                &lt;/TextEquiv&gt;
+              &lt;TextStyle fontFamily="antiqua:0.8" fontSize="53.0"/&gt;
+            &lt;/TextLine&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;
+                  Troſt der Seefahrenden. 538
+                &lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+         &lt;TextStyle fontFamily="rotunda:0.8,  bastarda:0.8, antiqua:0.8" fontSize="53.0"/&gt;
+        &lt;/TextRegion&gt;
+</code></pre>
+            </div>
+        </div>
+    </article>
+</article></main></body></html>
