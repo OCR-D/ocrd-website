@@ -5,17 +5,18 @@ lang-ref: advisory-board
 ---
 # Scientific Advisory Board
 
-The project is counseled by a scientific advisory board, which is consituted by the following persons at the moment:
-Crane, Gregory (university Leipzig)
+The project is counseled by a scientific advisory board, which is consituted by the following persons at the moment:  
 
-Kaiser, Max (ÖNB Wien)
+Crane, Gregory (Leipzig University)
+
+Kaiser, Max (Austrian National Library)
 
 Köhler, Joachim (Fraunhofer IAIS)
 
 Meyer, Sebastian (SLUB Dresden)
 
-Mühlberger, Günther (university Innsbruck)
+Mühlberger, Günther (University of Innsbruck)
 
-Schulz, Klaus (LMU München – CIS)
+Schulz, Klaus (LMU Munich – CIS)
 
 Strötgen, Robert (TU Braunschweig)
