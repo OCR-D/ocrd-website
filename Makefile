@@ -30,10 +30,11 @@ help:
 	@echo "  Targets"
 	@echo ""
 	@echo "    bootstrap         Set up the repos, site and tools"
-	@echo "    data              Build ocrd-kwalitee data"
+	@echo "    $(LANGS_DST)      Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    build-modules     TODO Build module information"
 	@echo "    build-processors  TODO Build processor information"
 	@echo "    serve-site        serve the site"
+	@echo "    serve-from-sbb    serve the site so at least @cneud and @kba can see it"
 	@echo "    build-site        build the site"
 	@echo "    core-docs         Build sphinx documentation for core"
 	@echo "    spec              Build the spec documents TODO translate"
@@ -44,8 +45,10 @@ help:
 	@echo "    JEKYLL           Which jekyll binary to use. Default '$(JEKYLL)'"
 	@echo "    DSTDIR           Where to build site. Default '$(DSTDIR)'"
 	@echo "    SRCDIR           Where site is stored. Default '$(SRCDIR)'"
+	@echo "    GTDIR            Repositories mit dne DITA Quelltexten. Default: $(GTDIR)"
 	@echo "    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)"
 	@echo "    LANGS            Languages to build. Default: '$(LANGS)'"
+	@echo "    LANGS_DST        Guideline langs to build. Default: $(GT_LANGS)"
 
 # END-EVAL
 
@@ -96,6 +99,17 @@ build-processors:
 # serve the site
 serve-site:
 	jekyll serve -s $(SRCDIR)
+
+# serve the site so at least @cneud and @kba can see it
+serve-from-sbb:
+	jekyll serve \
+		--baseurl '' \
+		--host 10.46.3.57 \
+		--port 4040 \
+		--incremental \
+		--watch \
+		--strict_front_matter \
+		-s '$(SRCDIR)' -d '$(DSTDIR)'
 
 # build the site
 build-site:
