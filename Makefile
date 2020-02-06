@@ -1,16 +1,27 @@
 SHELL = bash
+RM = rm -rvf
+
+# Directory containing this Makefile. Don't change it. Default '$(REPODIR)'
+REPODIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 # Which jekyll binary to use. Default '$(JEKYLL)'
 JEKYLL = jekyll
 
-# Where to build site. Default '$(BUILDDIR)'
-BUILDDIR = docs
+# Where to build site. Default '$(DSTDIR)'
+DSTDIR := $(REPODIR)/docs
 
 # Where site is stored. Default '$(SRCDIR)'
-SRCDIR = site
+SRCDIR := $(REPODIR)/site
+
+# Repositories mit dne DITA Quelltexten. Default: $(GTDIR)
+GTDIR := $(REPODIR)/repo/gt-guidelines
 
 # Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)
-KWALITEE_CONFIG = kwalitee.yml
+KWALITEE_CONFIG := $(REPODIR)/kwalitee.yml
+
+# Languages to build. Default: '$(LANGS)'
+LANGS = de en
+.PHONY: LANGS
 
 # BEGIN-EVAL makefile-parser --make-help Makefile
 
@@ -19,7 +30,6 @@ help:
 	@echo "  Targets"
 	@echo ""
 	@echo "    bootstrap         Set up the repos, site and tools"
-	@echo "    gt-guidelines     Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    data              Build ocrd-kwalitee data"
 	@echo "    build-modules     TODO Build module information"
 	@echo "    build-processors  TODO Build processor information"
@@ -30,37 +40,46 @@ help:
 	@echo ""
 	@echo "  Variables"
 	@echo ""
+	@echo "    REPODIR          Directory containing this Makefile. Don't change it. Default '$(REPODIR)'"
 	@echo "    JEKYLL           Which jekyll binary to use. Default '$(JEKYLL)'"
-	@echo "    BUILDDIR         Where to build site. Default '$(BUILDDIR)'"
+	@echo "    DSTDIR           Where to build site. Default '$(DSTDIR)'"
 	@echo "    SRCDIR           Where site is stored. Default '$(SRCDIR)'"
 	@echo "    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)"
+	@echo "    LANGS            Languages to build. Default: '$(LANGS)'"
 
 # END-EVAL
 
 # Set up the repos, site and tools
 bootstrap:
 	git submodule sync
-	git submodule update
+	git submodule update --init
 	java --version || echo "apt install openjdk-jre"
 	pip3 --version || echo "apt install python3-pip"
 	jekyll --version || echo "gem install jekyll"
 	cd repo/ocrd-kwalitee && pip install -e .
-	cd repo/gt-guidelines && make deps
+	cd $(GTDIR) && make deps
+
+
+# Guideline langs to build. Default: $(GT_LANGS)
+LANGS_DST = $(LANGS:%=$(GTDIR)/%)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
-gt-guidelines: repo/gt-guidelines
-	rm -rf $(SRCDIR)/{de,en}/gt-guidelines
-	for lang in en de;do \
-		make -C repo/gt-guidelines \
-		GT_DOC_OUT=$(PWD)/$(SRCDIR)/$$lang/gt-guidelines \
-		DITA_PROPERTY_FILE=<(sed 's, site,$(PWD)/site,' dita-ot-html5.properties) \
-		ANT_OPTS="" \
-		build; \
-		(cd site/$$lang/gt-guidelines; find -name '*.html' -exec sed -i "1 i ---\nlayout: page\nlang: de\nlang-ref: {}\n---\n" {} \;) ; \
-	done
+gt: $(LANGS_DST)
+$(LANGS_DST): $(GTDIR)/% : $(SRCDIR)/%/gt-guidelines
+	make -C "$(GTDIR)" \
+	ANT_OPTS="" \
+	GT_DOC_OUT="$<" \
+	build;
+#     (
+#         cd "$<";
+#         find -name '*.html' | while read html;do \
+#             grep --max-count 1 --line-regexp '^---' "$$html" || \
+#             sed -i "1 i ---\nlayout: page\nlang: de\nlang-ref: {}\n---\n" {} \;) ; \
+#         done
+#     )
 
 # Build ocrd-kwalitee data
-data: $(SRCDIR)/_data/ocrd-repo.json
+# data: $(SRCDIR/_data/ocrd-repo.json
 
 $(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
@@ -80,7 +99,7 @@ serve-site:
 
 # build the site
 build-site:
-	jekyll build -s $(SRCDIR) -d $(BUILDDIR)
+	jekyll build -s $(SRCDIR) -d $(DSTDIR)
 
 deploy:
 	git add .
@@ -95,8 +114,8 @@ core-docs:
 	git clone repo/ocrd_all/core "$$tempdir"; \
 	mkdir -p "$$tempdir"/_templates; \
 	shinclude layout.html > "$$tempdir"/_templates; \
-	cd -- "$$tempdir" && make docs; \
-	mv -- "$$tempdr/docs/build/html" site/core; \
+	cd "$$tempdir" && make docs; \
+	mv "$$tempdr/docs/build/html" site/core; \
 	rm -rf "$$tempdir"
 
 # Build the spec documents TODO translate
@@ -104,8 +123,9 @@ spec:
 	for lang in en de;do \
 		mkdir -p $(SRCDIR)/$$lang/spec; \
 		find repo/spec -name '*.md'|while read md;do \
+			grep --max-count 1 --line-regexp '^---' "$$md" && \
 			basename=$$(basename $$md); \
-			sed  "1/^---   ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md \
+			|| sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md \
 			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
 	done
