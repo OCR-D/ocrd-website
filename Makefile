@@ -68,19 +68,18 @@ LANGS_DST = $(LANGS:%=$(GTDIR)/%)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
 gt: $(LANGS_DST)
+.PHONY: $(LANGS_DST)
 
 $(LANGS_DST): $(GTDIR)/% : $(SRCDIR)/%/gt-guidelines
 	make -C "$(GTDIR)" \
 	ANT_OPTS="" \
+	LANG="$(subst $(SRCDIR)/,,$(subst /gt-guidelines,,$<))" \
 	GT_DOC_OUT="$<" \
 	build;
-#     (
-#         cd "$<";
-#         find -name '*.html' | while read html;do \
-#             grep --max-count 1 --line-regexp '^---' "$$html" || \
-#             sed -i "1 i ---\nlayout: page\nlang: de\nlang-ref: {}\n---\n" {} \;) ; \
-#         done
-#     )
+	cd "$<" ; find -name '*.html' | while read html;do \
+		grep --max-count 1 --line-regexp '^---' -q "$$html" || \
+		sed -i "1 i ---\nlayout: page\nlang: $(subst $(SRCDIR)/,,$(subst /gt-guidelines,,$<))\nlang-ref: $$html\n---\n" $$html ; \
+	done
 
 # Build ocrd-kwalitee data
 # data: $(SRCDIR/_data/ocrd-repo.json
@@ -113,7 +112,9 @@ serve-from-sbb:
 
 # build the site
 build-site:
-	jekyll build -s $(SRCDIR) -d $(DSTDIR)
+	jekyll build \
+		--strict_front_matter \
+		-s '$(SRCDIR)' -d '$(DSTDIR)'
 
 deploy:
 	git add .
