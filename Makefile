@@ -30,7 +30,7 @@ help:
 	@echo "  Targets"
 	@echo ""
 	@echo "    bootstrap         Set up the repos, site and tools"
-	@echo "    $(LANGS_DST)      Build gt-guidelines. This takes a few minutes. Be patient."
+	@echo "    gt                Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    build-modules     TODO Build module information"
 	@echo "    build-processors  TODO Build processor information"
 	@echo "    serve-site        serve the site"
@@ -68,6 +68,7 @@ LANGS_DST = $(LANGS:%=$(GTDIR)/%)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
 gt: $(LANGS_DST)
+
 $(LANGS_DST): $(GTDIR)/% : $(SRCDIR)/%/gt-guidelines
 	make -C "$(GTDIR)" \
 	ANT_OPTS="" \

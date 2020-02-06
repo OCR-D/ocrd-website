@@ -42,21 +42,25 @@ Run `make help` to see a list of commands.
   Targets
 
     bootstrap         Set up the repos, site and tools
-    gt-guidelines     Build gt-guidelines. This takes a few minutes. Be patient.
-    data              Build ocrd-kwalitee data
+    gt                Build gt-guidelines. This takes a few minutes. Be patient.
     build-modules     TODO Build module information
     build-processors  TODO Build processor information
     serve-site        serve the site
+    serve-from-sbb    serve the site so at least @cneud and @kba can see it
     build-site        build the site
     core-docs         Build sphinx documentation for core
     spec              Build the spec documents TODO translate
 
   Variables
 
+    REPODIR          Directory containing this Makefile. Don't change it. Default '/data/monorepo/ocr-relaunch'
     JEKYLL           Which jekyll binary to use. Default 'jekyll'
-    BUILDDIR         Where to build site. Default 'docs'
-    SRCDIR           Where site is stored. Default 'site'
-    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: kwalitee.yml
+    DSTDIR           Where to build site. Default '/data/monorepo/ocr-relaunch/docs'
+    SRCDIR           Where site is stored. Default '/data/monorepo/ocr-relaunch/site'
+    GTDIR            Repositories mit dne DITA Quelltexten. Default: /data/monorepo/ocr-relaunch/repo/gt-guidelines
+    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /data/monorepo/ocr-relaunch/kwalitee.yml
+    LANGS            Languages to build. Default: 'de en'
+    LANGS_DST        Guideline langs to build. Default: 
 
 <!-- END-EVAL -->
 
@@ -74,5 +78,43 @@ To ensure a complete setup for Debian/Ubuntu based Linuxes: `make bootstrap`
 ## Rebuild gt-guidelines
 
 ```
-make gt-guidelines
+make gt
 ```
+
+## Multilinguality
+
+Most elements of the page should be made available as both german and english texts.
+
+Use the keys `lang` and `lang-ref` in YAML front matter to control language:
+* `lang` should be either `en` or `de`.
+* `lang-ref` is a unique arbitrary identifier that marks two pages as translations of each other.
+
+E.g. to create new page about cars:
+
+`site/en/cars.md`
+
+```markdown
+---
+title: The interestingness of cars never ceases to amaze
+lang: en
+lang-ref: that-weird-cars-page
+---
+
+# Cars ...
+
+amazing aren't they?
+```
+
+`site/de/autos.md`:
+
+```markdown
+---
+title: Autos sollen gekauft werden
+lang: de
+lang-ref: that-weird-cars-page
+---
+
+weil es fuer die wirtschaft gut ist.
+```
+
+You could then go to https://ocr-d.github.io/en/cars and to https://ocr-d.github.io/de/autos from there.
