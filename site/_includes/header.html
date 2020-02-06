@@ -16,7 +16,7 @@
       {% for toplevel_menuitem in site.data.menu.menu_structure %}
       {% if toplevel_menuitem.children %}
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">{{ toplevel_menuitem.label[page.lang] }}</a>
+        <a class="navbar-link" href="/{{ page.lang }}/{{ toplevel_menuitem.url }}">{{ toplevel_menuitem.label[page.lang] }}</a>
         <div class="navbar-dropdown">
           {% for child_menuitem in toplevel_menuitem.children %}
           {% assign firstchar = child_menuitem.url | slice: 0, 1 %}
@@ -25,7 +25,7 @@
         </div>
       </div>
       {% else %}
-      <a class="navbar-item" href="{% if firstchar != '/' %}/{{ page.lang }}/{% endif %}{{ toplevel_menuitem.url }}">{{ toplevel_menuitem.label[page.lang] }}</a>
+      <a class="navbar-item" href="/{{ page.lang }}/{{ toplevel_menuitem.url }}">{{ toplevel_menuitem.label[page.lang] }}</a>
       {% endif %}
       {% endfor %}
 
