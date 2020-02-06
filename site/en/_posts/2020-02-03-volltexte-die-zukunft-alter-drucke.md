@@ -1,6 +1,6 @@
 ---
 layout: post
-lang: de
+lang: en
 title: "Full texts - the future of old prints: OCR-D-Workshop in Bonn"
 tags: [workshop]
 author: Elisabeth Engl

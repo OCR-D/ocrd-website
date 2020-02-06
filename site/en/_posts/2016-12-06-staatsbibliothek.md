@@ -1,5 +1,5 @@
 ---
-lang: de
+lang: en
 tags: [2016]
 title: State Library in Berlin is New Project Partner of OCR-D
 author: Elisa Hermann

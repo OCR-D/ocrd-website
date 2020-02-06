@@ -1,6 +1,6 @@
 ---
 layout: post
-lang: de
+lang: en
 ---
 The call for module projects within the framework of OCR-D can now be found online on the website of the German Research Foundation (DFG) (link to the call)
 

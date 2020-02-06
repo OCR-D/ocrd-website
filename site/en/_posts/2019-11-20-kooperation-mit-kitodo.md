@@ -1,6 +1,6 @@
 ---
 layout: post
-lang: de
+lang: en
 lang-ref: kooperation-kitodo
 title: Cooperation with Kitodo signed
 tags: [kitodo, kooperation]
