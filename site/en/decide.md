@@ -2,7 +2,7 @@
 layout: page
 title: OCR-D for suits
 lang: en
-lang-ref: dev
+lang-ref: decide
 ---
 
 # SYNERGIZE LIKE A BOSS!
