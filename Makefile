@@ -107,7 +107,6 @@ serve-from-sbb:
 		--baseurl '' \
 		--host 10.46.3.57 \
 		--port 4040 \
-		--incremental \
 		--watch \
 		--strict_front_matter \
 		-s '$(SRCDIR)' -d '$(DSTDIR)'
