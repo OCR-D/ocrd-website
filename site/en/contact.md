@@ -12,20 +12,20 @@ title: OCR-D is you and me
 
 Contact person:
 
-Elisabeth Engl
+**Elisabeth Engl**
 Project coordination OCR-D
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de)
 
 Substitution:
 
-Andrea Opitz
+**Andrea Opitz**
 Deputy head of department
 New Media, Digital Library
 Duke August Library
 [opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
-Dr. Johannes Mangei
+**Dr. Johannes Mangei**
 Deputy Director of the Herzog August Library
 Head of Department New Media, Digital Library
 Duke August Library
@@ -97,7 +97,7 @@ Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 Karlsruhe Institute of Technology
 [ajinkya.prabhune[at]kit.edu](mailto:ajinkya.prabhune@kit.edu)
 
-**Sebastian Mangold.
+**Sebastian Mangold.**
 Bavarian State Library Munich
 [sebastian.mangold[at]bsb-muenchen.de](mailto:sebastian.mangold@bsb-muenchen.de)
 
@@ -105,16 +105,16 @@ Bavarian State Library Munich
 
 The project is counseled by a scientific advisory board, which is consituted by the following persons at the moment:
 
-Crane, Gregory (Leipzig University)
+**Crane, Gregory** (Leipzig University)
 
-Kaiser, Max (Austrian National Library)
+**Kaiser, Max** (Austrian National Library)
 
-Köhler, Joachim (Fraunhofer IAIS)
+**Köhler, Joachim** (Fraunhofer IAIS)
 
-Meyer, Sebastian (SLUB Dresden)
+**Meyer, Sebastian** (SLUB Dresden)
 
-Mühlberger, Günther (University of Innsbruck)
+**Mühlberger, Günther** (University of Innsbruck)
 
-Schulz, Klaus (LMU Munich – CIS)
+**Schulz, Klaus** (LMU Munich – CIS)
 
-Strötgen, Robert (TU Braunschweig)
+**Strötgen, Robert** (TU Braunschweig)
