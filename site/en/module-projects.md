@@ -95,7 +95,7 @@ separated images. There is potential for improvement especially in the
 recognition of decorative initials of older prints and other images close to
 the text as well as multi-column layouts.
 
-### NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers
+## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers
 _University of Leipzig  <br/>
 Institut für Informatik: Department of Automatic Language Processing_
 
