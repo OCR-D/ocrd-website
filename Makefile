@@ -16,6 +16,9 @@ SRCDIR := $(REPODIR)/site
 # Repositories mit dne DITA Quelltexten. Default: $(GTDIR)
 GTDIR := $(REPODIR)/repo/gt-guidelines
 
+# host to serve from. Default: $(JEKYLL_HOST)
+JEKYLL_HOST = 10.46.3.57
+
 # Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)
 KWALITEE_CONFIG := $(REPODIR)/kwalitee.yml
 
@@ -33,8 +36,7 @@ help:
 	@echo "    gt                Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    build-modules     TODO Build module information"
 	@echo "    build-processors  TODO Build processor information"
-	@echo "    serve-site        serve the site"
-	@echo "    serve-from-sbb    serve the site so at least @cneud and @kba can see it"
+	@echo "    serve             serve the site dynamically"
 	@echo "    build-site        build the site"
 	@echo "    core-docs         Build sphinx documentation for core"
 	@echo "    spec              Build the spec documents TODO translate"
@@ -46,6 +48,7 @@ help:
 	@echo "    DSTDIR           Where to build site. Default '$(DSTDIR)'"
 	@echo "    SRCDIR           Where site is stored. Default '$(SRCDIR)'"
 	@echo "    GTDIR            Repositories mit dne DITA Quelltexten. Default: $(GTDIR)"
+	@echo "    JEKYLL_HOST      host to serve from. Default: $(JEKYLL_HOST)"
 	@echo "    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)"
 	@echo "    LANGS            Languages to build. Default: '$(LANGS)'"
 	@echo "    LANGS_DST        Guideline langs to build. Default: $(GT_LANGS)"
@@ -96,15 +99,11 @@ build-modules: ocrd-kwalitee.json
 build-processors:
 	@echo NIH
 
-# serve the site
-serve-site:
-	jekyll serve -s $(SRCDIR)
-
-# serve the site so at least @cneud and @kba can see it
-serve-from-sbb:
+# serve the site dynamically
+serve:
 	jekyll serve \
 		--baseurl '' \
-		--host 10.46.3.57 \
+		--host $(JEKYLL_HOST) \
 		--port 4040 \
 		--watch \
 		--strict_front_matter \
