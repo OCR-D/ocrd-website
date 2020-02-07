@@ -1,6 +1,6 @@
 ---
 layout: page
-lang-ref: intro project
+lang-ref: about
 lang: de
 ---
 
