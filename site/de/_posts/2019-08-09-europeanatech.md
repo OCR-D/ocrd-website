@@ -2,6 +2,7 @@
 lang: de
 title: OCR-D auf EuropeanaTech Insights
 tags: [paper, DATeCH, 2019]
+layout: post
 ---
 
 Das Online Journal „EuropeanaTech Insights“ widmete aus Anlass der DATeCH 2019 sein letztes Heft dem Thema Optical Character Recognition. 
