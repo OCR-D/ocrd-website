@@ -51,11 +51,6 @@ Projektkoordinatorin
 Herzog August Bibliothek Wolfenbüttel  
 [engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
-**Andrea Opitz**  
-Projektkoordinatorin (interim)  
-Herzog August Bibliothek Wolfenbüttel  
-[opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
-
 **Matthias Boenig**  
 Berlin-Brandenburgische Akademie der Wissenschaften in Berlin  
 [ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
