@@ -9,7 +9,9 @@ Das Koordinierungsgremium von OCR-D setzt sich aus der Herzog August Bibliothek
 Wolfenbüttel, der Berlin-Brandenburgischen Akademie der Wissenschaften Berlin,
 dort insbesondere dem Deutschen Textarchiv, sowie nun der Staatsbibliothek zu
 Berlin zusammen. Die SBB übernimmt dabei zukünftig die Arbeiten der Bayerischen
-Staatsbibliothek, die zum 31.08.2016 aus dem Projekt ausgeschieden ist. Die
+Staatsbibliothek, die zum 31.08.2016 aus dem Projekt ausgeschieden ist. 
+
+Die
 Arbeitspakete umfassen u.a. die Langzeitarchivierung und Persistenz, die
 Konzeption von Workflows und Use Cases sowie die Zusammenstellung von
 Trainingskorpora. OCR-D untersucht Weiterentwicklungsmöglichkeiten für
