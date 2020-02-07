@@ -3,6 +3,7 @@ layout: page
 author: Konstantin Baierer
 lang: en
 lang-ref: setup
+toc: true
 ---
 
 # Setup guide for pilot libraries
