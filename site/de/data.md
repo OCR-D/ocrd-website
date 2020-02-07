@@ -28,7 +28,7 @@ Das Ground-Truth-Korpus bietet drei Annotationstiefen an:
 * Strukturregionen, Textzeilen
 * Textzeilen
 
-[Zur Übersicht](http://www.ocr-d.de/sites/all/GTDaten/IndexGT.html) (Die Liste wird stetig erweitert.)
+[Zur Übersicht](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit)
 
 Die Spezialkorpora umfassen:
 
@@ -38,13 +38,8 @@ Die Spezialkorpora umfassen:
 
 ## Erstellung des Ground Truth
 
-Die Image-Daten wurden mittels Transkribus zunächst einer Layout-Analyse
-(Textregion- und Zeilenerkennung) unterzogen und anschließend mit der
-integrierten OCR-Engine (ABBYY FineReader 11 SDK) prozessiert. Der so
-automatisch erkannte Text sowie die Zeilen und Textregionen wurden manuell
-nachkorrigiert (ggf. unter Verwendung von vorhandenen Ground-Truth-Daten) und
-schließlich als ALTO- und PAGE-Dateien exportiert. Diese bilden zusammen mit
-den Images im TIF-Format den Inhalt der zip-Dateien.
+Die Image-Daten wurden mittels Transkribus und Aletheia zunächst einer Layout-Analyse
+unterzogen und anschließend automatisiert segmentiert. Der so automatisch segmentierte Text (Wörter) sowie die Zeilen und Textregionen wurden manuell bearbeitet. Abschließend wurde ein Datenpaket aus den Daten im PAGE-Format, den digitalen Bildern und einem METS-Metadatensatz als Bagit-Datei gepackt.
 
 Wenn Sie Interesse an weiteren Ground-Truth-Daten haben (bspw. zur
 Binarisierung) schreiben Sie uns bitte: elisabeth.engl[at]hab.de
