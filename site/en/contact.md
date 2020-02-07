@@ -56,11 +56,6 @@ Project Coordinator
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
-**Andrea Opitz**
-Project Coordinator (interim)
-Duke August Library Wolfenbüttel
-[opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
-
 **Matthias Boenig**
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 [ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
@@ -68,6 +63,10 @@ Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 **Konstantin Baierer**
 State Library of Berlin Prussian Cultural Heritage
 [konstantin.baierer@sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
+
+**Clemens Neudecker**   
+State Library of Berlin Prussian Cultural Heritage 
+[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
 **Volker Hartmann**
 Karlsruhe Institute of Technology /Steinbuch Centre for Computing
