@@ -32,7 +32,7 @@ The Ground Truth corpus offers three annotation depths:
 * Structure regions, text lines
 * Text lines
 
-[Overview](sites/all/GTDaten/IndexGT.html) (The list will be extended continuously.)
+[Overview](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit) (The list will be extended continuously.)
 
 The special corpora contain:
 
@@ -42,9 +42,9 @@ The special corpora contain:
 
 ## Creation of the Ground Truth
 
-The image data were first subjected to a layout analysis (text region and line recognition) using [Transkribus](https://transkribus.eu/Transkribus/) and then processed with the integrated OCR engine (ABBYY FineReader 11 SDK). The automatically recognized text as well as the lines and text regions were corrected manually (if necessary by using existing Ground Truth data) and finally exported as ALTO and PAGE files. Together with the images in TIF format, these form the content of the zip files.
+The image data were first subjected to a layout analysis (text region and line recognition) using [Transkribus](https://transkribus.eu/Transkribus/) and then segmented automatically. The automatically recognized text as well as the lines and text regions were corrected manually. Finally the data in form of PAGE files, digital images and METS files were ziped as a BagIt file.
 
-**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: elisabeth.engl[at]hab.de**
+**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: [engl[at]hab.de](mailto:engl@hab.de)**
 
 The data are subject to a CC-BY-SA license, for the use of the image data
 different licenses may exist. Please [contact the project](contact) and/or the owning library.
