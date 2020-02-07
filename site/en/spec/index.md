@@ -57,6 +57,12 @@ lang-ref: spec
   </div>
   <div class="tile is-parent">
     <article class="tile is-child box">
+      <p class="title"><a href="gt-guidelines/trans">GT Guidelines</a></p>
+      <p class="subtitle">OCR-D Ground Truth transcription guidelines</p>
+    </article>
+  </div>
+  <div class="tile is-parent">
+    <article class="tile is-child box">
       <p class="title"><a href="docker">Dockerfile</a></p>
       <p class="subtitle">OCR-D Dockerfile conventions</p>
     </article>
