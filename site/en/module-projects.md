@@ -2,6 +2,7 @@
 layout: page
 lang: en
 lang-ref: module-projects
+toc: true
 ---
 
 # Module Projects
@@ -22,9 +23,6 @@ repositories for long-term archiving.
 
 From the project proposals for the DFG's module project call in March 2017,
 eight projects were approved:
-
-<!-- BEGIN-MARKDOWN-TOC -->
-<!-- END-MARKDOWN-TOC -->
 
 ## Scalable methods of text and structure recognition for full text digitization of historical prints: Image Optimisation
 _German Research Center for Artificial Intelligence (DFKI)_

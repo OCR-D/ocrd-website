@@ -2,6 +2,7 @@
 layout: page
 lang: de
 lang-ref: module-projects
+toc: true
 ---
 
 # Modulprojekte
@@ -19,7 +20,7 @@ Aus den Projektanträgen für die Modulprojektausschreibung der DFG im März 201
 
 <a id="Bildoptiierung"/>
 
-## **Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Bildoptimierung
+## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Bildoptimierung
 
 _Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)_
 

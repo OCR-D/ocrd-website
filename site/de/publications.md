@@ -2,8 +2,9 @@
 layout: page
 toc: true
 lang: de
+lang-ref: publications
 ---
-# Publications
+# Veröffentlichungen
 
 ## 2016
 Thomas Stäcker, Elisa Herrmann: „**Kooperationsprojekt zur Weiterentwicklung von OCR-Verfahren**“. Lecture at the 12th workshop „Texterkennung in historischen Dokumenten“, 09/02/2016 in Rostock.
