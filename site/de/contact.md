@@ -61,8 +61,12 @@ Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
 [ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
 
 **Konstantin Baierer**  
-Staatsbibliothek zu Berlin Preußischer Kulturbesitz  
-[konstantin.baierer@sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
+Staatsbibliothek zu Berlin - Preußischer Kulturbesitz  
+[konstantin.baierer[at]sbb.spk-berlin.de](mailto:konstantin.baierer@sbb.spk-berlin.de)
+
+**Clemens Neudecker**   
+Staatsbibliothek zu Berlin - Preußischer Kulturbesitz  
+[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
 **Volker Hartmann**  
 Karlsruher Institut für Technologie /Steinbuch Centre for Computing  
