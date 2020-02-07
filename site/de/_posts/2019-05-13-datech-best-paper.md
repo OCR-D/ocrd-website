@@ -2,6 +2,7 @@
 layout: post
 lang: de
 lang-ref: datech-best-paper
+title: Best Paper Award bei der DATeCH 2019 für OCR-D
 ---
 
 Bei der in Brüssel veranstalteten internationalen Konferenz "Digital Access to

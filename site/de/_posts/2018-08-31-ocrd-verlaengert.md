@@ -2,6 +2,7 @@
 layout: post
 lang: de
 author: Elisa Hermann
+title: OCR-D bis 2020 verlängert
 ---
 
 Die Deutsche Forschungsgemeinschaft (DFG) hat eine Verlängerung des Projekts
