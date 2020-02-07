@@ -17,6 +17,8 @@ This is where the DFG-funded project OCR-D comes in. Its main goal is the concep
 
 For this purpose, a coordination project was formed by the Berlin-Brandenburg Academy of Sciences and Humanities, the Herzog-August Library Wolfenbüttel, the Berlin State Library and the Karlsruhe Institute of Technology. In the first project phase, the project identified development needs, which are currently being addressed by a total of eight OCR-D module projects in the second project phase.
 
+![](/assets/Funktionsmodell.jpg)
+
 Full-text recognition is understood as a complex process that includes several preprocessing and postprocessing steps in addition to the actual text recognition (see Fig. 1). First, a digital image is prepared for text recognition in preprocessing by cropping, deskewing, dewarping, despeckling, and binarization. This is followed by layout recognition, which identifies the text areas of a page down to line level. Especially the recognition of the lines respectively the baseline is important for the following actual text recognition, which in all modern approaches is based on neural networks. The individual structures or elements of the full-text recognized document are then classified according to their typographic function and the OCR result is improved in the post-correction process if necessary, before it is transferred to repositories for long-term archiving.
 
 For the individual process steps, tools of [eight module-projects](module-projects) are developed. Furthermore, already existing Open Source tools or tools developed in other projects can be integrated into the OCR-D framework through the modular structure of OCR-D and thus synergies can be used.
