@@ -61,11 +61,11 @@ Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 [ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
 
 **Konstantin Baierer**
-State Library of Berlin Prussian Cultural Heritage
-[konstantin.baierer@sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
+Berlin State Library - Prussian Cultural Heritage
+[konstantin.baierer[at]sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
 
-**Clemens Neudecker**   
-State Library of Berlin Prussian Cultural Heritage 
+**Clemens Neudecker**
+Berlin State Library - Prussian Cultural Heritage 
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
 **Volker Hartmann**
@@ -96,7 +96,7 @@ Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 Karlsruhe Institute of Technology
 [ajinkya.prabhune[at]kit.edu](mailto:ajinkya.prabhune@kit.edu)
 
-**Sebastian Mangold.**
+**Sebastian Mangold**
 Bavarian State Library Munich
 [sebastian.mangold[at]bsb-muenchen.de](mailto:sebastian.mangold@bsb-muenchen.de)
 
