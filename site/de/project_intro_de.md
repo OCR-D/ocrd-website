@@ -17,7 +17,7 @@ Hier setzt das DFG-geförderte Projekt OCR-D an, dessen Hauptziel die konzeption
 
 Dazu wurde ein Koordinationsprojekt aus der Berlin-Brandenburgischen Akademie der Wissenschaften, der Herzog-August Bibliothek Wolfenbüttel, der Staatsbibliothek zu Berlin sowie dem Karlsruher Institut für Technologie gebildet. Dieses identifizierte in der ersten Projektphase Entwicklungsbedarfe, die in der derzeitigen zweiten Projektphase von insgesamt acht OCR-D-Modulprojekten bearbeitet werden.
 
-![](/assets/Funktionsmodell.jpg)
+![](/assets/Funktionsmodell.png)
 
 Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung mehrere vor- und nachgelagerte Schritte mit einschließt (vgl. Abb. 1). Zunächst wird ein Bilddigitalisat im Preprocessing für die Texterkennung aufbereitet, indem es nach Bedarf zugeschnitten (Cropping), begradigt (Deskewing), entzerrt (Dewarping), von Flecken bereinigt (Despeckling) und in ein Schwarz-Weiß-Bild umgewandelt (Binarization) wird. Im Anschluss erfolgt die Layouterkennung, die die Textbereiche einer Seite bis auf Zeilenebene identifiziert. Besonders die Erkennung der Zeilen bzw. der Grundlinie ist wichtig für die anschließende eigentliche Texterkennung, die in allen modernen Ansätzen auf Neuronalen Netzen beruht. Danach werden die einzelnen Strukturen bzw. Elemente des volltexterkannten Dokuments ihrer typografischen Funktion nach klassifiziert und das OCR-Ergebnis ggf. in der Nachkorrektur verbessert, bevor es in Repositorien zur Langzeitarchivierung überführt wird.
 
