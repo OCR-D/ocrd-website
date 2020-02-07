@@ -1,10 +1,12 @@
 ---
 layout: page
-lang-ref: intro project
+lang-ref: about
 lang: en
+title: The OCR-D project
 ---
 
 # The OCR-D project
+
 ## Background
 With the Union Catalogue of Books of the 16th-18th century (VD16, VD17, VD18) published in the German-speaking countries, a retrospective national bibliography of early modern writings from the German-speaking countries is being compiled. In order to facilitate research access to these texts, great concerted efforts have been and are being undertaken to make fully digitised copies or key pages for the recorded titles available in digital form.
 
@@ -31,4 +33,4 @@ In addition to the envisaged full text transformation of VD titles (16th-19th ce
 * the creation of [reusable software packages](http://www.github.com/ocr-d)
 * the establishment of quality assurance procedures
 
-In all steps we welcome a lively exchange with colleagues from other projects and institutions as well as service providers, in order to finally be able to realize a consolidated procedure for the OCR processing of digitized material of the printed German cultural heritage of the 16th-19th century. 
+In all steps we welcome a lively exchange with colleagues from other projects and institutions as well as service providers, in order to finally be able to realize a consolidated procedure for the OCR processing of digitized material of the printed German cultural heritage of the 16th-19th century.
