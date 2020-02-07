@@ -1,6 +1,7 @@
 ---
 layout: post
 lang: de
+title: Modulprojektausschreibungen online!
 ---
 Die Ausschreibung für Modulprojekte im Rahmen von OCR-D ist ab sofort online auf der Seite der Deutschen Forschungsgemeinschaft (DFG) zu finden (Link zur Ausschreibung)
 
