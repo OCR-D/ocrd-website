@@ -1,6 +1,7 @@
 ---
 layout: post
 lang: de
+title: Start der 8 Modulprojekte - OCR-D geht in die zweite Projektphase
 ---
 
 Vom 05.-06. März fand in der Herzog August Bibliothek in Wolfenbüttel das große Kick-Off-Treffen der Modulprojekte statt, welches offiziell die zweite Phase von OCR-D einläutet.
