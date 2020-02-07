@@ -3,6 +3,7 @@ lang: en
 tags: [2016]
 title: State Library in Berlin is New Project Partner of OCR-D
 author: Elisa Hermann
+layout: post
 ---
 
 The coordinating body of OCR-D consists of the Herzog August Bibliothek Wolfenbüttel, the Berlin-Brandenburg Academy of Sciences and Humanities Berlin, in particular the German Text Archive, and now the Staatsbibliothek zu Berlin. In future, the SBB will take over the work of the Bayerische Staatsbibliothek, which withdrew from the project on 31 August 2016. 
