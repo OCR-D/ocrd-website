@@ -2,7 +2,7 @@
 layout: page
 toc: true
 lang: en
-lang-ref: people
+lang-ref: contact
 title: OCR-D is you and me
 ---
 

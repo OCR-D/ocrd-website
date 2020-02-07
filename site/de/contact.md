@@ -2,6 +2,7 @@
 layout: page
 lang: de
 lang-ref: contact
+toc: true
 ---
 # Kontakt
 
