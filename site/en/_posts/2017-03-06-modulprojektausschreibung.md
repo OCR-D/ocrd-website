@@ -1,7 +1,9 @@
 ---
 layout: post
 lang: en
+title: Call for OCR-D module project proposals
 ---
+
 The call for module projects within the framework of OCR-D can now be found online on the website of the German Research Foundation (DFG) (link to the call)
 
 The aim of the OCR-D coordination project, which was launched in autumn 2015, is to describe procedures and develop guidelines in order to achieve an optimal workflow and the greatest possible standardisation of OCR-related processes and metadata. Furthermore, the complete transformation of the written German cultural heritage into a machine-readable form (structured full text) is to be prepared conceptually. Primarily, works from the Union Catalogue of Books Printed in German Speaking Countries in the 16th-18th century (VD) as well as books published in the 19th century in the German language area will be considered. The VD projects comprise about 1 million titles that are currently being digitized and are to be processed by means of OCR in the future.

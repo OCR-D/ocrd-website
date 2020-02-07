@@ -1,6 +1,7 @@
 ---
 layout: post
 lang: en
+title: OCR-D Kick-Off Meeting
 ---
 
 From March 5th to 6th the big kick-off meeting of the module projects took place in the Herzog August Bibliothek in Wolfenbüttel, which officially heralds the second phase of OCR-D.

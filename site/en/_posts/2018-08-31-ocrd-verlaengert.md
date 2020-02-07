@@ -2,6 +2,7 @@
 layout: post
 lang: en
 author: Elisa Hermann
+title: OCR-D extended
 ---
 
 The German Research Foundation (DFG) has approved an extension of the OCR-D project for another 18 months. The new funding phase will start in October 2018 and will therefore end in March 2020. This good news allows us to continue supporting the module projects and to consolidate the results. On the other hand, it will also allow the coordination committee's own work packages to be continued and deepened.
