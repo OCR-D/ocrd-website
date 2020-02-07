@@ -172,17 +172,6 @@ git clone --recursive https://github.com/OCR-D/ocrd_all
 cd ocrd_all
 ```
 
-### Updating the repository
-
-As `ocrd_all` is in [active
-development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
-regularly update the repository and its submodules:
-
-```sh
-git pull
-make modules
-```
-
 ### Installing with ocrd_all
 
 You can either install
@@ -197,6 +186,17 @@ make ocrd-tesserocr-binarize   # Install ocrd_tesserocr which contains ocrd-tess
 make ocrd-cis-ocropy-binarize  # Install ocrd_cis  which contains ocrd-cis-ocropy-binarize
 
 make all OCRD_MODULES="ocrd_tesserocr ocrd_cis"  # Will install both ocrd_tesserocr and ocrd_cis
+```
+
+### Updating the repository
+
+As `ocrd_all` is in [active
+development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
+regularly update the repository and its submodules:
+
+```sh
+git pull
+make modules
 ```
 
 ## Individual installation
