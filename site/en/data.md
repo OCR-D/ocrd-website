@@ -54,5 +54,5 @@ The OCR-D research data repository collects all versions of documents and (inter
 
 # OCR-D Ground Truth Repository
 Similarly, there is a publicly available OCR-D repository, which contains all ground truth data provided by OCR-D. 
-* For further information about the metadata format, see https://github.com/OCR-D/gt-labelling
-* The repository itself is available at https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/search
+* For further information about the metadata format, see [https://github.com/OCR-D/gt-labelling](https://github.com/OCR-D/gt-labelling)
+* The repository itself is available at [https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/search](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/search)
