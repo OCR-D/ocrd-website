@@ -36,7 +36,7 @@ Konstantin Baierer, Kay-Michael Würzner: „**An open-source framework for inte
 
 Stefan Weil: „**126 Jahre Zeitung online – Fundgrube für historisch Interessierte und Motor für die Bibliotheks-IT**“. Lecture at the 107th Bibliothekartag, 15/06/2018 in Berlin. [https://madoc.bib.uni-mannheim.de/46507/](https://madoc.bib.uni-mannheim.de/46507/).
 
-Klaus Schulz, Florian Fink: "**Novel software fro cleansing digitised historical texts**". Scientia 28/11/2018. [https://doi.org/10.26320/SCIENTIA278] (https://doi.org/10.26320/SCIENTIA278)
+Klaus Schulz, Florian Fink: "**Novel software fro cleansing digitised historical texts**". Scientia 28/11/2018. [https://doi.org/10.26320/SCIENTIA278](https://doi.org/10.26320/SCIENTIA278)
 
 ## 2019
 Elisa Herrmann: „**Von der Vision zur Umsetzung: Der aktuelle Entwicklungsstand von OCR-D**“. Lecture at the 7th Bibliothekskongress, 18/03/2019 in Leipzig. [https://www.researchgate.net/publication/332173701_Von_der_Vision_zur_Umsetzung_Der_aktuelle_Entwicklungsstand_von_OCR-D](https://www.researchgate.net/publication/332173701_Von_der_Vision_zur_Umsetzung_Der_aktuelle_Entwicklungsstand_von_OCR-D).
@@ -70,4 +70,4 @@ Konstantin Baierer, Rui Dong, Clemens Neudecker. „**okralact – a multi-engin
 
 Mathias Seuret, Saskia Limbach, Nikolaus Weichselbaumer, Andreas Maier and Vincent Christlein. „**Dataset of Pages from Early Printed Books with Multiple Font Groups**”. Lecture at the 5th International Workshop on Historical Document Imaging and Processing HIP 2019 as part of the ICDAR 2019, 20/9/2019 in Sydney.
 
-Konstantin Baierer, Elisabeth Engl, Michael Luetgen. "**OCR(-D) und Kitodo**". Presentation at the Kitodo user meeting 2019, 19/11/2019 in Hamburg https://hackmd.io/@kba/S1peIVxhH#/.
+Konstantin Baierer, Elisabeth Engl, Michael Luetgen. "**OCR(-D) und Kitodo**". Presentation at the Kitodo user meeting 2019, 19/11/2019 in Hamburg [https://hackmd.io/@kba/S1peIVxhH#/](https://hackmd.io/@kba/S1peIVxhH#/).
