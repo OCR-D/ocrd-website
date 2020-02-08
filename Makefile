@@ -128,8 +128,8 @@ core-docs:
 	git clone repo/ocrd_all/core "$$tempdir"; \
 	mkdir -p "$$tempdir"/_templates; \
 	shinclude layout.html > "$$tempdir"/_templates; \
-	cd "$$tempdir" && make docs; \
-	mv "$$tempdr/docs/build/html" site/core; \
+	make -C "$$tempdir" docs; \
+	mv "$$tempdir/docs/build/html" site/core; \
 	rm -rf "$$tempdir"
 
 # Build the spec documents TODO translate
