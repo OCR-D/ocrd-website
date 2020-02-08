@@ -4,13 +4,13 @@ lang: de
 lang-ref: data
 ---
 
-#Daten
+# Daten
 
 ## Die Referenzdaten
 
 Die Referenzdaten umfassen ein Ground-Truth-Korpus und weitere Spezialkorpora.
-Das Ground-Truth-Korpus umfasst Seiten aus Publikationen aus dem Zeitraum 1500
-- 1900. Der Inhalt des Korpus basiert auf einer gezielten Auswahl aus dem
+Das Ground-Truth-Korpus umfasst Seiten aus Publikationen aus dem Zeitraum 1500-1900. 
+Der Inhalt des Korpus basiert auf einer gezielten Auswahl aus dem
 Bestand des DFG-Projektes „Deutsches Textarchiv“, der Digitalisierten
 Sammlungen der Staatsbibliothek zu Berlin und der Wolfenbütteler Digitalen
 Bibliothek der Herzog August Bibliothek. Bestände von Projekten und digitalen
@@ -41,8 +41,8 @@ Die Spezialkorpora umfassen:
 Die Image-Daten wurden mittels Transkribus und Aletheia zunächst einer Layout-Analyse
 unterzogen und anschließend automatisiert segmentiert. Der so automatisch segmentierte Text (Wörter) sowie die Zeilen und Textregionen wurden manuell bearbeitet. Abschließend wurde ein Datenpaket aus den Daten im PAGE-Format, den digitalen Bildern und einem METS-Metadatensatz als Bagit-Datei gepackt.
 
-Wenn Sie Interesse an weiteren Ground-Truth-Daten haben (bspw. zur
-Binarisierung) schreiben Sie uns bitte: elisabeth.engl[at]hab.de
+**Wenn Sie Interesse an weiteren Ground-Truth-Daten haben (bspw. zur
+Binarisierung) schreiben Sie uns bitte: [engl[at]hab.de](mailto:engl@hab.de)**
 
 Die Daten unterliegen einer CC-BY-SA-Lizenz, für die Verwendung der Bilddaten
 können abweichende Lizenzen vorliegen. Bitte [kontaktieren Sie](contact) diesbezüglich das
