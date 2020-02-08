@@ -57,7 +57,7 @@ lang-ref: spec
   </div>
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="gt-guidelines/trans">GT Richtlinien</a></p>
+      <p class="title"><a href="../gt-guidelines/trans">GT Richtlinien</a></p>
       <p class="subtitle">OCR-D Ground Truth Transkriptionsrichtlinien</p>
     </article>
   </div>
