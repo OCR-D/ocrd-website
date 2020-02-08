@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  /* hide banner and navbar of gt guidelines / pagexml docs */
+  header[role="banner"] { display: none; }
+  nav[role="toc"] { display: none; }
+  footer[role="contentinfo"] { display: none; }
+
+  /* hide stuff from sphinx docs */
+  div.related[role="navigation"] { display: none; }
+  div.footer[role="contentinfo"] { display: none; }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/about">The OCR-D-project</a>
+          
+          
+          <a class="navbar-item" href="/en/contact">Get in touch!</a>
+          
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          
+          <a class="navbar-item" href="/en/publications">Publications</a>
+          
+          
+          <a class="navbar-item" href="/en/slides">Slides and presentations</a>
+          
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          
+          <a class="navbar-item" href="/en/user_survey">User Survey</a>
+          
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Developers</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+          
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+          
+          <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">Users</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/setup">Setup Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/user_guide">User Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/cookbook">Cookbook</a>
+          
+          
+          <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+          
+      </span>
+
+    </div> </div> </nav>
+<div class="columns">
+      
+
+      <main class="container content column " aria-label="Content">
+        <!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd_utils package &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ocrd_utils.constants module" href="ocrd_utils.constants.html" />
+    <link rel="prev" title="ocrd_utils" href="modules.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ocrd_utils.constants.html" title="ocrd_utils.constants module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="ocrd_utils"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">ocrd_utils</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ocrd_utils">
+<span id="ocrd-utils-package"></span><h1>ocrd_utils package<a class="headerlink" href="#module-ocrd_utils" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions and constants usable in various circumstances.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">coordinates_of_segment</span></code>, <code class="docutils literal notranslate"><span class="pre">coordinates_for_segment</span></code></p>
+<blockquote>
+<div><p>These functions convert polygon outlines for PAGE elements on all hierarchy
+levels below page (i.e. region, line, word, glyph) between relative coordinates
+w.r.t. a corresponding image and absolute coordinates w.r.t. the top-level image.
+This includes rotation and offset correction, based on affine transformations.
+(Used by <code class="docutils literal notranslate"><span class="pre">Workspace</span></code> methods <code class="docutils literal notranslate"><span class="pre">image_from_page</span></code> and <code class="docutils literal notranslate"><span class="pre">image_from_segment</span></code>)</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotate_coordinates</span></code>, <code class="docutils literal notranslate"><span class="pre">shift_coordinates</span></code>, <code class="docutils literal notranslate"><span class="pre">transpose_coordinates</span></code>, <code class="docutils literal notranslate"><span class="pre">transform_coordinates</span></code></p>
+<blockquote>
+<div><p>These backend functions compose affine transformations for reflection, rotation
+and offset correction of coordinates, or apply them to a set of points. They can be
+used to pass down the coordinate system along with images (both invariably sharing
+the same operations context) when traversing the element hierarchy top to bottom.
+(Used by <code class="docutils literal notranslate"><span class="pre">Workspace</span></code> methods <code class="docutils literal notranslate"><span class="pre">image_from_page</span></code> and <code class="docutils literal notranslate"><span class="pre">image_from_segment</span></code>).</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotate_image</span></code>, <code class="docutils literal notranslate"><span class="pre">crop_image</span></code>, <code class="docutils literal notranslate"><span class="pre">transpose_image</span></code></p>
+<blockquote>
+<div><p>These PIL.Image functions are safe replacements for the <code class="docutils literal notranslate"><span class="pre">rotate</span></code>, <code class="docutils literal notranslate"><span class="pre">crop</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">transpose</span></code> methods.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">image_from_polygon</span></code>, <code class="docutils literal notranslate"><span class="pre">polygon_mask</span></code></p>
+<blockquote>
+<div><p>These functions apply polygon masks to PIL.Image objects.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xywh_from_points</span></code>, <code class="docutils literal notranslate"><span class="pre">points_from_xywh</span></code>, <code class="docutils literal notranslate"><span class="pre">polygon_from_points</span></code> etc.</p>
+<blockquote>
+<div><p>These functions have the syntax <code class="docutils literal notranslate"><span class="pre">X_from_Y</span></code>, where <code class="docutils literal notranslate"><span class="pre">X</span></code>/<code class="docutils literal notranslate"><span class="pre">Y</span></code> can be</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">bbox</span></code> is a 4-tuple of integers x0, y0, x1, y1 of the bounding box (rectangle)</p>
+<p>(used by PIL.Image)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">points</span></code> a string encoding a polygon: <code class="docutils literal notranslate"><span class="pre">&quot;0,0</span> <span class="pre">100,0</span> <span class="pre">100,100,</span> <span class="pre">0,100&quot;</span></code></p>
+<p>(used by PAGE-XML)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">polygon</span></code> is a list of 2-lists of integers x, y of points forming an (implicitly closed) polygon path: <code class="docutils literal notranslate"><span class="pre">[[0,0],</span> <span class="pre">[100,0],</span> <span class="pre">[100,100],</span> <span class="pre">[0,100]]</span></code></p>
+<p>(used by opencv2 and higher-level coordinate functions in ocrd_utils)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xywh</span></code> a dict with keys for x, y, width and height: <code class="docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">0,</span> <span class="pre">'y':</span> <span class="pre">0,</span> <span class="pre">'w':</span> <span class="pre">100,</span> <span class="pre">'h':</span> <span class="pre">100}</span></code></p>
+<p>(produced by tesserocr and image/coordinate recursion methods in ocrd.workspace)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x0y0x1y1</span></code> is a 4-list of strings <code class="docutils literal notranslate"><span class="pre">x0</span></code>, <code class="docutils literal notranslate"><span class="pre">y0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1</span></code>, <code class="docutils literal notranslate"><span class="pre">y1</span></code> of the bounding box (rectangle)</p>
+<p>(produced by tesserocr)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y0x0y1x1</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">x0y0x1y1</span></code> with positions of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> in the list swapped</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_local_filename</span></code>, <code class="docutils literal notranslate"><span class="pre">safe_filename</span></code>, <code class="docutils literal notranslate"><span class="pre">abspath</span></code>, <code class="docutils literal notranslate"><span class="pre">get_local_filename</span></code></p>
+<blockquote>
+<div><p>FS-related utilities</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_string</span></code>, <code class="docutils literal notranslate"><span class="pre">membername</span></code>, <code class="docutils literal notranslate"><span class="pre">concat_padded</span></code>, <code class="docutils literal notranslate"><span class="pre">nth_url_segment</span></code>, <code class="docutils literal notranslate"><span class="pre">remove_non_path_from_url</span></code>, <code class="docutils literal notranslate"><span class="pre">parse_json_string_or_file</span></code></p>
+<blockquote>
+<div><p>String and OOP utilities</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MIMETYPE_PAGE</span></code>, <code class="docutils literal notranslate"><span class="pre">EXT_TO_MIME</span></code>, <code class="docutils literal notranslate"><span class="pre">MIME_TO_EXT</span></code>, <code class="docutils literal notranslate"><span class="pre">VERSION</span></code></p>
+<blockquote>
+<div><p>Constants</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logging</span></code>, <code class="docutils literal notranslate"><span class="pre">setOverrideLogLevel</span></code>, <code class="docutils literal notranslate"><span class="pre">getLevelName</span></code>, <code class="docutils literal notranslate"><span class="pre">getLogger</span></code>, <code class="docutils literal notranslate"><span class="pre">initLogging</span></code></p>
+<blockquote>
+<div><p>Exports of ocrd_utils.logging</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated_alias</span></code></p>
+<blockquote>
+<div><p>Decorator to mark a kwarg as deprecated</p>
+</div></blockquote>
+</li>
+</ul>
+<dl class="function">
+<dt id="ocrd_utils.abspath">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">abspath</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#abspath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.abspath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a full path to a file or file URL</p>
+<p>See os.abspath</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.adjust_canvas_to_rotation">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">adjust_canvas_to_rotation</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#adjust_canvas_to_rotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.adjust_canvas_to_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the enlarged image size after rotation.</p>
+<p>Given a numpy array <code class="docutils literal notranslate"><span class="pre">size</span></code> of an original canvas (width and height),
+and a rotation angle in degrees counter-clockwise <code class="docutils literal notranslate"><span class="pre">angle</span></code>,
+calculate the new size which is necessary to encompass the full
+image after rotation.</p>
+<p>Return a numpy array of the enlarged width and height.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.adjust_canvas_to_transposition">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">adjust_canvas_to_transposition</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">method</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#adjust_canvas_to_transposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.adjust_canvas_to_transposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the flipped image size after transposition.</p>
+<p>Given a numpy array <code class="docutils literal notranslate"><span class="pre">size</span></code> of an original canvas (width and height),
+and a transposition mode <code class="docutils literal notranslate"><span class="pre">method</span></code> (see <code class="docutils literal notranslate"><span class="pre">transpose_image</span></code>),
+calculate the new size after transposition.</p>
+<p>Return a numpy array of the enlarged width and height.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.bbox_from_points">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">bbox_from_points</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#bbox_from_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.bbox_from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a numeric list representing a bounding box from polygon coordinates in page representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.bbox_from_xywh">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">bbox_from_xywh</code><span class="sig-paren">(</span><em class="sig-param">xywh</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#bbox_from_xywh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.bbox_from_xywh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a bounding box from a numeric dict to a numeric list representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.bbox_from_polygon">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">bbox_from_polygon</code><span class="sig-paren">(</span><em class="sig-param">polygon</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#bbox_from_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.bbox_from_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a numeric list representing a bounding box from polygon coordinates in numeric list representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.coordinates_for_segment">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">coordinates_for_segment</code><span class="sig-paren">(</span><em class="sig-param">polygon</em>, <em class="sig-param">parent_image</em>, <em class="sig-param">parent_coords</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#coordinates_for_segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.coordinates_for_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert relative coordinates to absolute.</p>
+<p>Given…</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">polygon</span></code>, a numpy array of points relative to</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_image</span></code>, a PIL.Image (not used), along with</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_coords</span></code>, its corresponding affine transformation,</p></li>
+</ul>
+<p>…calculate the absolute coordinates within the page.</p>
+<p>That is, apply the given transform inversely to <code class="docutils literal notranslate"><span class="pre">polygon</span></code>
+The transform encodes (recursively):</p>
+<ol class="arabic simple">
+<li><p>Whenever <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> or any of its parents was cropped,
+all points must be shifted by the offset in opposite direction
+(i.e. coordinate system gets translated by the upper left).</p></li>
+<li><p>Whenever <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> or any of its parents was rotated,
+all points must be rotated around the center of that image in
+opposite direction
+(i.e. coordinate system gets translated by the center in
+opposite direction, rotated purely, and translated back;
+the latter involves an additional offset from the increase
+in canvas size necessary to accommodate all points).</p></li>
+</ol>
+<p>Return the rounded numpy array of the resulting polygon.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.coordinates_of_segment">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">coordinates_of_segment</code><span class="sig-paren">(</span><em class="sig-param">segment</em>, <em class="sig-param">parent_image</em>, <em class="sig-param">parent_coords</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#coordinates_of_segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.coordinates_of_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the coordinates of a PAGE segment element relative to its parent.</p>
+<p>Given…</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">segment</span></code>, a PAGE segment object in absolute coordinates
+(i.e. RegionType / TextLineType / WordType / GlyphType), and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_image</span></code>, the PIL.Image of its corresponding parent object
+(i.e. PageType / RegionType / TextLineType / WordType), (not used),
+along with</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_coords</span></code>, its corresponding affine transformation,</p></li>
+</ul>
+<p>…calculate the relative coordinates of the segment within the image.</p>
+<p>That is, apply the given transform to the points annotated in <code class="docutils literal notranslate"><span class="pre">segment</span></code>.
+The transform encodes (recursively):</p>
+<ol class="arabic simple">
+<li><p>Whenever <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> or any of its parents was cropped,
+all points must be shifted by the offset
+(i.e. coordinate system gets translated by the upper left).</p></li>
+<li><p>Whenever <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> or any of its parents was rotated,
+all points must be rotated around the center of that image
+(i.e. coordinate system gets translated by the center in
+opposite direction, rotated purely, and translated back;
+the latter involves an additional offset from the increase
+in canvas size necessary to accommodate all points).</p></li>
+</ol>
+<p>Return the rounded numpy array of the resulting polygon.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.concat_padded">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">concat_padded</code><span class="sig-paren">(</span><em class="sig-param">base</em>, <em class="sig-param">*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#concat_padded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.concat_padded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate string and zero-padded 4 digit number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.crop_image">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">crop_image</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#crop_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.crop_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Crop an image to a rectangle, filling with background.</p>
+<p>Given a PIL.Image <code class="docutils literal notranslate"><span class="pre">image</span></code> and a list <code class="docutils literal notranslate"><span class="pre">box</span></code> of the bounding
+rectangle relative to the image, crop at the box coordinates,
+filling everything outside <code class="docutils literal notranslate"><span class="pre">image</span></code> with the background.
+(This covers the case where <code class="docutils literal notranslate"><span class="pre">box</span></code> indexes are negative or
+larger than <code class="docutils literal notranslate"><span class="pre">image</span></code> width/height. PIL.Image.crop would fill
+with black.) Since <code class="docutils literal notranslate"><span class="pre">image</span></code> is not necessarily binarized yet,
+determine the background from the median color (instead of
+white).</p>
+<p>Return a new PIL.Image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.deprecated_alias">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">deprecated_alias</code><span class="sig-paren">(</span><em class="sig-param">**aliases</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/deprecate.html#deprecated_alias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.deprecated_alias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecate a kwarg in favor of another kwarg</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.getLevelName">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">getLevelName</code><span class="sig-paren">(</span><em class="sig-param">lvl</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/logging.html#getLevelName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.getLevelName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get (numerical) python logging level for (string) spec-defined log level name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.getLogger">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">getLogger</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/logging.html#getLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.getLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around <code class="docutils literal notranslate"><span class="pre">logging.getLogger</span></code> that respects <a class="reference external" href="#setOverrideLogLevel">overrideLogLevel</a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.initLogging">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">initLogging</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/logging.html#initLogging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.initLogging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets logging defaults</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.is_local_filename">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">is_local_filename</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#is_local_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.is_local_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether a url is a local filename.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.is_string">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">is_string</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#is_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.is_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether a value is a <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.nth_url_segment">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">nth_url_segment</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">n=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#nth_url_segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.nth_url_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the last /-delimited segment of a URL-like string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>string</em>) – </p></li>
+<li><p><strong>n</strong> (<em>integer</em>) – index of segment, default: -1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.remove_non_path_from_url">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">remove_non_path_from_url</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#remove_non_path_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.remove_non_path_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove everything from URL after path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.membername">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">membername</code><span class="sig-paren">(</span><em class="sig-param">class_</em>, <em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#membername"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.membername" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a member variable/constant into a member name string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.image_from_polygon">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">image_from_polygon</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">polygon</em>, <em class="sig-param">fill='background'</em>, <em class="sig-param">transparency=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#image_from_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.image_from_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Mask an image with a polygon.</p>
+<p>Given a PIL.Image <code class="docutils literal notranslate"><span class="pre">image</span></code> and a numpy array <code class="docutils literal notranslate"><span class="pre">polygon</span></code>
+of relative coordinates into the image, fill everything
+outside the polygon hull to a color according to <code class="docutils literal notranslate"><span class="pre">fill</span></code>:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">background</span></code> (the default),
+then use the median color of the image;</p></li>
+<li><p>otherwise use the given color, e.g. <code class="docutils literal notranslate"><span class="pre">'white'</span></code> or (255,255,255).</p></li>
+</ul>
+<p>Moreover, if <code class="docutils literal notranslate"><span class="pre">transparency</span></code> is true, then add an alpha channel
+from the polygon mask (i.e. everything outside the polygon will
+be transparent, for those consumers that can interpret alpha channels).
+Images which already have an alpha channel will have it shrunk
+from the polygon mask (i.e. everything outside the polygon will
+be transparent, in addition to existing transparent pixels).</p>
+<p>Return a new PIL.Image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.parse_json_string_or_file">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">parse_json_string_or_file</code><span class="sig-paren">(</span><em class="sig-param">value='{}'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#parse_json_string_or_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.parse_json_string_or_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a string as either the path to a JSON object or a literal JSON object.</p>
+<p>Empty strings are equivalent to ‘{}’</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.points_from_bbox">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">points_from_bbox</code><span class="sig-paren">(</span><em class="sig-param">minx</em>, <em class="sig-param">miny</em>, <em class="sig-param">maxx</em>, <em class="sig-param">maxy</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#points_from_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.points_from_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct polygon coordinates in page representation from a numeric list representing a bounding box.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.points_from_polygon">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">points_from_polygon</code><span class="sig-paren">(</span><em class="sig-param">polygon</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#points_from_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.points_from_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert polygon coordinates from a numeric list representation to a page representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.points_from_x0y0x1y1">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">points_from_x0y0x1y1</code><span class="sig-paren">(</span><em class="sig-param">xyxy</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#points_from_x0y0x1y1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.points_from_x0y0x1y1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a polygon representation from a rectangle described as a list [x0, y0, x1, y1]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.points_from_xywh">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">points_from_xywh</code><span class="sig-paren">(</span><em class="sig-param">box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#points_from_xywh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.points_from_xywh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct polygon coordinates in page representation from numeric dict representing a bounding box.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.points_from_y0x0y1x1">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">points_from_y0x0y1x1</code><span class="sig-paren">(</span><em class="sig-param">yxyx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#points_from_y0x0y1x1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.points_from_y0x0y1x1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a polygon representation from a rectangle described as a list [y0, x0, y1, x1]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.polygon_from_bbox">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">polygon_from_bbox</code><span class="sig-paren">(</span><em class="sig-param">minx</em>, <em class="sig-param">miny</em>, <em class="sig-param">maxx</em>, <em class="sig-param">maxy</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#polygon_from_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.polygon_from_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct polygon coordinates in numeric list representation from a numeric list representing a bounding box.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.polygon_from_points">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">polygon_from_points</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#polygon_from_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.polygon_from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert polygon coordinates in page representation to polygon coordinates in numeric list representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.polygon_from_x0y0x1y1">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">polygon_from_x0y0x1y1</code><span class="sig-paren">(</span><em class="sig-param">x0y0x1y1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#polygon_from_x0y0x1y1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.polygon_from_x0y0x1y1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct polygon coordinates in numeric list representation from a string list representing a bounding box.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.polygon_from_xywh">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">polygon_from_xywh</code><span class="sig-paren">(</span><em class="sig-param">xywh</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#polygon_from_xywh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.polygon_from_xywh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct polygon coordinates in numeric list representation from numeric dict representing a bounding box.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.polygon_mask">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">polygon_mask</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#polygon_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.polygon_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Create a mask image of a polygon.</p>
+<p>Given a PIL.Image <code class="docutils literal notranslate"><span class="pre">image</span></code> (merely for dimensions), and
+a numpy array <code class="docutils literal notranslate"><span class="pre">polygon</span></code> of relative coordinates into the image,
+create a new image of the same size with black background, and
+fill everything inside the polygon hull with white.</p>
+<p>Return the new PIL.Image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.rotate_coordinates">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">rotate_coordinates</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">angle</em>, <em class="sig-param">orig=array([0</em>, <em class="sig-param">0])</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#rotate_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.rotate_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose an affine coordinate transformation with a passive rotation.</p>
+<p>Given a numpy array <code class="docutils literal notranslate"><span class="pre">transform</span></code> of an existing transformation
+matrix in homogeneous (3d) coordinates, and a rotation angle in
+degrees counter-clockwise <code class="docutils literal notranslate"><span class="pre">angle</span></code>, as well as a numpy array
+<code class="docutils literal notranslate"><span class="pre">orig</span></code> of the center of rotation, calculate the affine
+coordinate transform corresponding to the composition of both
+transformations. (This entails translation to the center, followed
+by pure rotation, and subsequent translation back. However, since
+rotation necessarily increases the bounding box, and thus image size,
+do not translate back the same amount, but to the enlarged offset.)</p>
+<p>Return a numpy array of the resulting affine transformation matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.rotate_image">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">rotate_image</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">angle</em>, <em class="sig-param">fill='background'</em>, <em class="sig-param">transparency=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#rotate_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.rotate_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Rotate an image, enlarging and filling with background.</p>
+<p>Given a PIL.Image <code class="docutils literal notranslate"><span class="pre">image</span></code> and a rotation angle in degrees
+counter-clockwise <code class="docutils literal notranslate"><span class="pre">angle</span></code>, rotate the image, increasing its
+size at the margins accordingly, and filling everything outside
+the original image according to <code class="docutils literal notranslate"><span class="pre">fill</span></code>:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">background</span></code> (the default),
+then use the median color of the image;</p></li>
+<li><p>otherwise use the given color, e.g. <code class="docutils literal notranslate"><span class="pre">'white'</span></code> or (255,255,255).</p></li>
+</ul>
+<p>Moreover, if <code class="docutils literal notranslate"><span class="pre">transparency</span></code> is true, then add an alpha channel
+fully opaque (i.e. everything outside the original image will
+be transparent for those that can interpret alpha channels).
+(This is true for images which already have an alpha channel,
+regardless of the setting used.)</p>
+<p>Return a new PIL.Image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.safe_filename">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">safe_filename</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#safe_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.safe_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sanitize input to be safely used as the basename of a local file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.setOverrideLogLevel">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">setOverrideLogLevel</code><span class="sig-paren">(</span><em class="sig-param">lvl</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/logging.html#setOverrideLogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.setOverrideLogLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override all logger filter levels to include lvl and above.</p>
+<ul class="simple">
+<li><p>Set root logger level</p></li>
+<li><p>iterates all existing loggers and sets their log level to <code class="docutils literal notranslate"><span class="pre">NOTSET</span></code>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lvl</strong> (<em>string</em>) – Log level name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.shift_coordinates">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">shift_coordinates</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#shift_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.shift_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose an affine coordinate transformation with a translation.</p>
+<p>Given a numpy array <code class="docutils literal notranslate"><span class="pre">transform</span></code> of an existing transformation
+matrix in homogeneous (3d) coordinates, and a numpy array
+<code class="docutils literal notranslate"><span class="pre">offset</span></code> of the translation vector, calculate the affine
+coordinate transform corresponding to the composition of both
+transformations.</p>
+<p>Return a numpy array of the resulting affine transformation matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.transform_coordinates">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">transform_coordinates</code><span class="sig-paren">(</span><em class="sig-param">polygon</em>, <em class="sig-param">transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#transform_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply an affine transformation to a set of points.
+Augment the 2d numpy array of points <code class="docutils literal notranslate"><span class="pre">polygon</span></code> with a an extra
+column of ones (homogeneous coordinates), then multiply with
+the transformation matrix <code class="docutils literal notranslate"><span class="pre">transform</span></code> (or the identity matrix),
+and finally remove the extra column from the result.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.transpose_coordinates">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">transpose_coordinates</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">method</em>, <em class="sig-param">orig=array([0</em>, <em class="sig-param">0])</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#transpose_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.transpose_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Compose an affine coordinate transformation with a transposition (i.e. flip or rotate in 90° multiples).</p>
+<p>Given a numpy array <code class="docutils literal notranslate"><span class="pre">transform</span></code> of an existing transformation
+matrix in homogeneous (3d) coordinates, a transposition mode <code class="docutils literal notranslate"><span class="pre">method</span></code>,
+as well as a numpy array <code class="docutils literal notranslate"><span class="pre">orig</span></code> of the center of the image,
+calculate the affine coordinate transform corresponding to the composition
+of both transformations, which is respectively:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.FLIP_LEFT_RIGHT</span></code>:
+entails translation to the center, followed by pure reflection
+about the y-axis, and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.FLIP_TOP_BOTTOM</span></code>:
+entails translation to the center, followed by pure reflection
+about the x-axis, and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_180</span></code>:
+entails translation to the center, followed by pure reflection
+about the origin, and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_90</span></code>:
+entails translation to the center, followed by pure rotation
+by 90° counter-clockwise, and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_270</span></code>:
+entails translation to the center, followed by pure rotation
+by 270° counter-clockwise, and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.TRANSPOSE</span></code>:
+entails translation to the center, followed by pure rotation
+by 90° counter-clockwise and pure reflection about the x-axis,
+and subsequent translation back</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.TRANSVERSE</span></code>:
+entails translation to the center, followed by pure rotation
+by 90° counter-clockwise and pure reflection about the y-axis,
+and subsequent translation back</p></li>
+</ul>
+<p>Return a numpy array of the resulting affine transformation matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.transpose_image">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">transpose_image</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">method</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#transpose_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.transpose_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Transpose (i.e. flip or rotate in 90° multiples) an image.</p>
+<p>Given a PIL.Image <code class="docutils literal notranslate"><span class="pre">image</span></code> and a transposition mode <code class="docutils literal notranslate"><span class="pre">method</span></code>,
+apply the respective operation:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.FLIP_LEFT_RIGHT</span></code>:
+all pixels get mirrored at half the width of the image</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.FLIP_TOP_BOTTOM</span></code>:
+all pixels get mirrored at half the height of the image</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_180</span></code>:
+all pixels get mirrored at both, the width and half the height
+of the image,
+i.e. the image gets rotated by 180° counter-clockwise</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_90</span></code>:
+rows become columns (but counted from the right) and
+columns become rows,
+i.e. the image gets rotated by 90° counter-clockwise;
+width becomes height and vice versa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_270</span></code>:
+rows become columns and
+columns become rows (but counted from the bottom),
+i.e. the image gets rotated by 270° counter-clockwise;
+width becomes height and vice versa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.TRANSPOSE</span></code>:
+rows become columns and vice versa,
+i.e. all pixels get mirrored at the main diagonal;
+width becomes height and vice versa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PIL.Image.TRANSVERSE</span></code>:
+rows become columns (but counted from the right) and
+columns become rows (but counted from the bottom),
+i.e. all pixels get mirrored at the opposite diagonal;
+width becomes height and vice versa</p></li>
+</ul>
+<p>Return a new PIL.Image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.unzip_file_to_dir">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">unzip_file_to_dir</code><span class="sig-paren">(</span><em class="sig-param">path_to_zip</em>, <em class="sig-param">output_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#unzip_file_to_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.unzip_file_to_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a ZIP archive to a directory</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.xywh_from_bbox">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">xywh_from_bbox</code><span class="sig-paren">(</span><em class="sig-param">minx</em>, <em class="sig-param">miny</em>, <em class="sig-param">maxx</em>, <em class="sig-param">maxy</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#xywh_from_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.xywh_from_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a bounding box from a numeric list to a numeric dict representation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ocrd_utils.xywh_from_points">
+<code class="sig-prename descclassname">ocrd_utils.</code><code class="sig-name descname">xywh_from_points</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils.html#xywh_from_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_utils.xywh_from_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a numeric dict representing a bounding box from polygon coordinates in page representation.</p>
+</dd></dl>
+
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.constants.html">ocrd_utils.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.deprecate.html">ocrd_utils.deprecate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.logging.html">ocrd_utils.logging module</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ocrd_utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">ocrd_utils</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ocrd_utils.constants.html"
+                        title="next chapter">ocrd_utils.constants module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/ocrd_utils/ocrd_utils.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ocrd_utils.constants.html" title="ocrd_utils.constants module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="ocrd_utils"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >ocrd_utils</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <a href="https://github.com/OCR-D">GitHub</a>
+      |
+      <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://github.com/OCR-D">Docker Hub</a>
+      |
+      <a href="/sitemap.xml">sitemap.xml</a>
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

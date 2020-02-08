@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  /* hide banner and navbar of gt guidelines / pagexml docs */
+  header[role="banner"] { display: none; }
+  nav[role="toc"] { display: none; }
+  footer[role="contentinfo"] { display: none; }
+
+  /* hide stuff from sphinx docs */
+  div.related[role="navigation"] { display: none; }
+  div.footer[role="contentinfo"] { display: none; }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/about">The OCR-D-project</a>
+          
+          
+          <a class="navbar-item" href="/en/contact">Get in touch!</a>
+          
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          
+          <a class="navbar-item" href="/en/publications">Publications</a>
+          
+          
+          <a class="navbar-item" href="/en/slides">Slides and presentations</a>
+          
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          
+          <a class="navbar-item" href="/en/user_survey">User Survey</a>
+          
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Developers</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+          
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+          
+          <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">Users</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/setup">Setup Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/user_guide">User Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/cookbook">Cookbook</a>
+          
+          
+          <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+          
+      </span>
+
+    </div> </div> </nav>
+<div class="columns">
+      
+
+      <main class="container content column " aria-label="Content">
+        <!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd.workspace module &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ocrd.workspace_backup module" href="ocrd.workspace_backup.html" />
+    <link rel="prev" title="ocrd.task_sequence module" href="ocrd.task_sequence.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ocrd.workspace_backup.html" title="ocrd.workspace_backup module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ocrd.task_sequence.html" title="ocrd.task_sequence module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >ocrd</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ocrd.html" accesskey="U">ocrd package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ocrd.workspace">
+<span id="ocrd-workspace-module"></span><h1>ocrd.workspace module<a class="headerlink" href="#module-ocrd.workspace" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ocrd.workspace.Workspace">
+<em class="property">class </em><code class="sig-prename descclassname">ocrd.workspace.</code><code class="sig-name descname">Workspace</code><span class="sig-paren">(</span><em class="sig-param">resolver</em>, <em class="sig-param">directory</em>, <em class="sig-param">mets=None</em>, <em class="sig-param">mets_basename='mets.xml'</em>, <em class="sig-param">automatic_backup=False</em>, <em class="sig-param">baseurl=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A workspace is a temporary directory set up for a processor. It’s the
+interface to the METS/PAGE XML and delegates download and upload to the
+Resolver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>string</em>) – Folder to work in</p></li>
+<li><p><strong>mets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OcrdMets</span></code>) – OcrdMets representing this workspace. Loaded from ‘mets.xml’ if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>mets_basename</strong> (<em>string</em>) – Basename of the METS XML file. Default: Last URL segment of the mets_url.</p></li>
+<li><p><strong>baseurl</strong> (<em>string</em>) – Base URL to prefix to relative URL.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.add_file">
+<code class="sig-name descname">add_file</code><span class="sig-paren">(</span><em class="sig-param">file_grp</em>, <em class="sig-param">content=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.add_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.add_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an output file. Creates an <code class="xref py py-class docutils literal notranslate"><span class="pre">OcrdFile</span></code> to pass around and adds that to the
+OcrdMets OUTPUT section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.download_file">
+<code class="sig-name descname">download_file</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">_recursion_count=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.download_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a <code class="xref py py-mod docutils literal notranslate"><span class="pre">ocrd.model.ocrd_file.OcrdFile</span></code> to the workspace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.download_url">
+<code class="sig-name descname">download_url</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.download_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.download_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a URL to the workspace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>string</em>) – URL to download to directory</p></li>
+<li><p><strong>**kwargs</strong> – See <a class="reference internal" href="../ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile" title="ocrd_models.ocrd_file.OcrdFile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ocrd_models.ocrd_file.OcrdFile</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The local filename of the downloaded file</p>
+</dd>
+</dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0.0: </span>Use workspace.download_file</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.image_from_page">
+<code class="sig-name descname">image_from_page</code><span class="sig-paren">(</span><em class="sig-param">page</em>, <em class="sig-param">page_id</em>, <em class="sig-param">fill='background'</em>, <em class="sig-param">transparency=False</em>, <em class="sig-param">feature_selector=''</em>, <em class="sig-param">feature_filter=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.image_from_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.image_from_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract an image for a PAGE-XML page from the workspace.</p>
+<p>Given <code class="docutils literal notranslate"><span class="pre">page</span></code>, a PAGE PageType object, extract its PIL.Image,
+either from its AlternativeImage (if it exists), or from its
+&#64;imageFilename (otherwise). Also crop it, if a Border exists,
+and rotate it, if any &#64;orientation angle is annotated.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">feature_selector</span></code> and/or <code class="docutils literal notranslate"><span class="pre">feature_filter</span></code> is given, then
+select/filter among the &#64;imageFilename image and the available
+AlternativeImages the last one which contains all of the selected,
+but none of the filtered features (i.e. &#64;comments classes), or
+raise an error.</p>
+<p>(Required and produced features need not be in the same order, so
+<code class="docutils literal notranslate"><span class="pre">feature_selector</span></code> is merely a mask specifying Boolean AND, and
+<code class="docutils literal notranslate"><span class="pre">feature_filter</span></code> is merely a mask specifying Boolean OR.)</p>
+<p>If the chosen image does not have the feature “cropped” yet, but
+a Border exists, and unless “cropped” is being filtered, then crop it.
+Likewise, if the chosen image does not have the feature “deskewed” yet,
+but an &#64;orientation angle is annotated, and unless “deskewed” is being
+filtered, then rotate it. (However, if &#64;orientation is above the
+[-45°,45°] interval, then apply as much transposition as possible first,
+unless “rotated-90” / “rotated-180” / “rotated-270” is being filtered.)</p>
+<p>Cropping uses a polygon mask (not just the bounding box rectangle).
+Areas outside the polygon will be filled according to <code class="docutils literal notranslate"><span class="pre">fill</span></code>:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">background</span></code> (the default),
+then fill with the median color of the image;</p></li>
+<li><p>otherwise, use the given color, e.g. <code class="docutils literal notranslate"><span class="pre">white</span></code> or (255,255,255).</p></li>
+</ul>
+<p>Moreover, if <code class="docutils literal notranslate"><span class="pre">transparency</span></code> is true, and unless the image already
+has an alpha channel, then add an alpha channel which is fully opaque
+before cropping and rotating. (Thus, only the exposed areas will be
+transparent afterwards, for those that can interpret alpha channels).</p>
+<p>Return a tuple:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the extracted image,</p></li>
+<li><p>a dictionary with information about the extracted image:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">transform</span></code>: a Numpy array with an affine transform which
+converts from absolute coordinates to those relative to the image,
+i.e. after cropping to the page’s border / bounding box (if any)
+and deskewing with the page’s orientation angle (if any)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the rotation/reflection angle applied to the image so far,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">features</span></code>: the AlternativeImage &#64;comments for the image, i.e.
+names of all operations that lead up to this result,</p></li>
+</ul>
+</li>
+<li><p>an OcrdExif instance associated with the original image.</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>(The first two can be used to annotate a new AlternativeImage,</dt><dd><p>or be passed down with <code class="docutils literal notranslate"><span class="pre">image_from_segment</span></code>.)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<ul>
+<li><p>get a raw (colored) but already deskewed and cropped image:</p>
+<p>``
+page_image, page_coords, page_image_info = workspace.image_from_page(</p>
+<blockquote>
+<div><p>page, page_id,
+feature_selector=’deskewed,cropped’,
+feature_filter=’binarized,grayscale_normalized’)</p>
+</div></blockquote>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a></p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.image_from_segment">
+<code class="sig-name descname">image_from_segment</code><span class="sig-paren">(</span><em class="sig-param">segment</em>, <em class="sig-param">parent_image</em>, <em class="sig-param">parent_coords</em>, <em class="sig-param">fill='background'</em>, <em class="sig-param">transparency=False</em>, <em class="sig-param">feature_selector=''</em>, <em class="sig-param">feature_filter=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.image_from_segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.image_from_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract an image for a PAGE-XML hierarchy segment from its parent’s image.</p>
+<p>Given…</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_image</span></code>, a PIL.Image of the parent, with</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_coords</span></code>, a dict with information about <code class="docutils literal notranslate"><span class="pre">parent_image</span></code>:
+- <code class="docutils literal notranslate"><span class="pre">transform</span></code>: a Numpy array with an affine transform which</p>
+<blockquote>
+<div><p>converts from absolute coordinates to those relative to the image,
+i.e. after applying all operations (starting with the original image)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the rotation/reflection angle applied to the image so far,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">features</span></code>: the AlternativeImage &#64;comments for the image, i.e.
+names of all operations that lead up to this result, and</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">segment</span></code>, a PAGE segment object logically contained in it
+(i.e. TextRegionType / TextLineType / WordType / GlyphType),</p></li>
+</ul>
+</div></blockquote>
+<p>…extract the segment’s corresponding PIL.Image, either from
+AlternativeImage (if it exists), or producing a new image via
+cropping from <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> (otherwise).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">feature_selector</span></code> and/or <code class="docutils literal notranslate"><span class="pre">feature_filter</span></code> is given, then
+select/filter among the cropped <code class="docutils literal notranslate"><span class="pre">parent_image</span></code> and the available
+AlternativeImages the last one which contains all of the selected,
+but none of the filtered features (i.e. &#64;comments classes), or
+raise an error.</p>
+<p>(Required and produced features need not be in the same order, so
+<code class="docutils literal notranslate"><span class="pre">feature_selector</span></code> is merely a mask specifying Boolean AND, and
+<code class="docutils literal notranslate"><span class="pre">feature_filter</span></code> is merely a mask specifying Boolean OR.)</p>
+<p>Cropping uses a polygon mask (not just the bounding box rectangle).
+Areas outside the polygon will be filled according to <code class="docutils literal notranslate"><span class="pre">fill</span></code>:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">background</span></code> (the default),
+then fill with the median color of the image;</p></li>
+<li><p>otherwise, use the given color, e.g. <code class="docutils literal notranslate"><span class="pre">white</span></code> or (255,255,255).</p></li>
+</ul>
+<p>Moreover, if <code class="docutils literal notranslate"><span class="pre">transparency</span></code> is true, and unless the image already
+has an alpha channel, then add an alpha channel which is fully opaque
+before cropping and rotating. (Thus, only the exposed areas will be
+transparent afterwards, for those that can interpret alpha channels).</p>
+<p>When cropping, compensate any &#64;orientation angle annotated for the
+parent (from parent-level deskewing) by rotating the segment coordinates
+in an inverse transformation (i.e. translation to center, then passive
+rotation, and translation back).</p>
+<p>Regardless, if any &#64;orientation angle is annotated for the segment
+(from segment-level deskewing), and the chosen image does not have
+the feature “deskewed” yet, and unless “deskewed” is being filtered,
+then rotate it - compensating for any previous <code class="docutils literal notranslate"><span class="pre">angle</span></code>. (However,
+if &#64;orientation is above the [-45°,45°] interval, then apply as much
+transposition as possible first, unless “rotated-90” / “rotated-180” /
+“rotated-270” is being filtered.)</p>
+<p>Return a tuple:</p>
+<blockquote>
+<div><ul>
+<li><p>the extracted image,</p></li>
+<li><p>a dictionary with information about the extracted image:
+- <code class="docutils literal notranslate"><span class="pre">transform</span></code>: a Numpy array with an affine transform which</p>
+<blockquote>
+<div><p>converts from absolute coordinates to those relative to the image,
+i.e. after applying all parent operations, and then cropping to
+the segment’s bounding box, and deskewing with the segment’s
+orientation angle (if any)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the rotation/reflection angle applied to the image so far,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">features</span></code>: the AlternativeImage &#64;comments for the image, i.e.
+names of all operations that lead up to this result.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>(These can be used to create a new AlternativeImage, or passed down</dt><dd><p>for calls on lower hierarchy levels.)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<ul>
+<li><p>get a raw (colored) but already deskewed and cropped image:</p>
+<dl class="simple">
+<dt><a href="#id3"><span class="problematic" id="id4">``</span></a>image, xywh = workspace.image_from_segment(region,</dt><dd><p>page_image, page_xywh,
+feature_selector=’deskewed,cropped’,
+feature_filter=’binarized,grayscale_normalized’)``</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.reload_mets">
+<code class="sig-name descname">reload_mets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.reload_mets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.reload_mets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload METS from disk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.remove_file">
+<code class="sig-name descname">remove_file</code><span class="sig-paren">(</span><em class="sig-param">ID</em>, <em class="sig-param">force=False</em>, <em class="sig-param">keep_file=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.remove_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file from the workspace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> (<em>string|OcrdFile</em>) – ID of the file to delete or the file itself</p></li>
+<li><p><strong>force</strong> (<em>boolean</em>) – Continue removing even if file not found in METS</p></li>
+<li><p><strong>keep_file</strong> (<em>boolean</em>) – Whether to keep files on disk</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.remove_file_group">
+<code class="sig-name descname">remove_file_group</code><span class="sig-paren">(</span><em class="sig-param">USE</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">force=False</em>, <em class="sig-param">keep_files=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.remove_file_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.remove_file_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a fileGrp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>USE</strong> (<em>string</em>) – USE attribute of the fileGrp to delete</p></li>
+<li><p><strong>recursive</strong> (<em>boolean</em>) – Whether to recursively delete all files in the group</p></li>
+<li><p><strong>force</strong> (<em>boolean</em>) – Continue removing even if group or containing files not found in METS</p></li>
+<li><p><strong>keep_files</strong> (<em>boolean</em>) – When deleting recursively whether to keep files on disk</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.resolve_image_as_pil">
+<code class="sig-name descname">resolve_image_as_pil</code><span class="sig-paren">(</span><em class="sig-param">image_url</em>, <em class="sig-param">coords=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.resolve_image_as_pil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.resolve_image_as_pil" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0.0.</span></p>
+</div>
+<p>Use workspace.image_from_page and workspace.image_from_segment</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.resolve_image_exif">
+<code class="sig-name descname">resolve_image_exif</code><span class="sig-paren">(</span><em class="sig-param">image_url</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.resolve_image_exif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.resolve_image_exif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the EXIF metadata about an image URL as <code class="xref py py-class docutils literal notranslate"><span class="pre">OcrdExif</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_url</strong> (<em>string</em>) – URL of image</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Return</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">OcrdExif</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.save_image_file">
+<code class="sig-name descname">save_image_file</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">file_id</em>, <em class="sig-param">file_grp</em>, <em class="sig-param">page_id=None</em>, <em class="sig-param">format='PNG'</em>, <em class="sig-param">force=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.save_image_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.save_image_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store and reference an image as file into the workspace.</p>
+<p>Given a PIL.Image <cite>image</cite>, and an ID <cite>file_id</cite> to use in METS,
+store the image under the fileGrp <cite>file_grp</cite> and physical page
+<cite>page_id</cite> into the workspace (in a file name based on
+the <cite>file_grp</cite>, <cite>file_id</cite> and <cite>format</cite> extension).</p>
+<p>Return the (absolute) path of the created file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocrd.workspace.Workspace.save_mets">
+<code class="sig-name descname">save_mets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/workspace.html#Workspace.save_mets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.workspace.Workspace.save_mets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write out the current state of the METS file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ocrd.task_sequence.html"
+                        title="previous chapter">ocrd.task_sequence module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ocrd.workspace_backup.html"
+                        title="next chapter">ocrd.workspace_backup module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/ocrd/ocrd.workspace.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ocrd.workspace_backup.html" title="ocrd.workspace_backup module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ocrd.task_sequence.html" title="ocrd.task_sequence module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >ocrd</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ocrd.html" >ocrd package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <a href="https://github.com/OCR-D">GitHub</a>
+      |
+      <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://github.com/OCR-D">Docker Hub</a>
+      |
+      <a href="/sitemap.xml">sitemap.xml</a>
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

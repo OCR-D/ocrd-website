@@ -1,0 +1,420 @@
+---
+layout: page
+lang: en
+---
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ocrd_validators.page_validator &#8212; ocrd  documentation</title>
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_validators.page_validator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API for validating `OcrdPage &lt;../ocrd_models/ocrd_models.ocrd_page.html&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">LineString</span>
+<span class="kn">from</span> <span class="nn">shapely.validation</span> <span class="k">import</span> <span class="n">explain_validity</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">polygon_from_points</span><span class="p">,</span> <span class="n">deprecated_alias</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="k">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="k">import</span> <span class="n">page_from_file</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">PcGtsType</span><span class="p">,</span>
+    <span class="n">PageType</span><span class="p">,</span>
+    <span class="n">TextRegionType</span><span class="p">,</span>
+    <span class="n">TextLineType</span><span class="p">,</span>
+    <span class="n">WordType</span><span class="p">,</span>
+    <span class="n">GlyphType</span><span class="p">,</span>
+    <span class="n">TextEquivType</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page_generateds</span> <span class="k">import</span> <span class="n">RegionType</span>
+<span class="kn">from</span> <span class="nn">.report</span> <span class="k">import</span> <span class="n">ValidationReport</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator&#39;</span><span class="p">)</span>
+
+<span class="n">_HIERARCHY</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># page can contain different types of regions</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_AdvertRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_ChartRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_ChemRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_GraphicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_GraphicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_LineDrawingRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_MathsRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_MusicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_NoiseRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_SeparatorRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_TableRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_TextRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">PageType</span><span class="p">,</span>       <span class="s1">&#39;get_UnknownRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="c1"># all regions can be recursive</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_AdvertRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_ChartRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_ChemRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_GraphicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_GraphicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_LineDrawingRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_MathsRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_MusicRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_NoiseRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_SeparatorRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_TableRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_TextRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">RegionType</span><span class="p">,</span>     <span class="s1">&#39;get_UnknownRegion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="c1"># only TextRegion can contain TextLine</span>
+    <span class="p">(</span><span class="n">TextRegionType</span><span class="p">,</span> <span class="s1">&#39;get_TextLine&#39;</span><span class="p">,</span>   <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">TextLineType</span><span class="p">,</span>   <span class="s1">&#39;get_Word&#39;</span><span class="p">,</span>       <span class="s1">&#39; &#39;</span><span class="p">),</span>  <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">WordType</span><span class="p">,</span>       <span class="s1">&#39;get_Glyph&#39;</span><span class="p">,</span>      <span class="s1">&#39;&#39;</span><span class="p">),</span>   <span class="c1"># pylint: disable=bad-whitespace</span>
+    <span class="p">(</span><span class="n">GlyphType</span><span class="p">,</span>      <span class="kc">None</span><span class="p">,</span>             <span class="kc">None</span><span class="p">),</span> <span class="c1"># pylint: disable=bad-whitespace</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="ConsistencyError"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.ConsistencyError">[docs]</a><span class="k">class</span> <span class="nc">ConsistencyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception representing a consistency error in textual transcription across levels of a PAGE-XML.</span>
+<span class="sd">    (Element text strings must be the concatenation of their children&#39;s text strings, joined by white space.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new ConsistencyError.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            tag (string): Level of the inconsistent element (parent)</span>
+<span class="sd">            ID (string): ``ID`` of the inconsistent element (parent)</span>
+<span class="sd">            file_id (string): ``mets:id`` of the PAGE file</span>
+<span class="sd">            actual (string): Value of parent&#39;s TextEquiv[0]/Unicode</span>
+<span class="sd">            expected (string): Concatenated values of children&#39;s</span>
+<span class="sd">                               TextEquiv[0]/Unicode, joined by white-space</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actual</span> <span class="o">=</span> <span class="n">actual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConsistencyError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;INCONSISTENCY in </span><span class="si">%s</span><span class="s2"> ID &#39;</span><span class="si">%s</span><span class="s2">&#39; of file &#39;</span><span class="si">%s</span><span class="s2">&#39;: text results &#39;</span><span class="si">%s</span><span class="s2">&#39; != concatenated &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CoordinateConsistencyError"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.CoordinateConsistencyError">[docs]</a><span class="k">class</span> <span class="nc">CoordinateConsistencyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception representing a consistency error in coordinate confinement across levels of a PAGE-XML.</span>
+<span class="sd">    (Element coordinate polygons must be properly contained in their parents&#39; coordinate polygons.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new CoordinateConsistencyError.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            tag (string): Level of the offending element (child)</span>
+<span class="sd">            ID (string): ``ID`` of the offending element (child)</span>
+<span class="sd">            file_id (string): ``mets:id`` of the PAGE file</span>
+<span class="sd">            outer (string): Coordinate points of the parent</span>
+<span class="sd">            inner (string): Coordinate points of the child</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">=</span> <span class="n">outer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="o">=</span> <span class="n">inner</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CoordinateConsistencyError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;INCONSISTENCY in </span><span class="si">%s</span><span class="s2"> ID &#39;</span><span class="si">%s</span><span class="s2">&#39; of &#39;</span><span class="si">%s</span><span class="s2">&#39;: coords &#39;</span><span class="si">%s</span><span class="s2">&#39; not within parent coords &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">outer</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CoordinateValidityError"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.CoordinateValidityError">[docs]</a><span class="k">class</span> <span class="nc">CoordinateValidityError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception representing a validity error of an element&#39;s coordinates in PAGE-XML.</span>
+<span class="sd">    (Element coordinate polygons must have at least 3 points, and must not</span>
+<span class="sd">     self-intersect or be non-contiguous or be negative.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new CoordinateValidityError.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            tag (string): Level of the offending element (child)</span>
+<span class="sd">            ID (string): ``ID`` of the offending element (child)</span>
+<span class="sd">            points (string): Coordinate points</span>
+<span class="sd">            reason (string): description of the problem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CoordinateValidityError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;INVALIDITY in </span><span class="si">%s</span><span class="s2"> ID &#39;</span><span class="si">%s</span><span class="s2">&#39; of &#39;</span><span class="si">%s</span><span class="s2">&#39;: coords &#39;</span><span class="si">%s</span><span class="s2">&#39; - </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">tag</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">reason</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="compare_without_whitespace"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.compare_without_whitespace">[docs]</a><span class="k">def</span> <span class="nf">compare_without_whitespace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare two strings, ignoring all whitespace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="validate_consistency"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.validate_consistency">[docs]</a><span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">strictness</span><span class="o">=</span><span class="s1">&#39;page_textequiv_consistency&#39;</span><span class="p">)</span>
+<span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;page_textequiv_strategy&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">validate_consistency</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">page_textequiv_consistency</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">,</span> <span class="n">check_baseline</span><span class="p">,</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check whether the text results on an element is consistent with its child element text results,</span>
+<span class="sd">    and whether the coordinates of an element are fully within its parent element coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PcGtsType</span><span class="p">):</span>
+        <span class="c1"># top-level (start recursion)</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_pcGtsId</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span> <span class="c1"># has no .id</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">GlyphType</span><span class="p">):</span>
+        <span class="c1"># terminal level (end recursion)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">original_tagname_</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validating </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+    <span class="n">consistent</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">check_coords</span> <span class="ow">or</span> <span class="n">check_baseline</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PageType</span><span class="p">):</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Border</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="k">if</span> <span class="n">parent</span><span class="p">:</span>
+            <span class="n">parent_points</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">get_Coords</span><span class="p">()</span><span class="o">.</span><span class="n">points</span>
+            <span class="n">node_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">polygon_from_points</span><span class="p">(</span><span class="n">parent_points</span><span class="p">))</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node_poly</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="n">explain_validity</span><span class="p">(</span><span class="n">node_poly</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">node_poly</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;is empty&#39;</span>
+            <span class="k">elif</span> <span class="n">node_poly</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">node_poly</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;is negative&#39;</span>
+            <span class="k">elif</span> <span class="n">node_poly</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;has too few points&#39;</span>
+            <span class="k">if</span> <span class="n">reason</span><span class="p">:</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">CoordinateValidityError</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">parent_points</span><span class="p">,</span> <span class="n">reason</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Invalid coords of </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+                <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_poly</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">class_</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">concatenate_with</span> <span class="ow">in</span> <span class="n">_HIERARCHY</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">class_</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">getter</span><span class="p">)()</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="n">consistent</span> <span class="o">=</span> <span class="p">(</span><span class="n">validate_consistency</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">page_textequiv_consistency</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">,</span>
+                                               <span class="n">check_baseline</span><span class="p">,</span> <span class="n">check_coords</span><span class="p">,</span>
+                                               <span class="n">report</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+                          <span class="ow">and</span> <span class="n">consistent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">check_coords</span> <span class="ow">and</span> <span class="n">node_poly</span><span class="p">:</span>
+                <span class="n">child_tag</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">original_tagname_</span>
+                <span class="n">child_points</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get_Coords</span><span class="p">()</span><span class="o">.</span><span class="n">points</span>
+                <span class="n">child_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">polygon_from_points</span><span class="p">(</span><span class="n">child_points</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">is_valid</span>
+                    <span class="ow">or</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">is_empty</span>
+                    <span class="ow">or</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                    <span class="ow">or</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                    <span class="ow">or</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">):</span>
+                    <span class="c1"># report.add_error(CoordinateValidityError(child_tag, child.id, file_id, child_points))</span>
+                    <span class="c1"># log.debug(&quot;Invalid coords of %s %s&quot;, child_tag, child.id)</span>
+                    <span class="c1"># consistent = False</span>
+                    <span class="k">pass</span> <span class="c1"># already reported in recursive call above</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">child_poly</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">node_poly</span><span class="p">):</span>
+                    <span class="c1"># TODO: automatic repair?</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">CoordinateConsistencyError</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span>
+                                                                <span class="n">parent_points</span><span class="p">,</span> <span class="n">child_points</span><span class="p">))</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inconsistent coords of </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">child_tag</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">TextLineType</span><span class="p">)</span> <span class="ow">and</span> <span class="n">check_baseline</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Baseline</span><span class="p">():</span>
+            <span class="n">baseline_points</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Baseline</span><span class="p">()</span><span class="o">.</span><span class="n">points</span>
+            <span class="n">baseline_line</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">(</span><span class="n">polygon_from_points</span><span class="p">(</span><span class="n">baseline_points</span><span class="p">))</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="n">explain_validity</span><span class="p">(</span><span class="n">baseline_line</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;is empty&#39;</span>
+            <span class="k">elif</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;is negative&#39;</span>
+            <span class="k">elif</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;has too few points&#39;</span>
+            <span class="k">if</span> <span class="n">reason</span><span class="p">:</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">CoordinateValidityError</span><span class="p">(</span><span class="s2">&quot;Baseline&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">baseline_points</span><span class="p">,</span> <span class="n">reason</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Invalid coords of baseline in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+                <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">baseline_line</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">node_poly</span><span class="p">):</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">CoordinateConsistencyError</span><span class="p">(</span><span class="s2">&quot;Baseline&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span>
+                                                            <span class="n">parent_points</span><span class="p">,</span> <span class="n">baseline_points</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inconsistent coords of baseline in </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+                <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">concatenate_with</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">page_textequiv_consistency</span> <span class="o">!=</span> <span class="s1">&#39;off&#39;</span><span class="p">:</span>
+            <span class="c1"># validate textual consistency of node with children</span>
+            <span class="n">concatenated</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">concatenate_with</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">)</span>
+            <span class="n">text_results</span> <span class="o">=</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">concatenated</span> <span class="ow">and</span> <span class="n">text_results</span> <span class="ow">and</span> <span class="n">concatenated</span> <span class="o">!=</span> <span class="n">text_results</span><span class="p">:</span>
+                <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">page_textequiv_consistency</span> <span class="o">==</span> <span class="s1">&#39;fix&#39;</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Repaired text of </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+                    <span class="n">set_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">concatenated</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">page_textequiv_consistency</span> <span class="o">==</span> <span class="s1">&#39;strict&#39;</span> <span class="c1"># or &#39;lax&#39; but...</span>
+                      <span class="ow">or</span> <span class="ow">not</span> <span class="n">compare_without_whitespace</span><span class="p">(</span><span class="n">concatenated</span><span class="p">,</span> <span class="n">text_results</span><span class="p">)):</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inconsistent text of </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="n">ConsistencyError</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span>
+                                                      <span class="n">text_results</span><span class="p">,</span> <span class="n">concatenated</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">consistent</span></div>
+
+<div class="viewcode-block" id="concatenate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.concatenate">[docs]</a><span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">concatenate_with</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Concatenate nodes textually according to https://ocr-d.github.io/page#consistency-of-text-results-on-different-levels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">concatenate_with</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="get_text"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.get_text">[docs]</a><span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the most confident text results, either those with @index = 1 or the first text results or empty string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">textEquivs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_TextEquiv</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">textEquivs</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No text results on </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1">#  elif page_textequiv_strategy == &#39;index1&#39;:</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">textEquivs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">index1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">textEquivs</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_Unicode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">textEquivs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_Unicode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="set_text"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.set_text">[docs]</a><span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the most confident text results, either those with @index = 1, the first text results or add new one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">textEquivs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_TextEquiv</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">textEquivs</span><span class="p">:</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_TextEquiv</span><span class="p">(</span><span class="n">TextEquivType</span><span class="p">(</span><span class="n">Unicode</span><span class="o">=</span><span class="n">text</span><span class="p">))</span>
+    <span class="c1">#  elif page_textequiv_strategy == &#39;index1&#39;:</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">textEquivs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">index1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">textEquivs</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">index1</span><span class="p">:</span>
+                <span class="n">index1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_Unicode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="n">textEquivs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_Unicode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PageValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.PageValidator">[docs]</a><span class="k">class</span> <span class="nc">PageValidator</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validator for `OcrdPage &lt;../ocrd_models/ocrd_models.ocrd_page.html&gt;`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PageValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.page_validator.html#ocrd_validators.PageValidator.validate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">strictness</span><span class="o">=</span><span class="s1">&#39;page_textequiv_consistency&#39;</span><span class="p">)</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;page_textequiv_strategy&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocrd_page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">page_textequiv_consistency</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="o">=</span><span class="s1">&#39;index1&#39;</span><span class="p">,</span>
+                 <span class="n">check_baseline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_coords</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates a PAGE file for consistency by filename, OcrdFile or passing OcrdPage directly.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            filename (string): Path to PAGE</span>
+<span class="sd">            ocrd_page (OcrdPage): OcrdPage instance</span>
+<span class="sd">            ocrd_file (OcrdFile): OcrdFile instance wrapping OcrdPage</span>
+<span class="sd">            page_textequiv_consistency (string): &#39;strict&#39;, &#39;lax&#39;, &#39;fix&#39; or &#39;off&#39;</span>
+<span class="sd">            page_textequiv_strategy (string): Currently only &#39;index1&#39;</span>
+<span class="sd">            check_baseline (bool): whether Baseline must be fully within TextLine/Coords</span>
+<span class="sd">            check_coords (bool): whether *Region/TextLine/Word/Glyph must each be fully</span>
+<span class="sd">                                 contained within Border/*Region/TextLine/Word, resp.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            report (:class:`ValidationReport`) Report on the validity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ocrd_page</span><span class="p">:</span>
+            <span class="n">page</span> <span class="o">=</span> <span class="n">ocrd_page</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">ocrd_page</span><span class="o">.</span><span class="n">get_pcGtsId</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ocrd_file</span><span class="p">:</span>
+            <span class="n">page</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">page</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">silence</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;At least one of ocrd_page, ocrd_file or filename must be set&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">page_textequiv_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;index1&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;page_textequiv_strategy </span><span class="si">%s</span><span class="s2"> not implemented&quot;</span> <span class="o">%</span> <span class="n">page_textequiv_strategy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">page_textequiv_consistency</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="s1">&#39;lax&#39;</span><span class="p">,</span> <span class="s1">&#39;fix&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;page_textequiv_consistency level </span><span class="si">%s</span><span class="s2"> not implemented&quot;</span> <span class="o">%</span> <span class="n">page_textequiv_consistency</span><span class="p">)</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validating input file &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+        <span class="n">validate_consistency</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">page_textequiv_consistency</span><span class="p">,</span> <span class="n">page_textequiv_strategy</span><span class="p">,</span> <span class="n">check_baseline</span><span class="p">,</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">report</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
