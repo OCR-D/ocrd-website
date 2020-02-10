@@ -175,81 +175,276 @@ properties:
 
 ## Example
 
-This is from the [ocrd_kraken sample project](https://github.com/OCR-D/ocrd_kraken):
+This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesserocr):
 
-<!-- BEGIN-EVAL -w '```json' '```' -- cat ../ocrd_kraken/ocrd-tool.json -->
 ```json
 {
-  "git_url": "https://github.com/OCR-D/ocrd_kraken",
-  "version": "0.0.2",
+  "version": "0.8.0",
+  "git_url": "https://github.com/OCR-D/ocrd_tesserocr",
+  "dockerhub": "ocrd/tesserocr",
   "tools": {
-    "ocrd-kraken-binarize": {
-      "executable": "ocrd-kraken-binarize",
-      "input_file_grp": "OCR-D-IMG",
-      "output_file_grp": "OCR-D-IMG-BIN",
-      "categories": [
-        "Image preprocessing"
+    "ocrd-tesserocr-deskew": {
+      "executable": "ocrd-tesserocr-deskew",
+      "categories": ["Image preprocessing"],
+      "description": "Detect script, orientation and skew angle for pages or regions",
+      "input_file_grp": [
+        "OCR-D-IMG",
+        "OCR-D-SEG-BLOCK"
       ],
-      "steps": [
-        "preprocessing/optimization/binarization"
+      "output_file_grp": [
+        "OCR-D-DESKEW-BLOCK"
       ],
-      "description": "Binarize images with kraken",
+      "steps": ["preprocessing/optimization/deskewing"],
       "parameters": {
-        "level-of-operation": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "operation_level": {
           "type": "string",
-          "default": "page",
-          "enum": ["page", "block", "line"]
+          "enum": ["page","region"],
+          "default": "region",
+          "description": "PAGE XML hierarchy level to operate on"
+        },
+        "min_orientation_confidence": {
+          "type": "number",
+          "format": "float",
+          "default": 1.5,
+          "description": "Minimum confidence score to apply orientation as detected by OSD"
         }
       }
     },
-    "ocrd-kraken-segment": {
-      "executable": "ocrd-kraken-segment",
-      "categories": [
-        "Layout analysis"
+    "ocrd-tesserocr-recognize": {
+      "executable": "ocrd-tesserocr-recognize",
+      "categories": ["Text recognition and optimization"],
+      "description": "Recognize text in lines with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons)",
+      "input_file_grp": [
+        "OCR-D-SEG-BLOCK",
+        "OCR-D-SEG-LINE",
+        "OCR-D-SEG-WORD",
+        "OCR-D-SEG-GLYPH"
       ],
-      "steps": [
-        "layout/segmentation/region"
+      "output_file_grp": [
+        "OCR-D-OCR-TESS"
       ],
-      "description": "Block segmentation with kraken",
+      "steps": ["recognition/text-recognition"],
       "parameters": {
-        "text_direction": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "textequiv_level": {
           "type": "string",
-          "description": "Sets principal text direction",
-          "enum": ["horizontal-lr", "horizontal-rl", "vertical-lr", "vertical-rl"],
-          "default": "horizontal-lr"
+          "enum": ["region", "line", "word", "glyph"],
+          "default": "word",
+          "description": "Lowest PAGE XML hierarchy level to add the TextEquiv results to; when below `region`, implicitly adds segmentation below the line level, but requires existing line segmentation"
         },
-        "script_detect": {
+        "overwrite_words": {
           "type": "boolean",
-          "description": "Enable script detection on segmenter output",
-          "default": false
+          "default": false,
+          "description": "Remove existing layout and text annotation below the TextLine level (regardless of textequiv_level)."
         },
-        "maxcolseps": {"type": "number", "format": "integer", "default": 2},
-        "scale": {"type": "number", "format": "float", "default": 0},
-        "black_colseps": {"type": "boolean", "default": false},
-        "white_colseps": {"type": "boolean", "default": false}
+        "raw_lines": {
+          "type": "boolean",
+          "default": false,
+          "description": "Do not attempt additional segmentation (baseline+xheight+ascenders/descenders prediction) when using line images (i.e. when textequiv_level<region). Can increase accuracy for certain workflows. Disable when line segments/images may contain components of more than 1 line, or larger gaps/white-spaces."
+        },
+        "char_whitelist": {
+          "type": "string",
+          "default": "",
+          "description": "Enumeration of character hypotheses (from the model) to allow exclusively; overruled by blacklist if set."
+        },
+        "char_blacklist": {
+          "type": "string",
+          "default": "",
+          "description": "Enumeration of character hypotheses (from the model) to suppress; overruled by unblacklist if set."
+        },
+        "char_unblacklist": {
+          "type": "string",
+          "default": "",
+          "description": "Enumeration of character hypotheses (from the model) to allow inclusively."
+        },
+        "model": {
+          "type": "string",
+          "description": "tessdata model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or Fraktur)"
+        }
       }
     },
-    "ocrd-kraken-ocr": {
-      "executable": "ocrd-kraken-ocr",
-      "categories": ["Text recognition and optimization"],
-      "steps": [
-        "recognition/text-recognition"
+     "ocrd-tesserocr-segment-region": {
+      "executable": "ocrd-tesserocr-segment-region",
+      "categories": ["Layout analysis"],
+      "description": "Segment page into regions with Tesseract",
+      "input_file_grp": [
+        "OCR-D-IMG",
+        "OCR-D-SEG-PAGE",
+        "OCR-D-GT-SEG-PAGE"
       ],
-      "description": "OCR with kraken",
+      "output_file_grp": [
+        "OCR-D-SEG-BLOCK"
+      ],
+      "steps": ["layout/segmentation/region"],
       "parameters": {
-        "lines-json": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "overwrite_regions": {
+          "type": "boolean",
+          "default": true,
+          "description": "remove existing layout and text annotation below the Page level"
+        },
+        "padding": {
+          "type": "number",
+          "format": "integer",
+          "description": "extend detected region rectangles by this many (true) pixels",
+          "default": 0
+        },
+        "crop_polygons": {
+          "type": "boolean",
+          "default": false,
+          "description": "annotate polygon coordinates instead of bounding box rectangles"
+        },
+        "find_tables": {
+          "type": "boolean",
+          "default": true,
+          "description": "recognise tables as table regions (textord_tabfind_find_tables)"
+        }
+      }
+    },
+     "ocrd-tesserocr-segment-table": {
+      "executable": "ocrd-tesserocr-segment-table",
+      "categories": ["Layout analysis"],
+      "description": "Segment table regions into cell text regions with Tesseract",
+      "input_file_grp": [
+        "OCR-D-SEG-BLOCK",
+        "OCR-D-GT-SEG-BLOCK"
+      ],
+      "output_file_grp": [
+        "OCR-D-SEG-BLOCK"
+      ],
+      "steps": ["layout/segmentation/region"],
+      "parameters": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "overwrite_regions": {
+          "type": "boolean",
+          "default": true,
+          "description": "remove existing layout and text annotation below the region level"
+        }
+      }
+     },
+     "ocrd-tesserocr-segment-line": {
+      "executable": "ocrd-tesserocr-segment-line",
+      "categories": ["Layout analysis"],
+      "description": "Segment regions into lines with Tesseract",
+      "input_file_grp": [
+        "OCR-D-SEG-BLOCK",
+        "OCR-D-GT-SEG-BLOCK"
+      ],
+      "output_file_grp": [
+        "OCR-D-SEG-LINE"
+      ],
+      "steps": ["layout/segmentation/line"],
+      "parameters": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "overwrite_lines": {
+          "type": "boolean",
+          "default": true,
+          "description": "remove existing layout and text annotation below the TextRegion level"
+        }
+      }
+    },
+    "ocrd-tesserocr-segment-word": {
+      "executable": "ocrd-tesserocr-segment-word",
+      "categories": ["Layout analysis"],
+      "description": "Segment lines into words with Tesseract",
+      "input_file_grp": [
+        "OCR-D-SEG-LINE",
+        "OCR-D-GT-SEG-LINE"
+      ],
+      "output_file_grp": [
+        "OCR-D-SEG-WORD"
+      ],
+      "steps": ["layout/segmentation/word"],
+      "parameters": {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "overwrite_words": {
+          "type": "boolean",
+          "default": true,
+          "description": "remove existing layout and text annotation below the TextLine level"
+        }
+      }
+    },
+    "ocrd-tesserocr-crop": {
+      "executable": "ocrd-tesserocr-crop",
+      "categories": ["Image preprocessing"],
+      "description": "Poor man's cropping via region segmentation",
+      "input_file_grp": [
+	"OCR-D-IMG"
+      ],
+      "output_file_grp": [
+	"OCR-D-SEG-PAGE"
+      ],
+      "steps": ["preprocessing/optimization/cropping"],
+      "parameters" : {
+        "dpi": {
+          "type": "number",
+          "format": "float",
+          "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+          "default": -1
+        },
+        "padding": {
+          "type": "number",
+          "format": "integer",
+          "description": "extend detected border by this many (true) pixels on every side",
+          "default": 4
+        }
+      }
+    },
+    "ocrd-tesserocr-binarize": {
+      "executable": "ocrd-tesserocr-binarize",
+      "categories": ["Image preprocessing"],
+      "description": "Binarize regions or lines with Tesseract's global Otsu",
+      "input_file_grp": [
+        "OCR-D-IMG",
+        "OCR-D-SEG-BLOCK",
+        "OCR-D-SEG-LINE"
+      ],
+      "output_file_grp": [
+        "OCR-D-BIN-BLOCK",
+        "OCR-D-BIN-LINE"
+      ],
+      "steps": ["preprocessing/optimization/binarization"],
+      "parameters": {
+        "operation_level": {
           "type": "string",
-          "format": "url",
-          "required": "true",
-          "description": "URL to line segmentation in JSON"
+          "enum": ["region", "line"],
+          "default": "region",
+          "description": "PAGE XML hierarchy level to operate on"
         }
       }
     }
-
   }
 }
+
 ```
-
-<!-- END-EVAL -->
-
-

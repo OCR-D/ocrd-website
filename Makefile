@@ -136,11 +136,20 @@ core-docs:
 
 # Build the spec documents TODO translate
 spec:
+	cd repo/spec; traf -o json ocrd_tool.schema.yml
+	cd repo/spec; traf -o json bagit-profile.yml
+	# -cd repo/spec; traf -o json gt-profile.yml
+	# -cd repo/spec; traf -o json single-line.yml
+	# -cd repo/spec; traf -o json training-schema.yml
+	# -cd repo/spec; traf -o json model-evaluation-schema.yml
+	cd repo/spec; shinclude -c xml -i cli.md 2>/dev/null
+	cd repo/spec; shinclude -c xml -i ocrd_tool.md 2>/dev/null
+	cd repo/spec; shinclude -c xml -i ocrd_zip.md 2>/dev/null
 	for lang in en de;do \
 		mkdir -p $(SRCDIR)/$$lang/spec; \
 		find repo/spec -name '*.md'|while read md;do \
-			grep --max-count 1 --line-regexp '^---' "$$md" && \
 			basename=$$(basename $$md); \
+			grep --max-count 1 --line-regexp '^---' "$$md" \
 			|| sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md \
 			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
