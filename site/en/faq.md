@@ -211,7 +211,7 @@ group.
 
 ## OCR-D-Ground Truth
 
-### Which of the three transcription levels specified in the [Transcription Guidelines] (https://ocr-d.github.io/gt//trans_documentation/transkription.html) was used for the GT of OCR-D?
+### Which of the three transcription levels specified in the [Transcription Guidelines](https://ocr-d.github.io/gt//trans_documentation/transkription.html) was used for the GT of OCR-D?
 
 ### Are the three transcription levels designed hierarchically? Meaning, does level 3 include level 2 and level 1?
 
