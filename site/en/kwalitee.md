@@ -2,25 +2,9 @@
 layout: page
 lang: en
 lang-ref: kwalitee
-toc: true
+toc: false
 ---
 
+<div id="ocrd-kwalitee"></div>
 
-<table class="table"> <thead>
-    <tr>
-      GitHub
-    </tr>
-    <tr>
-      Last update
-    </tr>
-    <tr>
-      Number of contributors
-    </tr>
-  </thead> 
-  <tbody>
-    {% for repo in site.data.ocrd-repo %}
-    <h2>{{ repo.name }}</h2>
-    <pre>{{ repo }} </pre>
-    {% endfor %}
-  </tbody>
-  <table>
+<script src="/assets/ocrd-kwalitee.js"/>

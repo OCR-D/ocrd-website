@@ -91,6 +91,12 @@ $(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
+$(SRCDIR)/repos.json: $(KWALITEE_CONFIG)
+	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
+
+kwalitee: $(SRCDIR)/repos.json
+	cp -r repo/ocrd-kwalitee/webapp/dist/build.js site/assets/ocrd-kwalitee.js
+
 # TODO Build module information
 build-modules: ocrd-kwalitee.json
 	@echo NIH
@@ -98,6 +104,7 @@ build-modules: ocrd-kwalitee.json
 # TODO Build processor information
 build-processors:
 	@echo NIH
+	
 
 # serve the site dynamically
 serve:
