@@ -182,8 +182,8 @@ You can either install
 ```sh
 make all                       # Installs all the software (recommended)
 
-make ocrd-tesserocr-binarize   # Install ocrd_tesserocr which contains ocrd-tesserocr-binarize
-make ocrd-cis-ocropy-binarize  # Install ocrd_cis  which contains ocrd-cis-ocropy-binarize
+make ocrd-tesserocr-binarize   # Installs ocrd_tesserocr which contains ocrd-tesserocr-binarize
+make ocrd-cis-ocropy-binarize  # Installs ocrd_cis  which contains ocrd-cis-ocropy-binarize
 
 make all OCRD_MODULES="ocrd_tesserocr ocrd_cis"  # Will install both ocrd_tesserocr and ocrd_cis
 ```
@@ -196,7 +196,8 @@ regularly update the repository and its submodules:
 
 ```sh
 git pull
-make modules
+make modules                   # Updates all modules
+make core                      # Updates core
 ```
 
 ## Individual installation
