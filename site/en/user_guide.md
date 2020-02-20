@@ -196,13 +196,13 @@ several workspaces.
 
 Note that Taverna is not included in your [`ocrd_all`](https:/github.com/OCR-D/ocrd_all) installation. Therefore, you still might have to install it following this [setup guide](setup.md).
 
-Taverna comes with several predefined workflows which you can help you getting started. These are stored in the `/conf` directory. 
+Taverna comes with several predefined workflows which can help you getting started. These are stored in the `/conf` directory. 
 
 1. parameters.txt  (best results without gpu)
 2. parameters_fast.txt (good results for slower computers)
 3. parameters_gpu (best results with gpu)
 
-**Note:** Tested only with a limited set of pages of the 17./18. century. Results may be worser for other manuscripts.
+**Note:** Tested only with a limited set of pages of the 17./18. century. Results may be worser for other prints.
 
 For every workflow at least two files are needed: A `workflow_configuration` file contains a particular workflow which is invoked by a `parameters` file. For calling a workflow via Taverna, change into the `Taverna` folder and use the following command:
 
