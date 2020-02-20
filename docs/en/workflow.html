@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <style>
+  #swagger-ui pre.version {
+    padding: 2px !important;
+    background: initial !important;
+  }
+  #swagger-ui .topbar {
+    display: none;
+  }
+  blockquote {
+    background: #f99;
+  }
+  aside.menu > ul { 
+    position: fixed;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+  }
+  body > #swagger-ui,
+  body > .columns {
+    margin-top: 55px;
+  }
+  h2 code, h3 code, h4 code {
+    color: black;
+  }
+  .title-image  img {
+    max-height: 300px;
+  }
+
+  /* hide banner and navbar of gt guidelines / pagexml docs */
+  header[role="banner"] { display: none; }
+  nav[role="toc"] { display: none; }
+  footer[role="contentinfo"] { display: none; }
+
+  /* hide stuff from sphinx docs */
+  div.related[role="navigation"] { display: none; }
+  div.footer[role="contentinfo"] { display: none; }
+
+  div.footer img.footer-logo { max-height: 100px; }
+
+  </style>
+</head>
+<body><nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/about">The OCR-D-project</a>
+          
+          
+          <a class="navbar-item" href="/en/contact">Get in touch!</a>
+          
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          
+          <a class="navbar-item" href="/en/publications">Publications</a>
+          
+          
+          <a class="navbar-item" href="/en/slides">Slides and presentations</a>
+          
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          
+          <a class="navbar-item" href="/en/user_survey">User Survey</a>
+          
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Developers</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+          
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+          
+          <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">Users</a>
+        <div class="navbar-dropdown">
+          
+          
+          <a class="navbar-item" href="/en/setup">Setup Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/user_guide">User Guide</a>
+          
+          
+          <a class="navbar-item" href="/en/cookbook">Cookbook</a>
+          
+          
+          <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+          
+        </div>
+      </div>
+      
+      
+      
+      <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+          
+      </span>
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside class="column is-one-third menu">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#workflows">Workflows</a>
+    <ul>
+      <li><a href="#image-optimization">Image Optimization</a>
+        <ul>
+          <li><a href="#step-1-binarization">Step 1: Binarization</a>
+            <ul>
+              <li><a href="#available-processors">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-2-denoising">Step 2: Denoising</a>
+            <ul>
+              <li><a href="#available-processors-1">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-3-deskewing">Step 3: Deskewing</a>
+            <ul>
+              <li><a href="#available-processors-2">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-4-dewarping">Step 4: Dewarping</a>
+            <ul>
+              <li><a href="#available-processors-3">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-5-cropping">Step 5: Cropping</a>
+            <ul>
+              <li><a href="#available-processors-4">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#layout-analyzis">Layout Analyzis</a>
+        <ul>
+          <li><a href="#step-6-text-segmentation-page">Step 6: Text segmentation (page)</a>
+            <ul>
+              <li><a href="#available-processors-5">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#image-optimization-on-block-level">Image Optimization (on Block Level)</a>
+        <ul>
+          <li><a href="#step-7--binarization">Step 7:  Binarization</a>
+            <ul>
+              <li><a href="#available-processors-6">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step8--deskewing">Step8:  Deskewing</a>
+            <ul>
+              <li><a href="#available-processors-7">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-9--cliping">Step 9:  Cliping</a>
+            <ul>
+              <li><a href="#available-processors-8">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-10--line-segmentation">Step 10:  Line segmentation</a>
+            <ul>
+              <li><a href="#available-processors-9">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-11--line-correction">Step 11:  Line correction</a>
+            <ul>
+              <li><a href="#available-processors-10">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-12-dewarping-on-line-level">Step 12: Dewarping (on line level)</a>
+            <ul>
+              <li><a href="#available-processors-11">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#text-recognition-and-optimization">Text Recognition and Optimization</a>
+        <ul>
+          <li><a href="#step-13-text-recognition">Step 13: Text recognition</a>
+            <ul>
+              <li><a href="#available-processors-12">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#post-correction-optional">Post Correction (Optional)</a>
+        <ul>
+          <li><a href="#step-14-text-aligning">Step 14: Text aligning</a>
+            <ul>
+              <li><a href="#available-processors-13">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-15-post-correction">Step 15: Post correction</a>
+            <ul>
+              <li><a href="#available-processors-14">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#analysis-optional">Analysis (Optional)</a>
+        <ul>
+          <li><a href="#step-16-analysis">Step 16: Analysis</a>
+            <ul>
+              <li><a href="#available-processors-15">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="workflows">Workflows</h1>
+<p>There are several steps necessary to get the fulltext of a scanned print.</p>
+
+<h2 id="image-optimization">Image Optimization</h2>
+<p>Prepare image for better OCR.</p>
+
+<h3 id="step-1-binarization">Step 1: Binarization</h3>
+<p>First, all the images should be binarized. (Some segmentation algorithms seem to produce better results using the original image.)</p>
+
+<p>This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.</p>
+
+<p><strong>See also:</strong>  <strong>ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors">Available processors</h4>
+<p>| Processor                | Parameter                       | Remarks     |
+| ———————— | ——————————- | ———– |
+| ocrd-anybaseocr-binarize |                                 |             |
+| ocrd-cis-ocropy-binarize |                                 | Fast        |
+| ocrd-olena-binarize      | {"impl":"sauvola"}          |             |
+|                          | {"impl":"sauvola-ms"}       |             |
+|                          | {"impl":"sauvola-ms-fg"}    |             |
+|                          | {"impl":"sauvola-ms-split"} | Recommended |
+|                          | {"impl":"kim"}              |             |
+|                          | {"impl":"wolf"}             |             |
+|                          | {"impl":"niblack"}          |             |
+|                          | {"impl":"singh"}            |             |
+|                          | {"impl":"otsu"}             |             |</p>
+
+<h3 id="step-2-denoising">Step 2: Denoising</h3>
+<p>This processor removes artifacts from the binarized image. 
+May not be necessary for all prints.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-1">Available processors</h4>
+<p>| Processor               | Parameter                     | Remarks |
+| ———————– | —————————– | ——- |
+| ocrd-cis-ocropy-denoise | {“level-of-operation”:”page”} |         |</p>
+
+<h3 id="step-3-deskewing">Step 3: Deskewing</h3>
+<p>This processor takes a document image as input and does the skew correction of that document. The input images have to be binarized for this module to work.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-2">Available processors</h4>
+<p>| Processor              | Parameter                     | Remarks     |
+| ———————- | —————————– | ———– |
+| ocrd-anybaseocr-deskew |                               |             |
+| ocrd-tesserocr-deskew  | {“operation_level”:”page”}    | Fast        |
+| ocrd-cis-ocropy-deskew | {“level-of-operation”:”page”} | Recommended |</p>
+
+<h3 id="step-4-dewarping">Step 4: Dewarping</h3>
+<p>This processor takes a document image as input and makes the text line straight if its curved. The input image has to be binarized for the module to work.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-3">Available processors</h4>
+<p>| Processor              | Parameter                     | Remarks      |
+| ———————- | —————————– | ———— |
+| ocrd-anybaseocr-dewarp | {"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"} | For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong> |</p>
+
+<h3 id="step-5-cropping">Step 5: Cropping</h3>
+<p>This processor takes a document image as input and crops/selects the page content area only (i.e. it removes textual noise as well as any other noise around the page content area).</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-4">Available processors</h4>
+<p>| Processor              | Parameter                     | Remarks      |
+| ———————- | —————————– | ———— |
+| ocrd-anybaseocr-crop |           | The input image has to be binarized and <br />should be deskewed for the module to work. |</p>
+
+<h2 id="layout-analyzis">Layout Analyzis</h2>
+<p>Now the image should be optimized for segmentation.</p>
+<h3 id="step-6-text-segmentation-page">Step 6: Text segmentation (page)</h3>
+
+<p>This processor takes an (optimized) document image as an input and segments the image into the different text blocks. During this step a classification (text, marginalia, image, …) should also be done.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-5">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-segment-region</td>
+      <td> </td>
+      <td>Should also work for original images!?</td>
+    </tr>
+    <tr>
+      <td>ocrd-anybaseocr-block-segmentation</td>
+      <td>{"block_segmentation_model":<br />"/path/to/mrcnn",<br />"block_segmentation_weights":<br />"/path/to/model/block_segmentation_weights.h5"}</td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Should also work for original images!?</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{"level-of-operation":"page"}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="image-optimization-on-block-level">Image Optimization (on Block Level)</h2>
+<p>Now the blocks should be optimized for OCR.</p>
+
+<h3 id="step-7--binarization">Step 7:  Binarization</h3>
+<p>This processor takes a scanned colored /gray scale block as input and produces a black and white binarized image. This step should separate the background from the foreground.
+The binarization should be at least executed once (on page/block/line level).</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-6">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-binarize</td>
+      <td>{"operation_level":"region"}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step8--deskewing">Step8:  Deskewing</h3>
+<p>This processor takes an image as input and does the skew correction for all text blocks.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-7">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-9--cliping">Step 9:  Cliping</h3>
+<p>This processor can be used to remove intrusions of neighbouring segments in regions / lines of a workspace. It runs a (ad-hoc binarization and) connected component analysis on every text region / line of every PAGE in the input file group, as well as its overlapping neighbours. For each binary object of conflict, it determines whether it belongs to the neighbour, and can therefore be clipped to white. It references the resulting segment image files in the output PAGE (as AlternativeImage).</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-8">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-10--line-segmentation">Step 10:  Line segmentation</h3>
+<p>This processor can be used to segment regions into lines. It runs a (ad-hoc binarization and) line segmentation on every text region of every PAGE in the input file group, and adds a TextLine element with the resulting polygon outline to the annotation of the output PAGE.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-9">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-line</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-11--line-correction">Step 11:  Line correction</h3>
+<p>These processors can be used to correct the segmented lines.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-10">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{"level-of-operation":"line"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-resegment</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ocrd-segment-repair</td>
+      <td>{"sanitize":true}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-12-dewarping-on-line-level">Step 12: Dewarping (on line level)</h3>
+<p>These processors can be used to correct the segmented lines.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-11">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-dewarp</td>
+      <td>{"operation_level":"line",<br />"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"}</td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong></td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="text-recognition-and-optimization">Text Recognition and Optimization</h2>
+<h3 id="step-13-text-recognition">Step 13: Text recognition</h3>
+<p>This processor recognizes text in segmented lines.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-12">Available processors</h4>
+
+<p>| Processor               | Parameter                     | Remarks |
+| ———————– | —————————– | ——- |
+| ocrd-tesserocr-recognize | {"textequiv_level":"glyph",<br />"overwrite_words":true,"model":"Fraktur"} |  |
+|  | {"textequiv_level":"glyph",<br />"overwrite_words":true,<br />"model":"GT4HistOCR_50000000.997_191951"} | Recommended <br /> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50&lt;br/&gt;00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a> |
+| ocrd-calamari-recognize | {"checkpoint":"/path/to/models/*.ckpt.json"} | Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> |
+<strong>Note:</strong> For ‘ocrd-tesserocr’ the environment variable ‘TESSDATA_PREFIX’ has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )</p>
+
+<h2 id="post-correction-optional">Post Correction (Optional)</h2>
+<h3 id="step-14-text-aligning">Step 14: Text aligning</h3>
+<p>This processor alignes texts from multiple OCR-engines in one PAGE.xml.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-13">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-align</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-15-post-correction">Step 15: Post correction</h3>
+<p>This processor tries to optimize the recognized text.</p>
+
+<p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<h4 id="available-processors-14">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cor-asv-ann-process</td>
+      <td>{"textequiv_level":"line","model_file":"/path/to/model/model.h5"}</td>
+      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-post-correct.sh</td>
+      <td>???</td>
+      <td>Not tested yet!</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="analysis-optional">Analysis (Optional)</h2>
+<p>If Ground Truth data is available, the OCR can be analysed.</p>
+<h3 id="step-16-analysis">Step 16: Analysis</h3>
+<p>This processor can be used to analyse the output of the OCR.</p>
+<h4 id="available-processors-15">Available processors</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-dinglehopper</td>
+      <td> </td>
+      <td>First input group should point to the ground truth.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <a href="https://github.com/OCR-D">GitHub</a>
+      |
+      <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+      |
+      <a href="/sitemap.xml">sitemap.xml</a>
+      |
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>
