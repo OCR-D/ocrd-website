@@ -231,13 +231,53 @@ of your new `workflow_configuration.txt` file:
 nano [name of your new workflow_configuration.txt]
 ```
 
-Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. For information on the available processors see ???
+Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. The first column contains the name of the processor, the following two columns indicate the names of the input and the output filegroups. The forth column for group-ID can be left blank. In the last column you can indicate the log level. 
+
+If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a `json` file which should be stored in Taverna's subdirectory `models`. See [Calling a single processor] on how to create `json` files. Alternatively, you can directly write down the parameter needed using the following syntax:
+
+```sh
+@VolkerHartmann bitte Aufruf ergänzen!!
+```
+
+For information on the available processors see ???
 
 👷
 
 #### workflow-config
 
 👷
+workflow-configuration is another tool for specifying OCR-D-workflows. It allows you to run workflows which are configured and controlled via GNU makefiles. In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.
+
+The `workflow-configuration` directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see [the table on GitHub](https://github.com/bertsky/workflow-configuration#usage).
+
+**Note:** Those workflows are configured for GT-data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail. 
+
+In order to run a workflow, change into the `workflow_configuration` directory and call the desired configuration file on your workspace(s):
+
+```sh
+make -f [name_of_your_workflow.mk] [/path/to/your/workspace1] [/path/to/your/workspace2]
+```
+
+As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. The images in your indicated workspace(s) will be processed and the respective
+output along with the log files will be saved into the same workspace(s). 
+
+When you want to adjust a workflow for better results on your particular
+images, you should start off by copying the original `workflow.mk` 
+file:
+
+```sh
+cp workflow.mk [name_of_your_new_workflow_configuration.mk]
+```
+
+Then open your new `workflow.mk` file with an editor like e.g. Nano and exchange or add the processors or parameters to your needs: 
+
+```sh
+nano [name_of_your_new_workflow_configuration.mk]
+```
+
+You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable `.DEFAULT_GOAL` pointing to that target can be set anywhere in the makefile. 
+
+**Note:** Also see the [extensive Readme of workflow-configuration](https://github.com/bertsky/workflow-configuration#usage) on how to adjust the preconfigured workflows to your needs.
 
 ### Specifying New OCR-D-Workflows
 
