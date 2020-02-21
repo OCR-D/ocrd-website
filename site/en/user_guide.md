@@ -1,6 +1,6 @@
 ---
 layout: page
-author: Elisabeth Engel
+author: Elisabeth Engl
 date: 2020-02-04T19:16:54+01:00
 lang: en
 lang-ref: from-novice-to-pro
@@ -37,7 +37,7 @@ be stored in this directory.
 
 How you prepare a workspace depends on whether you already have or don't have a
 METS file with the paths to the images you want to process. For usage within
-OCR-D your METS file should look similar to this example. 
+OCR-D your METS file should look similar to [this example](example_mets.md). 
 
 #### Already existing METS
 
@@ -77,7 +77,7 @@ and copy the folder containing your pictures to be processed into the workspace:
 ```sh
 cp -r [/path/to/your/pictures] .
 ```
-**Information:** All pictures must have the same format (tif, jpg, ...)
+**Note:** All pictures must have the same format (tif, jpg, ...)
 
 Now you can add your pictures to the METS. When creating the workspace, a blank
 METS file was created, too, to which you can add the pictures to be processed. 
@@ -133,25 +133,25 @@ Your command could e.g. look like this:
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json
 ```
 
+**Note:** For processors using multiple input-, or output groups you have to use a comma separated list. 
+
+E.g.: 
+
+```sh
+ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
+```
+
 The [`parameter.json`](`parameter.json`) file can be created with the following command:
 
 ```
 echo '{ "[parameter]": "[specification]" }' > [name of your param.json file]
 ```
 
-Instead of creating a calling a `parameter.json` file you can also directly
-write down the parameters when invoking a processor with writing your data to a JSON file, like so:
+Instead of calling a `parameter.json` file you can also directly
+write down the parameters when invoking a processor:
 
 ```sh
 -p '{"[parameter]": "[value]"}'
-```
-
-**Note:** For processors using multiple input-, or output groups you must have to use a comma separated list. 
-
-E.g.: 
-
-```sh
-ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 ```
 
 **Note:** If multiple parameters are necessary they have to be separated by a comma. (No comma after the last parameter!)
@@ -200,9 +200,9 @@ Taverna comes with several predefined workflows which can help you getting start
 
 1. parameters.txt  (best results without gpu)
 2. parameters_fast.txt (good results for slower computers)
-3. parameters_gpu (best results with gpu)
+3. parameters_gpu.txt (best results with gpu)
 
-**Note:** Tested only with a limited set of pages of the 17./18. century. Results may be worser for other prints.
+**Note:** Those workflows are only tested with a limited set of pages of the 17./18. century. Results may be worse for other prints.
 
 For every workflow at least two files are needed: A `workflow_configuration` file contains a particular workflow which is invoked by a `parameters` file. For calling a workflow via Taverna, change into the `Taverna` folder and use the following command:
 
@@ -231,7 +231,7 @@ of your new `workflow_configuration.txt` file:
 nano [name of your new workflow_configuration.txt]
 ```
 
-Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs. 
+Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. For information on the available processors see ???
 
 👷
 
