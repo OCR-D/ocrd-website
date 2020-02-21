@@ -7,3 +7,12 @@ lang-ref: use
 
 # Willkommen im Nutzerbereich von OCR-D!
 Dieser Bereich enthält alle Informationen, die für den Einsatz der OCR-D-Software in Bibliotheken und ähnlichen Einrichtungen relevant sind. Erfahren Sie, wie Sie die Software in Ihrer Einrichtung installieren und nutzen können.
+
+* [Setup Anleitung](https://ocr-d.github.io/en/setup)
+  * Schritt-für-Schritt Anleitung zur Installation von OCR-D *(aktuell nur auf Englisch verfügbar)*
+* [Nutzeranleitung](https://ocr-d.github.io/en/user_guide)
+  * Instruktionen zum Arbeiten mit OCR-D *(aktuell nur auf Englisch verfügbar)*
+* [Kochbuch](https://ocr-d.github.io/de/cookbook)
+  * Beispiele für die Anwendung von OCR-D *(aktuell nur auf Englisch verfügbar)*
+* [Glossar](https://ocr-d.github.io/de/spec/glossary)
+  * Fachbegriffe aus dem Bereich der OCR erklärt *(aktuell nur auf Englisch verfügbar)*
