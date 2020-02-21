@@ -53,6 +53,8 @@ only need one format. We strongly recommend using the format with the best
 resolution. Optionally, you can specify to only load the filegroup needed at
 the end of the command above.
 
+TODO: add how to download particular filegroups
+
 You can also optionally specify a particular name for your workspace. If you
 don't, it will simply generate a name by itself.
 
@@ -236,10 +238,13 @@ Then open your new `workflow_configuration.txt` file respectively and adjust it 
 If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a `json` file which should be stored in Taverna's subdirectory `models`. See [Calling a single processor] on how to create `json` files. Alternatively, you can directly write down the parameter needed using the following syntax:
 
 ```sh
-@VolkerHartmann bitte Aufruf ergänzen!!
+TODO: @VolkerHartmann bitte Aufruf ergänzen!!
 ```
 
 For information on the available processors see ???
+
+TODO: add link to description of processors
+
 
 👷
 
@@ -288,3 +293,5 @@ images, we recommend using an exisiting workflow as specified in `Taverna` or
 `workflow-config` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
 the existing processors, their tasks and features, see ???.
+
+TODO: add link to description of processors
