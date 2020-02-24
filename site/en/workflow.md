@@ -24,7 +24,9 @@ First, all the images should be binarized. Many of the following processors requ
 
 This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.
 
-![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png)
+| | |
+|---|---|
+| ![](/assets/workflow/Original.tif) | ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |
 
 **See also:**  **ToDo reference to the result inside talk on final workshop** 
 
@@ -49,7 +51,9 @@ May not be necessary for all prints.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/denoise.PNG)
+| | |
+|---|---|
+| ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |![](/assets/workflow/denoise.PNG) |
 
 #### Available processors
 | Processor               | Parameter                     | Remarks |
@@ -61,7 +65,9 @@ This processor takes a document image as input and does the skew correction of t
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png)
+| | |
+|---|---|
+|![](/assets/workflow/denoise.PNG) |![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |
 
 #### Available processors
 | Processor              | Parameter                     | Remarks     |
@@ -85,7 +91,9 @@ This processor takes a document image as input and crops/selects the page conten
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/OCR-D-IMG-CROP_0001.png)
+| | |
+|---|---|
+|![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |
 
 #### Available processors
 | Processor              | Parameter                     | Remarks      |
@@ -100,7 +108,9 @@ This processor takes an (optimized) document image as an input and segments the 
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/seg-page.PNG)
+| | |
+|---|---|
+|![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |![](/assets/workflow/seg-page.PNG) |
 
 #### Available processors
 
@@ -130,7 +140,9 @@ This processor takes an image as input and does the skew correction for all text
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png)
+| | |
+|---|---|
+|![](/assets/workflow/seg-page.PNG) |![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |
 
 #### Available processors
 
@@ -154,7 +166,9 @@ This processor can be used to segment regions into lines. It runs a (ad-hoc bina
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png)
+| | |
+|---|---|
+|![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
 
 #### Available processors
 
@@ -181,7 +195,9 @@ This processor can be used to dewarp the segmented lines.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png)
+| | |
+|---|---|
+|![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
 
 #### Available processors
 
