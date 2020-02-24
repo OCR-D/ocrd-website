@@ -8,13 +8,17 @@ toc: true
 ---
 
 # Workflows
-There are several steps necessary to get the fulltext of a scanned print.
+There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
+
+![](/assets/Funktionsmodell.png)
+
+The following instruction describes all steps of the OCR workflow. Depending on your particular print or rather images not all of those steps will be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
 
 ## Image Optimization
 Prepare image for better OCR.
 
 ### Step 1: Binarization
-First, all the images should be binarized. (Some segmentation algorithms seem to produce better results using the original image.)
+First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
 
 This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.
 
@@ -78,7 +82,7 @@ This processor takes a document image as input and crops/selects the page conten
 | ---------------------- | ----------------------------- | ------------ |
 | ocrd-anybaseocr-crop |           | The input image has to be binarized and <br />should be deskewed for the module to work. |
 
-## Layout Analyzis
+## Layout Analysis
 Now the image should be optimized for segmentation.
 ### Step 6: Text segmentation (page)
 
@@ -109,7 +113,7 @@ The binarization should be at least executed once (on page/block/line level).
 | ----------------------- | ----------------------------- | ------- |
 | ocrd-tesserocr-binarize | {\"operation_level\":\"region\"} |         |
 
-### Step8:  Deskewing 
+### Step 8:  Deskewing 
 This processor takes an image as input and does the skew correction for all text blocks.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
