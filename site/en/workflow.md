@@ -1,6 +1,6 @@
 ---
 layout: page
-author: Volker Hartmann
+author: Volker Hartmann, Elisabeth Engl
 date: 2020-02-20T10:14:34+01:00
 lang: en
 lang-ref: workflow
@@ -17,20 +17,21 @@ The following instruction describes all steps of the OCR workflow. Depending on 
 ## Image Optimization
 Prepare image for better OCR.
 
-![](/assets/workflow/Original.tif)
+![](/assets/workflow/Original.png)
 
 ### Step 1: Binarization
 First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
 
 This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.
 
-| | |
-|---|---|
-| ![](/assets/workflow/Original.tif) | ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |
+|                                    |                                                      |
+| ---                                | ---                                                  |
+| ![](/assets/workflow/Original.png) | ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |
 
 **See also:**  **ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
+
 | Processor                | Parameter                       | Remarks     |
 | ------------------------ | ------------------------------- | ----------- |
 | ocrd-anybaseocr-binarize |                                 |             |
@@ -46,71 +47,87 @@ This processor takes a scanned colored /gray scale document image as input and p
 |                          | {\"impl\":\"otsu\"}             |             |
 
 ### Step 2: Denoising
+
 This processor removes artifacts from the binarized image. 
+
 May not be necessary for all prints.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-| ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |![](/assets/workflow/denoise.PNG) |
+|                                                      |                                   |
+| ---                                                  | ---                               |
+| ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) | ![](/assets/workflow/denoise.PNG) |
 
 #### Available processors
+
 | Processor               | Parameter                     | Remarks |
 | ----------------------- | ----------------------------- | ------- |
 | ocrd-cis-ocropy-denoise | {"level-of-operation":"page"} |         |
 
 ### Step 3: Deskewing
-This processor takes a document image as input and does the skew correction of that document. The input images have to be binarized for this module to work.
+
+This processor takes a document image as input and does the skew correction of
+that document. The input images have to be binarized for this module to work.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/denoise.PNG) |![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |
+|                                   |                                                 |
+| ---                               | ---                                             |
+| ![](/assets/workflow/denoise.PNG) | ![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |
 
 #### Available processors
-| Processor              | Parameter                     | Remarks     |
-| ---------------------- | ----------------------------- | ----------- |
-| ocrd-anybaseocr-deskew |                               |             |
-| ocrd-tesserocr-deskew  | {"operation_level":"page"}    | Fast        |
-| ocrd-cis-ocropy-deskew | {"level-of-operation":"page"} | Recommended |
+
+| Processor                         | Parameter                                       | Remarks     |
+| ----------------------            | -----------------------------                   | ----------- |
+| ocrd-anybaseocr-deskew            |                                                 |             |
+| ocrd-tesserocr-deskew             | {"operation_level":"page"}                      | Fast        |
+| ocrd-cis-ocropy-deskew            | {"level-of-operation":"page"}                   | Recommended |
 
 ### Step 4: Dewarping
+
 This processor takes a document image as input and makes the text line straight if its curved. The input image has to be binarized for the module to work.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
+
 | Processor              | Parameter                     | Remarks      |
 | ---------------------- | ----------------------------- | ------------ |
 | ocrd-anybaseocr-dewarp | {\"pix2pixHD\":\"/path/to/pix2pixHD/\",<br />\"model_name\":\"/path/to/pix2pixHD/models\"} | For available models take a look at this [site](https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models) <br /> Parameter 'model_name' is missleading. Given directory has to contain a file named 'latest_net_G.pth' <br/> **GPU required!** |
 
 ### Step 5: Cropping
-This processor takes a document image as input and crops/selects the page content area only (i.e. it removes textual noise as well as any other noise around the page content area).
+
+This processor takes a document image as input and crops/selects the page
+content area only (i.e. it removes textual noise as well as any other noise
+around the page content area).
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |
+|                                                 |                                               |
+| ---                                             | ---                                           |
+| ![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) | ![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |
 
 #### Available processors
+
 | Processor              | Parameter                     | Remarks      |
 | ---------------------- | ----------------------------- | ------------ |
 | ocrd-anybaseocr-crop |           | The input image has to be binarized and <br />should be deskewed for the module to work. |
 
 ## Layout Analysis
+
 Now the image should be optimized for segmentation.
+
 ### Step 6: Text segmentation (page)
 
-This processor takes an (optimized) document image as an input and segments the image into the different text blocks. During this step a classification (text, marginalia, image, ...) should also be done.
+This processor takes an (optimized) document image as an input and segments the
+image into the different text blocks. During this step a classification (text,
+marginalia, image, ...) should also be done.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |![](/assets/workflow/seg-page.PNG) |
+|                                               |                                    |
+| ---                                           | ---                                |
+| ![](/assets/workflow/OCR-D-IMG-CROP_0001.png) | ![](/assets/workflow/seg-page.PNG) |
 
 #### Available processors
 
@@ -121,28 +138,34 @@ This processor takes an (optimized) document image as an input and segments the 
 | ocrd-cis-ocropy-segment  | {\"level-of-operation\":\"page\"} |         |
 
 ## Image Optimization (on Block Level)
+
 Now the blocks should be optimized for OCR.
 
 ### Step 7:  Binarization 
-This processor takes a scanned colored /gray scale block as input and produces a black and white binarized image. This step should separate the background from the foreground.
+
+This processor takes a scanned colored /gray scale block as input and produces
+a black and white binarized image. This step should separate the background
+from the foreground.
+
 The binarization should be at least executed once (on page/block/line level).
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
+| Processor               | Parameter                        | Remarks |
+| ----------------------- | -----------------------------    | ------- |
 | ocrd-tesserocr-binarize | {\"operation_level\":\"region\"} |         |
 
 ### Step 8:  Deskewing 
+
 This processor takes an image as input and does the skew correction for all text blocks.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/seg-page.PNG) |![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |
+|                                    |                                                            |
+| ---                                | ---                                                        |
+| ![](/assets/workflow/seg-page.PNG) | ![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |
 
 #### Available processors
 
@@ -151,24 +174,35 @@ This processor takes an image as input and does the skew correction for all text
 | ocrd-cis-ocropy-deskew | {\"level-of-operation\":\"region\"} |         |
 
 ### Step 9:  Cliping 
-This processor can be used to remove intrusions of neighbouring segments in regions / lines of a workspace. It runs a (ad-hoc binarization and) connected component analysis on every text region / line of every PAGE in the input file group, as well as its overlapping neighbours. For each binary object of conflict, it determines whether it belongs to the neighbour, and can therefore be clipped to white. It references the resulting segment image files in the output PAGE (as AlternativeImage).
+
+This processor can be used to remove intrusions of neighbouring segments in
+regions / lines of a workspace. It runs a (ad-hoc binarization and) connected
+component analysis on every text region / line of every PAGE in the input file
+group, as well as its overlapping neighbours. For each binary object of
+conflict, it determines whether it belongs to the neighbour, and can therefore
+be clipped to white. It references the resulting segment image files in the
+output PAGE (as AlternativeImage).
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-ocropy-clip | {\"level-of-operation\":\"region\"} |         |
+| Processor               | Parameter                           | Remarks |
+| ----------------------- | -----------------------------       | ------- |
+| ocrd-cis-ocropy-clip    | {\"level-of-operation\":\"region\"} |         |
 
-### Step 10:  Line segmentation 
-This processor can be used to segment regions into lines. It runs a (ad-hoc binarization and) line segmentation on every text region of every PAGE in the input file group, and adds a TextLine element with the resulting polygon outline to the annotation of the output PAGE.
+### Step 10: Line segmentation 
+
+This processor can be used to segment regions into lines. It runs a (ad-hoc
+binarization and) line segmentation on every text region of every PAGE in the
+input file group, and adds a TextLine element with the resulting polygon
+outline to the annotation of the output PAGE.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
+|                                                            |                                                                                |
+| ---                                                        | ---                                                                            |
+| ![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) | ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
 
 #### Available processors
 
@@ -178,26 +212,28 @@ This processor can be used to segment regions into lines. It runs a (ad-hoc bina
 | ocrd-tesserocr-segment-line |  |         |
 
 ### Step 11:  Line correction 
+
 This processor can be used to correct the segmented lines.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-ocropy-clip | {\"level-of-operation\":\"line\"} |         |
-| ocrd-cis-ocropy-resegment |  |         |
-| ocrd-segment-repair | {\"sanitize\":true} |         |
+| Processor                 | Parameter                         | Remarks |
+| -----------------------   | -----------------------------     | ------- |
+| ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"line\"} |         |
+| ocrd-cis-ocropy-resegment |                                   |         |
+| ocrd-segment-repair       | {\"sanitize\":true}               |         |
 
 ### Step 12: Dewarping (on line level)
+
 This processor can be used to dewarp the segmented lines.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-| | |
-|---|---|
-|![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
+|                                                                                |                                                                                |
+| ---                                                                            | ---                                                                            |
+| ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) | ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
 
 #### Available processors
 
@@ -207,7 +243,9 @@ This processor can be used to dewarp the segmented lines.
 | ocrd-cis-ocropy-dewarp |  |         |
 
 ## Text Recognition and Optimization
+
 ### Step 13: Text recognition
+
 This processor recognizes text in segmented lines.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
@@ -222,7 +260,9 @@ This processor recognizes text in segmented lines.
 **Note:** For 'ocrd-tesserocr' the environment variable 'TESSDATA_PREFIX' has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )
 
 ## Post Correction (Optional)
+
 ### Step 14: Text aligning
+
 This processor alignes texts from multiple OCR-engines in one PAGE.xml. 
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
@@ -234,6 +274,7 @@ This processor alignes texts from multiple OCR-engines in one PAGE.xml.
 | ocrd-cis-align          |                               |         |
 
 ### Step 15: Post correction
+
 This processor tries to optimize the recognized text. 
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
@@ -247,12 +288,16 @@ This processor tries to optimize the recognized text.
 
 
 ## Analysis (Optional)
+
 If Ground Truth data is available, the OCR can be analysed.
+
 ### Step 16: Analysis
+
 This processor can be used to analyse the output of the OCR.
+
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-dinglehopper       |                               | First input group should point to the ground truth.   |
+| Processor               | Parameter                     | Remarks                                             |
+| ----------------------- | ----------------------------- | -------                                             |
+| ocrd-dinglehopper       |                               | First input group should point to the ground truth. |
 
