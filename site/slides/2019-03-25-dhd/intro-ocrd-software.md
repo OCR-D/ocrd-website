@@ -1,5 +1,3 @@
-layout: true
-  
 <div class="my-footer">
   <table>
     <tr>

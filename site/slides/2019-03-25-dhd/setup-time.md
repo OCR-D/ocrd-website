@@ -1,3 +1,9 @@
+---
+layout: page
+lang: de
+toc: true
+---
+
 # Setup Time!
 
 <p style="text-align: center">
@@ -9,30 +15,6 @@
 <img src="https://media.giphy.com/media/zWryHmkavNdDO/giphy-tumblr.gif" height="250"/>
 <img src="https://media.giphy.com/media/pxl9J1y4n6UCI/giphy.gif" height="250"/>
 </p>
-
-<!-- BEGIN-MARKDOWN-TOC -->
-* [What operating system are you on?](#what-operating-system-are-you-on)
-	* [Linux](#linux)
-	* [Mac OS X](#mac-os-x)
-	* [Windows 7](#windows-7)
-	* [Windows 10](#windows-10)
-* [Installation OCR-D Stack](#installation-ocr-d-stack)
-	* [Python](#python)
-	* [Setup a virtualenv](#setup-a-virtualenv)
-	* [Activate virtualenv](#activate-virtualenv)
-	* [Install ocrd core Software](#install-ocrd-core-software)
-		* [Test Installation](#test-installation)
-	* [Install OCR-D Modules](#install-ocr-d-modules)
-		* [ocrd_ocropy](#ocrd_ocropy)
-			* [Test Installation](#test-installation-1)
-		* [ocrd_kraken](#ocrd_kraken)
-			* [Test Installation](#test-installation-2)
-		* [ocrd_tesserocr](#ocrd_tesserocr)
-			* [Test Installation](#test-installation-3)
-* [Install PAGE Viewer](#install-page-viewer)
-* [Yay :fireworks: :tada:](#yay-fireworks-tada)
-
-<!-- END-MARKDOWN-TOC -->
 
 ## What operating system are you on?
 

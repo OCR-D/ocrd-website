@@ -1,3 +1,9 @@
+---
+layout: page
+lang: de
+toc: true
+---
+
 # GroundTruth für die Digital Humanities : Workshop
 
 Literatur:
@@ -95,5 +101,5 @@ Voraussetzung: installierter Transkribus (https://transkribus.eu/Transkribus/)
 
 
 
-[^Gt-Definition]: Matthias Boenig, Maria Federbusch, Elisa Herrmann, Clemens Neudecker, Kay-Michael Würzner: Ground Truth : Grundwahrheit oder Ad-Hoc-Lösung? Wo stehendie Digital Humanities?
+[^Gt-Definition]: Matthias Boenig, Maria Federbusch, Elisa Herrmann, Clemens Neudecker, Kay-Michael Würzner: Ground Truth : Grundwahrheit oder Ad-Hoc-Lösung? Wo stehen die Digital Humanities?
 http://dhd2018.uni-koeln.de/wp-content/uploads/boa-DHd2018-web-ISBN.pdf#page=221
