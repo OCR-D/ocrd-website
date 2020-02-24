@@ -13,7 +13,9 @@ layout: true
 
 class: title-slide
 
-# OCR-D@DHd2019 - Was ist OCR?
+# OCR-D@DHd2019
+
+## Was ist OCR?
 
 | Konstantin Baierer                                                                   |
 | :-------------------------------------------:                                        |
@@ -21,7 +23,7 @@ class: title-slide
 
 ## &nbsp;
 
-## [http://ocr-d.github.io/slides/2019-03-25-dhd](http://ocr-d.github.io/slides/2019-03-25-dhd)
+# [http://ocr-d.github.io/slides/2019-03-25-dhd](http://ocr-d.github.io/slides/2019-03-25-dhd)
 
 ---
 
@@ -89,7 +91,7 @@ class: title-slide
   > Workflow um auf Grundlage eingescannter Rasterbilddaten **Layout** und
   > Inhalt eines Dokuments möglichst wirklichkeitsgetreu mit Markup abzubilden
 
-- Klassifikation der Blöcke (bspw "Marginalie", "Tabelle")
+- Klassifikation der Blöcke (bspw. "Marginalie", "Tabelle")
 - Spalten und andere grobe Strukturen
 - Zeilen
 
@@ -149,7 +151,7 @@ class: title-slide
 
 # Historischer Abriss - Accessibility
 
-  * Ideen und Prototype schon im 19. Jhdt
+  * Ideen und Prototype schon im 19. Jhdt.
   * 1931: "Statistical Machine" (Emanuel Goldberg) (erkennt einfache Muster für Retrieval
   * 1951: "Gismo" (Shephard) erkennt Morse und einfache Lettern
   * 1962: "Optacon" (Linvill) übersetzt Buchstaben in Textur
@@ -206,7 +208,7 @@ class: title-slide
 
 1. Cropping (Abschneiden der Ränder)
 2. Binarisierung (Farbig zu schwarz weiss)
-3. Despeckling (Entferne von "Fliegendreck" u.ä.)
+3. Despeckling (Entfernen von "Fliegendreck" u.ä.)
 4. Dewarping (Entzerren von Wellen und dgl.)
 
 <img src="figures/ocrd-fmodell.png"/>
@@ -657,7 +659,7 @@ background-image: url(figures/image_classification_006.png)
 
 * Arbeitet nicht auf Zeichen sondern ganzen Zeilen
 * Kann mit relativ wenig Ground Truth passgenau auf ein Dokument trainiert werden
-* Erreicht korrekt konfiguriert extrem hohe Erkennungsgenauigkeien
+* Erreicht korrekt konfiguriert extrem hohe Erkennungsgenauigkeiten
 * Open Source Lösungen
   * Ocropus
   * kraken
@@ -701,7 +703,7 @@ background-image: url(figures/languages-in-asia.jpg)
 * Nicht-lateinische Schriften
 * Nicht-segmentierte Schriften
 
-* => Großes Engagement insbesondere auch asiatischer Enwickler*innen
+* => Großes Engagement insbesondere auch asiatischer Entwickler*innen
 
 ---
 
