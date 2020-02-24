@@ -94,6 +94,9 @@
           <a class="navbar-item" href="/en/user_guide">User Guide</a>
           
           
+          <a class="navbar-item" href="/en/workflow">Workflows</a>
+          
+          
           <a class="navbar-item" href="/en/cookbook">Cookbook</a>
           
           
@@ -178,7 +181,7 @@
               <li><a href="#available-processors-8">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-10--line-segmentation">Step 10:  Line segmentation</a>
+          <li><a href="#step-10-line-segmentation">Step 10: Line segmentation</a>
             <ul>
               <li><a href="#available-processors-9">Available processors</a></li>
             </ul>
@@ -245,78 +248,285 @@
 <h2 id="image-optimization">Image Optimization</h2>
 <p>Prepare image for better OCR.</p>
 
+<p><img src="/assets/workflow/Original.png" alt="" /></p>
+
 <h3 id="step-1-binarization">Step 1: Binarization</h3>
 <p>First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.</p>
 
 <p>This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.</p>
 
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/Original.png" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
+
 <p><strong>See also:</strong>  <strong>ToDo reference to the result inside talk on final workshop</strong></p>
 
 <h4 id="available-processors">Available processors</h4>
-<p>| Processor                | Parameter                       | Remarks     |
-| ———————— | ——————————- | ———– |
-| ocrd-anybaseocr-binarize |                                 |             |
-| ocrd-cis-ocropy-binarize |                                 | Fast        |
-| ocrd-olena-binarize      | {"impl":"sauvola"}          |             |
-|                          | {"impl":"sauvola-ms"}       |             |
-|                          | {"impl":"sauvola-ms-fg"}    |             |
-|                          | {"impl":"sauvola-ms-split"} | Recommended |
-|                          | {"impl":"kim"}              |             |
-|                          | {"impl":"wolf"}             |             |
-|                          | {"impl":"niblack"}          |             |
-|                          | {"impl":"singh"}            |             |
-|                          | {"impl":"otsu"}             |             |</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-binarize</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td> </td>
+      <td>Fast</td>
+    </tr>
+    <tr>
+      <td>ocrd-olena-binarize</td>
+      <td>{"impl":"sauvola"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"sauvola-ms"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"sauvola-ms-fg"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"sauvola-ms-split"}</td>
+      <td>Recommended</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"kim"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"wolf"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"niblack"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"singh"}</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>{"impl":"otsu"}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
 <h3 id="step-2-denoising">Step 2: Denoising</h3>
-<p>This processor removes artifacts from the binarized image. 
-May not be necessary for all prints.</p>
+
+<p>This processor removes artifacts from the binarized image.</p>
+
+<p>May not be necessary for all prints.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt="" /></td>
+      <td><img src="/assets/workflow/denoise.PNG" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-1">Available processors</h4>
-<p>| Processor               | Parameter                     | Remarks |
-| ———————– | —————————– | ——- |
-| ocrd-cis-ocropy-denoise | {“level-of-operation”:”page”} |         |</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
 <h3 id="step-3-deskewing">Step 3: Deskewing</h3>
-<p>This processor takes a document image as input and does the skew correction of that document. The input images have to be binarized for this module to work.</p>
+
+<p>This processor takes a document image as input and does the skew correction of
+that document. The input images have to be binarized for this module to work.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/denoise.PNG" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
+
 <h4 id="available-processors-2">Available processors</h4>
-<p>| Processor              | Parameter                     | Remarks     |
-| ———————- | —————————– | ———– |
-| ocrd-anybaseocr-deskew |                               |             |
-| ocrd-tesserocr-deskew  | {“operation_level”:”page”}    | Fast        |
-| ocrd-cis-ocropy-deskew | {“level-of-operation”:”page”} | Recommended |</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>{“operation_level”:”page”}</td>
+      <td>Fast</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>Recommended</td>
+    </tr>
+  </tbody>
+</table>
 
 <h3 id="step-4-dewarping">Step 4: Dewarping</h3>
+
 <p>This processor takes a document image as input and makes the text line straight if its curved. The input image has to be binarized for the module to work.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
 <h4 id="available-processors-3">Available processors</h4>
-<p>| Processor              | Parameter                     | Remarks      |
-| ———————- | —————————– | ———— |
-| ocrd-anybaseocr-dewarp | {"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"} | For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong> |</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-dewarp</td>
+      <td>{"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"}</td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 <h3 id="step-5-cropping">Step 5: Cropping</h3>
-<p>This processor takes a document image as input and crops/selects the page content area only (i.e. it removes textual noise as well as any other noise around the page content area).</p>
+
+<p>This processor takes a document image as input and crops/selects the page
+content area only (i.e. it removes textual noise as well as any other noise
+around the page content area).</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-4">Available processors</h4>
-<p>| Processor              | Parameter                     | Remarks      |
-| ———————- | —————————– | ———— |
-| ocrd-anybaseocr-crop |           | The input image has to be binarized and <br />should be deskewed for the module to work. |</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-crop</td>
+      <td> </td>
+      <td>The input image has to be binarized and <br />should be deskewed for the module to work.</td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="layout-analysis">Layout Analysis</h2>
+
 <p>Now the image should be optimized for segmentation.</p>
+
 <h3 id="step-6-text-segmentation-page">Step 6: Text segmentation (page)</h3>
 
-<p>This processor takes an (optimized) document image as an input and segments the image into the different text blocks. During this step a classification (text, marginalia, image, …) should also be done.</p>
+<p>This processor takes an (optimized) document image as an input and segments the
+image into the different text blocks. During this step a classification (text,
+marginalia, image, …) should also be done.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt="" /></td>
+      <td><img src="/assets/workflow/seg-page.PNG" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-5">Available processors</h4>
 
@@ -348,11 +558,16 @@ May not be necessary for all prints.</p>
 </table>
 
 <h2 id="image-optimization-on-block-level">Image Optimization (on Block Level)</h2>
+
 <p>Now the blocks should be optimized for OCR.</p>
 
 <h3 id="step-7--binarization">Step 7:  Binarization</h3>
-<p>This processor takes a scanned colored /gray scale block as input and produces a black and white binarized image. This step should separate the background from the foreground.
-The binarization should be at least executed once (on page/block/line level).</p>
+
+<p>This processor takes a scanned colored /gray scale block as input and produces
+a black and white binarized image. This step should separate the background
+from the foreground.</p>
+
+<p>The binarization should be at least executed once (on page/block/line level).</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
@@ -376,9 +591,25 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h3 id="step-8--deskewing">Step 8:  Deskewing</h3>
+
 <p>This processor takes an image as input and does the skew correction for all text blocks.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/seg-page.PNG" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-7">Available processors</h4>
 
@@ -400,7 +631,14 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h3 id="step-9--cliping">Step 9:  Cliping</h3>
-<p>This processor can be used to remove intrusions of neighbouring segments in regions / lines of a workspace. It runs a (ad-hoc binarization and) connected component analysis on every text region / line of every PAGE in the input file group, as well as its overlapping neighbours. For each binary object of conflict, it determines whether it belongs to the neighbour, and can therefore be clipped to white. It references the resulting segment image files in the output PAGE (as AlternativeImage).</p>
+
+<p>This processor can be used to remove intrusions of neighbouring segments in
+regions / lines of a workspace. It runs a (ad-hoc binarization and) connected
+component analysis on every text region / line of every PAGE in the input file
+group, as well as its overlapping neighbours. For each binary object of
+conflict, it determines whether it belongs to the neighbour, and can therefore
+be clipped to white. It references the resulting segment image files in the
+output PAGE (as AlternativeImage).</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
@@ -423,10 +661,29 @@ The binarization should be at least executed once (on page/block/line level).</p
   </tbody>
 </table>
 
-<h3 id="step-10--line-segmentation">Step 10:  Line segmentation</h3>
-<p>This processor can be used to segment regions into lines. It runs a (ad-hoc binarization and) line segmentation on every text region of every PAGE in the input file group, and adds a TextLine element with the resulting polygon outline to the annotation of the output PAGE.</p>
+<h3 id="step-10-line-segmentation">Step 10: Line segmentation</h3>
+
+<p>This processor can be used to segment regions into lines. It runs a (ad-hoc
+binarization and) line segmentation on every text region of every PAGE in the
+input file group, and adds a TextLine element with the resulting polygon
+outline to the annotation of the output PAGE.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-9">Available processors</h4>
 
@@ -453,7 +710,8 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h3 id="step-11--line-correction">Step 11:  Line correction</h3>
-<p>These processors can be used to correct the segmented lines.</p>
+
+<p>This processor can be used to correct the segmented lines.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
@@ -487,9 +745,25 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h3 id="step-12-dewarping-on-line-level">Step 12: Dewarping (on line level)</h3>
-<p>These processors can be used to correct the segmented lines.</p>
+
+<p>This processor can be used to dewarp the segmented lines.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt="" /></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <h4 id="available-processors-11">Available processors</h4>
 
@@ -516,7 +790,9 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h2 id="text-recognition-and-optimization">Text Recognition and Optimization</h2>
+
 <h3 id="step-13-text-recognition">Step 13: Text recognition</h3>
+
 <p>This processor recognizes text in segmented lines.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
@@ -531,7 +807,9 @@ The binarization should be at least executed once (on page/block/line level).</p
 <strong>Note:</strong> For ‘ocrd-tesserocr’ the environment variable ‘TESSDATA_PREFIX’ has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )</p>
 
 <h2 id="post-correction-optional">Post Correction (Optional)</h2>
+
 <h3 id="step-14-text-aligning">Step 14: Text aligning</h3>
+
 <p>This processor alignes texts from multiple OCR-engines in one PAGE.xml.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
@@ -556,6 +834,7 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h3 id="step-15-post-correction">Step 15: Post correction</h3>
+
 <p>This processor tries to optimize the recognized text.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
@@ -585,9 +864,13 @@ The binarization should be at least executed once (on page/block/line level).</p
 </table>
 
 <h2 id="analysis-optional">Analysis (Optional)</h2>
+
 <p>If Ground Truth data is available, the OCR can be analysed.</p>
+
 <h3 id="step-16-analysis">Step 16: Analysis</h3>
+
 <p>This processor can be used to analyse the output of the OCR.</p>
+
 <h4 id="available-processors-15">Available processors</h4>
 
 <table>
