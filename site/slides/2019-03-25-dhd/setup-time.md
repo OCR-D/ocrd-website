@@ -1,38 +1,20 @@
+---
+layout: page
+toc: true
+lang: de
+---
+
 # Setup Time!
 
 <p style="text-align: center">
-<img src="https://media.giphy.com/media/AliO819Kp3aus/200w_d.gif" height="250"/>
-<img src="https://media.giphy.com/media/3o85xy034Ob6pNkG08/200w_d.gif" height="250"/>
+<img src="https://media.giphy.com/media/AliO819Kp3aus/200w_d.gif" style="height: 250px"/>
+<img src="https://media.giphy.com/media/3o85xy034Ob6pNkG08/200w_d.gif" style="height: 250px"/>
 </p>
 
 <p style="text-align: center">
-<img src="https://media.giphy.com/media/zWryHmkavNdDO/giphy-tumblr.gif" height="250"/>
-<img src="https://media.giphy.com/media/pxl9J1y4n6UCI/giphy.gif" height="250"/>
+<img src="https://media.giphy.com/media/zWryHmkavNdDO/giphy-tumblr.gif" style="height: 250px"/>
+<img src="https://media.giphy.com/media/pxl9J1y4n6UCI/giphy.gif" style="height: 250px"/>
 </p>
-
-<!-- BEGIN-MARKDOWN-TOC -->
-* [What operating system are you on?](#what-operating-system-are-you-on)
-	* [Linux](#linux)
-	* [Mac OS X](#mac-os-x)
-	* [Windows 7](#windows-7)
-	* [Windows 10](#windows-10)
-* [Installation OCR-D Stack](#installation-ocr-d-stack)
-	* [Python](#python)
-	* [Setup a virtualenv](#setup-a-virtualenv)
-	* [Activate virtualenv](#activate-virtualenv)
-	* [Install ocrd core Software](#install-ocrd-core-software)
-		* [Test Installation](#test-installation)
-	* [Install OCR-D Modules](#install-ocr-d-modules)
-		* [ocrd_ocropy](#ocrd_ocropy)
-			* [Test Installation](#test-installation-1)
-		* [ocrd_kraken](#ocrd_kraken)
-			* [Test Installation](#test-installation-2)
-		* [ocrd_tesserocr](#ocrd_tesserocr)
-			* [Test Installation](#test-installation-3)
-* [Install PAGE Viewer](#install-page-viewer)
-* [Yay :fireworks: :tada:](#yay-fireworks-tada)
-
-<!-- END-MARKDOWN-TOC -->
 
 ## What operating system are you on?
 
@@ -236,6 +218,27 @@ Options:
 --help                          Show this message and exit.
 (env-ocrd) user@hostname:~$
 ```
+## Install Transkribus
+
+To use Transkribus a registration with Transkribus is necessary. Follow the *Register and Installation Guide* on: https://transkribus.eu/Transkribus/. 
+In this case it is cited here in the following passage.
+
+**Register at the website**
+-  Go to: http://transkribus.eu/
+-  Read our user agreement: https://transkribus.eu/Transkribus/docs/TranskribusTermsOfUse_v04-2016.pdf
+-  All documents uploaded toTranskribus are “private”,which means that no one except you has access to them.
+-  The Transkribus team fully supports all EU directives on data protection and privacy. We will respect your privacy and only use the data to improve our services and support research in humanities and computer science!
+
+
+
+**Download Transkribus from the website**
+ -  Go to the Transkribus website http://transkribus.eu/ and click “Download”. 
+ -  Transkribus runs on Windows, MacOS and Linux.  If you need help installing the platform, consult the Transkribus wiki: https://transkribus.eu/wiki/index.php/Download_and_Installation
+ -  If you use MacOS an error message may appear when you try to open Transkribus for the first time. To remedy this:
+	-   right click the Track Pad to open the Context Menu and add a security exception for Transkribus. 
+ -  Once you have downloaded Transkribus, make sure you unzip the file. The program cannot be started from the zipped file!
+
+
 
 ## Install PAGE Viewer
 
