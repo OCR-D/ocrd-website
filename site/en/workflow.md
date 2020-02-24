@@ -24,27 +24,61 @@ First, all the images should be binarized. Many of the following processors requ
 
 This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.
 
-|                                    |                                                      |
-| ---                                | ---                                                  |
-| ![](/assets/workflow/Original.png) | ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) |
+<table class="before-after">
+  <tbody>
+    <tr>
+      <td>
+        <img src="/assets/workflow/Original.png"/>
+      </td>
+      <td>
+        <img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"/>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 **See also:**  **ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
-| Processor                | Parameter                       | Remarks     |
-| ------------------------ | ------------------------------- | ----------- |
-| ocrd-anybaseocr-binarize |                                 |             |
-| ocrd-cis-ocropy-binarize |                                 | Fast        |
-| ocrd-olena-binarize      | {\"impl\":\"sauvola\"}          |             |
-|                          | {\"impl\":\"sauvola-ms\"}       |             |
-|                          | {\"impl\":\"sauvola-ms-fg\"}    |             |
-|                          | {\"impl\":\"sauvola-ms-split\"} | Recommended |
-|                          | {\"impl\":\"kim\"}              |             |
-|                          | {\"impl\":\"wolf\"}             |             |
-|                          | {\"impl\":\"niblack\"}          |             |
-|                          | {\"impl\":\"singh\"}            |             |
-|                          | {\"impl\":\"otsu\"}             |             |
+<table>
+  <thead>
+    <tr>
+      <th>Procecssor</th>
+      <th>Parameter</th>
+      <th>Remark</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-binarize</td>
+      <td></td>
+      <td>Fast</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>ocrd-olena-binarize</td>
+      <td>
+        <pre>
+{"impl": "sauvola"}
+{"impl": "sauvola-ms"}
+{"impl": "sauvola-ms-fg"}
+{"impl": "sauvola-ms-split"}
+{"impl": "kim"}
+{"impl": "wolf"}
+{"impl": "niblack"}
+{"impl": "singh"}
+{"impl": "otsu"}
+        </pre>
+      </td>
+      <td>Recommended</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 2: Denoising
 
@@ -54,9 +88,20 @@ May not be necessary for all prints.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                                      |                                   |
-| ---                                                  | ---                               |
-| ![](/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png) | ![](/assets/workflow/denoise.PNG) |
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt=""></td>
+      <td><img src="/assets/workflow/denoise.PNG" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -71,9 +116,20 @@ that document. The input images have to be binarized for this module to work.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                   |                                                 |
-| ---                               | ---                                             |
-| ![](/assets/workflow/denoise.PNG) | ![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) |
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/denoise.PNG" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -103,9 +159,21 @@ around the page content area).
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                                 |                                               |
-| ---                                             | ---                                           |
-| ![](/assets/workflow/OCR-D-IMG-DESKEW_0001.png) | ![](/assets/workflow/OCR-D-IMG-CROP_0001.png) |
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
+
 
 #### Available processors
 
@@ -125,9 +193,21 @@ marginalia, image, ...) should also be done.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                               |                                    |
-| ---                                           | ---                                |
-| ![](/assets/workflow/OCR-D-IMG-CROP_0001.png) | ![](/assets/workflow/seg-page.PNG) |
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></td>
+      <td><img src="/assets/workflow/seg-page.PNG" alt=""></td>
+    </tr>
+  </tbody>
+</table>
+
 
 #### Available processors
 
