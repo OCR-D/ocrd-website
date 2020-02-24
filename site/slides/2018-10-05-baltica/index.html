@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="reveal/css/reveal.css">
+    <link rel="stylesheet" href="css/kba.css">
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section>
+          <section>
+            <h2>An open-source framework for integrating multi-source layout and text recognition tools into scalable OCR workflows</h1>
+            <h5>Kay-Michael Würzner</h5>
+            <h5>Konstantin Baierer</h5>
+            <p>Bibliotheca Baltica 2018 Rostock, 2018-10-05</p>
+            <p>
+              <a href="https://ocr-d.github.io/2018-10-05-baltica/">https://ocr-d.github.io/2018-10-05-baltica/</a>
+              <br/>
+              <a href="https://ocr-d.github.io/2018-10-05-baltica/slides.pdf">https://ocr-d.github.io/2018-10-05-baltica/slides.pdf</a>
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Overview</h1>
+            <ol>
+              <li>The situation</li>
+              <li>OCR-D process</li>
+              <li>Architecture</li>
+              <li>State of OCR-D tools</li>
+              <li>Scalability</li>
+            </ol>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Users want text data</h1>
+          </section>
+          <section class="dark" data-background="figure/1024px-Heaps_of_books_Unsplash_.jpg">
+            <h2>massive amounts</h2>
+          </section>
+          <section class="dark" data-background="figure/screenshot_xml.png">
+            <h2>structured</h2>
+          </section>
+          <section class="dark" data-background="figure/Postman-most-complete-toolchain.png">
+            <h2>easily accessible</h2>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Libraries provide text data</h1>
+          </section>
+          <section class="dark" data-background="figure/screenshot_digitalisierte_sammlungen.png">
+            <h2>large amounts</h2>
+          </section>
+          <section class="dark" data-background="figure/screenshot_digitalisierte_sammlungen_ocr.png">
+            <h2>unstructured</h2>
+          </section>
+          <section class="dark" data-background="figure/screenshot_mets.png">
+            <h2>hard to access</h2>
+          </section>
+        </section>
+
+        <section>
+
+          <section>
+            <h1>Why the discrepancy?</h1>
+          </section>
+
+          <section class="dark" data-background="figure/dfg_praxis_ocr1.png">
+            <!-- bild: volltext abschnitt in DFG praxisrichtlinien -->
+            <h2>Underspecified requirements on OCR by funders and users</h2>
+          </section>
+
+          <section class="dark" data-background="figure/abbyy-folien.png">
+            <h2>OCR of historical data of little economic interest</h2>
+            <h2>Little competition</h2>
+          </section>
+
+          <section class="dark" data-background="figure/black_box_by_hemmamann.png">
+            <h2>Academical solutions non-sustainable</h2>
+            <h2>Inflexible workflows</h2>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="dark" data-background="figure/ocrd_0.jpg">
+            <h1>The OCR-D initiative</h1>
+            <p>
+              DFG-organized expert Workshop (2014)<br/><em>Verfahren zur Verbesserung von OCR-Ergebnissen</em>
+            </p>
+            <p>
+              Result: A concerted effort for improving OCR is seen as required.
+            </p>
+            <!-- s. AWBI-Praesentation 20.2.17 -->
+          </section>
+
+          <section class="light" data-background="figure/ocrd_0.jpg">
+            <h2>OCR-D Coordination project</h2>
+            <h2>
+            <table>
+              <tbody>
+                <tr>
+                  <td> <img style="max-height: unset; height:100px; max-width: unset" src="figure/BBAW_Logo_hellerHintergrund.png"/> </td>
+                  <td> <img style="max-height: unset; height:100px; max-width: unset" src="figure/stabi-logo-kante.png"/> </td>
+                </tr>
+                <tr>
+                  <td> <img style="max-height: unset; height:100px; max-width: unset" src="figure/kit_logo_V2_de.svg"/> </td>
+                  <td> <img style="max-height: unset; height:100px; max-width: unset" src="figure/Logo-HAB.gif"/> </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="dark" data-background="figure/ocrd-diagram.png">
+            <h2>
+              Phase 1: Exploring the domain (2015-2017)
+            </h2>
+            <p>
+              Surveyed (open-source) ecosystem<br/>around OCR and OLR
+            </p>
+            <p>
+              Identified Tasks
+            </p>
+            <p>
+              Prepared call for proposals for DFG
+            </p>
+          </section>
+
+          <section>
+            <h2>
+              Phase 2: Module project stage (2018-2019)
+            </h2>
+            <table>
+              <tbody>
+                <tr>
+                  <td> <img style="max-height: unset; height:100px" src="figure/asv-logo.png"/> </td>
+                  <td> <img style="max-height: unset; height:100px" src="figure/DFKI_Logo_d_schrift.jpg"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/ls6logo.gif"/> </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <tbody>
+                <tr>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/cis.png"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/ubma.jpg"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/Logo_Buchwissenschaft_Mainz.png"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/lme.jpg"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/sub.jpg"/> </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <tbody>
+                <tr>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/logo_dh_wid-300x57.png"/> </td>
+                  <td> <img style="max-height: unset; height: 100px" src="figure/GWDG_Logo_invert.png"/> </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="light" data-background="figure/growth-3078543_1280.png">
+
+            <h2>
+              Phase 3: Going productive (2018-2020)
+            </h2>
+            <p>
+              Integrate with existing digitization workflow software, e.g. Kitodo
+            </p>
+            <p>
+              Make OCR-D-developed software <strong>uniformly deployable</strong>
+            </p>
+            <p>
+              Advise DFG on OCR requirements for "Praxisrichtlinien"
+            </p>
+
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="dark" data-background="figure/ocr-wordcloud.png">
+            <h1>"Multi source"</h1>
+            <p><strong>existing tools</strong> by OCR-D partners<br>(tesseract, PoCoTo, LAREX...)</p>
+            <p><strong>new developments</strong>  within OCR-D<br>(font identification, post-correction...)</p>
+            <p>existing tools <strong>outside OCR-D</strong><br>(ocropus, kraken, ScanTailor, OLENA...)</p>
+          </section>
+
+          <!-- <section class="dark" data-background="figure/ocr-wordcloud.png"> -->
+          <!--   <h1>"Multi source"</h1> -->
+          <!--   <p>Programming environments</p> -->
+          <!--   <p>Modularity vs. Monolithic</p> -->
+          <!--   <p>Maturity</p> -->
+          <!--   <p>Interfaces</p> -->
+          <!-- </section> -->
+
+          <section>
+            <h1>😍 Modular 😍</h1>
+            <h1>😭 Monolithic 😭</h1>
+          </section>
+
+          <section>
+            <h1>Specification</h1>
+            <h1>+</h1>
+            <h1>Implementation</h1>
+          </section>
+
+          <section class="dark" data-background="figure/screenshot-ocrdgithubio.png">
+            <h1><a href="https://ocr-d.github.io" target="_blank">OCR-D/spec</a></h1>
+            <h2>METS + PAGE-XML (+ ALTO)</h2>
+            <h2>Structured tool descriptions</h2>
+            <h2>Command line interface</h2>
+            <h2>HTTP interface</h2>
+          </section>
+
+          <section class="dark" data-background="figure/screenshot-githubcomspec.png">
+            <h1><a href="https://github.com/OCR-D/core" target="_blank">OCR-D/core</a></h1>
+            <h2>Validation and helper functions</h2>
+            <h2>Python library</h2>
+            <h2>Shell library</h2>
+          </section>
+
+          <section class="dark" data-background="figure/196079076_ef3d5172dc_o_d.jpg">
+            <h1>Why Python?</h1>
+            <p>Python widely used in computer vision and machine learning<br>(keras, pytorch...)</p>
+            <p>Wrapping existing tools with minimal friction<br>(ocropus, kraken ...)</p>
+            <p>Bindings for low-level APIs<br>(opencv, tesserocr ...)</p>
+          </section>
+
+          <section class="dark" data-background="figure/ocrd-terminal.gif">
+            <h1>Why shell?</h1>
+            <p>Lowest common denominator</p>
+            <p>Wrap arbitrary command line tools</p>
+            <p>Process callout possible in every<br>framework/workflow engine/programming environment</p>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="dark" data-background="figure/hammer_nails_wood_board_tool_work_construction_builder-518257.jpg">
+            <h1>State of the OCR-D toolset</h1>
+          </section>
+
+          <section>
+            <h3>Preprocessing</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Tool</th>
+                  <th>Developer</th>
+                  <th>Functionality</th>
+                  <th>Wrapper</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>anyOCR</td>
+                  <td>DFKI Kaiserslautern</td>
+                  <td>binarization, cropping, deskewing, dewarping</td>
+                  <td>(python)</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_olena">OLENA</a></td>
+                  <td>OCR-D</td>
+                  <td>binarization</td>
+                  <td>shell</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_tesserocr">tesseract</a></td>
+                  <td>UB&nbsp;Mannheim,<br/> ASV Leipzig</td>
+                  <td>binarization</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_ocropy">OCRopus</a></td>
+                  <td>OCR-D</td>
+                  <td>binarization</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_kraken">kraken</a></td>
+                  <td>OCR-D</td>
+                  <td>binarization</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_im6convert">ImageMagick</a></td>
+                  <td>OCR-D</td>
+                  <td>binarization, conversion</td>
+                  <td>shell</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Layout recognition</h3>
+            <table style="width: 105%">
+              <thead>
+                <tr>
+                  <th>Tool</th>
+                  <th>Developer</th>
+                  <th>Functionality</th>
+                  <th>Wrapper</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>anyOCR</td>
+                  <td>DFKI Kaiserslautern</td>
+                  <td>block+line seg8n, block class7n, document analysis</td>
+                  <td>(python)</td>
+                </tr>
+                <tr>
+                  <td>LAREX</td>
+                  <td>Uni Würzburg</td>
+                  <td>block+line seg8n, block class7n</td>
+                  <td>(shell)</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_ocropy">OCRopus</a></td>
+                  <td>OCR-D</td>
+                  <td>line seg8n</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_kraken">kraken</a></td>
+                  <td>OCR-D</td>
+                  <td>line seg8n</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_tesserocr">tesseract</a></td>
+                  <td>UB&nbsp;Mannheim,<br/> ASV Leipzig</td>
+                  <td>block+line seg8n</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td>dh_segment</td>
+                  <td>OCR-D</td>
+                  <td>block+line seg8n</td>
+                  <td>(shell)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Text recognition</h3>
+            <table style="width: 105%">
+              <thead>
+                <tr>
+                  <th>Tool</th>
+                  <th>Developer</th>
+                  <th>Functionality</th>
+                  <th>Wrapper</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_ocropy">OCRopus</a></td>
+                  <td>OCR-D</td>
+                  <td>text recognition</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_kraken">kraken</a></td>
+                  <td>OCR-D</td>
+                  <td>text recognition</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_tesserocr">tesseract</a></td>
+                  <td>UB&nbsp;Mannheim,<br/>ASV Leipzig</td>
+                  <td>text recognition</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_calamari">calamari</a></td>
+                  <td>OCR-D</td>
+                  <td>text recognition</td>
+                  <td>(python)</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_ocrad">ocrad</a></td>
+                  <td>OCR-D</td>
+                  <td>text recognition</td>
+                  <td>(shell)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Postprocessing</h3>
+            <table style="width: 105%">
+              <thead>
+                <tr>
+                  <th>Tool</th>
+                  <th>Developer</th>
+                  <th>Functionality</th>
+                  <th>Wrapper</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>corASV</td>
+                  <td>ASV Leipzig</td>
+                  <td>post correction</td>
+                  <td>(python)</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/cisocrgroup/cis-ocrd-py">PoCoTo</a></td>
+                  <td>CIS München</td>
+                  <td>post correction</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/OCR-D/ocrd_keraslm">keraslm</a></td>
+                  <td>OCR-D</td>
+                  <td>post correction</td>
+                  <td>python</td>
+                </tr>
+                <tr>
+                  <td><a href="https://github.com/kba/ocrd_ocrevaluation">ocrevalUAtion</a></td>
+                  <td>OCR-D</td>
+                  <td>evaluation</td>
+                  <td>(shell)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="dark" data-background="figure/montage-open-source.png">
+            <h1>Open Source is more than "Open Source"</h1>
+          </section>
+
+          <section class="dark" data-background="figure/ConfusedGracefulArgentinehornedfrog.gif">
+            <h1>Best Practices</h1>
+            <p>Transparency from day one</p>
+            <p>Unit tests</p>
+            <p>Unified <a href="https://github.com/OCR-D/assets">test assets</a></p>
+            <p>Continuous Integration</p>
+            <p>Semantic versioning</p>
+            <p>Docker base image</p>
+            <p>Releases to GitHub, PyPI, DockerHub</p>
+          </section>
+
+          <section class="light" data-background="figure/ocrd-docs.png">
+            <h1><a href="https://github.com/OCR-D/docs" target="_blank">OCR-D/docs</a></h1>
+            <h2>Developer documentation</h2>
+            <h2>User documentation</h2>
+            <h2>"Cookbook"</h2>
+            <h2>Documentation Documentation</h2>
+          </section>
+
+          <section class="dark" data-background="figure/community-988898_1280.png">
+            <h1>Community</h1>
+            <p>Issues</p>
+            <p>Pull requests</p>
+            <p>Code review</p>
+            <p>Support <a href="https://gitter.im/OCR-D/Lobby">chat</a></p>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section class="dark" data-background="figure/big-bang.gif">
+            <h1>Scalability</h1>
+            <!--
+              * Repositories
+              * Austauschformate
+              * Kitodo
+            -->
+          </section>
+
+          <section class="dark" data-background="figure/22library.600.jpg">
+            <h1>Geared towards real digitization scenarios</h1>
+            <p>Cooperation with Kitodo and commercial providers</p>
+            <p>Frequent reality check with current practices ("Pilotbibliotheken")</p>
+            <p>Different deployment options</p>
+            <!-- with/without GPU, Docker or Linux seerver -->
+          </section>
+
+          <section class="dark" data-background="figure/simult.gif">
+            <h2>Modularity + uniform interfaces</h2>
+            <h2>⇒</h2>
+            <h2>Adaptive workflows</h2>
+            <p>(Instantiation and composition up to users)</p>
+          </section>
+
+        </section>
+
+        <section>
+          <h2>🙇 Thank you 🙇</h2>
+          <p><a href="https://ocr-d.de">ocr-d.de</a></p>
+          <p><a href="https://ocr-d.github.io">ocr-d.github.io</a></p>
+          <p><a href="https://ocr-d.github.io/docs">ocr-d.github.io/docs</a></p>
+          <p><a href="https://github.com/OCR-D">github.com/OCR-D</a></p>
+          <p><a href="https://gitter.im/OCR-D/Lobby">gitter.im/OCR-D/Lobby</a></p>
+        </section>
+
+
+      </div>
+    </div>
+    <script src="reveal/js/reveal.js"></script>
+    <script>(function() {
+      Reveal.initialize({
+        keyboard: {
+          104: 'left',
+          106: 'down',
+          107: 'up',
+          108: 'right'
+        },
+        controls: true,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        keyboard: true,
+        overview: true,
+        center: true,
+        touch: true,
+        loop: false,
+        rtl: false,
+        shuffle: false,
+        fragments: true,
+        embedded: false,
+        help: true,
+        showNotes: false,
+        autoSlide: 0,
+        autoSlideStoppable: true,
+        autoSlideMethod: Reveal.navigateNext,
+        mouseWheel: false,
+        hideAddressBar: true,
+        previewLinks: false,
+        transition: 'slide',
+        transitionSpeed: 'fast',
+        backgroundTransition: 'slide',
+        viewDistance: 2,
+        parallaxBackgroundImage: '',
+        parallaxBackgroundSize: '',
+        parallaxBackgroundHorizontal: null,
+        parallaxBackgroundVertical: null
+      });
+
+    }).call(this);
+
+    </script>
+  </body>
+</html>

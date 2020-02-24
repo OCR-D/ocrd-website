@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="reveal/lib/js/head.min.js"></script>
+    <link rel="stylesheet" href="reveal/lib/css/zenburn.css">
+    <link rel="stylesheet" href="reveal/css/reveal.css">
+    <link rel="stylesheet" href="css/kba.css">
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section>
+          <section>
+            <h2>Developments of the<br>OCR-D Coordination project</h2>
+            <h5>Konstantin Baierer</h5>
+            <p>OCR-D MP Dev WS, 2019-02-27</p>
+            <p>
+              <a href="https://kba.cloud/2019-02-27-ocrd-dev-ws/">https://kba.cloud/2019-02-27-ocrd-dev-ws/</a>
+            </p>
+          </section>
+        </section>
+
+        <section>
+
+          <section>
+            <h1>Overview</h1>
+            <ul>
+              <li>OCR-D/spec</li>
+              <li>OCR-D/core</li>
+              <li>Side projects</li>
+              <li>Presentations/Papers</li>
+            </ul>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h1>OCR-D/spec</h1>
+          </section>
+
+          <section>
+            <h2>Page handling</h2>
+            <ul>
+              <li>Approach with <code>GROUPID</code> not best practice</li>
+              <li>Standard way of assigning files to pages: <code>&lt;mets:structMap TYPE="PHYSICAL"/&gt;</code></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Page handling (old)</h2>
+            <pre><code data-trim class="html">
+            &lt;mets:fileGrp&gt;
+              &lt;mets:file MIMETYPE="image/jpg" ID="OCR-D-IMG-0001" GROUPID="page0001"&gt;
+                &lt;mets:FLocat xlink:href="OCR-D-IMG/OCR-D-IMG-0001"/&gt;
+              &lt;/mets:file&gt;
+            &lt;/mets:fileGrp&gt;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Page handling (new)</h2>
+            <pre><code data-trim class="html">
+            &lt;mets:fileGrp&gt;
+              &lt;mets:file MIMETYPE="image/jpg" ID="OCR-D-IMG-0001"&gt;
+                &lt;mets:FLocat xlink:href="OCR-D-IMG/OCR-D-IMG-0001"/&gt;
+              &lt;/mets:file&gt;
+            &lt;/mets:fileGrp&gt;
+            </code></pre>
+            <pre><code data-trim class="html">
+            &lt;mets:structMap TYPE="PHYSICAL"&gt;
+              &lt;mets:div TYPE="physSequence"&gt;
+                &lt;mets:div TYPE="page" ID="page0001"&gt;
+                  &lt;mets:fptr FILEID="OCR-D-IMG-0001"/&gt;
+                &lt;/mets:div&gt;
+              &lt;/mets:div&gt;
+            &lt;/mets:structMap&gt;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Relative paths > file URL</h2>
+            <ul>
+              <li>Allow relative paths in <code>mets:file</code></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Unified Logging</h2>
+            <ul>
+              <li>Target: <code>STDOUT</code></li>
+              <li>Format: <code>"TIME LEVEL LOGGERNAME - MESSAGE"</code></li>
+              <li>Levels: <code>TRACE, DEBUG, INFO, ERROR, FATAL</code></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>PAGE-XML consistency</h2>
+            <p>
+              The text assigned to
+            </p>
+            <ul>
+              <li>all glyphs of a word</li>
+              <li>all words of a line</li>
+              <li>all lines of block</li>
+            </ul>
+            <p>
+              should be consistent when concatenating.
+            </p>
+          </section>
+
+          <section>
+            <h2>PAGE-XML consistency levels</h2>
+            <ul>
+              <li><code>lax</code>: Disregard whitespace</li>
+              <li><code>strict</code>: Strict validation</li>
+              <li><code>fix</code>: Automatic correction</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>File Groups in ocrd-tool.json</h2>
+            <p>The default expected input and output file groups can be provided in <code>ocrd-tool.json</code></p>
+            <pre><code data-trim class="json">
+            {
+              "tools": {
+                "ocrd-kraken-binarize": {
+                  "executable": "ocrd-kraken-binarize",
+                  "input_file_grp": "OCR-D-IMG",
+                  "output_file_grp": "OCR-D-IMG-BIN",
+                  ...
+                }
+            }
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Basic process information</h2>
+            <p>Processing with OCR-D/core toolchain will record changes as <code>mets:agent</code></p>
+            <pre><code data-trim class="html">
+            &lt;mets:agent
+              TYPE="OTHER"
+              OTHERTYPE="SOFTWARE"
+              ROLE="OTHER"
+              OTHERROLE="preprocessing/optimization/binarization"&gt;
+              &lt;mets:name&gt;ocrd_tesserocr v0.1.2&lt;/mets:name&gt;
+            &lt;/mets:agent&gt;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>OCRD-ZIP</h2>
+            <p>Based on BagIt, an open standard for archiving data</p>
+            <pre><code data-trim class="shell">
+            $ (cd OCR-D/assets/data/page_dewarp ; find)
+
+            ./bagit.txt
+            ./bag-info.txt
+            ./manifest-sha512.txt
+            ./tagmanifest-sha512.txt
+            ./data
+            ./data/mets.xml
+            ./data/OCR-D-IMG
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_a
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_b
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_a
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_b
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>OCRD-ZIP</h2>
+            <p>Metadata</p>
+            <pre><code data-trim data-noescape class="shell">
+            $ (cd OCR-D/assets/data/page_dewarp ; find)
+
+            ./bagit.txt
+            <mark>./bag-info.txt</mark>
+            ./manifest-sha512.txt
+            ./tagmanifest-sha512.txt
+            ./data
+            ./data/mets.xml
+            ./data/OCR-D-IMG
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_a
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_b
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_a
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_b
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>OCRD-ZIP</h2>
+            <p>Checksums</p>
+            <pre><code data-trim data-noescape class="shell">
+            $ (cd OCR-D/assets/data/page_dewarp ; find)
+
+            ./bagit.txt
+            ./bag-info.txt
+            <mark>./manifest-sha512.txt</mark>
+            <mark>./tagmanifest-sha512.txt</mark>
+            ./data
+            ./data/mets.xml
+            ./data/OCR-D-IMG
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_a
+            ./data/OCR-D-IMG/OCR-D-IMG-linguistics_thesis_b
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_a
+            ./data/OCR-D-IMG/OCR-D-IMG-boston_cooking_b
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>OCRD-ZIP</h2>
+            <p>Workspace</p>
+            <pre><code data-trim data-noescape class="shell">
+            $ (cd OCR-D/assets/data/page_dewarp ; find)
+
+            ./bagit.txt
+            ./bag-info.txt
+            ./manifest-sha512.txt
+            ./tagmanifest-sha512.txt
+            ./data
+            ./data/<mark>mets.xml</mark>
+            ./data/<mark>OCR-D-IMG</mark>
+            ./data/<mark>OCR-D-IMG/OCR-D-IMG-linguistics_thesis_a</mark>
+            ./data/<mark>OCR-D-IMG/OCR-D-IMG-linguistics_thesis_b</mark>
+            ./data/<mark>OCR-D-IMG/OCR-D-IMG-boston_cooking_a</mark>
+            ./data/<mark>OCR-D-IMG/OCR-D-IMG-boston_cooking_b</mark>
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Font Family</h2>
+            <p>Use PAGE XML
+              <br><code>&lt;pg:TextStyle&gt;</code>
+              <br>
+              element with
+              <br>
+              <code>fontFamily</code> attribute
+            </p>
+            <pre><code data-trim class="html">
+            &lt;Word&gt;
+              &lt;TextStyle fontFamily="Arial" fontSize="17.0" bold="true"/&gt;
+                &lt;!-- [...] --&gt;
+            &lt;/Word&gt;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Clusters of typesets</h2>
+            <ul>
+              <li>textura</li>
+              <li>rotunda</li>
+              <li>bastarda</li>
+              <li>antiqua</li>
+              <li>greek</li>
+              <li>hebrew</li>
+              <li>italic</li>
+              <li>fraktur</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Confidence of (multiple) font families</h2>
+            <p>Separate multiple font families with comma</p>
+            <p>Suffix colon and `0..1` float to font family</p>
+            <pre><code data-trim class="html">
+            &lt;TextStyle fontFamily="Arial:0.8, Times:0.7, Courier:0.4"/&gt;
+            &lt;TextStyle fontFamily="Arial:.8, Times:0.5"/&gt;
+            &lt;TextStyle fontFamily="Arial:1"/&gt;
+            &lt;TextStyle fontFamily="Arial"/&gt;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Columns</h2>
+            <ul>
+              <li>Based on CSS grid layout conventions</li>
+              <li><code>x/y</code> coordinates for columns/rows</li>
+              <li>"Layout": <code>pg:OrderedGroup</code></li>
+              <li>"Cells": <code>pg:OrderedGroupIndexed</code></li>
+            </ul>
+            <pre><code data-trim class="html">
+&lt;OrderedGroup caption="column_2_2"&gt; &lt;!-- two-column two-row layout --&gt;
+    &lt;OrderedGroupIndexed caption="column_1_1"&gt;...&lt;/OrderedGroupIndexed&gt; &lt;!-- upper-left column --&gt;
+    &lt;OrderedGroupIndexed caption="column_1_2"&gt;...&lt;/OrderedGroupIndexed&gt; &lt;!-- upper-right column --&gt;
+    &lt;OrderedGroupIndexed caption="column_2_1"&gt;...&lt;/OrderedGroupIndexed&gt; &lt;!-- lower-left column --&gt;
+    &lt;OrderedGroupIndexed caption="column_2_2"&gt;...&lt;/OrderedGroupIndexed&gt; &lt;!-- lower-right column --&gt;
+&lt;/OrderedGroup&gt;
+            </code></pre>
+          </section>
+
+
+        </section>
+
+        <section>
+
+          <section>
+            <h1>OCR-D/core</h1>
+          </section>
+
+          <section>
+            <h2>3 > 2</h2>
+            <p>Python 2.x <strong>not supported</strong> anymore</p>
+            <p>Python 3.4 hardly supported</p>
+            <p>Python 3.5 okay for now</p>
+            <p>Use 3.6+ if you can</p>
+          </section>
+
+          <section>
+            <h2>Refactoring</h2>
+            <p>Untangle separate concerns into individual modules</p>
+            <p>All part of OCR-D/core (monorepo)</p>
+            <p>Published as separate modules to PyPI</p>
+            <p>Single set of tests</p>
+            <p>Striving for 100% coverage</p>
+            <p>API docs on ocr-d.github.io</p>
+          </section>
+
+          <section>
+            <h2>Refactoring</h2>
+            <ul>
+              <li><code>ocrd_utils</code>: Shared utility functions and constants</li>
+              <li><code>ocrd_models</code>: APIs to METS, PAGE, EXIF...</li>
+              <li><code>ocrd_validators</code>: Validate workspaces, ocrd-tool.json, parameters, OCRD-ZIP...</li>
+              <li><code>ocrd_modelfactory</code>: PAGE from image, EXIF from filename etc.</li>
+              <li><code>ocrd</code>: CLI, wrapper code, shell lib...</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Improved <code>ocrd process</code></h2>
+            <ul>
+              <li>Lightweight workflow executor</li>
+              <li>Chain multiple spec-compliant API</li>
+            </ul>
+            <pre><code data-trim class="sh">
+            ocrd process -m mets.xml \
+              "kraken-binarize -I OCR-D-IMG -O OCR-D-IMG-BIN-KRAKEN" \
+              "tesserocr-segment -I OCR-D-IMG-BIN-KRAKEN -O OCR-D-SEG-BLOCK -p params.json"
+              "calamari-ocr -I OCR-D-SEG-BLOCK -O OCR-D-OCR-CALA"
+              "cis-aio -I OCR-D-OCR-CALA -O OCR-D-OCR-CIS"
+            </code></pre>
+          </section>
+
+          <section>
+            <h2><code>ocrd zip</code> to work with OCRD-ZIP</h2>
+            <pre><code data-trim class="sh">
+Usage: ocrd zip [OPTIONS] COMMAND [ARGS]...
+
+  Bag/Spill/Validate OCRD-ZIP bags
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  bag       Bag workspace as OCRD-ZIP at DEST
+  spill     Spill/unpack OCRD-ZIP bag at SRC to DEST SRC must exist an be
+            an...
+  validate  Validate OCRD-ZIP SRC must exist an be an OCRD-ZIP, either a
+            ZIP...
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h1>Side Projects</h1>
+          </section>
+
+          <section>
+            <h2>kba/mollusc</h2>
+            <ul>
+              <li>Prototyping multi-engine training</li>
+              <li>Specs for training config, model description, engine parameters...</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>deutschestextarchiv/tocrify</h2>
+            <ul>
+              <li>Enrich OCR with structural information from METS</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>ocrd-train</h2>
+            <ul>
+              <li><code>Makefile</code> based approach to tesseract training</li>
+            </ul>
+          </section>
+
+          <section class="dark" data-background="figure/2urg40.jpg">
+          </section>
+
+          <section>
+            <h2>page-xml-cropper</h2>
+            <ul>
+              <li>Manually crop to printspace for 1-2 pages of input</li>
+              <li>Automatically/heuristically crop the rest</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>kba/kitodo-ocrd</h2>
+            <ul>
+              <li>Kitodo plugin to run OCR-D tools as part of the digitization workflow</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>ocrd-fork-ocropy</h2>
+            <ul>
+              <li>Python3 compatible version</li>
+              <li>Please try!</li>
+            </ul>
+            <pre><code data-trim class="sh">
+            pip install ocrd-fork-ocropy
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h1>Upcoming presentations/papers</h1>
+          </section>
+
+          <section class="dark">
+            <h2><a href="http://datech.digitisation.eu/">DATeCH 2019</a> #1 - OCR-D in general</h2>
+            <ul>
+              <li>specs</li>
+              <li>software</li>
+              <li>module projects</li>
+            </ul>
+          </section>
+
+          <section class="dark" data-background="figure/screenshot_xml.png">
+            <h2><a href="http://datech.digitisation.eu/">DATeCH 2019</a> #2 - Ground Truth</h2>
+            <ul>
+              <li>METS + PAGE XML + BagIt + Repositories</li>
+              <li>Implementation of PRIMA ontology for extrinsic and intrinsic GT features</li>
+            </ul>
+          </section>
+
+          <section class="dark" data-background="figures/mollusc.png">
+            <h2><a href="http://icdar2019.org/">ICDAR 2019</a> - Multi-engine Training</h2>
+            <ul>
+              <li>Uniform interface to different OCR engines</li>
+              <li>Specifications of exchange formats</li>
+              <li>Training and application</li>
+              <li>Software Prototype</li>
+            </ul>
+          </section>
+
+          <section class="dark" data-background="http://v3.bibliolenk.de/wp-content/uploads/2016/02/csm_BID-Logo_06_dc97f3e0761.jpg">
+            <h2>BID 2019</h2>
+            <ul>
+              <li>Presentation "Von der Vision zur Umsetzung: Der aktuelle Entwicklungsstand von OCR-D", <br>18.03. 09:00</li>
+              <li>Workshop "OCR-D in der Praxis: Ein gemeinsamer Ausblick mit Dienstleistern und Anwendern", <br>18.03. 16:00</li>
+            </ul>
+          </section>
+
+          <section class="dark" data-background="https://dhd2019.org/assets/visualization.png">
+            <h2><a href="https://dhd2019.org/programm/mo/1400-1530/workshop-265/">DHd 2019</a></h2>
+            <ul>
+              <li>Workshop "Vom gedruckten Werk zu elektronischem Volltext als Forschungsgrundlage"<br>25.03. 14:00</li>
+            </ul>
+          </section>
+
+        </section>
+
+        <section>
+          <h2>🙇 Thank you 🙇</h2>
+          <p><a href="https://ocr-d.de">ocr-d.de</a></p>
+          <p><a href="https://ocr-d.github.io">ocr-d.github.io</a></p>
+          <p><a href="https://ocr-d.github.io/docs">ocr-d.github.io/docs</a></p>
+          <p><a href="https://github.com/OCR-D">github.com/OCR-D</a></p>
+          <p><a href="https://gitter.im/OCR-D/Lobby">gitter.im/OCR-D/Lobby</a></p>
+          <p>And now: <a href="https://tinyurl.com/ocrd-2019-02-28">https://tinyurl.com/ocrd-2019-02-28</a></p>
+        </section>
+
+
+      </div>
+    </div>
+    <script src="reveal/js/reveal.js"></script>
+    <script>(function() {
+      Reveal.initialize({
+        keyboard: {
+          104: 'left',
+          106: 'down',
+          107: 'up',
+          108: 'right'
+        },
+        controls: true,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        keyboard: true,
+        overview: true,
+        center: true,
+        touch: true,
+        loop: false,
+        rtl: false,
+        shuffle: false,
+        fragments: true,
+        embedded: false,
+        help: true,
+        showNotes: false,
+        autoSlide: 0,
+        autoSlideStoppable: true,
+        autoSlideMethod: Reveal.navigateNext,
+        mouseWheel: false,
+        hideAddressBar: true,
+        previewLinks: false,
+        transition: 'slide',
+        transitionSpeed: 'fast',
+        backgroundTransition: 'slide',
+        viewDistance: 2,
+        parallaxBackgroundImage: '',
+        parallaxBackgroundSize: '',
+        parallaxBackgroundHorizontal: null,
+        parallaxBackgroundVertical: null,
+
+        dependencies: [
+          {
+            src: 'reveal/plugin/highlight/highlight.js',
+            callback() { hljs.initHighlightingOnLoad() },
+            async: true,
+          },
+        ]
+      });
+
+    }).call(this);
+
+    </script>
+  </body>
+</html>

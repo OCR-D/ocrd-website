@@ -1,0 +1,419 @@
+\documentclass{bbawslides}
+
+\usepackage[TS1, T1]{fontenc}
+\usepackage{ifthen}
+
+\usepackage[a4paper]{hyperref}
+\rotateheaderstrue	%%-- otherwise seminar does strange things
+\usepackage{url}
+
+\usepackage[english]{babel}
+\usepackage[babel]{csquotes}
+\usepackage{graphicx}
+\usepackage{numprint}
+\npthousandsep{~}\npthousandthpartsep{,}\npdecimalsign{.}
+\usepackage{enumitem}
+
+\DeclareTextSymbol{\textlongs}{TS1}{115} 
+\DeclareTextSymbolDefault{\textlongs}{TS1}
+
+
+\begin{document}
+\providecommand{\Title}{}
+
+
+\begin{bbawtitle}[Compilation of a Large Ground-Truth Data Set Using Transkribus]
+  \vspace*{0.5em}%
+  Matthias Boenig \& Kay-Michael Würzner\\[-.25em]%
+  \textcolor{urlColor}{\texttt{{\small \{boenig|wuerzner\}@bbaw.de}}}
+  \\[1.5em]
+  {\scriptsize{%
+    Transkribus User Conference\\%
+    Vienna, 2nd November 2017\\%
+  }}
+\end{bbawtitle}
+\slideStyleFrame
+
+\renewcommand{\footerText}{\tiny 2nd November 2017, Transkribus User Conference}
+
+\begin{bbawslide}{Overview}
+  \vspace*{7mm}%
+  \centerslidestrue%
+  \begin{description}
+    \item[Goal:] Compilation of a large, \textbf{homogeneous} Ground Truth (GT) data set
+    \begin{itemize}\small
+      \item Various \textbf{heterogeneous} sources
+      \item Annotation on the \textbf{textual} and/or \textbf{structural} level
+    \end{itemize}
+    \item[Background:] OCR-D initiative
+    \begin{enumerate}[label=\alph*.]\small
+      \item Funding by the \emph{Deutsche Forschungsgemeinschaft}
+      \begin{description}
+        \item[$\rightarrow$] Improvement of OCR tools for \textbf{historical printings} (i.e.~VD 16, 17, 18)
+      \end{description}
+      \item Coordination project
+      \begin{itemize}
+        \item Identify to-dos, desiderata and improvement options
+        \item Development of a call for proposals
+        \item Merge (sub-)project results into a \textbf{productive workflow}
+      \end{itemize}
+    \end{enumerate}
+    \item[Procedure:] Annotation with \texttt{Transkribus}
+    \begin{enumerate}\small
+      \item Import images and existing text and/or structural information
+      \item \textbf{Harmonization} and completion within \texttt{Transkribus}
+    \end{enumerate}
+  \end{description}
+\end{bbawslide}
+
+\begin{bbawslide}{Overview}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \epsfig{file=figures/gt_sources.eps,width=0.8\textwidth}
+  \end{center}
+  \begin{tabular}{lr}
+    \begin{minipage}{0.6\textwidth}
+      \begin{itemize}\small
+        \item Various GT sources
+        \item Containing either text or structural annotations in differing quality
+        \item By now, $\approx$ 130 documents with $\approx$ 500 pages
+        \item A lot more to come!
+      \end{itemize}
+    \end{minipage}
+    &
+    \begin{minipage}{0.3\textwidth}\centering
+      \epsfig{file=figures/gt_ocrd.eps,width=\textwidth}
+    \end{minipage}
+  \end{tabular}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{\phantom{Import images}} \\
+      \hline
+      \phantom{Run FineReader for initial layout version} & \phantom{Import \texttt{Page XML}} \\
+      \hline
+      \phantom{Manually correct layout} & \phantom{Run external OCR for initial text version} \\
+      \hline
+      \multicolumn{2}{|c|}{\bf \phantom{Copy and paste text region by region}} \\
+      \hline
+      & \phantom{Manually correct text} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      \phantom{Run FineReader for initial layout version} & \phantom{Import \texttt{Page XML}} \\
+      \hline
+      \phantom{Manually correct layout} & \phantom{Run external OCR for initial text version} \\
+      \hline
+      \multicolumn{2}{|c|}{\bf \phantom{Copy and paste text region by region}} \\
+      \hline
+      & \phantom{Manually correct text} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/upload.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/doc_initial.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      Run FineReader for initial layout version & Import \texttt{Page XML} \\
+      \hline
+      \phantom{Manually correct layout} & \phantom{Run external OCR for initial text version} \\
+      \hline
+      \multicolumn{2}{|c|}{\bf \phantom{Copy and paste text region by region}} \\
+      \hline
+      & \phantom{Manually correct text} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/doc_abbyy.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/doc_abbyy2.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      Run FineReader for initial layout version & Import \texttt{Page XML} \\
+      \hline
+      Manually correct layout & Run external OCR for initial text version \\
+      \hline
+      \multicolumn{2}{|c|}{\bf \phantom{Copy and paste text region by region}} \\
+      \hline
+      & \phantom{Manually correct text} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/doc_struct.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      Run FineReader for initial layout version & Import \texttt{Page XML} \\
+      \hline
+      Manually correct layout & Run external OCR for initial text version \\
+      \hline
+      \multicolumn{2}{|c|}{\bf Copy and paste text region by region} \\
+      \hline
+      & \phantom{Manually correct text} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{3mm}%
+  \epsfig{file=figures/doc_text.eps,height=\textheight}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      Run FineReader for initial layout version & Import \texttt{Page XML} \\
+      \hline
+      Manually correct layout & Run external OCR for initial text version \\
+      \hline
+      \multicolumn{2}{|c|}{\bf Copy and paste text region by region} \\
+      \hline
+      & Manually correct text \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item
+    \item
+    \item
+    \item
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Workflows}
+  \vspace*{2mm}%
+  \centerslidestrue%
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Existing text}} & \multicolumn{1}{c|}{\textbf{Existing structure}} \\
+      \hline
+      \hline
+      \multicolumn{2}{|c|}{Import images} \\
+      \hline
+      Run FineReader for initial layout version & Import \texttt{Page XML} \\
+      \hline
+      Manually correct layout & Run external OCR for initial text version \\
+      \hline
+      \multicolumn{2}{|c|}{\bf Copy and paste text region by region} \\
+      \hline
+      & Manually correct text \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item Somewhat na\"{i}ve approach
+    \item External Page XML creation or
+    \item Intermediate export and (re-)import as alternative options
+    \item \textbf{Not very comfortable}
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Desiderata}
+  \vspace*{7mm}%
+  \centerslidestrue%
+  \begin{itemize}
+    \item \texttt{Transkribus} is a wonderful tool!
+    \begin{itemize}\small
+      \item Support for \textbf{polygonal} regions
+      \item \textbf{Multiple} OCR options
+      \item \textbf{Collaborative} working environment with basic version control
+      \item TEI export
+    \end{itemize}
+    \item For \textbf{GT creation}, we would welcome
+    \begin{itemize}\small
+      \item OCR application on \textbf{specific regions} also for FineReader
+      \item Dedicated \textbf{text import} functionalities (e.g.~on paragraph level)
+      \item METS import which accounts for \textbf{existing structural annotations} and linked ALTO
+      \item \textbf{Automatic support} during manual post correction
+      \item TEI import
+    \end{itemize}
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawslide}{Collaboration}
+  \vspace*{7mm}%
+  \centerslidestrue%
+  \begin{itemize}
+    \item OCR-D GT Guidelines
+    \begin{itemize}\small
+      \item Documentation of existing OCR-D GT
+      \item Instructions for GT creation
+      \begin{itemize}\small
+        \item Already used within the OCR-D project
+        \item Perspectively also used in a \textbf{broader context} (community use)
+      \end{itemize}
+      \item Automatic \textbf{validation} of GT data
+      \item (Semi-)automatic \textbf{conversion} of existing GT data sets
+			\item Plans for setting up a \textbf{GT repository} for print publications and handwritten documents
+    \end{itemize}
+    \item Availability
+    \begin{description}\small
+      \item[View:] \url{https://kaskade.dwds.de/~matthias/ocr-d/}
+      \item[Sources:] \url{https://github.com/OCR-D/}
+    \end{description}
+  \end{itemize}
+\end{bbawslide}
+    
+\begin{bbawslide}{Collaboration}
+  \vspace*{7mm}%
+  \centerslidestrue%
+  \begin{itemize}
+    \item Transkribus User Documentation: A proposal
+    \begin{enumerate}[leftmargin=*, align=left, label=\arabic*. Step:]\small
+			\item Change the documentation format from Wiki to DITA
+      \begin{itemize}\small
+        \item XML-based documentation format
+        \item \textbf{Topic-oriented} internal and \enquote{external} structure (i.e.~presentation)
+        \item Various automatically generated \textbf{presentation modes}
+      \end{itemize}
+			\item Build and organize a documentation \textbf{source repository} (e.g.~on github)
+      \item Involve the user community into the documentation process
+      \begin{itemize}\small
+        \item Non-developer view point
+        \item Recipes for frequent tasks
+      \end{itemize}
+    \end{enumerate}
+  \end{itemize}
+\end{bbawslide}
+
+\begin{bbawpart}{\Large\bf Many thanks for your attention.}
+\end{bbawpart}
+
+\end{document}
+
+%\begin{bbawpart}{\Large\bf Warum braucht man OCR?}
+%\end{bbawpart}
+
+%\begin{bbawslide}{Warum braucht man OCR?}
+%  \vspace*{7mm}%
+%  \centerslidestrue%
+%  \begin{itemize}
+%    \item
+%  \end{itemize}
+%\end{bbawslide}
+
+%
+% modelines
+%
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% coding: utf-8
+%%% tab-width: 2
+%%% indent-tabs-mode: nil
+%%% End:
+
+% vim: set ts=2 sw=2 expandtab :
