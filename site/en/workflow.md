@@ -336,7 +336,7 @@ This processor recognizes text in segmented lines.
 | ----------------------- | ----------------------------- | ------- |
 | ocrd-tesserocr-recognize | {\"textequiv_level\":\"glyph\",<br />\"overwrite_words\":true,\"model\":\"Fraktur\"} |  |
 |  | {\"textequiv_level\":\"glyph\",<br/>\"overwrite_words\":true,<br/>\"model\":\"GT4HistOCR_50000000.997_191951\"} | Recommended <br/> Model can be found [here](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50<br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata) |
-| ocrd-calamari-recognize | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} | Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) |
+| ocrd-calamari-recognize | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} | Recommended<br/>Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) |
 **Note:** For 'ocrd-tesserocr' the environment variable 'TESSDATA_PREFIX' has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )
 
 ## Post Correction (Optional)
@@ -380,4 +380,65 @@ This processor can be used to analyse the output of the OCR.
 | Processor               | Parameter                     | Remarks                                             |
 | ----------------------- | ----------------------------- | -------                                             |
 | ocrd-dinglehopper       |                               | First input group should point to the ground truth. |
+
+# Recommendations
+All processors, with the exception of those for post-correction, were tested on selected pages of some prints from the 17th and 18th century.
+
+The results vary quite a lot from page to page. In most cases, segmentation is a problem.
+
+These recommendations may also work well for other prints of those centuries. 
+
+
+
+## Best results for selected pages
+The following workflow has produced best results for 'simple' pages (e.g. [this page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif)) without any  (CER ~1%).
+
+| Step | Processor                 | Parameter                                         |
+| ---- | ------------------------- | ------------------------------------------------- |
+| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      |
+| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     |
+| 3    | ocrd-anybaseocr-deskew    |                                                   |
+| 6    | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"page\"}                 |
+| 8    | ocrd-cis-ocropy-deskew    | {\"level-of-operation\":\"region\"}               |
+| 9    | ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"region\"}               |
+| 10   | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"region\"}               |
+| 11   | ocrd-cis-ocropy-resegment |                                                   |
+| 12   | ocrd-cis-ocropy-dewarp    |                                                   |
+| 13   | ocrd-calamari-recognize   | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} |
+
+
+
+## Good results for all pages
+
+Overall the results are good for all kind of pages. 
+
+| Step | Processor                 | Parameter                                         |
+| ---- | ------------------------- | ------------------------------------------------- |
+| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      |
+| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     |
+| 3    | ocrd-anybaseocr-deskew    |                                                   |
+| 6    | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"page\"}                 |
+| 8    | ocrd-cis-ocropy-deskew    | {\"level-of-operation\":\"region\"}               |
+| 9    | ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"region\"}               |
+| 10   | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"region\"}               |
+| 11   | ocrd-cis-ocropy-resegment |                                                   |
+| 12   | ocrd-cis-ocropy-dewarp    |                                                   |
+| 13   | ocrd-calamari-recognize   | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} |
+
+
+
+## Good results for slower processors
+
+If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.
+
+| Step | Processor                     | Parameter                                                    |
+| ---- | ----------------------------- | ------------------------------------------------------------ |
+| 1    | ocrd-olena-binarize           | {"impl": "sauvola-ms-split"}                                 |
+| 2    | ocrd-cis-ocropy-denoise       | {"level-of-operation":"page"}                                |
+| 3    | ocrd-anybaseocr-deskew        |                                                              |
+| 6    | ocrd-tesserocr-segment-region |                                                              |
+| 8    | ocrd-cis-ocropy-deskew        | {\"level-of-operation\":\"region\"}                          |
+| 10   | ocrd-cis-ocropy-segment       | {\"level-of-operation\":\"region\"}                          |
+| 12   | ocrd-cis-ocropy-dewarp        |                                                              |
+| 13   | ocrd-tesserocr-recognize      | {\"textequiv_level\":\"glyph\",\"overwrite_words\":true,<br />\"model\":\"GT4HistOCR_50000000.997_191951\"} |
 
