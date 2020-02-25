@@ -47,18 +47,21 @@ This processor takes a scanned colored /gray scale document image as input and p
       <th>Procecssor</th>
       <th>Parameter</th>
       <th>Remark</th>
-    </tr>
+	  <th>Call</th>
+	</tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-binarize</td>
       <td></td>
       <td>Fast</td>
+	  <td>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
       <td></td>
+	  <td>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
     </tr>
     <tr>
       <td>ocrd-olena-binarize</td>
@@ -76,6 +79,7 @@ This processor takes a scanned colored /gray scale document image as input and p
         </pre>
       </td>
       <td>Recommended</td>
+	  <td>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
     </tr>
   </tbody>
 </table>
