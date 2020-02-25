@@ -49,11 +49,20 @@ ocrd workspace clone [URL of your mets.xml]
 ```
 
 In most cases, METS files indicate several picture formats. For OCR-D you will
-only need one format. We strongly recommend using the format with the best
-resolution. Optionally, you can specify to only load the filegroup needed at
-the end of the command above.
+only need one format. We strongly recommend using the format with the highest
+resolution. Optionally, you can specify to only load the file group needed:
 
-TODO: add how to download particular filegroups
+List all existing groups:
+
+```sh
+ocrd workspace -d [/path/to/your/workspace] list-group
+```
+
+Download all files of one group:
+
+```sh
+ocrd workspace -d [/path/to/your/workspace] find --file-grp [selected file group] --download
+```
 
 You can also optionally specify a particular name for your workspace. If you
 don't, it will simply generate a name by itself.
@@ -235,15 +244,17 @@ nano [name of your new workflow_configuration.txt]
 
 Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. The first column contains the name of the processor, the following two columns indicate the names of the input and the output filegroups. The forth column for group-ID can be left blank. In the last column you can indicate the log level. 
 
-If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a `json` file which should be stored in Taverna's subdirectory `models`. See [Calling a single processor] on how to create `json` files. Alternatively, you can directly write down the parameter needed using the following syntax:
+If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a `json` file which should be stored in Taverna's subdirectory `models`. See [Calling a single processor](TODO) on how to create `json` files. Alternatively, you can directly write down the parameter needed using the following syntax:
 
 ```sh
-TODO: @VolkerHartmann bitte Aufruf ergänzen!!
+{\"[param1]\":\"[value1]\",\"[param2]\":\"[value2]\",\"[param3]\":\"[value3]\"}
+e.g.
+{\"level-of-operation\":\"page\"}
 ```
 
-For information on the available processors see ???
+**Note:** Avoid white spaces and escape double quotes with backslash.
 
-TODO: add link to description of processors
+For information on the available processors see [section at the end](#get_more_information_about_processors).
 
 
 👷
@@ -292,6 +303,26 @@ When you want to specify a new workflow adapted to the features of particular
 images, we recommend using an exisiting workflow as specified in `Taverna` or
 `workflow-config` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
-the existing processors, their tasks and features, see ???.
+the existing processors, their tasks and features, see [next section](#get_more_information_about_processors).
+
+
+
 
 TODO: add link to description of processors
+
+### Get more Information about Processors
+
+To get all available processors you might use the autocomplete in your preferred console. 
+
+**Note:** Activate virtual environment first.
+
+Type 'ocrd-' followed by `TAB` to get a list of all available processors.
+
+To get further information about one processor type
+
+```sh
+[name_of_selected_processor] -J
+```
+
+
+

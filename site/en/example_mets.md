@@ -11,13 +11,13 @@ toc: true
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/
-1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLoca
-tion="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-0
-.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xs
-d http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version17/mets.v1-7
-.xsd http://www.loc.gov/mix/v10 http://www.loc.gov/standards/mix/mix10/mix10.xsd
-">
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" 
+           xmlns:xlink="http://www.w3.org/1999/xlink" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd 
+                               http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd 
+                               http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd 
+                               http://www.loc.gov/mix/v10 http://www.loc.gov/standards/mix/mix10/mix10.xsd">
   <mets:metsHdr CREATEDATE="2020-02-20T10:35:52.969513">
     <mets:agent TYPE="OTHER" OTHERTYPE="SOFTWARE" ROLE="CREATOR">
       <mets:name>ocrd/core v2.3.1</mets:name>
@@ -26,7 +26,7 @@ d http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version17/mets.v1-7
   <mets:structMap TYPE="PHYSICAL">
     <mets:div TYPE="physSequence">
       <mets:div TYPE="page" ID="P_00001">
-        <mets:fptr FILEID="00001"/>
+        <mets:fptr FILEID="OCR-D-IMG_00001"/>
       </mets:div>
     </mets:div>
   </mets:structMap>
@@ -43,9 +43,8 @@ d http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version17/mets.v1-7
     </mets:amdSec>
   <mets:fileSec>
     <mets:fileGrp USE="OCR-D-IMG">
-      <mets:file MIMETYPE="image/tif" ID="00001">
-        <mets:FLocat LOCTYPE="OTHER" OTHERLOCTYPE="FILE" xlink:href="OCR-D-IMG/0
-0001.tif"/>
+      <mets:file MIMETYPE="image/tif" ID="OCR-D-IMG_00001">
+        <mets:FLocat LOCTYPE="OTHER" OTHERLOCTYPE="FILE" xlink:href="OCR-D-IMG/00001.tif"/>
       </mets:file>
     </mets:fileGrp>
   </mets:fileSec>
