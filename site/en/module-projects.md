@@ -45,7 +45,6 @@ data. The dewarping tool is also interesting due to its novel architecture.
 Generative neural networks are used to generate equalized variants of images
 instead of determining explicit transformations for the equalization.
 
-
 ## Scalable text and structure recognition methods for the full text digitization of historical prints: Layout Recognition
 _DFKI_
 
@@ -67,6 +66,7 @@ This tool works with the unprocessed raw data, so that on the one hand no
 pre-processing is necessary and on the other hand the full information spectrum
 can be used.
 
+![](/assets/poster/DFKI.pdf)
 
 ## Further development of a semi-automated open source tool for layout analysis and region extraction and classification (LAREX) of early printing
 
@@ -94,6 +94,8 @@ interfaces. Good results were achieved on pure text pages or pages with clearly
 separated images. There is potential for improvement especially in the
 recognition of decorative initials of older prints and other images close to
 the text as well as multi-column layouts.
+
+![](/assets/poster/Wuerzburg.pdf)
 
 ## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers
 _University of Leipzig  <br/>
@@ -142,6 +144,8 @@ useful results (below 10% CER).
 Command line interfaces for training and evaluation as well as full OCR-D
 interfaces for processing and evaluation are available for all modules.
 
+![](/assets/poster/Leipzig.pdf)
+
 ## Optimized use of OCR processes – Tesseract as a component in the OCR-D workflow
 _University of Mannheim  </br>
 University Library Mannheim_
@@ -178,7 +182,9 @@ units relevant for OCR-D was achieved by new generic models for Tesseract.
 These were trained from September 2019 until January 2020 on the basis of the
 data collection [_GT4HistOCR_](https://zenodo.org/record/1344132).
 
-<a id=" PoCoTo" name=" PoCoTo">**Automatic post-correction of historical OCR captured prints with integrated optional interactive correction**</a>  
+![](/assets/poster/Mannheim.pdf)
+
+## Automatic post-correction of historical OCR captured prints with integrated optional interactive correction 
 _Ludwig-Maximilians-University of Munich  
 Centre for Information and Language Processing (CIS)_
 
@@ -189,6 +195,8 @@ The result of the project is a _A-I-PoCoTo_ system integrated into the OCR-D wor
 The basis of the fully automatic post-correction is a flexible, feature-based Machine Learning (ML) procedure for fully automatic OCR post-correction with a special focus on avoiding the problem of disimprovement. The system uses the document-dependent profiling technology developed at CIS to detect errors and to generate correction candidates. In addition to various confidence values, the features of the system also use information from additional auxiliary OCRs.
 The system logs all correction decisions. Via this protocol mechanism the automatic post correction in _PoCoWeb_ can be checked interactively. You can manually undo individual correction decisions that have been made, and also subsequently execute correction decisions that have not been made.
 The entire system is integrated into the OCR-D workflow and follows the conventions valid there.
+
+![](/assets/poster/Muenchen.pdf)
 
 ## Development of a model repository and an automatic font recognition for OCR-D
 
@@ -235,6 +243,8 @@ having the tool even distinguish between the fonts of individual printers in
 the future through further training data, which would address several
 desiderata of historical research.
 
+![](/assets/poster/Mainz.pdf)
+
 ## OLA-HD – An OCR-D long-term archive for historical books
 _Georg-August-University of Göttingen  
 State and University Library of Lower Saxony_  
@@ -275,3 +285,5 @@ files via a dashboard.
 By March 2020, minor optimizations will be made to the user interface and the
 concept will be finalized. The concept will describe further expansion stages
 that may be useful for transferring the prototype software into a product.
+
+![](/assets/poster/Goettingen.pdf)

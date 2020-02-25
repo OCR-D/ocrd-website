@@ -62,6 +62,7 @@ bekannten, MaskRCNN-Architektur basiert. Dieses Werkzeug arbeitet mit den
 unbearbeiteten Rohdaten, sodass einerseits keine Vorverarbeitung notwendig ist
 und andererseits das volle Informationsspektrum ausgenutzt werden kann.
 
+![](/assets/poster/DFKI.pdf)
 
 <a id="larex"/>
 ## Weiterentwicklung eines semi-automatischen Open-Source-Tools zur Layout-Analyse und Regionen-Extraktion und -Klassifikation (LAREX) von frühen Buchdrucken
@@ -89,6 +90,8 @@ OCR-D-Schnittstellen angepasst. Auf reinen Textseiten oder Seiten mit deutlich
 abgetrennten Bildern wurden gute Ergebnisse erzielt. Verbesserungspotential
 besteht vor allem bei der Erkennung von Zierinitialen älterer Drucke und
 weiteren nah am Text liegenden Bildern sowie mehrspaltigen Layouts.
+
+![](/assets/poster/Wuerzburg.pdf)
 
 <a id="NN-FST">
 ## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers**
@@ -139,6 +142,7 @@ Für alle Module stehen Kommandozeilen-Schnittstellen für Training und
 Evaluierung, sowie volle OCR-D-Schnittstellen für Prozessierung und Evaluierung
 zur Verfügung.
 
+![](/assets/poster/Leipzig.pdf)
 
 <a id="tesseract">
 ## Optimierter Einsatz von OCR-Verfahren – Tesseract als Komponente im OCR-D-Workflow
@@ -177,8 +181,10 @@ OCR-D relevanten Druckwerke konnte durch neue generische Modelle für Tesseract
 erreicht werden. Diese wurden ab Septem-ber 2019 bis Januar 2020 auf Basis der
 Datensammlung [_GT4HistOCR_](https://zenodo.org/record/1344132) trainiert.
 
+![](/assets/poster/Mannheim.pdf)
+
 <a id="PoCoTo" />
-## Automatische Nachkorrektur historischer OCR-erfasster Drucke mit integrierter optionaler interaktiver Korrektur**</a>  
+## Automatische Nachkorrektur historischer OCR-erfasster Drucke mit integrierter optionaler interaktiver Korrektur
 _Ludwig-Maximilians-Universität München  
   Centrum für Informations- und Sprachverarbeitung (CIS)_
 
@@ -209,6 +215,8 @@ getätigte Korrekturentschei-dungen nachträglich ausgeführt werden.
 
 Das gesamte System ist in den OCR-D-Workflow eingebunden und folgt den dort
 gültigen Konventionen.
+
+![](/assets/poster/Muenchen.pdf)
 
 <a id="Schriftarterkennung/>
 ## Entwicklung eines Modellrepositoriums und einer Automatischen Schriftarterkennung für OCR-D
@@ -251,6 +259,8 @@ Die hohe Genauigkeit des Tools zur Erkennung der Schriftarten eröffnet die
 Möglichkeit, in Zukunft durch weitere Trainingsdaten das Tool sogar zwischen
 den Schriften einzelner Drucker unterscheiden zu lassen, was mehrere Desiderate
 der historischen Forschung adressieren würde.
+
+![](/assets/poster/Mainz.pdf)
 
 <a id="OLA-HD"/>
 
@@ -302,3 +312,4 @@ das Konzept finalisiert. Im Konzept werden weitere Ausbaustufen beschrieben,
 die sinnvoll sein können, um die prototypische Soft-ware in ein Produkt zu
 überführen.
 
+![](/assets/poster/Goettingen.pdf)
