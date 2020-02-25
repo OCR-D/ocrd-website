@@ -41,7 +41,7 @@ This processor takes a scanned colored /gray scale document image as input and p
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Procecssor</th>
@@ -105,9 +105,22 @@ May not be necessary for all prints.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-ocropy-denoise | {"level-of-operation":"page"} |         |
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td><code>{“level-of-operation”:”page”}</code></td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 3: Deskewing
 
@@ -133,11 +146,32 @@ that document. The input images have to be binarized for this module to work.
 
 #### Available processors
 
-| Processor                         | Parameter                                       | Remarks     |
-| ----------------------            | -----------------------------                   | ----------- |
-| ocrd-anybaseocr-deskew            |                                                 |             |
-| ocrd-tesserocr-deskew             | {"operation_level":"page"}                      | Fast        |
-| ocrd-cis-ocropy-deskew            | {"level-of-operation":"page"}                   | Recommended |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-deskew</td>
+      <td><code>{“operation_level”:”page”}</code></td>
+      <td>Fast</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td><code>{“level-of-operation”:”page”}</code></td>
+      <td>Recommended</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 4: Dewarping
 
@@ -147,9 +181,29 @@ This processor takes a document image as input and makes the text line straight 
 
 #### Available processors
 
-| Processor              | Parameter                     | Remarks      |
-| ---------------------- | ----------------------------- | ------------ |
-| ocrd-anybaseocr-dewarp | {\"pix2pixHD\":\"/path/to/pix2pixHD/\",<br />\"model_name\":\"/path/to/pix2pixHD/models\"} | For available models take a look at this [site](https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models) <br /> Parameter 'model_name' is missleading. Given directory has to contain a file named 'latest_net_G.pth' <br/> **GPU required!** |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-dewarp</td>
+      <td>
+        <pre>
+{
+  "pix2pixHD":"/path/to/pix2pixHD/",
+  "model_name":"/path/to/pix2pixHD/models"
+}
+        </pre>
+      </td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 5: Cropping
 
@@ -177,9 +231,22 @@ around the page content area).
 
 #### Available processors
 
-| Processor              | Parameter                     | Remarks      |
-| ---------------------- | ----------------------------- | ------------ |
-| ocrd-anybaseocr-crop |           | The input image has to be binarized and <br />should be deskewed for the module to work. |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-crop</td>
+      <td>&nbsp;</td>
+      <td>The input image has to be binarized and <br>should be deskewed for the module to work.</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Layout Analysis
 
@@ -211,11 +278,38 @@ marginalia, image, ...) should also be done.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-tesserocr-segment-region |  | Should also work for original images!? |
-| ocrd-anybaseocr-block-segmentation | {\"block_segmentation_model\":<br />\"/path/to/mrcnn\",<br />\"block_segmentation_weights\":<br />\"/path/to/model/block_segmentation_weights.h5\"} |  For available models take a look at this [site](https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models) <br/> Should also work for original images!?    |
-| ocrd-cis-ocropy-segment  | {\"level-of-operation\":\"page\"} |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-segment-region</td>
+      <td>&nbsp;</td>
+      <td>Should also work for original images!?</td>
+    </tr>
+    <tr>
+      <td>ocrd-anybaseocr-block-segmentation</td>
+      <td><pre>
+{
+  "block_segmentation_model": "/path/to/mrcnn",
+  "block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"
+}
+      </pre>
+      </td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Should also work for original images!?</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{"level-of-operation":"page"}</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Image Optimization (on Block Level)
 
@@ -233,9 +327,22 @@ The binarization should be at least executed once (on page/block/line level).
 
 #### Available processors
 
-| Processor               | Parameter                        | Remarks |
-| ----------------------- | -----------------------------    | ------- |
-| ocrd-tesserocr-binarize | {\"operation_level\":\"region\"} |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-binarize</td>
+      <td>{"operation_level":"region"}</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 8:  Deskewing 
 
@@ -249,9 +356,22 @@ This processor takes an image as input and does the skew correction for all text
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-ocropy-deskew | {\"level-of-operation\":\"region\"} |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 9:  Cliping 
 
@@ -267,9 +387,22 @@ output PAGE (as AlternativeImage).
 
 #### Available processors
 
-| Processor               | Parameter                           | Remarks |
-| ----------------------- | -----------------------------       | ------- |
-| ocrd-cis-ocropy-clip    | {\"level-of-operation\":\"region\"} |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 10: Line segmentation 
 
@@ -286,10 +419,27 @@ outline to the annotation of the output PAGE.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-ocropy-segment | {\"level-of-operation\":\"region\"} |         |
-| ocrd-tesserocr-segment-line |  |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{"level-of-operation":"region"}</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-line</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 11:  Line correction 
 
@@ -298,12 +448,32 @@ This processor can be used to correct the segmented lines.
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
-
-| Processor                 | Parameter                         | Remarks |
-| -----------------------   | -----------------------------     | ------- |
-| ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"line\"} |         |
-| ocrd-cis-ocropy-resegment |                                   |         |
-| ocrd-segment-repair       | {\"sanitize\":true}               |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{"level-of-operation":"line"}</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-resegment</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>ocrd-segment-repair</td>
+      <td>{"sanitize":true}</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 12: Dewarping (on line level)
 
@@ -317,10 +487,27 @@ This processor can be used to dewarp the segmented lines.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-anybaseocr-dewarp | {\"operation_level\":\"line\",<br/>\"pix2pixHD\":\"/path/to/pix2pixHD/\",<br />\"model_name\":\"/path/to/pix2pixHD/models\"} | For available models take a look at this [site](https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models) <br /> Parameter 'model_name' is missleading. Given directory has to contain a file named 'latest_net_G.pth' <br/> **GPU required!** |
-| ocrd-cis-ocropy-dewarp |  |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-dewarp</td>
+      <td>{"operation_level":"line",<br>"pix2pixHD":"/path/to/pix2pixHD/",<br>"model_name":"/path/to/pix2pixHD/models"}</td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Text Recognition and Optimization
 
@@ -332,11 +519,42 @@ This processor recognizes text in segmented lines.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-tesserocr-recognize | {\"textequiv_level\":\"glyph\",<br />\"overwrite_words\":true,\"model\":\"Fraktur\"} |  |
-|  | {\"textequiv_level\":\"glyph\",<br/>\"overwrite_words\":true,<br/>\"model\":\"GT4HistOCR_50000000.997_191951\"} | Recommended <br/> Model can be found [here](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50<br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata) |
-| ocrd-calamari-recognize | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} | Recommended<br/>Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>
+        <pre>
+{"textequiv_level":"glyph",<br />"overwrite_words":true,"model":"Fraktur"}
+        </pre>
+        <pre>
+{"textequiv_level":"glyph",<br/>"overwrite_words":true,<br/>"model":"GT4HistOCR_50000000.997_191951"}
+        </pre>
+      </td>
+      <td>Recommended <br/> Model can be found [here](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50<br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+    </tr>
+    <tr>
+      <td>ocrd-calamari-recognize</td>
+      <td>
+        <pre>
+{"checkpoint":"/path/to/models/\*.ckpt.json"}
+        </pre>
+        &nbsp;</td>
+      <td>
+        Recommended<br/>Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) 
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
 **Note:** For 'ocrd-tesserocr' the environment variable 'TESSDATA_PREFIX' has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )
 
 ## Post Correction (Optional)
@@ -349,9 +567,22 @@ This processor alignes texts from multiple OCR-engines in one PAGE.xml.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cis-align          |                               |         |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-align</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Step 15: Post correction
 
@@ -360,12 +591,27 @@ This processor tries to optimize the recognized text.
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
-
-| Processor               | Parameter                     | Remarks |
-| ----------------------- | ----------------------------- | ------- |
-| ocrd-cor-asv-ann-process |{\"textequiv_level\":\"line\",\"model_file\":\"/path/to/model/model.h5\"}                               |  Models can be found [here](https://github.com/ASVLeipzig/cor-asv-ann-models)       |
-| ocrd-cis-post-correct.sh | ???                              | Not tested yet!      |
-
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cor-asv-ann-process</td>
+      <td>{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}</td>
+      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
+    </tr>
+    <tr>
+      <td>ocrd-cis-post-correct.sh</td>
+      <td>???</td>
+      <td>Not tested yet!</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Analysis (Optional)
 
@@ -377,12 +623,27 @@ This processor can be used to analyse the output of the OCR.
 
 #### Available processors
 
-| Processor               | Parameter                     | Remarks                                             |
-| ----------------------- | ----------------------------- | -------                                             |
-| ocrd-dinglehopper       |                               | First input group should point to the ground truth. |
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-dinglehopper</td>
+      <td>&nbsp;</td>
+      <td>First input group should point to the ground truth.</td>
+    </tr>
+  </tbody>
+</table>
 
 # Recommendations
-All processors, with the exception of those for post-correction, were tested on selected pages of some prints from the 17th and 18th century.
+
+All processors, with the exception of those for post-correction, were tested on
+selected pages of some prints from the 17th and 18th century.
 
 The results vary quite a lot from page to page. In most cases, segmentation is a problem.
 
@@ -398,13 +659,13 @@ The following workflow has produced best results for 'simple' pages (e.g. [this 
 | 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      |
 | 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     |
 | 3    | ocrd-anybaseocr-deskew    |                                                   |
-| 6    | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"page\"}                 |
-| 8    | ocrd-cis-ocropy-deskew    | {\"level-of-operation\":\"region\"}               |
-| 9    | ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"region\"}               |
-| 10   | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"region\"}               |
+| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 |
+| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               |
+| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               |
+| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               |
 | 11   | ocrd-cis-ocropy-resegment |                                                   |
 | 12   | ocrd-cis-ocropy-dewarp    |                                                   |
-| 13   | ocrd-calamari-recognize   | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} |
+| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} |
 
 
 
@@ -417,13 +678,13 @@ Overall the results are good for all kind of pages.
 | 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      |
 | 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     |
 | 3    | ocrd-anybaseocr-deskew    |                                                   |
-| 6    | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"page\"}                 |
-| 8    | ocrd-cis-ocropy-deskew    | {\"level-of-operation\":\"region\"}               |
-| 9    | ocrd-cis-ocropy-clip      | {\"level-of-operation\":\"region\"}               |
-| 10   | ocrd-cis-ocropy-segment   | {\"level-of-operation\":\"region\"}               |
+| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 |
+| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               |
+| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               |
+| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               |
 | 11   | ocrd-cis-ocropy-resegment |                                                   |
 | 12   | ocrd-cis-ocropy-dewarp    |                                                   |
-| 13   | ocrd-calamari-recognize   | {\"checkpoint\":\"/path/to/models/\*.ckpt.json\"} |
+| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} |
 
 
 
@@ -437,8 +698,8 @@ If your computer is not that powerful you may try this workflow. It works fine f
 | 2    | ocrd-cis-ocropy-denoise       | {"level-of-operation":"page"}                                |
 | 3    | ocrd-anybaseocr-deskew        |                                                              |
 | 6    | ocrd-tesserocr-segment-region |                                                              |
-| 8    | ocrd-cis-ocropy-deskew        | {\"level-of-operation\":\"region\"}                          |
-| 10   | ocrd-cis-ocropy-segment       | {\"level-of-operation\":\"region\"}                          |
+| 8    | ocrd-cis-ocropy-deskew        | {"level-of-operation":"region"}                          |
+| 10   | ocrd-cis-ocropy-segment       | {"level-of-operation":"region"}                          |
 | 12   | ocrd-cis-ocropy-dewarp        |                                                              |
-| 13   | ocrd-tesserocr-recognize      | {\"textequiv_level\":\"glyph\",\"overwrite_words\":true,<br />\"model\":\"GT4HistOCR_50000000.997_191951\"} |
+| 13   | ocrd-tesserocr-recognize      | {"textequiv_level":"glyph","overwrite_words":true,<br />"model":"GT4HistOCR_50000000.997_191951"} |
 
