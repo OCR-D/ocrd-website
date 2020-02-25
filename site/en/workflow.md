@@ -350,9 +350,20 @@ This processor takes an image as input and does the skew correction for all text
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                    |                                                            |
-| ---                                | ---                                                        |
-| ![](/assets/workflow/seg-page.PNG) | ![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) |
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/seg-page.PNG" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -413,9 +424,20 @@ outline to the annotation of the output PAGE.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                                            |                                                                                |
-| ---                                                        | ---                                                                            |
-| ![](/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png) | ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
+<table class="">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -481,9 +503,20 @@ This processor can be used to dewarp the segmented lines.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
-|                                                                                |                                                                                |
-| ---                                                                            | ---                                                                            |
-| ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) | ![](/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png) |
+<table class="">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -555,7 +588,10 @@ This processor recognizes text in segmented lines.
 </table>
 
 
-**Note:** For 'ocrd-tesserocr' the environment variable 'TESSDATA_PREFIX' has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )
+**Note:** For `ocrd-tesserocr` the environment variable `TESSDATA_PREFIX` has
+to be set to point to the directory where the used models are stored. (The
+directory should at least contain the following models: `deu.traineddata`,
+`eng.taineddata`, `osd.traineddata`)
 
 ## Post Correction (Optional)
 
@@ -652,7 +688,10 @@ These recommendations may also work well for other prints of those centuries.
 
 
 ## Best results for selected pages
-The following workflow has produced best results for 'simple' pages (e.g. [this page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif)) without any  (CER ~1%).
+
+The following workflow has produced best results for 'simple' pages (e.g. [this
+page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))
+without any  (CER ~1%).
 
 | Step | Processor                 | Parameter                                         |
 | ---- | ------------------------- | ------------------------------------------------- |
