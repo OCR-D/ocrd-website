@@ -47,7 +47,7 @@ This processor takes a scanned colored /gray scale document image as input and p
       <th>Procecssor</th>
       <th>Parameter</th>
       <th>Remark</th>
-	  <th>Call</th>
+      <th>Call</th>
 	</tr>
   </thead>
   <tbody>
