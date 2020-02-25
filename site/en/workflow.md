@@ -763,36 +763,36 @@ The following workflow has produced best results for 'simple' pages (e.g. [this
 page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))
 without any  (CER ~1%).
 
-| Step | Processor                 | Parameter                                         |
-| ---- | ------------------------- | ------------------------------------------------- | 
-| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      | 
-| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     | 
-| 3    | ocrd-anybaseocr-deskew    |                                                   | 
-| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 | 
-| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               | 
-| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               |
-| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               |
-| 11   | ocrd-cis-ocropy-resegment |                                                   |
-| 12   | ocrd-cis-ocropy-dewarp    |                                                   |
-| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} |
+| Step | Processor                 | Parameter                                         | Call     |
+| ---- | ------------------------- | ------------------------------------------------- | -------- |
+| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      | ocrd process \ "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     | "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+| 3    | ocrd-anybaseocr-deskew    |                                                   | "anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE" \
+| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 | "cis-ocropy-segment -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               | "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p '{\"level-of-operation\":\"region\"}'" \
+| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               | "cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP -p '{\"level-of-operation\":\"region\"}'" \
+| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               | "cis-ocropy-segment -I OCR-D-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
+| 11   | ocrd-cis-ocropy-resegment |                                                   | "cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG" \
+| 12   | ocrd-cis-ocropy-dewarp    |                                                   | "cis-ocropy-dewarp -I OCR-D-RESEG -O OCR-D-DEWARP-LINE" \
+| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} | "calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/\*.ckpt.json\"}'"
 
 
 ## Good results for all pages
 
 Overall the results are good for all kind of pages. 
 
-| Step | Processor                 | Parameter                                         |
-| ---- | ------------------------- | ------------------------------------------------- |
-| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      |
-| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     |
-| 3    | ocrd-anybaseocr-deskew    |                                                   |
-| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 |
-| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               |
-| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               |
-| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               |
-| 11   | ocrd-cis-ocropy-resegment |                                                   |
-| 12   | ocrd-cis-ocropy-dewarp    |                                                   |
-| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} |
+| Step | Processor                 | Parameter                                         | Call    |
+| ---- | ------------------------- | ------------------------------------------------- | ------- |
+| 1    | ocrd-olena-binarize       | {"impl": "sauvola-ms-split"}                      | ocrd process \ "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+| 2    | ocrd-cis-ocropy-denoise   | {"level-of-operation":"page"}                     | "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+| 3    | ocrd-anybaseocr-deskew    |                                                   | "anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE" \
+| 6    | ocrd-cis-ocropy-segment   | {"level-of-operation":"page"}                 | "cis-ocropy-segment -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+| 8    | ocrd-cis-ocropy-deskew    | {"level-of-operation":"region"}               | "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p '{\"level-of-operation\":\"region\"}'" \
+| 9    | ocrd-cis-ocropy-clip      | {"level-of-operation":"region"}               | "cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP -p '{\"level-of-operation\":\"region\"}'" \
+| 10   | ocrd-cis-ocropy-segment   | {"level-of-operation":"region"}               | "cis-ocropy-segment -I OCR-D-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
+| 11   | ocrd-cis-ocropy-resegment |                                                   | "cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG" \
+| 12   | ocrd-cis-ocropy-dewarp    |                                                   | "cis-ocropy-dewarp -I OCR-D-RESEG -O OCR-D-DEWARP-LINE" \
+| 13   | ocrd-calamari-recognize   | {"checkpoint":"/path/to/models/\*.ckpt.json"} | {"checkpoint":"/path/to/models/\*.ckpt.json"} | "calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/\*.ckpt.json\"}'"
 
 
 
@@ -800,14 +800,14 @@ Overall the results are good for all kind of pages.
 
 If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.
 
-| Step | Processor                     | Parameter                                                    |
-| ---- | ----------------------------- | ------------------------------------------------------------ |
-| 1    | ocrd-olena-binarize           | {"impl": "sauvola-ms-split"}                                 |
-| 2    | ocrd-cis-ocropy-denoise       | {"level-of-operation":"page"}                                |
-| 3    | ocrd-anybaseocr-deskew        |                                                              |
-| 6    | ocrd-tesserocr-segment-region |                                                              |
-| 8    | ocrd-cis-ocropy-deskew        | {"level-of-operation":"region"}                          |
-| 10   | ocrd-cis-ocropy-segment       | {"level-of-operation":"region"}                          |
-| 12   | ocrd-cis-ocropy-dewarp        |                                                              |
-| 13   | ocrd-tesserocr-recognize      | {"textequiv_level":"glyph","overwrite_words":true,<br />"model":"GT4HistOCR_50000000.997_191951"} |
+| Step | Processor                     | Parameter                                                    | Call    |
+| ---- | ----------------------------- | ------------------------------------------------------------ | ------- |
+| 1    | ocrd-olena-binarize           | {"impl": "sauvola-ms-split"}                                 | ocrd process \ "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+| 2    | ocrd-cis-ocropy-denoise       | {"level-of-operation":"page"}                                | "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+| 3    | ocrd-anybaseocr-deskew        |                                                              | "anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE" \
+| 6    | ocrd-tesserocr-segment-region |                                                              | "tesserocr-segment-region -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG" \
+| 8    | ocrd-cis-ocropy-deskew        | {"level-of-operation":"region"}                          | "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p '{\"level-of-operation\":\"region\"}'" \
+| 10   | ocrd-cis-ocropy-segment       | {"level-of-operation":"region"}                          | "cis-ocropy-segment -I OCR-D-DEWKEW-REG -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
+| 12   | ocrd-cis-ocropy-dewarp        |                                                              | "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-DEWARP-LINE" \
+| 13   | ocrd-tesserocr-recognize      | {"textequiv_level":"glyph","overwrite_words":true,<br />"model":"GT4HistOCR_50000000.997_191951"} | "tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
 
