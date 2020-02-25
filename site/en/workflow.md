@@ -55,13 +55,13 @@ This processor takes a scanned colored /gray scale document image as input and p
       <td>ocrd-anybaseocr-binarize</td>
       <td></td>
       <td>Fast</td>
-	  <td>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
+      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
       <td></td>
-	  <td>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-olena-binarize</td>
@@ -79,7 +79,7 @@ This processor takes a scanned colored /gray scale document image as input and p
         </pre>
       </td>
       <td>Recommended</td>
-	  <td>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</td>
+      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
   </tbody>
 </table>
@@ -191,6 +191,7 @@ This processor takes a document image as input and makes the text line straight 
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+      <th>Call</th>
     </tr>
   </thead>
   <tbody>
@@ -205,6 +206,9 @@ This processor takes a document image as input and makes the text line straight 
         </pre>
       </td>
       <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+      <td>
+        <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -p '{\"pix2pixHD\":\"/path/to/pix2pixHD/\",\"model_name\":\"/path/to/pix2pixHD/models\"}'</code>
+      </td>
     </tr>
   </tbody>
 </table>
