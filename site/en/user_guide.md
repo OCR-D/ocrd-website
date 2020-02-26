@@ -359,6 +359,36 @@ You can write new rules by using file groups as prerequisites/targets in the nor
 
 **Note:** Also see the [extensive Readme of workflow-configuration](https://github.com/bertsky/workflow-configuration#usage) on how to adjust the preconfigured workflows to your needs.
 
+#### Translating native commands to docker calls
+The native calls presented above are simple to translate to commands based on the
+docker images by prepending the boilerplate telling Docker which image to use,
+which user to run as, which files to bind to a container path etc.
+
+For example a call to
+[`ocrd-tesserocr-binarize`](https://github.com/OCR-D/tesserocr) might natively
+look like this:
+
+```sh
+ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
+```
+
+To run it with the [`ocrd/all:maximum`] Docker container:
+
+```sh
+docker run -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
+           \_________/ \___________/ \______/ \_________________/ \___________________________________________________________/
+              (1)          (2)         (3)          (4)                            (5)
+```
+
+* (1) tells Docker to run the container as the calling user instead of root
+* (2) tells Docker to bind the current working directory as the `/data` folder in the container
+* (3) tells Docker to change the container's working directory to `/data`
+* (4) tells docker which image to run
+* (5) is the unchanged call to `ocrd-tesserocr-segment-region`
+
+It can also be useful to delete the container after creation with the `--rm`
+parameter.
+
 ### Specifying New OCR-D-Workflows
 
 👷
