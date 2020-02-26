@@ -39,12 +39,17 @@ the digitized material with the aim of improving the image quality and thus the
 performance of the subsequent OCR modules. For this purpose, tools for
 binarization, deskewing, cropping and dewarping were implemented. 
 
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 The cropping tool based on computer vision is particularly noteworthy for its
 performance. It predominantly achieves very good results on the entire project
 data. The dewarping tool is also interesting due to its novel architecture.
 Generative neural networks are used to generate equalized variants of images
 instead of determining explicit transformations for the equalization.
-
 
 ## Scalable text and structure recognition methods for the full text digitization of historical prints: Layout Recognition
 _DFKI_
@@ -67,8 +72,14 @@ This tool works with the unprocessed raw data, so that on the one hand no
 pre-processing is necessary and on the other hand the full information spectrum
 can be used.
 
-
+<div class="is-clearfix"></div>
 ## Further development of a semi-automated open source tool for layout analysis and region extraction and classification (LAREX) of early printing
+
+<p class="poster-image">
+  <a href="/assets/poster/Wuerzburg.pdf">
+    <img src="/assets/poster/Wuerzburg.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
 
 _Julius-Maximilians-University of Würzburg   <br/>
 Institute of Computer Science: Chair of Artificial Intelligence and Applied Computer Science_
@@ -95,7 +106,15 @@ separated images. There is potential for improvement especially in the
 recognition of decorative initials of older prints and other images close to
 the text as well as multi-column layouts.
 
+<div class="is-clearfix"></div>
 ## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers
+
+<p class="poster-image">
+  <a href="/assets/poster/Leipzig.pdf">
+    <img src="/assets/poster/Leipzig.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 _University of Leipzig  <br/>
 Institut für Informatik: Department of Automatic Language Processing_
 
@@ -111,20 +130,20 @@ suitable for this purpose.
 For the implementation of a combined architecture of NN and FST it was decided to implement three modules:
 
 1. a pure NN solution with continuously (_end-to-end_) trained model on the
-   character level alone - as a deep (multi-layer), bidirectional recurrent
-   network according to the encoder-decoder scheme (for different input and
-   output lengths) with an attention mechanism and A*-Beamsearch with
-   adjustable rejection threshold (against overcorrection), i.e.
-   post-correction of text lines is treated like machine translation,
+character level alone - as a deep (multi-layer), bidirectional recurrent
+network according to the encoder-decoder scheme (for different input and
+output lengths) with an attention mechanism and A*-Beamsearch with
+adjustable rejection threshold (against overcorrection), i.e.
+post-correction of text lines is treated like machine translation,
 2. a NN language model (LM) at the character level - as a deep (multi-layer),
-   bidirectional recurrent network with interface for graph input and
-   incremental decoding
+bidirectional recurrent network with interface for graph input and
+incremental decoding
 3. a WFST component with an error model to be trained explicitly on glyph level
-   and word model/lexicon, as well as connection to 2. - via WFST composition
-   of input graph with error and word model according to the sliding window
-   principle, conversion of the single windows to one hypothesis graph per text
-   line, and combination of the respective output weights with LM-evaluations
-   in an efficient search for the best path.
+and word model/lexicon, as well as connection to 2. - via WFST composition
+of input graph with error and word model according to the sliding window
+principle, conversion of the single windows to one hypothesis graph per text
+line, and combination of the respective output weights with LM-evaluations
+in an efficient search for the best path.
 
 The combination of 3. with 2. thus represents a hybrid solution. But also 1.
 can benefit from 2. (if the same network topology is used) by initializing the
@@ -142,8 +161,17 @@ useful results (below 10% CER).
 Command line interfaces for training and evaluation as well as full OCR-D
 interfaces for processing and evaluation are available for all modules.
 
+<div class="is-clearfix"></div>
+
 ## Optimized use of OCR processes – Tesseract as a component in the OCR-D workflow
-_University of Mannheim  </br>
+
+<p class="poster-image">
+  <a href="/assets/poster/Mannheim.pdf">
+    <img src="/assets/poster/Mannheim.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
+_University of Mannheim  <br/>
 University Library Mannheim_
 
 Project participants: Stefan Weil, Noah Metzger  
@@ -178,7 +206,14 @@ units relevant for OCR-D was achieved by new generic models for Tesseract.
 These were trained from September 2019 until January 2020 on the basis of the
 data collection [_GT4HistOCR_](https://zenodo.org/record/1344132).
 
-<a id=" PoCoTo" name=" PoCoTo">**Automatic post-correction of historical OCR captured prints with integrated optional interactive correction**</a>  
+## Automatic post-correction of historical OCR captured prints with integrated optional interactive correction 
+
+<p class="poster-image">
+  <a href="/assets/poster/München.pdf">
+    <img src="/assets/poster/München.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 _Ludwig-Maximilians-University of Munich  
 Centre for Information and Language Processing (CIS)_
 
@@ -190,7 +225,15 @@ The basis of the fully automatic post-correction is a flexible, feature-based Ma
 The system logs all correction decisions. Via this protocol mechanism the automatic post correction in _PoCoWeb_ can be checked interactively. You can manually undo individual correction decisions that have been made, and also subsequently execute correction decisions that have not been made.
 The entire system is integrated into the OCR-D workflow and follows the conventions valid there.
 
+<div class="is-clearfix"></div>
+
 ## Development of a model repository and an automatic font recognition for OCR-D
+
+<p class="poster-image">
+  <a href="/assets/poster/Mainz.pdf">
+    <img src="/assets/poster/Mainz.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
 
 <address>
 _University Leipzig  
@@ -235,7 +278,16 @@ having the tool even distinguish between the fonts of individual printers in
 the future through further training data, which would address several
 desiderata of historical research.
 
+<div class="is-clearfix"></div>
+
 ## OLA-HD – An OCR-D long-term archive for historical books
+
+<p class="poster-image">
+  <a href="/assets/poster/Göttingen.pdf">
+    <img src="/assets/poster/Göttingen.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 _Georg-August-University of Göttingen  
 State and University Library of Lower Saxony_  
 _Society for Scientific Data Processing mbH Göttingen_
@@ -275,3 +327,4 @@ files via a dashboard.
 By March 2020, minor optimizations will be made to the user interface and the
 concept will be finalized. The concept will describe further expansion stages
 that may be useful for transferring the prototype software into a product.
+
