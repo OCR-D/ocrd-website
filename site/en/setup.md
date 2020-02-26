@@ -1,12 +1,11 @@
 ---
 layout: page
-author: Konstantin Baierer
 lang: en
 lang-ref: setup
 toc: true
 ---
 
-# Setup guide for pilot libraries
+# OCR-D setup guide
 
 OCR-D's software is a modular collection of many projects (called _modules_)
 with many tools per module (called _processors_) that you can combine freely
@@ -326,8 +325,13 @@ docker-compose up &
 # To stop research data repository
 docker-compose stop
 ```
+
 ### Testing the installation
-The write access to the service is secured with a password, which is preset when you use the docker installation. There is an 'ingest' user for ingesting files. (Password: 'ingest')
+
+The write access to the service is secured with a password, which is preset
+when you use the docker installation. There is an 'ingest' user for ingesting
+files. (Password: `ingest`)
+
 1. Upload zipped BagIt container to metastore.
 ```sh
 curl -u ingest:ingest -v -F "file=@zippedBagItContainer" http://localhost:8080/api/v1/metastore/bagit 
@@ -351,21 +355,30 @@ curl -XGET http://localhost:8090/api/v1/dataresources/123..../data/zippedBagItCo
 You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/bagit)
 
 ## Installation Taverna Workflow
+
 ### Why using Taverna?
-Taverna creates a 'metadata' sub directory containing collected output of all processors. All intermediate mets files and a provenance file containing all provenance of the workflow including start/end time of processor/workflow, used input group(s), used parameters and created output group(s).
+
+Taverna creates a 'metadata' sub directory containing collected output of all
+processors. All intermediate mets files and a provenance file containing all
+provenance of the workflow including start/end time of processor/workflow, used
+input group(s), used parameters and created output group(s).
 
 There are two ways to install taverna workflow.
 1 'Local' installation
 2. Docker installation
 
 ### 'Local' installation
+
 ```sh
 git clone https://github.com/OCR-D/taverna_workflow.git
 cd taverna_workflow/
 bash installTaverna.sh ~/ocrd/taverna
 ```
+
 #### Testing the installation
+
 To check if the installation works fine you can start a first test.
+
 ```sh
 cd ~/ocrd/taverna
 bash startWorkflow.sh parameters_all.txt
@@ -387,9 +400,12 @@ OCR-D-OCR-TESSEROCR-GT4HISTOCR
 OCR-D-SEG-LINE
 OCR-D-SEG-REGION
 ```
-Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
+
+Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the
+detected full text.
 
 ### Docker installation
+
 ```sh
 wget https://raw.githubusercontent.com/OCR-D/taverna_workflow/master/Dockerfile
 docker build -t ocrd/taverna .
@@ -397,8 +413,11 @@ mkdir ~/docker/ocrd/taverna
 cd ~/docker/ocrd/taverna
 docker run -v `pwd`:/data ocrd/taverna init
 ```
+
 #### Testing the installation
+
 To check if the installation works fine you can start a first test.
+
 ```sh
 cd ~/docker/ocrd/taverna
 docker run --network="host" -v `pwd`:/data ocrd/taverna testWorkflow
@@ -420,7 +439,9 @@ OCR-D-OCR-TESSEROCR-GT4HISTOCR
 OCR-D-SEG-LINE
 OCR-D-SEG-REGION
 ```
+
 Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
+
 ## Running a small workflow without taverna 
 
 ### With PyPI and workflow engine from core
@@ -466,28 +487,37 @@ ocrd process \
   'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE' \
   'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json' 
 ```
+
 ## Installation of the whole OCR-D Framework
+
 To install the complete OCR-D framework docker is highly recommended.
+
 ```sh
 wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_framework.sh
 bash install_OCR-D_framework.sh ~/ocrd_framework
 ```
+
 Now there exists several folders
 
 - repository - Contains all files of repository and the databases
 - taverna - Contains all files workspaces and configuration of workflows
 
 ### Prepare '/etc/hosts' for accessing files in repository via browser
+
 ```sh
 echo '127.0.0.1   kitdm20' | sudo tee -a /etc/hosts 
 ```
- #### Testing the installation
+
+#### Testing the installation
+
 To check if the installation works fine you can start a first test.
+
 ```sh
 # Start repo in a shell
 cd ~/ocrd_framework/repository
 docker-compose up 
 ```
+
 ```sh
 cd ~/ocrd_framework/taverna
 docker run --network="host" -v `pwd`:/data ocrd/taverna testWorkflow
@@ -509,11 +539,16 @@ OCR-D-OCR-TESSEROCR-GT4HISTOCR
 OCR-D-SEG-LINE
 OCR-D-SEG-REGION
 ```
+
 Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
 
 #### Check results in browser
-After the workflow all results are ingested to the research data repository. The repository is available at http://localhost:8080/api/v1/metastore/bagit
+
+After the workflow all results are ingested to the research data repository.
+The repository is available at http://localhost:8080/api/v1/metastore/bagit
 
 #### Configure your own workflow
-For defining your own workflow with taverna please refer to the [README.md](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
+
+For defining your own workflow with taverna please refer to the
+[README](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
 
