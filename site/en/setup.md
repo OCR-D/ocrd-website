@@ -5,7 +5,7 @@ lang-ref: setup
 toc: true
 ---
 
-# Setup guide for pilot libraries
+# OCR-D setup guide
 
 OCR-D's software is a modular collection of many projects (called _modules_)
 with many tools per module (called _processors_) that you can combine freely
@@ -102,41 +102,6 @@ docker pull ocrd/all:<version>
 ```
 
 This can even be set up as a cron-job to ensure the image is always up-to-date.
-
-### Translating native commands to docker calls
-
-In the documentation, both of the [OCR-D coordination
-project](https://ocr-d.github.io) as well as the documentation of the
-[individual OCR-D modules](https://github.com/topics/ocr-d), you will find
-*native commands*, i.e. command line calls that expect the software to be
-installed natively. These are simple to translate to commands based on the
-docker images by prepending the boilerplate telling Docker which image to use,
-which user to run as, which files to bind to a container path etc.
-
-For example a call to
-[`ocrd-tesserocr-binarize`](https://github.com/OCR-D/tesserocr) might natively
-look like this:
-
-```sh
-ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-```
-
-To run it with the [`ocrd/all:maximum`] Docker container:
-
-```sh
-docker run -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-           \_________/ \___________/ \______/ \_________________/ \___________________________________________________________/
-              (1)          (2)         (3)          (4)                            (5)
-```
-
-* (1) tells Docker to run the container as the calling user instead of root
-* (2) tells Docker to bind the current working directory as the `/data` folder in the container
-* (3) tells Docker to change the container's working directory to `/data`
-* (4) tells docker which image to run
-* (5) is the unchanged call to `ocrd-tesserocr-segment-region`
-
-It can also be useful to delete the container after creation with the `--rm`
-parameter.
 
 ## ocrd_all natively
 
@@ -348,6 +313,136 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr
 
 Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
 
+## Installation of OCR-D Research Data Repository
+
+It's highly recommended to install the research data repository via Docker. [See link for further information](https://github.com/OCR-D/repository_metastore/blob/master/installDocker/installation.md)
+
+```sh
+git clone https://github.com/OCR-D/repository_metastore
+cd repository_metastore/installDocker
+bash installRepo.sh ~/ocrd/repository
+cd ~/ocrd/repository/docker
+docker-compose up &
+# To stop research data repository
+docker-compose stop
+```
+
+### Testing the installation
+
+The write access to the service is secured with a password, which is preset
+when you use the docker installation. There is an 'ingest' user for ingesting
+files. (Password: `ingest`)
+
+1. Upload zipped BagIt container to metastore.
+```sh
+curl -u ingest:ingest -v -F "file=@zippedBagItContainer" http://localhost:8080/api/v1/metastore/bagit 
+```
+2. List all BagIt containers.
+```sh
+curl -XGET -H "Accept:application/json"  http://localhost:8080/api/v1/metastore/bagit 
+```
+3. List all METS files.
+```sh
+curl -XGET http://localhost:8080/api/v1/metastore/mets
+```
+4. List all METS files with title 'Der Herold'.
+```sh
+curl -XGET -H "Accept:application/json" "http://localhost:8080/api/v1/metastore/mets/title?title=Der%20Herold"
+```
+5. Download zipped BagIt container from metastore. (use one URL of the list printed above) 
+```sh
+curl -XGET http://localhost:8090/api/v1/dataresources/123..../data/zippedBagItContainer > bagDownload.zip
+```
+You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/bagit)
+
+## Installation Taverna Workflow
+
+### Why using Taverna?
+
+Taverna creates a 'metadata' sub directory containing collected output of all
+processors. All intermediate mets files and a provenance file containing all
+provenance of the workflow including start/end time of processor/workflow, used
+input group(s), used parameters and created output group(s).
+
+There are two ways to install taverna workflow.
+1 'Local' installation
+2. Docker installation
+
+### 'Local' installation
+
+```sh
+git clone https://github.com/OCR-D/taverna_workflow.git
+cd taverna_workflow/
+bash installTaverna.sh ~/ocrd/taverna
+```
+
+#### Testing the installation
+
+To check if the installation works fine you can start a first test.
+
+```sh
+cd ~/ocrd/taverna
+bash startWorkflow.sh parameters_all.txt
+[...]
+Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
+# The processed workspace should look like this:
+ls -1 workspace/example/data/
+metadata
+mets.xml
+OCR-D-GT-SEG-BLOCK
+OCR-D-GT-SEG-PAGE
+OCR-D-IMG
+OCR-D-IMG-BIN
+OCR-D-IMG-BIN-OCROPY
+OCR-D-OCR-CALAMARI_GT4HIST
+OCR-D-OCR-TESSEROCR-BOTH
+OCR-D-OCR-TESSEROCR-FRAKTUR
+OCR-D-OCR-TESSEROCR-GT4HISTOCR
+OCR-D-SEG-LINE
+OCR-D-SEG-REGION
+```
+
+Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the
+detected full text.
+
+### Docker installation
+
+```sh
+wget https://raw.githubusercontent.com/OCR-D/taverna_workflow/master/Dockerfile
+docker build -t ocrd/taverna .
+mkdir ~/docker/ocrd/taverna
+cd ~/docker/ocrd/taverna
+docker run -v `pwd`:/data ocrd/taverna init
+```
+
+#### Testing the installation
+
+To check if the installation works fine you can start a first test.
+
+```sh
+cd ~/docker/ocrd/taverna
+docker run --network="host" -v `pwd`:/data ocrd/taverna testWorkflow
+[...]
+Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
+# The processed workspace should look like this:
+ls -1 workspace/example/data/
+metadata
+mets.xml
+OCR-D-GT-SEG-BLOCK
+OCR-D-GT-SEG-PAGE
+OCR-D-IMG
+OCR-D-IMG-BIN
+OCR-D-IMG-BIN-OCROPY
+OCR-D-OCR-CALAMARI_GT4HIST
+OCR-D-OCR-TESSEROCR-BOTH
+OCR-D-OCR-TESSEROCR-FRAKTUR
+OCR-D-OCR-TESSEROCR-GT4HISTOCR
+OCR-D-SEG-LINE
+OCR-D-SEG-REGION
+```
+
+Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
+
 ## Running a small workflow without taverna 
 
 ### With PyPI and workflow engine from core
@@ -394,137 +489,36 @@ ocrd process \
   'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json' 
 ```
 
-## Installation of OCR-D Research Data Repository
-
-It's highly recommended to install the research data repository via Docker. [See link for further information](https://github.com/OCR-D/repository_metastore/blob/master/installDocker/installation.md)
-
-```sh
-git clone https://github.com/OCR-D/repository_metastore
-cd repository_metastore/installDocker
-bash installRepo.sh ~/ocrd/repository
-cd ~/ocrd/repository/docker
-docker-compose up &
-# To stop research data repository
-docker-compose stop
-```
-### Testing the installation
-The write access to the service is secured with a password, which is preset when you use the docker installation. There is an 'ingest' user for ingesting files. (Password: 'ingest')
-1. Upload zipped BagIt container to metastore.
-```sh
-curl -u ingest:ingest -v -F "file=@zippedBagItContainer" http://localhost:8080/api/v1/metastore/bagit 
-```
-2. List all BagIt containers.
-```sh
-curl -XGET -H "Accept:application/json"  http://localhost:8080/api/v1/metastore/bagit 
-```
-3. List all METS files.
-```sh
-curl -XGET http://localhost:8080/api/v1/metastore/mets
-```
-4. List all METS files with title 'Der Herold'.
-```sh
-curl -XGET -H "Accept:application/json" "http://localhost:8080/api/v1/metastore/mets/title?title=Der%20Herold"
-```
-5. Download zipped BagIt container from metastore. (use one URL of the list printed above) 
-```sh
-curl -XGET http://localhost:8090/api/v1/dataresources/123..../data/zippedBagItContainer > bagDownload.zip
-```
-You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/bagit)
-
-## Installation Taverna Workflow
-### Why using Taverna?
-Taverna creates a 'metadata' sub directory containing collected output of all processors. It includes all intermediate mets files and a provenance file containing all provenance of the workflow including start/end time of processor/workflow, used input group(s), used parameters and created output group(s).
-
-There are two ways to install taverna workflow.
-1 'Local' installation
-2. Docker installation
-
-### 'Local' installation
-```sh
-git clone https://github.com/OCR-D/taverna_workflow.git
-cd taverna_workflow/
-bash installTaverna.sh ~/ocrd/taverna
-```
-#### Testing the installation
-To check if the installation works fine you can start a first test.
-```sh
-cd ~/ocrd/taverna
-bash startWorkflow.sh parameters_all.txt
-[...]
-Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
-# The processed workspace should look like this:
-ls -1 workspace/example/data/
-metadata
-mets.xml
-OCR-D-GT-SEG-BLOCK
-OCR-D-GT-SEG-PAGE
-OCR-D-IMG
-OCR-D-IMG-BIN
-OCR-D-IMG-BIN-OCROPY
-OCR-D-OCR-CALAMARI_GT4HIST
-OCR-D-OCR-TESSEROCR-BOTH
-OCR-D-OCR-TESSEROCR-FRAKTUR
-OCR-D-OCR-TESSEROCR-GT4HISTOCR
-OCR-D-SEG-LINE
-OCR-D-SEG-REGION
-```
-Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
-
-### Docker installation
-```sh
-wget https://raw.githubusercontent.com/OCR-D/taverna_workflow/master/Dockerfile
-docker build -t ocrd/taverna .
-mkdir ~/docker/ocrd/taverna
-cd ~/docker/ocrd/taverna
-docker run -v `pwd`:/data ocrd/taverna init
-```
-#### Testing the installation
-To check if the installation works fine you can start a first test.
-```sh
-cd ~/docker/ocrd/taverna
-docker run --network="host" -v `pwd`:/data ocrd/taverna testWorkflow
-[...]
-Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
-# The processed workspace should look like this:
-ls -1 workspace/example/data/
-metadata
-mets.xml
-OCR-D-GT-SEG-BLOCK
-OCR-D-GT-SEG-PAGE
-OCR-D-IMG
-OCR-D-IMG-BIN
-OCR-D-IMG-BIN-OCROPY
-OCR-D-OCR-CALAMARI_GT4HIST
-OCR-D-OCR-TESSEROCR-BOTH
-OCR-D-OCR-TESSEROCR-FRAKTUR
-OCR-D-OCR-TESSEROCR-GT4HISTOCR
-OCR-D-SEG-LINE
-OCR-D-SEG-REGION
-```
-Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
-
 ## Installation of the whole OCR-D Framework
-To install the complete OCR-D framework containing all available processors, taverna workflow and local research data repository docker is highly recommended.
+
+To install the complete OCR-D framework docker is highly recommended.
+
 ```sh
 wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_framework.sh
 bash install_OCR-D_framework.sh ~/ocrd_framework
 ```
-Now there exist several folders
+
+Now there exists several folders
 
 - repository - Contains all files of repository and the databases
 - taverna - Contains all files workspaces and configuration of workflows
 
 ### Prepare '/etc/hosts' for accessing files in repository via browser
+
 ```sh
 echo '127.0.0.1   kitdm20' | sudo tee -a /etc/hosts 
 ```
- #### Testing the installation
+
+#### Testing the installation
+
 To check if the installation works fine you can start a first test.
+
 ```sh
 # Start repo in a shell
 cd ~/ocrd_framework/repository
 docker-compose up 
 ```
+
 ```sh
 cd ~/ocrd_framework/taverna
 docker run --network="host" -v `pwd`:/data ocrd/taverna testWorkflow
@@ -546,11 +540,16 @@ OCR-D-OCR-TESSEROCR-GT4HISTOCR
 OCR-D-SEG-LINE
 OCR-D-SEG-REGION
 ```
+
 Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
 
 #### Check results in browser
-After the workflow all results are ingested to the research data repository. The repository is available at http://localhost:8080/api/v1/metastore/bagit
+
+After the workflow all results are ingested to the research data repository.
+The repository is available at http://localhost:8080/api/v1/metastore/bagit
 
 #### Configure your own workflow
-For defining your own workflow with taverna please refer to the [README.md](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
+
+For defining your own workflow with taverna please refer to the
+[README](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
 

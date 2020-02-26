@@ -9,17 +9,6 @@ toc: true
 
 Aus den Projektanträgen für die Modulprojektausschreibung der DFG im März 2017 wurden acht Projekte bewilligt:
 
-*   [Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Bildoptimierung](# Bildoptimierung)
-*   [Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Layouterkennung](# Layouterkennung)
-*   [Weiterentwicklung eines semi-automatischen Open-Source-Tools zur Layout-Analyse und Regionen-Extraktion und -Klassifikation (LAREX) von frühen Buchdrucken](# Larex)
-*   [NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers](# NN-FST)
-*   [Optimierter Einsatz von OCR-Verfahren – Tesseract als Komponente im OCR-D-Workflow](# Tesseract)
-*   [Automatische Nachkorrektur historischer OCR-erfasster Drucke mit integrierter optionaler interaktiver Korrektur](# PoCoTo)
-*   [Entwicklung eines Modellrepositoriums und einer Automatischen Schriftarterkennung für OCR-D](# Schriftarterkennung)
-*   [OLA-HD – Ein OCR-D-Langzeitarchiv für historische Drucke](# OLA-HD)
-
-<a id="Bildoptiierung"/>
-
 ## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Bildoptimierung
 
 _Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)_
@@ -34,6 +23,12 @@ die Performanz der nachfolgenden OCR-Module zu verbessern. Dafür wurden
 Werkzeuge für die Binarisierung, das Deskewing, das Cropping und das Dewarping
 implementiert. 
 
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
+
 Das auf Computer Vision basierte Cropping-Werkzeug ist als besonders performant
 hervorzuheben. Es erzielt auf den gesamten Projektdaten vorwiegend sehr gute
 Ergebnisse. Auch das Dewarping-Werkzeug ist aufgrund seiner neuartigen
@@ -41,7 +36,6 @@ Architektur interessant. Mit Hilfe generativer neuronaler Netze werden
 entzerrte Varianten von Bildern generiert, anstatt explizite Transformationen
 für die Entzerrung zu bestimmen.
 
-<a id="Layouterkennung" />
 ## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Layouterkennung**</a>  
 _DFKI_
 
@@ -62,9 +56,13 @@ bekannten, MaskRCNN-Architektur basiert. Dieses Werkzeug arbeitet mit den
 unbearbeiteten Rohdaten, sodass einerseits keine Vorverarbeitung notwendig ist
 und andererseits das volle Informationsspektrum ausgenutzt werden kann.
 
-
-<a id="larex"/>
 ## Weiterentwicklung eines semi-automatischen Open-Source-Tools zur Layout-Analyse und Regionen-Extraktion und -Klassifikation (LAREX) von frühen Buchdrucken
+
+<p class="poster-image">
+  <a href="/assets/poster/Wuerzburg.pdf">
+    <img src="/assets/poster/Wuerzburg.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
 
 _Julius-Maximilians-Universität Würzburg  <br/>
   Institut für Informatik: Lehrstuhl für Künstliche Intelligenz und angewandte Informatik_
@@ -90,8 +88,15 @@ abgetrennten Bildern wurden gute Ergebnisse erzielt. Verbesserungspotential
 besteht vor allem bei der Erkennung von Zierinitialen älterer Drucke und
 weiteren nah am Text liegenden Bildern sowie mehrspaltigen Layouts.
 
-<a id="NN-FST">
+<div class="is-clearfix"></div>
 ## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers**
+
+<p class="poster-image">
+  <a href="/assets/poster/Leipzig.pdf">
+    <img src="/assets/poster/Leipzig.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
+
 _Universität Leipzig  <br/>
   Institut für Informatik: Abteilung Automatische Sprachverarbeitung_
 
@@ -105,22 +110,22 @@ entsprechenden zusätzlichen Daten trainiert werden können.
 
 Für die Umsetzung einer kombinierten Architektur aus NN und FST wurde
 entschieden, drei Module zu implementieren:
-1.	eine reine NN-Lösung mit durchgehend (_end-to-end_) trainiertem Modell
-    allein auf Zeichenebene – als tiefes (mehrschichtiges), bidirektionales
-    rekurrentes Netzwerk nach dem Encoder-Decoder-Schema (für verschiedene
-    Eingabe- und Ausgabelänge) mit Attention-Mechanismus und A*-Beamsearch mit
-    einstellbarer Rückweisungsschwelle (gegen Überkorrektur), d.h. die
-    Nachkorrektur von Textzeilen wird wie maschinelle Übersetzung behandelt,
-2.	ein NN-Sprachmodell (LM) auf Zeichenebene – als tiefes (mehrschichtiges),
-    bidirektionales rekurrentes Netzwerk mit Schnittstelle für Graph-Eingabe
-    und inkrementeller Dekodierung,
-3.	eine WFST-Komponente mit explizit zu trainierendem Fehlermodell auf
-    Zeichenebene und Wortmodell/Lexikon, sowie Anbindung an 2. – per
-    WFST-Komposition von Eingabegraph mit Fehler- und Wortmodell nach
-    Sliding-Window-Prinzip, Konversion der Einzelfenster zu einem
-    Hypothesengraph pro Textzeile, und Kombination der jeweiligen
-    Ausgabegewichte mit LM-Bewertungen in einer effizienten Suche nach dem
-    besten Pfad.
+1. eine reine NN-Lösung mit durchgehend (_end-to-end_) trainiertem Modell
+  allein auf Zeichenebene – als tiefes (mehrschichtiges), bidirektionales
+  rekurrentes Netzwerk nach dem Encoder-Decoder-Schema (für verschiedene
+  Eingabe- und Ausgabelänge) mit Attention-Mechanismus und A*-Beamsearch mit
+  einstellbarer Rückweisungsschwelle (gegen Überkorrektur), d.h. die
+  Nachkorrektur von Textzeilen wird wie maschinelle Übersetzung behandelt,
+2. ein NN-Sprachmodell (LM) auf Zeichenebene – als tiefes (mehrschichtiges),
+  bidirektionales rekurrentes Netzwerk mit Schnittstelle für Graph-Eingabe
+  und inkrementeller Dekodierung,
+3. eine WFST-Komponente mit explizit zu trainierendem Fehlermodell auf
+  Zeichenebene und Wortmodell/Lexikon, sowie Anbindung an 2. – per
+  WFST-Komposition von Eingabegraph mit Fehler- und Wortmodell nach
+  Sliding-Window-Prinzip, Konversion der Einzelfenster zu einem
+  Hypothesengraph pro Textzeile, und Kombination der jeweiligen
+  Ausgabegewichte mit LM-Bewertungen in einer effizienten Suche nach dem
+  besten Pfad.
 
 Die Kombination von 3. mit 2. stellt also eine hybride Lösung dar. Aber auch 1.
 kann von 2. profitieren (sofern die gleiche Netzwerk-Topologie benutzt wird),
@@ -139,9 +144,15 @@ Für alle Module stehen Kommandozeilen-Schnittstellen für Training und
 Evaluierung, sowie volle OCR-D-Schnittstellen für Prozessierung und Evaluierung
 zur Verfügung.
 
+<div class="is-clearfix"></div>
 
-<a id="tesseract">
 ## Optimierter Einsatz von OCR-Verfahren – Tesseract als Komponente im OCR-D-Workflow
+
+<p class="poster-image">
+  <a href="/assets/poster/Mannheim.pdf">
+    <img src="/assets/poster/Mannheim.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
 
 _Universität Mannheim  <br/>
   Universitätsbibliothek Mannheim_
@@ -177,8 +188,16 @@ OCR-D relevanten Druckwerke konnte durch neue generische Modelle für Tesseract
 erreicht werden. Diese wurden ab Septem-ber 2019 bis Januar 2020 auf Basis der
 Datensammlung [_GT4HistOCR_](https://zenodo.org/record/1344132) trainiert.
 
-<a id="PoCoTo" />
-## Automatische Nachkorrektur historischer OCR-erfasster Drucke mit integrierter optionaler interaktiver Korrektur**</a>  
+<div class="is-clearfix"></div>
+
+## Automatische Nachkorrektur historischer OCR-erfasster Drucke mit integrierter optionaler interaktiver Korrektur
+
+<p class="poster-image">
+  <a href="/assets/poster/München.pdf">
+    <img src="/assets/poster/München.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
+
 _Ludwig-Maximilians-Universität München  
   Centrum für Informations- und Sprachverarbeitung (CIS)_
 
@@ -210,8 +229,15 @@ getätigte Korrekturentschei-dungen nachträglich ausgeführt werden.
 Das gesamte System ist in den OCR-D-Workflow eingebunden und folgt den dort
 gültigen Konventionen.
 
-<a id="Schriftarterkennung/>
+<div class="is-clearfix"></div>
+
 ## Entwicklung eines Modellrepositoriums und einer Automatischen Schriftarterkennung für OCR-D
+
+<p class="poster-image">
+  <a href="/assets/poster/Mainz.pdf">
+    <img src="/assets/poster/Mainz.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
 
 _Universität Leipzig_   <br/>
   _Institut für Informatik: Lehrstuhl für Digital Humanities_   <br/>
@@ -252,9 +278,15 @@ Möglichkeit, in Zukunft durch weitere Trainingsdaten das Tool sogar zwischen
 den Schriften einzelner Drucker unterscheiden zu lassen, was mehrere Desiderate
 der historischen Forschung adressieren würde.
 
-<a id="OLA-HD"/>
+<div class="is-clearfix"></div>
 
 ## OLA-HD – Ein OCR-D-Langzeitarchiv für historische Drucke
+
+<p class="poster-image">
+  <a href="/assets/poster/Göttingen.pdf">
+    <img src="/assets/poster/Göttingen.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
 
 _Georg-August-Universität Göttingen  <br/>bb
   Niedersächsische Staats- und Universitätsbibliothek_   <br/>bb
@@ -301,4 +333,3 @@ Bis März 2020 werden kleinere Optimierungen am User-Interface vorgenommen und
 das Konzept finalisiert. Im Konzept werden weitere Ausbaustufen beschrieben,
 die sinnvoll sein können, um die prototypische Soft-ware in ein Produkt zu
 überführen.
-

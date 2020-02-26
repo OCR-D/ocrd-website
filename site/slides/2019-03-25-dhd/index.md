@@ -1,57 +1,75 @@
+---
+layout: page
+toc: true
+lang: de
+---
+
 # Workshop DHD 2019
 
-<!-- BEGIN-MARKDOWN-TOC -->
-* [Theorie: Einführung in OCR allgemein (20' @kba)](#theorie-einführung-in-ocr-allgemein-20--kba)
-* [Theorie: OCR-D Projektuebersicht (10' @ehrmnn)](#theorie-ocr-d-projektuebersicht-10--ehrmnn)
-* [Theorie: OCR-D Ground Truth (10' @tboenig)](#theorie-ocr-d-ground-truth-10--tboenig)
-* [Theorie: OCR-D Repository (15' @VolkerHartmann)](#theorie-ocr-d-repository-15--volkerhartmann)
-* [Theorie: OCR-D Spezifikationen und Software (15' @kba)](#theorie-ocr-d-spezifikationen-und-software-15--kba)
-* [Praxis: Installation des OCR-D Stack (30' @kba @VolkerHartmann)](#praxis-installation-des-ocr-d-stack-30--kba-volkerhartmann)
-* [Pause (30')](#pause-30-)
-* [Praxis: Erstellen von Ground Truth (30' @tboenig)](#praxis-erstellen-von-ground-truth-30--tboenig)
-* [Praxis: OCR-D auf existierendes METS anwenden (30' @kba)](#praxis-ocr-d-auf-existierendes-mets-anwenden-30--kba)
-* [Praxis: OCR-D auf willkürliche Bilder anwenden (30' @kba)](#praxis-ocr-d-auf-willkürliche-bilder-anwenden-30--kba)
-* [Praxis: OCRD-ZIP erzeugen und untersuchen](#praxis-ocrd-zip-erzeugen-und-untersuchen)
+## Theorie: Einführung in OCR allgemein
 
-<!-- END-MARKDOWN-TOC -->
+20' [@kba]
 
-## Theorie: Einführung in OCR allgemein (20' @kba)
+[Slides](intro-ocr)
 
-[Slides](./intro-ocr.html)
+## Theorie: OCR-D Projektuebersicht
 
-## Theorie: OCR-D Projektuebersicht (10' @ehrmnn)
+10' [@ehrmn]
 
 [Slides](https://docs.google.com/presentation/d/1xksBYVC-CtroHwv00ZCu0v3SjE7rendG7FoqyfFdYxI)
 
-## Theorie: OCR-D Ground Truth (10' @tboenig)
+## Theorie: OCR-D Ground Truth
 
-[Slides TODO]()
+10' [@tboenig]
 
-## Theorie: OCR-D Repository (15' @VolkerHartmann)
+[Slides](https://docs.google.com/presentation/d/1ze0D9tle_SfpX-m6B52IiYNs85cfnR1VnlKYqp3T55g)
 
-[Slides TODO]()
+## Theorie: OCR-D Repository
 
-## Theorie: OCR-D Spezifikationen und Software (15' @kba)
+15' [@VolkerHartmann]
 
-[Slides](./intro-ocrd-software.html)
+[Slides (Google Slides)](https://docs.google.com/presentation/d/1euFj1puNh8m_vN8pBRZupgn_MxjmPBGFU46fOed651Y)
 
-## Praxis: Installation des OCR-D Stack (30' @kba @VolkerHartmann)
+[Slides (PowerPoint)](./DHd2019_OCR-D_PresentationRepository_2019_03_25.pptx)
 
-[Setup guide](./setup-time.html)
+[Demo](demo-repository) ([hackmd](https://hackmd.io/RplyN-srS1mnawLC3ngQMg))
+
+## Theorie: OCR-D Spezifikationen und Software
+
+15' [@kba]
+
+[Slides](intro-ocrd-software)
+
+## Praxis: Installation des OCR-D Stack
+
+30' [@kba], [@VolkerHartmann]
+
+[Setup guide](setup-time)
 
 ## Pause (30')
-## Praxis: Erstellen von Ground Truth (30' @tboenig)
+## Praxis: Erstellen von Ground Truth
 
-[Guide](./praxis-gt.html)
+30' [@tboenig]
 
-## Praxis: OCR-D auf existierendes METS anwenden (30' @kba)
+[Guide](praxis-gt)
 
-[Slides TODO]()
+## Praxis: OCR-D auf existierendes METS anwenden
 
-## Praxis: OCR-D auf willkürliche Bilder anwenden (30' @kba)
+30' [@kba]
 
-[Slides TODO]()
+[Guide](praxis-existing-mets)
+
+## Praxis: OCR-D auf willkürliche Bilder anwenden
+
+15' [@kba]
+
+[Guide](praxis-new-mets)
 
 ## Praxis: OCRD-ZIP erzeugen und untersuchen
 
-[Slides TODO]()
+[Guide](praxis-ocrd-zip)
+
+[@kba]: https://github.com/kba
+[@ehrmn]: https://github.com/ehrmn
+[@tboenig]: https://github.com/tboenig
+[@VolkerHartmann]: https://github.com/VolkerHartmann

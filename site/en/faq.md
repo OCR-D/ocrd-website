@@ -91,6 +91,8 @@ tool offers simple ways to create new METS files or augment existing ones.
 OCR-D is Free Software, licensed under the terms of the Apache 2.0 license and
 will be free to use and adapt in perpetuity.
 
+### How are the full texts produced by OCR-D presented to the (library) user? Are they integrated into the library catalogue and can therefore be used for full text search in the catalogue?
+
 ### What are the system requirements for OCR-D-software?
 
 The [`OCR-D/core`](https://github.com/OCR-D/core) framework is fairly light
