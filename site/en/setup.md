@@ -103,41 +103,6 @@ docker pull ocrd/all:<version>
 
 This can even be set up as a cron-job to ensure the image is always up-to-date.
 
-### Translating native commands to docker calls
-
-In the documentation, both of the [OCR-D coordination
-project](https://ocr-d.github.io) as well as the documentation of the
-[individual OCR-D modules](https://github.com/topics/ocr-d), you will find
-*native commands*, i.e. command line calls that expect the software to be
-installed natively. These are simple to translate to commands based on the
-docker images by prepending the boilerplate telling Docker which image to use,
-which user to run as, which files to bind to a container path etc.
-
-For example a call to
-[`ocrd-tesserocr-binarize`](https://github.com/OCR-D/tesserocr) might natively
-look like this:
-
-```sh
-ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-```
-
-To run it with the [`ocrd/all:maximum`] Docker container:
-
-```sh
-docker run -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-           \_________/ \___________/ \______/ \_________________/ \___________________________________________________________/
-              (1)          (2)         (3)          (4)                            (5)
-```
-
-* (1) tells Docker to run the container as the calling user instead of root
-* (2) tells Docker to bind the current working directory as the `/data` folder in the container
-* (3) tells Docker to change the container's working directory to `/data`
-* (4) tells docker which image to run
-* (5) is the unchanged call to `ocrd-tesserocr-segment-region`
-
-It can also be useful to delete the container after creation with the `--rm`
-parameter.
-
 ## ocrd_all natively
 
 The `ocrd_all` project contains a sophisticated Makefile to install or compile
@@ -170,18 +135,6 @@ git clone --recursive https://github.com/OCR-D/ocrd_all
 cd ocrd_all
 ```
 
-### Updating the repository
-
-As `ocrd_all` is in [active
-development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
-regularly update the repository and its submodules:
-
-```sh
-git pull
-git submodule sync
-git submodule update --init --recursive
-```
-
 ### Installing with ocrd_all
 
 You can either install
@@ -196,6 +149,18 @@ make ocrd-tesserocr-binarize   # Install ocrd_tesserocr which contains ocrd-tess
 make ocrd-cis-ocropy-binarize  # Install ocrd_cis  which contains ocrd-cis-ocropy-binarize
 
 make all OCRD_MODULES="ocrd_tesserocr ocrd_cis"  # Will install both ocrd_tesserocr and ocrd_cis
+```
+
+### Updating the repository
+
+As `ocrd_all` is in [active
+development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
+regularly update the repository and its submodules:
+
+```sh
+git pull
+git make modules
+git make core
 ```
 
 ## Individual installation
