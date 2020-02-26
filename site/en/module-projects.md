@@ -41,7 +41,7 @@ binarization, deskewing, cropping and dewarping were implemented.
 
 <p class="poster-image">
   <a href="/assets/poster/DFKI.pdf">
-    <img src="/assets/poster/DFKI.png" style="height: 400px"/>
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
@@ -77,7 +77,7 @@ can be used.
 
 <p class="poster-image">
   <a href="/assets/poster/Wuerzburg.pdf">
-    <img src="/assets/poster/Wuerzburg.png" style="height: 400px"/>
+    <img src="/assets/poster/Wuerzburg.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
@@ -111,7 +111,7 @@ the text as well as multi-column layouts.
 
 <p class="poster-image">
   <a href="/assets/poster/Leipzig.pdf">
-    <img src="/assets/poster/Leipzig.png" style="height: 400px"/>
+    <img src="/assets/poster/Leipzig.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
@@ -130,20 +130,20 @@ suitable for this purpose.
 For the implementation of a combined architecture of NN and FST it was decided to implement three modules:
 
 1. a pure NN solution with continuously (_end-to-end_) trained model on the
-   character level alone - as a deep (multi-layer), bidirectional recurrent
-   network according to the encoder-decoder scheme (for different input and
-   output lengths) with an attention mechanism and A*-Beamsearch with
-   adjustable rejection threshold (against overcorrection), i.e.
-   post-correction of text lines is treated like machine translation,
+character level alone - as a deep (multi-layer), bidirectional recurrent
+network according to the encoder-decoder scheme (for different input and
+output lengths) with an attention mechanism and A*-Beamsearch with
+adjustable rejection threshold (against overcorrection), i.e.
+post-correction of text lines is treated like machine translation,
 2. a NN language model (LM) at the character level - as a deep (multi-layer),
-   bidirectional recurrent network with interface for graph input and
-   incremental decoding
+bidirectional recurrent network with interface for graph input and
+incremental decoding
 3. a WFST component with an error model to be trained explicitly on glyph level
-   and word model/lexicon, as well as connection to 2. - via WFST composition
-   of input graph with error and word model according to the sliding window
-   principle, conversion of the single windows to one hypothesis graph per text
-   line, and combination of the respective output weights with LM-evaluations
-   in an efficient search for the best path.
+and word model/lexicon, as well as connection to 2. - via WFST composition
+of input graph with error and word model according to the sliding window
+principle, conversion of the single windows to one hypothesis graph per text
+line, and combination of the respective output weights with LM-evaluations
+in an efficient search for the best path.
 
 The combination of 3. with 2. thus represents a hybrid solution. But also 1.
 can benefit from 2. (if the same network topology is used) by initializing the
@@ -167,11 +167,11 @@ interfaces for processing and evaluation are available for all modules.
 
 <p class="poster-image">
   <a href="/assets/poster/Mannheim.pdf">
-    <img src="/assets/poster/Mannheim.png" style="height: 400px"/>
+    <img src="/assets/poster/Mannheim.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
-_University of Mannheim  </br>
+_University of Mannheim  <br/>
 University Library Mannheim_
 
 Project participants: Stefan Weil, Noah Metzger  
@@ -210,7 +210,7 @@ data collection [_GT4HistOCR_](https://zenodo.org/record/1344132).
 
 <p class="poster-image">
   <a href="/assets/poster/München.pdf">
-    <img src="/assets/poster/München.png" style="height: 400px"/>
+    <img src="/assets/poster/München.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
@@ -226,11 +226,12 @@ The system logs all correction decisions. Via this protocol mechanism the automa
 The entire system is integrated into the OCR-D workflow and follows the conventions valid there.
 
 <div class="is-clearfix"></div>
+
 ## Development of a model repository and an automatic font recognition for OCR-D
 
 <p class="poster-image">
   <a href="/assets/poster/Mainz.pdf">
-    <img src="/assets/poster/Mainz.png" style="height: 400px"/>
+    <img src="/assets/poster/Mainz.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
@@ -278,11 +279,12 @@ the future through further training data, which would address several
 desiderata of historical research.
 
 <div class="is-clearfix"></div>
+
 ## OLA-HD – An OCR-D long-term archive for historical books
 
 <p class="poster-image">
   <a href="/assets/poster/Göttingen.pdf">
-    <img src="/assets/poster/Göttingen.png" style="height: 400px"/>
+    <img src="/assets/poster/Göttingen.png" style="height: 400px" title="Click for full-size PDF version"/>
   </a>
 </p>
 
