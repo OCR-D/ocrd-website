@@ -7,11 +7,38 @@ lang-ref: from-novice-to-pro
 toc: true
 ---
 
-# User Guide for Non-IT Users (without Docker)
+# User Guide for Non-IT Users
 
 ## Prerequisites and Preparations
 
-### Virtual environment
+### Docker (Optional)
+
+[Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.  
+
+#### Setup docker
+
+After installing docker you have to set up daemon and add user to  the group 'docker'
+
+```sh
+# Start docker daemon at startup
+sudo systemctl enable docker
+# Add user to group 'docker'
+sudo usermod -aG docker $USER
+```
+
+![warning](https://github.githubassets.com/images/icons/emoji/unicode/26a0.png) Please log out and log in again.
+
+To test access to docker try the following command:
+
+```sh
+docker ps
+```
+
+Now you should see an (empty) list of available images.
+
+For installing docker images please refer to the [setup guide](setup.html).
+
+### Virtual environment (without docker)
 
 Before starting to work with the OCR-D-software you should activate the
 virtualenv. This has either been installed automatically if you installed the
@@ -46,6 +73,8 @@ and load the pictures to be processed with the following command:
 
 ```sh
 ocrd workspace clone [URL of your mets.xml]
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace clone [URL of your mets.xml]
 ```
 
 In most cases, METS files indicate several picture formats. For OCR-D you will
@@ -56,12 +85,16 @@ List all existing groups:
 
 ```sh
 ocrd workspace -d [/path/to/your/workspace] list-group
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace -d /data list-group
 ```
 
 Download all files of one group:
 
 ```sh
 ocrd workspace -d [/path/to/your/workspace] find --file-grp [selected file group] --download
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace -d /data find --file-grp [selected file group] --download
 ```
 
 You can also optionally specify a particular name for your workspace. If you
@@ -75,12 +108,17 @@ workspace:
 
 ```sh
 ocrd workspace init [/path/to/your/workspace]
+## alternatively using docker
+mkdir -p [/path/to/your/workspace]
+docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace init /data
 ```
 
 Then you can change into your workspace and set a unique ID
 
 ```sh
 workspace$ ocrd workspace set-id 'unique ID'
+## alternatively using docker
+docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd set-id 'unique ID'
 ```
 
 and copy the folder containing your pictures to be processed into the workspace:
@@ -97,24 +135,32 @@ You can do this manually with the following command:
 
 ```sh
 ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page] -m image/[format of your picture] [/path/to/your/picture/in/workspace]
+## alternatively using docker
+docker run --rm -u $(id -u) -v [/path/to/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page] -m image/[format of your picture] [relative/path/to/your/picture/in/workspace]
 ```
 
 Your command could e.g. look like this:
 
 ```sh
 ocrd workspace add -g P_00001 -G OCR-D-IMG -i 00001 -m image/tif OCR-D-IMG/00001.tif
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -g P_00001 -G OCR-D-IMG -i 00001 -m image/tif OCR-D-IMG/00001.tif
 ```
 
 If you have many pictures to be added to the METS, you can do this automatically with a for-loop:
 
 ```sh
 for i in [/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; ocrd workspace add -G [name of picture folder in your workspace] -i ${base} -g P_${base} -m image/[format of your pictures] ${i}; done
+## alternatively using docker
+for i in [relative/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G [name of picture folder in your workspace] -i ${base} -g P_${base} -m image/[format of your pictures] ${i}; done 
 ```
 
 Your for-loop could e.g. look like this:
 
 ```sh
 for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`; ocrd workspace add -G OCR-D-IMG -i ${base} -g P_${base} -m image/tif ${i}; done
+## alternatively using docker
+for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G OCR-D-IMG -i ${base} -g P_${base} -m image/tif ${i}; done
 ```
 
 In the end, your METS file should look like this [example METS](example_mets.md).
@@ -138,10 +184,14 @@ For some processors parameters are purely optional, other processors as e.g. `oc
 If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:
 ```sh
 ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]'
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]'
 ```
 Your command could e.g. look like this:
 ```sh
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json
 ```
 
 **Note:** For processors using multiple input-, or output groups you have to use a comma separated list. 
@@ -150,6 +200,8 @@ E.g.:
 
 ```sh
 ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 ```
 
 The [`parameter.json`](`parameter.json`) file can be created with the following command:
@@ -184,12 +236,22 @@ ocrd-process, which has a similar syntax as calling single processors.
 ocrd process \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd process \
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'
 ```
 
 Your command could e.g. look like this:
 
 ```sh
 ocrd process \
+  'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE' \
+  'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK' \
+  'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE' \
+  'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd process \
   'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE' \
   'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK' \
   'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE' \
@@ -218,7 +280,9 @@ Taverna comes with several predefined workflows which can help you getting start
 For every workflow at least two files are needed: A `workflow_configuration` file contains a particular workflow which is invoked by a `parameters` file. For calling a workflow via Taverna, change into the `Taverna` folder and use the following command:
 
 ```sh
-bash startWorkflow.sh [particular parameters.txt] [path to your workspace]
+bash startWorkflow.sh [particular parameters.txt] [/path/to/your/workspace]
+## alternatively using docker
+docker run --rm --network="host" -v $PWD:/data -- ocrd/taverna process [particular parameters.txt] [relative/path/to/your/workspace]
 ```
 
 The images in your indicated workspace will be processed and the respective
@@ -322,6 +386,8 @@ To get further information about one processor type
 
 ```sh
 [name_of_selected_processor] -J
+## alternatively using docker
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_selected_processor] -J
 ```
 
 
