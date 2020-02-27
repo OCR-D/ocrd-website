@@ -36,7 +36,7 @@ Architektur interessant. Mit Hilfe generativer neuronaler Netze werden
 entzerrte Varianten von Bildern generiert, anstatt explizite Transformationen
 für die Entzerrung zu bestimmen.
 
-## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Layouterkennung**</a>  
+## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Layouterkennung  
 _DFKI_
 
 GitHub: [mjenckel/OCR-D-LAYoutERkennung/tree/master](https://github.com/mjenckel/OCR-D-LAYoutERkennung/tree/master)
@@ -89,7 +89,7 @@ besteht vor allem bei der Erkennung von Zierinitialen älterer Drucke und
 weiteren nah am Text liegenden Bildern sowie mehrspaltigen Layouts.
 
 <div class="is-clearfix"></div>
-## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers**
+## NN/FST – Unsupervised OCR-Postcorrection based on Neural Networks and Finite-state Transducers
 
 <p class="poster-image">
   <a href="/assets/poster/Leipzig.pdf">
