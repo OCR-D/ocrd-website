@@ -12,20 +12,20 @@ title: OCR-D is you and me
 
 Contact person:
 
-**Elisabeth Engl**
+### Elisabeth Engl
 Project coordination OCR-D
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de)
 
 Substitution:
 
-**Andrea Opitz**
+### Andrea Opitz
 Deputy head of department
 New Media, Digital Library
 Duke August Library
 [opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
-**Dr. Johannes Mangei**
+### Johannes Mangei
 Deputy Director of the Herzog August Library
 Head of Department New Media, Digital Library
 Duke August Library
@@ -33,87 +33,97 @@ Duke August Library
 
 ## Managers
 
-**Dr. Johannes Mangei**
+### Johannes Mangei
 Duke August Library Wolfenbüttel
 [mangei[at]hab.de](mailto:mangei@hab.de)
 
-**Dr. Alexander Geyken**
+### Alexander Geyken
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 [geyken[at]bbaw.de](mailto:geyken@bbaw.de)
 
-**Reinhard Altenhöner**
+### Reinhard Altenhöner
 State Library of Berlin Prussian Cultural Heritage
 [reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de)
 
-**Dr. Rainer Stotzka**
+### Rainer Stotzka
 Karlsruhe Institute of Technology
 [rainer.stotzka[at]kit.edu](mailto:rainer.stotzka@kit.edu)
 
 ## Staff
 
-**Elisabeth Engl**
+### Elisabeth Engl
 Project Coordinator
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
-**Matthias Boenig**
+### Matthias Boenig
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 [ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
 
-**Konstantin Baierer**
+### Konstantin Baierer
 Berlin State Library - Prussian Cultural Heritage
 [konstantin.baierer[at]sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
 
-**Clemens Neudecker**
+### Clemens Neudecker
 Berlin State Library - Prussian Cultural Heritage 
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
-**Volker Hartmann**
+### Volker Hartmann
 Karlsruhe Institute of Technology /Steinbuch Centre for Computing
 [volker.hartmann[at]kit.edu](mailto:volker.hartmann@kit.edu)
 
 ## Former Managers
 
-**Dr. Thomas Stäcker**
+### Thomas Stäcker
 Duke August Library Wolfenbüttel
 [staecker[at]hab.de](mailto:staecker@hab.de)
 
-**Dr. Markus Brantl**
+### Markus Brantl
 Bavarian State Library Munich
 [markus.brantl[at]bsb-muenchen.de](mailto:markus.brantl@bsb-muenchen.de)
 
-## Former participants
+## Former staff
 
-**Elisa Herrmann**
+### Elisa Herrmann
 Duke August Library Wolfenbüttel
-[elisa.herrmann[at]hab.de](mailto:herrmann@hab.de)
 
-**Kay-Michael Würzner**
+### Kay-Michael Würzner
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
-[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
 
-**Ajinkya Prabhune**
+### Ajinkya Prabhune
 Karlsruhe Institute of Technology
-[ajinkya.prabhune[at]kit.edu](mailto:ajinkya.prabhune@kit.edu)
 
-**Sebastian Mangold**
+### Sebastian Mangold
 Bavarian State Library Munich
-[sebastian.mangold[at]bsb-muenchen.de](mailto:sebastian.mangold@bsb-muenchen.de)
 
 ## Scientific Advisory Board
 
 The project is counseled by a scientific advisory board, which is consituted by the following persons at the moment:
 
-**Crane, Gregory** (Leipzig University)
+### Gregory Crane
 
-**Kaiser, Max** (Austrian National Library)
+Tufts University
 
-**Köhler, Joachim** (Fraunhofer IAIS)
+### Max Kaiser
 
-**Meyer, Sebastian** (SLUB Dresden)
+Austrian National Library
 
-**Mühlberger, Günther** (University of Innsbruck)
+### Joachim Köhler
 
-**Schulz, Klaus** (LMU Munich – CIS)
+Fraunhofer IAIS
 
-**Strötgen, Robert** (TU Braunschweig)
+### Sebastian Meyer
+
+SLUB Dresden
+
+### Günther Mühlberger
+
+University of Innsbruck
+
+### Klaus Schulz
+
+LMU Munich – CIS
+
+### Robert Strötgen
+
+TU Braunschweig
