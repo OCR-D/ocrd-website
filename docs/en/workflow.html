@@ -40,10 +40,7 @@
           <a class="navbar-item" href="/en/blog">Blog</a>
           
           
-          <a class="navbar-item" href="/en/publications">Publications</a>
-          
-          
-          <a class="navbar-item" href="/en/slides">Slides and presentations</a>
+          <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
           
           
           <a class="navbar-item" href="/en/module-projects">Module Projects</a>
@@ -122,7 +119,7 @@
     </div> </div> </nav>
 <div class="columns">
       
-      <aside class="column is-one-third menu">
+      <aside class="column is-one-third menu is-hidden-mobile">
         <ul class="menu-list column is-one-third">
   <li><a href="#workflows">Workflows</a>
     <ul>
@@ -232,6 +229,13 @@
       </li>
     </ul>
   </li>
+  <li><a href="#recommendations">Recommendations</a>
+    <ul>
+      <li><a href="#best-results-for-selected-pages">Best results for selected pages</a></li>
+      <li><a href="#good-results-for-all-pages">Good results for all pages</a></li>
+      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a></li>
+    </ul>
+  </li>
 </ul>
 
       </aside>
@@ -255,17 +259,15 @@
 
 <p>This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.</p>
 
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th> </th>
-    </tr>
-  </thead>
+<table class="before-after">
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/Original.png" alt="" /></td>
-      <td><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt="" /></td>
+      <td>
+        <img src="/assets/workflow/Original.png" />
+      </td>
+      <td>
+        <img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" />
+      </td>
     </tr>
   </tbody>
 </table>
@@ -274,69 +276,61 @@
 
 <h4 id="available-processors">Available processors</h4>
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
-      <th>Processor</th>
+      <th>Procecssor</th>
       <th>Parameter</th>
-      <th>Remarks</th>
-    </tr>
+      <th>Remark</th>
+      <th>Call</th>
+	</tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-binarize</td>
-      <td> </td>
-      <td> </td>
+      <td></td>
+      <td>Fast</td>
+      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
-      <td> </td>
-      <td>Fast</td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-olena-binarize</td>
-      <td>{"impl":"sauvola"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"sauvola-ms"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"sauvola-ms-fg"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"sauvola-ms-split"}</td>
+      <td>
+      <p><code>
+      {"impl": "sauvola"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms-fg"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms-split"}
+      </code></p>
+      <p><code>
+{"impl": "kim"}
+      </code></p>
+      <p><code>
+{"impl": "wolf"}
+      </code></p>
+      <p><code>
+{"impl": "niblack"}
+      </code></p>
+      <p><code>
+{"impl": "singh"}
+      </code></p>
+      <p><code>
+{"impl": "otsu"}
+      </code></p>
+      </td>
       <td>Recommended</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"kim"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"wolf"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"niblack"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"singh"}</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>{"impl":"otsu"}</td>
-      <td> </td>
+      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p'{"impl": "sauvola"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -349,11 +343,11 @@
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="before-after">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -366,19 +360,21 @@
 
 <h4 id="available-processors-1">Available processors</h4>
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-denoise</td>
-      <td>{“level-of-operation”:”page”}</td>
-      <td> </td>
+      <td><code>{“level-of-operation”:”page”}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE</code></td>
     </tr>
   </tbody>
 </table>
@@ -390,11 +386,11 @@ that document. The input images have to be binarized for this module to work.</p
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="before-after">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -413,22 +409,26 @@ that document. The input images have to be binarized for this module to work.</p
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-deskew</td>
-      <td> </td>
-      <td> </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-deskew</td>
-      <td>{“operation_level”:”page”}</td>
+      <td><code>{"operation_level”:”page”}</code></td>
       <td>Fast</td>
+	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{"operation_level”:”page”}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-deskew</td>
-      <td>{“level-of-operation”:”page”}</td>
+      <td><code>{“level-of-operation”:”page”}</code></td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{“level-of-operation”:”page”}'</code></td>
       <td>Recommended</td>
     </tr>
   </tbody>
@@ -448,13 +448,26 @@ that document. The input images have to be binarized for this module to work.</p
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+      <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-dewarp</td>
-      <td>{"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"}</td>
-      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong></td>
+      <td>
+      <code>
+      <pre>
+{
+  "pix2pixHD":"/path/to/pix2pixHD/",
+  "model_name":"/path/to/pix2pixHD/models"
+}
+      </pre>
+      </code>
+      </td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter <code>model_name</code> is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong></td>
+      <td>
+        <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -p '{\"pix2pixHD\":\"/path/to/pix2pixHD/\",\"model_name\":\"/path/to/pix2pixHD/models\"}'</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -467,11 +480,11 @@ around the page content area).</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="before-after">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -490,13 +503,15 @@ around the page content area).</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-crop</td>
-      <td> </td>
+      <td>&nbsp;</td>
       <td>The input image has to be binarized and <br />should be deskewed for the module to work.</td>
+	  <td><code>ocrd-anybaseocr-crop -I OCR-D-DEWARP-PAGE -O OCR-D-CROP</code></td>
     </tr>
   </tbody>
 </table>
@@ -513,11 +528,11 @@ marginalia, image, …) should also be done.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="before-after">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -536,23 +551,33 @@ marginalia, image, …) should also be done.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-tesserocr-segment-region</td>
-      <td> </td>
+      <td>&nbsp;</td>
       <td>Should also work for original images!?</td>
+	  <td><code>ocrd-tesserocr-segment-region -I OCR-D-CROP -O OCR-D-SEG-REG</code></td>
     </tr>
     <tr>
       <td>ocrd-anybaseocr-block-segmentation</td>
-      <td>{"block_segmentation_model":<br />"/path/to/mrcnn",<br />"block_segmentation_weights":<br />"/path/to/model/block_segmentation_weights.h5"}</td>
+      <td><pre>
+{
+  "block_segmentation_model": "/path/to/mrcnn",
+  "block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"
+}
+      </pre>
+      </td>
       <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Should also work for original images!?</td>
+	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-CROP -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-segment</td>
-      <td>{"level-of-operation":"page"}</td>
-      <td> </td>
+      <td><code>{"level-of-operation":"page"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -579,13 +604,15 @@ from the foreground.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-tesserocr-binarize</td>
-      <td>{"operation_level":"region"}</td>
-      <td> </td>
+      <td><code>{"operation_level":"region"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -596,11 +623,11 @@ from the foreground.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="before-after">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -619,13 +646,15 @@ from the foreground.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-deskew</td>
-      <td>{"level-of-operation":"region"}</td>
-      <td> </td>
+      <td><code>{"level-of-operation":"region"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocrd-anybaseocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -650,13 +679,15 @@ output PAGE (as AlternativeImage).</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-clip</td>
-      <td>{"level-of-operation":"region"}</td>
-      <td> </td>
+      <td><code>{"level-of-operation":"region"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -p '{"level-of-operation":"region"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -670,11 +701,11 @@ outline to the annotation of the output PAGE.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -693,18 +724,21 @@ outline to the annotation of the output PAGE.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-segment</td>
-      <td>{"level-of-operation":"region"}</td>
-      <td> </td>
+      <td><code>{"level-of-operation":"region"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE -p '{"level-of-operation":"region"}'</code></td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-segment-line</td>
-      <td> </td>
-      <td> </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-tesserocr-segment-line -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE</code></td>
     </tr>
   </tbody>
 </table>
@@ -716,30 +750,33 @@ outline to the annotation of the output PAGE.</p>
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
 <h4 id="available-processors-10">Available processors</h4>
-
 <table>
   <thead>
     <tr>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-clip</td>
-      <td>{"level-of-operation":"line"}</td>
-      <td> </td>
+      <td><code>{"level-of-operation":"line"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -p '{"level-of-operation":"line"}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-resegment</td>
-      <td> </td>
-      <td> </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
     </tr>
     <tr>
       <td>ocrd-segment-repair</td>
-      <td>{"sanitize":true}</td>
-      <td> </td>
+      <td><code>{"sanitize":true}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -750,11 +787,11 @@ outline to the annotation of the output PAGE.</p>
 
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
-<table>
+<table class="">
   <thead>
     <tr>
-      <th> </th>
-      <th> </th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -773,18 +810,21 @@ outline to the annotation of the output PAGE.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-dewarp</td>
-      <td>{"operation_level":"line",<br />"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"}</td>
+      <td><code>{"operation_level":"line",<br />"pix2pixHD":"/path/to/pix2pixHD/",<br />"model_name":"/path/to/pix2pixHD/models"}</code></td>
       <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br /> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br /> <strong>GPU required!</strong></td>
+	  <td><code>ocrd-anybaseocr-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE -p '{"operation_level":"line","pix2pixHD":"/path/to/pix2pixHD/","model_name":"/path/to/pix2pixHD/models"}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-dewarp</td>
-      <td> </td>
-      <td> </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE</code></td>
     </tr>
   </tbody>
 </table>
@@ -799,12 +839,52 @@ outline to the annotation of the output PAGE.</p>
 
 <h4 id="available-processors-12">Available processors</h4>
 
-<p>| Processor               | Parameter                     | Remarks |
-| ———————– | —————————– | ——- |
-| ocrd-tesserocr-recognize | {"textequiv_level":"glyph",<br />"overwrite_words":true,"model":"Fraktur"} |  |
-|  | {"textequiv_level":"glyph",<br />"overwrite_words":true,<br />"model":"GT4HistOCR_50000000.997_191951"} | Recommended <br /> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50&lt;br/&gt;00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a> |
-| ocrd-calamari-recognize | {"checkpoint":"/path/to/models/*.ckpt.json"} | Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> |
-<strong>Note:</strong> For ‘ocrd-tesserocr’ the environment variable ‘TESSDATA_PREFIX’ has to be set to point to the directory where the used models are stored. (The directory should at least contain the following models: deu.traineddata, eng.taineddata, osd.traineddata )</p>
+<table>
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>
+      <p>
+      <code>
+      {"textequiv_level": "glyph", "overwrite_words": true,"model": "Fraktur"}
+      </code>
+      </p>
+      <p>
+      <code>
+      {"textequiv_level": "glyph", "overwrite_words": true, "model": "GT4HistOCR_50000000.997_191951"}
+      </code>
+      </p>
+      </td>
+      <td>Recommended <br /> Model can be found [here](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50<br />00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
+    </tr>
+    <tr>
+      <td>ocrd-calamari-recognize</td>
+      <td>
+        <code>
+{"checkpoint":"/path/to/models/\*.ckpt.json"}
+        </code>
+      </td>
+      <td>
+        Recommended<br />Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) 
+      </td>
+	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"checkpoint": "Fraktur"}'</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Note:</strong> For <code class="highlighter-rouge">ocrd-tesserocr</code> the environment variable <code class="highlighter-rouge">TESSDATA_PREFIX</code> has
+to be set to point to the directory where the used models are stored. (The
+directory should at least contain the following models: <code class="highlighter-rouge">deu.traineddata</code>,
+<code class="highlighter-rouge">eng.taineddata</code>, <code class="highlighter-rouge">osd.traineddata</code>)</p>
 
 <h2 id="post-correction-optional">Post Correction (Optional)</h2>
 
@@ -822,13 +902,15 @@ outline to the annotation of the output PAGE.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-align</td>
-      <td> </td>
-      <td> </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2 -O OCR-D-ALIGN</code></td>
     </tr>
   </tbody>
 </table>
@@ -840,25 +922,27 @@ outline to the annotation of the output PAGE.</p>
 <p><strong>See also:  ToDo reference to the result inside talk on final workshop</strong></p>
 
 <h4 id="available-processors-14">Available processors</h4>
-
 <table>
   <thead>
     <tr>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cor-asv-ann-process</td>
-      <td>{"textequiv_level":"line","model_file":"/path/to/model/model.h5"}</td>
+      <td><code>{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}</code></td>
       <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
+	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-ALIGN -O OCR-D-PROCESS -p '{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-post-correct.sh</td>
       <td>???</td>
       <td>Not tested yet!</td>
+	  <td><code>ocrd-cis-post-correct.sh -I OCR-D-ALIGN -O OCR-D-CORRECT</code></td>
     </tr>
   </tbody>
 </table>
@@ -879,13 +963,259 @@ outline to the annotation of the output PAGE.</p>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
+	  <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-dinglehopper</td>
-      <td> </td>
+      <td>&nbsp;</td>
       <td>First input group should point to the ground truth.</td>
+	  <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="recommendations">Recommendations</h1>
+
+<p>All processors, with the exception of those for post-correction, were tested on
+selected pages of some prints from the 17th and 18th century.</p>
+
+<p>The results vary quite a lot from page to page. In most cases, segmentation is a problem.</p>
+
+<p>These recommendations may also work well for other prints of those centuries.</p>
+
+<p>Note that for our test pages, not all steps described above werde needed to obtain the best results.
+Depending on your particular images, you might want to include those processors again for better results.</p>
+
+<h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
+
+<p>The following workflow has produced best results for ‘simple’ pages (e.g. <a href="https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif">this
+page</a>)
+without any  (CER ~1%).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{“impl”: “sauvola-ms-split”}</td>
+      <td>ocrd process \ “olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p ‘{"impl": "sauvola-ms-split"}’” \</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>“cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p ‘{"level-of-operation":"page"}’” \</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td> </td>
+      <td>“anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE” \</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>“cis-ocropy-segment -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG -p ‘{"level-of-operation":"page"}’” \</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p ‘{"level-of-operation":"region"}’” \</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP -p ‘{"level-of-operation":"region"}’” \</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-segment -I OCR-D-CLIP -O OCR-D-SEG-LINE -p ‘{"level-of-operation":"region"}’” \</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>ocrd-cis-ocropy-resegment</td>
+      <td> </td>
+      <td>“cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG” \</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td> </td>
+      <td>“cis-ocropy-dewarp -I OCR-D-RESEG -O OCR-D-DEWARP-LINE” \</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>ocrd-calamari-recognize</td>
+      <td>{“checkpoint”:”/path/to/models/*.ckpt.json”}</td>
+      <td>“calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p ‘{"checkpoint":"/path/to/models/*.ckpt.json"}’”</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="good-results-for-all-pages">Good results for all pages</h2>
+
+<p>Overall the results are good for all kind of pages.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Call</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{“impl”: “sauvola-ms-split”}</td>
+      <td>ocrd process \ “olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p ‘{"impl": "sauvola-ms-split"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>“cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p ‘{"level-of-operation":"page"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td> </td>
+      <td>“anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>“cis-ocropy-segment -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG -p ‘{"level-of-operation":"page"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p ‘{"level-of-operation":"region"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP -p ‘{"level-of-operation":"region"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-segment -I OCR-D-CLIP -O OCR-D-SEG-LINE -p ‘{"level-of-operation":"region"}’” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>ocrd-cis-ocropy-resegment</td>
+      <td> </td>
+      <td>“cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td> </td>
+      <td>“cis-ocropy-dewarp -I OCR-D-RESEG -O OCR-D-DEWARP-LINE” \</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>ocrd-calamari-recognize</td>
+      <td>{“checkpoint”:”/path/to/models/*.ckpt.json”}</td>
+      <td>{“checkpoint”:”/path/to/models/*.ckpt.json”}</td>
+      <td>“calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p ‘{"checkpoint":"/path/to/models/*.ckpt.json"}’”</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="good-results-for-slower-processors">Good results for slower processors</h2>
+
+<p>If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{“impl”: “sauvola-ms-split”}</td>
+      <td>ocrd process \ “olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p ‘{"impl": "sauvola-ms-split"}’” \</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td>{“level-of-operation”:”page”}</td>
+      <td>“cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE -p ‘{"level-of-operation":"page"}’” \</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td> </td>
+      <td>“anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE” \</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ocrd-tesserocr-segment-region</td>
+      <td> </td>
+      <td>“tesserocr-segment-region -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG” \</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-DESKEW-REG -p ‘{"level-of-operation":"region"}’” \</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>{“level-of-operation”:”region”}</td>
+      <td>“cis-ocropy-segment -I OCR-D-DEWKEW-REG -O OCR-D-SEG-LINE -p ‘{"level-of-operation":"region"}’” \</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td> </td>
+      <td>“cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-DEWARP-LINE” \</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>{“textequiv_level”:”glyph”,”overwrite_words”:true,<br />“model”:”GT4HistOCR_50000000.997_191951”}</td>
+      <td>“tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p ‘{"textequiv_level":"glyph","overwrite_words":true,"model":"GT4HistOCR_50000000.997_191951"}’”</td>
     </tr>
   </tbody>
 </table>
