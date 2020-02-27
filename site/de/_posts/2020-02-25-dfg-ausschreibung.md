@@ -4,6 +4,7 @@ lang: de
 title: Ausschreibung zur OCR-D-Implementierung online!
 tags: [DFG, Ausschreibung]
 lang-ref: dfg-phase3
+author: Elisabeth Engl
 ---
 
 Die [Ausschreibung für die Implementierung der OCR-D-Software zur Volltextdigitalisierung historischer Drucke](https://www.dfg.de/download/pdf/foerderung/programme/lis/ausschreibung_ocr_implementierung.pdf) 
