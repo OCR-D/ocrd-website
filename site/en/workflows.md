@@ -209,7 +209,7 @@ This processor takes a document image as input and makes the text line straight 
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png" alt=""></td>
       <td><img src="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></td>
     </tr>
   </tbody>
