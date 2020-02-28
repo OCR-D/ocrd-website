@@ -17,7 +17,6 @@ The following instruction describes all steps of the OCR workflow. Depending on 
 ## Image Optimization
 Prepare image for better OCR.
 
-![](/assets/workflow/Original.png)
 
 ### Step 1: Binarization
 First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
@@ -37,7 +36,6 @@ This processor takes a scanned colored /gray scale document image as input and p
   </tbody>
 </table>
 
-**See also:**  **ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
@@ -106,7 +104,6 @@ This processor removes artifacts from the binarized image.
 
 May not be necessary for all prints.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="before-after">
   <thead>
@@ -149,7 +146,6 @@ May not be necessary for all prints.
 This processor takes a document image as input and does the skew correction of
 that document. The input images have to be binarized for this module to work.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="before-after">
   <thead>
@@ -203,7 +199,21 @@ that document. The input images have to be binarized for this module to work.
 
 This processor takes a document image as input and makes the text line straight if its curved. The input image has to be binarized for the module to work.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
+
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005" alt=""></td>
+      <td><img src="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Available processors
 
@@ -243,7 +253,6 @@ This processor takes a document image as input and crops/selects the page
 content area only (i.e. it removes textual noise as well as any other noise
 around the page content area).
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="before-after">
   <thead>
@@ -292,7 +301,6 @@ This processor takes an (optimized) document image as an input and segments the
 image into the different text blocks. During this step a classification (text,
 marginalia, image, ...) should also be done.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="before-after">
   <thead>
@@ -361,7 +369,6 @@ from the foreground.
 
 The binarization should be at least executed once (on page/block/line level).
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
@@ -388,7 +395,6 @@ The binarization should be at least executed once (on page/block/line level).
 
 This processor takes an image as input and does the skew correction for all text blocks.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="before-after">
   <thead>
@@ -436,7 +442,7 @@ conflict, it determines whether it belongs to the neighbour, and can therefore
 be clipped to white. It references the resulting segment image files in the
 output PAGE (as AlternativeImage).
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
+TODO: add images
 
 #### Available processors
 
@@ -466,7 +472,6 @@ binarization and) line segmentation on every text region of every PAGE in the
 input file group, and adds a TextLine element with the resulting polygon
 outline to the annotation of the output PAGE.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="">
   <thead>
@@ -514,7 +519,7 @@ outline to the annotation of the output PAGE.
 
 This processor can be used to correct the segmented lines.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
+TODO: add images
 
 #### Available processors
 <table>
@@ -552,7 +557,6 @@ This processor can be used to correct the segmented lines.
 
 This processor can be used to dewarp the segmented lines.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 <table class="">
   <thead>
@@ -602,7 +606,6 @@ This processor can be used to dewarp the segmented lines.
 
 This processor recognizes text in segmented lines.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
@@ -660,7 +663,6 @@ directory should at least contain the following models: `deu.traineddata`,
 
 This processor alignes texts from multiple OCR-engines in one PAGE.xml. 
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 
@@ -827,17 +829,17 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
 ### Example with ocrd-process
 
 ```sh
-ocrd process\
- "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'"\
- "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
- "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
-cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
- "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
- "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
- "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
- "cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG" \
- "cis-ocropy-dewarp -I OCR-D-LINE-RESEG -O OCR-D-SEG-LINE-RESEG-DEWARP" \
- "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/*.ckpt.json\"}'"
+ocrd process \
+  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+  "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+  "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
+  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+  "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE-RESEG -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/*.ckpt.json\"}'"
 ```
 
 
@@ -902,15 +904,15 @@ Overall the results are good for all kind of pages.
 ### Example with ocrd-process
 
 ```sh
-ocrd process\
- "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
- "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
- "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
- cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
- "tesserocr-segment-line -I OCR-D-SEG-REG -O OCR-D-SEG-LINE" \
- "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -p '{\"level-of-operation\":\"line\"}'" \
- "cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-CLIP-DEWARP" \
- "tesserocr-recognize -I OCR-D-SEG-LINE-CLIP-DEWARP -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
+ocrd process \
+  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+  "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+  "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
+  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+  "tesserocr-segment-line -I OCR-D-SEG-REG -O OCR-D-SEG-LINE" \
+  "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -p '{\"level-of-operation\":\"line\"}'" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-CLIP-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-LINE-CLIP-DEWARP -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
 ```
 
 
@@ -975,15 +977,15 @@ If your computer is not that powerful you may try this workflow. It works fine f
 ### Example with ocrd-process
 
 ```sh
-ocrd process\
- "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
- "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
- "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-DESKEW-PAGE" \
- tesserocr-segment-region -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG" \
- "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
- "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
- "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-DEWARP" \
- "tesserocr-recognize -I OCR-D-SEG-LINE-DEWARP -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
+ocrd process \
+  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
+  "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
+  "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-DESKEW-PAGE" \
+  "tesserocr-segment-region -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG" \
+  "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-LINE-DEWARP -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
 ```
 
 
