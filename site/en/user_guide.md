@@ -9,13 +9,15 @@ toc: true
 
 # User Guide for Non-IT Users
 
+The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](### Preparing a workspace) is obligatory for both Docker and Non-Docker users!
+
+Furthermore, Docker commands have a [different syntax than native calls](#### Translating native commands to docker calls). This guide always states native calls first and then provides the respective command for Docker users. 
+
 ## Prerequisites and Preparations
 
-### Docker (Optional)
+### Setup docker
 
-[Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.  
-
-#### Setup docker
+If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.  
 
 After installing docker you have to set up daemon and add user to  the group 'docker'
 
@@ -40,8 +42,8 @@ For installing docker images please refer to the [setup guide](setup.html).
 
 ### Virtual environment (without docker)
 
-Before starting to work with the OCR-D-software you should activate the
-virtualenv. This has either been installed automatically if you installed the
+If you don't want to use Docker, you should activate the
+virtualenv before starting to work with the OCR-D-software. This has either been installed automatically if you installed the
 software via ocrd_all, or you should have [installed it yourself](https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments) before
 installing the OCR-D-software individually. 
 
