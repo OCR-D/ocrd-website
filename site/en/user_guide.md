@@ -26,7 +26,7 @@ sudo systemctl enable docker
 sudo usermod -aG docker $USER
 ```
 
-![warning](https://github.githubassets.com/images/icons/emoji/unicode/26a0.png) Please log out and log in again.
+<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> Please log out and log in again.
 
 To test access to docker try the following command:
 
@@ -142,25 +142,27 @@ docker run --rm -u $(id -u) -v [/path/to/workspace]:/data -w /data -- ocrd/all:m
 Your command could e.g. look like this:
 
 ```sh
-ocrd workspace add -g P_00001 -G OCR-D-IMG -i 00001 -m image/tif OCR-D-IMG/00001.tif
+ocrd workspace add -g P_00001 -G OCR-D-IMG -i OCR-D-IMG_00001 -m image/tif OCR-D-IMG/00001.tif
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -g P_00001 -G OCR-D-IMG -i 00001 -m image/tif OCR-D-IMG/00001.tif
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -g P_00001 -G OCR-D-IMG -i OCR-D-IMG_00001 -m image/tif OCR-D-IMG/00001.tif
 ```
 
 If you have many pictures to be added to the METS, you can do this automatically with a for-loop:
 
 ```sh
-for i in [/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; ocrd workspace add -G [name of picture folder in your workspace] -i ${base} -g P_${base} -m image/[format of your pictures] ${i}; done
+for i in [/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; ocrd workspace add -G [name of picture folder in your workspace] -i OCR-D-IMG_${base} -g P_${base} -m image/[format of your pictures] ${i}; done
 ## alternatively using docker
-for i in [relative/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G [name of picture folder in your workspace] -i ${base} -g P_${base} -m image/[format of your pictures] ${i}; done 
+for i in [relative/path/to/your/picture/folder/in/workspace]/*.[file ending of your pictures]; do base= `basename ${i} .[file ending of your pictures]`; docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G [name of picture folder in your workspace] -i OCR-D-IMG_${base} -g P_${base} -m image/[format of your pictures] ${i}; done 
 ```
+
+<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images starts with a number, at least one of the following characters must be placed in front of its name for parameter 'i': [a-z,A-Z,_,-] (e.g.: 'OCR-D-IMG_\_')
 
 Your for-loop could e.g. look like this:
 
 ```sh
-for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`; ocrd workspace add -G OCR-D-IMG -i ${base} -g P_${base} -m image/tif ${i}; done
+for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`; ocrd workspace add -G OCR-D-IMG -i OCR-D-IMG_${base} -g P_${base} -m image/tif ${i}; done
 ## alternatively using docker
-for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G OCR-D-IMG -i ${base} -g P_${base} -m image/tif ${i}; done
+for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G OCR-D-IMG -i OCR-D-IMG_${base} -g P_${base} -m image/tif ${i}; done
 ```
 
 In the end, your METS file should look like this [example METS](example_mets.md).
