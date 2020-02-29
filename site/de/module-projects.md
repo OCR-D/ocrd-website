@@ -243,7 +243,7 @@ _Universität Leipzig_   <br/>
   _Institut für Informatik: Lehrstuhl für Digital Humanities_   <br/>
 _Friedrich-Alexander-Universität Erlangen-Nürnberg    <br/>
   Department Informatik: Lehrstuhl für Informatik 5: Mustererkennung_  
-_Johannes Gutenberg-Universität Mainz   </br/>
+_Johannes Gutenberg-Universität Mainz   <br/>
   Gutenberg-Institut für Weltliteratur und schriftorientierte Medien: Abteilung Buchwissenschaft_
 
 GitHub: [OCR-D/okralact](https://github.com/OCR-D/okralact), [seuretm/ocrd_typegroups_classifier](https://github.com/seuretm/ocrd_typegroups_classifier)

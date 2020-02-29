@@ -10,11 +10,11 @@ toc: true
 ## Die Referenzdaten
 
 Die Referenzdaten umfassen ein Ground-Truth-Korpus und weitere Spezialkorpora.
-Das Ground-Truth-Korpus umfasst Seiten aus Publikationen aus dem Zeitraum 1500-1900. 
+Das Ground-Truth-Korpus umfasst Seiten aus Publikationen aus dem Zeitraum 1500–1900. 
 Der Inhalt des Korpus basiert auf einer gezielten Auswahl aus dem
-Bestand des DFG-Projektes „Deutsches Textarchiv“, der Digitalisierten
-Sammlungen der Staatsbibliothek zu Berlin und der Wolfenbütteler Digitalen
-Bibliothek der Herzog August Bibliothek. Bestände von Projekten und digitalen
+Bestand des DFG-Projektes [„Deutsches Textarchiv“](http://www.deutschestextarchiv.de), der [Digitalisierten
+Sammlungen der Staatsbibliothek zu Berlin](http://digital.staatsbibliothek-berlin.de/) und der [Wolfenbütteler Digitalen
+Bibliothek der Herzog August Bibliothek](http://www.hab.de/de/home/bibliothek/digitale-bibliothek-wdb.html). Bestände von Projekten und digitalen
 Sammlungen anderer Bibliotheken sowie zusätzliche Ground-Truth-Daten, die
 zusammen mit Modulprojekten erarbeitet werden, können in Abstimmung mit dem
 OCR-D-Koordinierungsgremium in das Korpus als spezielle Erweiterungen

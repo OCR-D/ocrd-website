@@ -14,21 +14,25 @@ Contact person:
 
 ### Elisabeth Engl
 Project coordination OCR-D
+
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de)
+
 
 Substitution:
 
 ### Andrea Opitz
 Deputy head of department
 New Media, Digital Library
-Duke August Library
+
+Duke August Library Wolfenbüttel
 [opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Johannes Mangei
-Deputy Director of the Herzog August Library
+Deputy Director of the Herzog August Library Wolfenbüttel
 Head of Department New Media, Digital Library
-Duke August Library
+
+Duke August Library Wolfenbüttel
 [mangei[at]hab.de](mailto:mangei@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Managers
@@ -53,6 +57,7 @@ Karlsruhe Institute of Technology
 
 ### Elisabeth Engl
 Project Coordinator
+
 Duke August Library Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
@@ -76,11 +81,9 @@ Karlsruhe Institute of Technology /Steinbuch Centre for Computing
 
 ### Thomas Stäcker
 Duke August Library Wolfenbüttel
-[staecker[at]hab.de](mailto:staecker@hab.de)
 
 ### Markus Brantl
 Bavarian State Library Munich
-[markus.brantl[at]bsb-muenchen.de](mailto:markus.brantl@bsb-muenchen.de)
 
 ## Former staff
 

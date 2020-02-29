@@ -360,7 +360,7 @@ You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/
 ### Why using Taverna?
 
 Taverna creates a 'metadata' sub directory containing collected output of all
-processors. All intermediate mets files and a provenance file containing all
+processors: all intermediate METS files and a provenance file containing all
 provenance of the workflow including start/end time of processor/workflow, used
 input group(s), used parameters and created output group(s).
 
