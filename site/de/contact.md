@@ -17,20 +17,21 @@ Projektkoordinatorin OCR-D
 Herzog August Bibliothek Wolfenbüttel
 [engl[at]hab.de](mailto:engl@hab.de)
 
+
 Stellvertreter*innen:
 
 ### Andrea Opitz
 
-Deputy head of department
-New Media, Digital Library
-Duke August Library
+Stellvertreterin der Abteilungsleitung 
+Neuere Medien, Digitale Bibliothek
+Herzog August Bibliothek Wolfenbüttel
 [opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Johannes Mangei
 
-Deputy Director of the Herzog August Library
-Head of Department New Media, Digital Library
-Duke August Library
+Stellvertretender Direktor der Herzog August Bibliothek
+Abteilungsleitung Neuere Medien, Digitale Bibliothek
+Herzog August Bibliothek Wolfenbüttel
 [mangei[at]hab.de](mailto:mangei@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Projektverantwortliche

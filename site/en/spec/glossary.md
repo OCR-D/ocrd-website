@@ -62,7 +62,7 @@ A word is a sequence of [glyphs](#glyph) not containing any word-bounding whites
 
 ### Ground Truth
 
-Ground truth (GT) [in the context of OCR-D](http://ocr-d.de/daten) are
+Ground truth (GT) [in the context of OCR-D](https://ocr-d.github.io/en/data) are
 transcriptions, specific structure descriptions and word lists. These are
 essentially available in PAGE XML format in combination with the original
 image. Essential parts of the GT were created manually.
@@ -130,8 +130,6 @@ Controlled term: `recognition/font-identification`
 
 ### Grayscale normalization
 
-> ISSUE: https://github.com/OCR-D/spec/issues/41
-
 Controlled term:
   - `gray_normalized` (`comments` in file)
   - `preprocessing/optimization/cropping` (step)
@@ -190,7 +188,7 @@ Controlled term:
 ### MP
 
 Module Project, a software project producing one or more tools to OCR-D. There
-are [currently eight MP](https://ocr-d.github.io/projects) active in the OCR-D
+are [currently eight MP](https://ocr-d.github.io/en/module-projects) active in the OCR-D
 community.
 
 ### OCR
@@ -248,7 +246,7 @@ be developed.
 
 ## OCR-D modules
 
-The [OCR-D project](https://ocr-d.de) divided the various elements of an OCR
+The [OCR-D project](https://ocr-d.github.io/en/about) divided the various elements of an OCR
 workflow into six modules.
 
 ### Image preprocessing

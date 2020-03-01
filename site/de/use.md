@@ -12,6 +12,8 @@ Dieser Bereich enthält alle Informationen, die für den Einsatz der OCR-D-Softw
   * Schritt-für-Schritt Anleitung zur Installation von OCR-D *(aktuell nur auf Englisch verfügbar)*
 * [Nutzeranleitung](/en/user_guide)
   * Instruktionen zum Arbeiten mit OCR-D *(aktuell nur auf Englisch verfügbar)*
+* [Workflows](/de/workflows)
+  * Schritte eines OCR-D-Workflows mit Beispielworkflows *(aktuell nur auf Englisch verfügbar)*
 * [Kochbuch](/de/cookbook)
   * Beispiele für die Anwendung von OCR-D *(aktuell nur auf Englisch verfügbar)*
 * [Glossar](/de/spec/glossary)
