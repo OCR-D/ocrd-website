@@ -11,16 +11,19 @@
             {% assign posts = site.posts | where:'lang', page.lang %}
             {%- for post in posts -%}
             <div class="tile is-parent is-vertical">
-              <article class="tile is-child box">
-                {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-                <p class="subtitle">{{ post.date | date: date_format }}</p>
-                <a class="title" href="{{ post.url | relative_url }}">
-                  {{ post.title | escape }}
-                </a>
-                <div class="content">
-                  {{ post.excerpt }}
-                </div>
-              </article>
+                <article class="tile is-child box">
+                  {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+                  <a href="{{ post.url | relative_url }}" class="subtitle">{{ post.date | date: date_format }}</a>
+                  <br/>
+                  <a class="title" href="{{ post.url | relative_url }}">
+                    {{ post.title | escape }}
+                  </a>
+                  <a href="{{ post.url | relative_url }}" style="color: initial">
+                    <div class="content">
+                      {{ post.excerpt | strip_html }}
+                    </div>
+                  </a>
+                </article>
             </div>
             {%- endfor -%}
         </div>
