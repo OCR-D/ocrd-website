@@ -27,10 +27,10 @@ This processor takes a scanned colored /gray scale document image as input and p
   <tbody>
     <tr>
       <td>
-        <img src="/assets/workflow/Original.png"/>
+        <a href="/assets/workflow/Original.png"><img src="/assets/workflow/Original.png"/></a>
       </td>
       <td>
-        <img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"/>
+        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"/></a>
       </td>
     </tr>
   </tbody>
@@ -114,8 +114,12 @@ May not be necessary for all prints.
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt=""></td>
-      <td><img src="/assets/workflow/denoise.PNG" alt=""></td>
+      <td>
+        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt=""></a>
+      </td>
+      <td>
+        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/denoise.PNG" alt=""></a>
+        </td>
     </tr>
   </tbody>
 </table>
@@ -156,8 +160,12 @@ that document. The input images have to be binarized for this module to work.
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/denoise.PNG" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></td>
+      <td>
+        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/denoise.PNG" alt=""></a>
+      </td>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -209,8 +217,12 @@ This processor takes a document image as input and makes the text line straight 
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png"><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png" alt=""></a>
+      </td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -263,8 +275,12 @@ around the page content area).
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></td>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
+      </td>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -311,8 +327,12 @@ marginalia, image, ...) should also be done.
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></td>
-      <td><img src="/assets/workflow/seg-page.PNG" alt=""></td>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
+      </td>
+      <td>
+        <a href="/assets/workflow/seg-page.PNG"><img src="/assets/workflow/seg-page.PNG" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -405,8 +425,12 @@ This processor takes an image as input and does the skew correction for all text
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/seg-page.PNG" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></td>
+      <td>
+      <a href="/assets/workflow/seg-page.PNG"><img src="/assets/workflow/seg-page.PNG" alt=""></a>
+      </td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -482,8 +506,12 @@ outline to the annotation of the output PAGE.
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
+      </td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -567,8 +595,12 @@ This processor can be used to dewarp the segmented lines.
   </thead>
   <tbody>
     <tr>
-      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
-      <td><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      </td>
+      <td>
+      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      </td>
     </tr>
   </tbody>
 </table>
