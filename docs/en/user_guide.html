@@ -219,7 +219,7 @@ workspace:</p>
 
 <p>and copy the folder containing your pictures to be processed into the workspace:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-r</span> <span class="o">[</span>path to your pictures<span class="s1">' folder] .
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp <span class="nt">-r</span> <span class="o">[</span>path to your pictures<span class="s1">' folder] .
 </span></code></pre></div></div>
 <p>Now you can add your pictures to the METS. When creating the workspace, a blank
 METS file was created, too, to which you can add the pictures to be processed.</p>
@@ -238,12 +238,12 @@ METS file was created, too, to which you can add the pictures to be processed.</
 
 <!-- TOOO 2020-02-04T19:19:22+01:00 Add bulk add explanation nad more snippets from gitsts etc -->
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace].[file ending of your pictures]<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span> <span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .[file ending of your pictures<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace] <span class="nt">-i</span> <span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/[format of your pictures] <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace].[file ending of your pictures]<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span> <span class="sb">`</span>basename <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .[file ending of your pictures<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace] <span class="nt">-i</span> <span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/[format of your pictures] <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
 <p>Your for-loop could e.g. look like this:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in </span>OCR-D-IMG/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .tif<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> <span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/tif <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in </span>OCR-D-IMG/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .tif<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> <span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/tif <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
 <p>In the end, your METS file should look like this example METS</p>
@@ -342,8 +342,8 @@ images, you should start off by copying the original <code class="highlighter-ro
 and <code class="highlighter-rouge">parameters</code> files. To this end, change to the <code class="highlighter-rouge">/conf</code> subdirectory of
 <code class="highlighter-rouge">Taverna</code> and use the following commands:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conf<span class="nv">$ </span><span class="nb">cp</span> <span class="o">[</span>original workflow_configuration.txt] <span class="o">[</span>name of your new workflow_configuration.txt]
-conf<span class="nv">$ </span><span class="nb">cp</span> <span class="o">[</span>original parameters.txt] <span class="o">[</span>name of your new parameters.txt]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conf<span class="nv">$ </span>cp <span class="o">[</span>original workflow_configuration.txt] <span class="o">[</span>name of your new workflow_configuration.txt]
+conf<span class="nv">$ </span>cp <span class="o">[</span>original parameters.txt] <span class="o">[</span>name of your new parameters.txt]
 </code></pre></div></div>
 
 <p>Open the new <code class="highlighter-rouge">parameters.txt</code> file with an editor like e.g. Nano and change the
