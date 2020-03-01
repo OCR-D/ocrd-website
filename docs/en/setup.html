@@ -433,7 +433,7 @@ README</a>.</p>
 
 <p>You need to have <code class="highlighter-rouge">git</code> and <code class="highlighter-rouge">make</code> installed to make use of <code class="highlighter-rouge">ocrd_all</code>:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>git make
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt install git make
 </code></pre></div></div>
 
 <p>It is easiest to install all the possible system requirements by calling <code class="highlighter-rouge">make deps-ubuntu</code> as root:</p>
@@ -456,8 +456,8 @@ development</a>, it is wise to
 regularly update the repository and its submodules:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull
-git submodule <span class="nb">sync
-</span>git submodule update <span class="nt">--init</span> <span class="nt">--recursive</span>
+git submodule sync
+git submodule update <span class="nt">--init</span> <span class="nt">--recursive</span>
 </code></pre></div></div>
 
 <h3 id="installing-with-ocrd_all">Installing with ocrd_all</h3>
@@ -502,7 +502,7 @@ docker pull ocrd/olena  <span class="c"># Installs ocrd_olena</span>
 calls to docker calls above</a>. Make sure the image
 name matches the executable. For example to run the same example in the dedicated <code class="highlighter-rouge">ocrd_tesserocr</code> container:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/tesserocr ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="k">$(</span>id <span class="nt">-u</span><span class="k">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/tesserocr ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
 </code></pre></div></div>
 
 <h3 id="native-installation">Native installation</h3>
@@ -529,7 +529,7 @@ which has up-to-date builds of tesseract and its dependecies:</p>
 
 <p>First install Python 3 and <code class="highlighter-rouge">venv</code>:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>python3 python3-venv
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt install python3 python3-venv
 </code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># If you haven't created the venv yet:</span>
@@ -552,8 +552,8 @@ deviate from that.)</p>
 
 <p>For example to install <code class="highlighter-rouge">ocrd_tesserocr</code> from PyPI:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>git python3 python3-pip python3-venv libtesseract-dev libleptonica-dev tesseract-ocr-eng tesseract-ocr wget
-pip3 <span class="nb">install </span>ocrd_tesserocr
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get install git python3 python3-pip python3-venv libtesseract-dev libleptonica-dev tesseract-ocr-eng tesseract-ocr wget
+pip3 install ocrd_tesserocr
 </code></pre></div></div>
 
 <p>Many ocrd modules conventionally contain a Makefile with a <code class="highlighter-rouge">deps-ubuntu</code> target that can handle calls to <code class="highlighter-rouge">apt-get</code> for you:</p>
@@ -569,12 +569,12 @@ pip3 <span class="nb">install </span>ocrd_tesserocr
 <span class="nb">cd </span>ocrd_tesserocr
 <span class="nb">sudo </span>make deps-ubuntu <span class="c"># or manually with apt-get</span>
 make deps             <span class="c"># or pip3 install -r requirements</span>
-make <span class="nb">install</span>          <span class="c"># or pip3 install .</span>
+make install          <span class="c"># or pip3 install .</span>
 </code></pre></div></div>
 
 <p>If you intend to develop a module, it is best to install the module editable:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">-e</span> <span class="nb">.</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install <span class="nt">-e</span> <span class="nb">.</span>
 </code></pre></div></div>
 
 <p>This way, you won’t have to reinstall after making changes.</p>
@@ -613,7 +613,7 @@ first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file
 
 <p>You can spin up a docker container, mounting the current working directory like this:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="k">$(</span>id <span class="nt">-u</span><span class="k">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
 </code></pre></div></div>
 
 <p>Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as <a href="#mini-medi-maxi">explained above</a></p>
@@ -666,7 +666,7 @@ files. (Password: <code class="highlighter-rouge">ingest</code>)</p>
 <h3 id="why-using-taverna">Why using Taverna?</h3>
 
 <p>Taverna creates a ‘metadata’ sub directory containing collected output of all
-processors. All intermediate mets files and a provenance file containing all
+processors: all intermediate METS files and a provenance file containing all
 provenance of the workflow including start/end time of processor/workflow, used
 input group(s), used parameters and created output group(s).</p>
 
@@ -715,7 +715,7 @@ detected full text.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://raw.githubusercontent.com/OCR-D/taverna_workflow/master/Dockerfile
 docker build <span class="nt">-t</span> ocrd/taverna <span class="nb">.</span>
-<span class="nb">mkdir</span> ~/docker/ocrd/taverna
+mkdir ~/docker/ocrd/taverna
 <span class="nb">cd</span> ~/docker/ocrd/taverna
 docker run <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/data ocrd/taverna init
 </code></pre></div></div>
@@ -754,7 +754,7 @@ OCR-D-SEG-REGION
 <p>The <a href="https://github.com/OCR-D/core">core package</a> will be installed with every
 OCR-D module package, but you can also install it manually:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 <span class="nb">install </span>ocrd
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 install ocrd
 </code></pre></div></div>
 
 <p>Its CLI <code class="highlighter-rouge">ocrd</code> contains a simple workflow engine, available with the <code class="highlighter-rouge">ocrd process</code> command, which allows you to chain multiple OCR-D processor calls into simple sequential workflows.</p>
@@ -766,13 +766,13 @@ in <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr</a>.</p>
 <p>First, install ocrd_cis, too:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install ocrd_cis</span>
-pip3 <span class="nb">install </span>ocrd_cis <span class="c"># with pip</span>
+pip3 install ocrd_cis <span class="c"># with pip</span>
 </code></pre></div></div>
 
 <p>Next, install a suitable OCR model for Tesseract:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install OCR model into Tesseract datapath</span>
-<span class="nb">sudo </span>apt-get <span class="nb">install </span>tesseract-ocr-script-frak
+<span class="nb">sudo </span>apt-get install tesseract-ocr-script-frak
 </code></pre></div></div>
 
 <p>Now we can define the workflow (as a list of processor calls in abbreviated
@@ -806,7 +806,7 @@ bash install_OCR-D_framework.sh ~/ocrd_framework
 
 <h3 id="prepare-etchosts-for-accessing-files-in-repository-via-browser">Prepare ‘/etc/hosts’ for accessing files in repository via browser</h3>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'127.0.0.1   kitdm20'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/hosts 
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'127.0.0.1   kitdm20'</span> | <span class="nb">sudo </span>tee <span class="nt">-a</span> /etc/hosts 
 </code></pre></div></div>
 
 <h4 id="testing-the-installation-4">Testing the installation</h4>
