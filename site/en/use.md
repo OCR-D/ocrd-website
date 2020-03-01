@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Use OCR-D! It is very good.
+title: How to use OCR-D
 lang: en
 lang-ref: use
 ---

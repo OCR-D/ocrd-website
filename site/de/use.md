@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Bei Sodbrennen hilft stets OCR-D!
+title: Wie Sie OCR-D nutzen können
 lang: de
 lang-ref: use
 ---
