@@ -821,7 +821,7 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td></td>
     </tr>
 	<tr>
-      <td>3</td>
+      <td>5</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
@@ -911,7 +911,7 @@ Overall the results are good for all kind of pages.
       <td></td>
     </tr>
 	<tr>
-      <td>3</td>
+      <td>5</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
@@ -991,7 +991,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
 	<tr>
-      <td>3</td>
+      <td>5</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
