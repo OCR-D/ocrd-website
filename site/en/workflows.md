@@ -820,6 +820,11 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>ocrd-anybaseocr-deskew</td>
       <td></td>
     </tr>
+	<tr>
+      <td>5</td>
+      <td>ocrd-anybaseocr-crop</td>
+      <td></td>
+    </tr>
     <tr>
       <td>6</td>
       <td>ocrd-cis-ocropy-segment</td>
@@ -865,7 +870,8 @@ ocrd process \
   "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
   "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
   "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
-  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+  "anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -I OCR-D-CROP" \
+  "cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
   "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
@@ -904,6 +910,12 @@ Overall the results are good for all kind of pages.
       <td>ocrd-anybaseocr-deskew</td>
       <td></td>
     </tr>
+	<tr>
+      <td>5</td>
+      <td>ocrd-anybaseocr-crop</td>
+      <td></td>
+    </tr>
+    <tr>
     <tr>
       <td>6</td>
       <td>ocrd-cis-ocropy-segment</td>
@@ -940,7 +952,8 @@ ocrd process \
   "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
   "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
   "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
-  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
+  "anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-CROP" \
+  "cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
   "tesserocr-segment-line -I OCR-D-SEG-REG -O OCR-D-SEG-LINE" \
   "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -p '{\"level-of-operation\":\"line\"}'" \
   "cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-CLIP-DEWARP" \
@@ -977,6 +990,12 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-anybaseocr-deskew</td>
       <td></td>
     </tr>
+	<tr>
+      <td>5</td>
+      <td>ocrd-anybaseocr-crop</td>
+      <td></td>
+    </tr>
+    <tr>
     <tr>
       <td>6</td>
       <td>ocrd-tesserocr-segment-region</td>
@@ -1013,7 +1032,8 @@ ocrd process \
   "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
   "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
   "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-DESKEW-PAGE" \
-  "tesserocr-segment-region -I OCR-D-DESKEW-PAGE -O OCR-D-SEG-REG" \
+  "anybaseocr-crop -I OCR-D-DESKEW-PAGE -O OCR-D-CROP" \
+  "tesserocr-segment-region -I OCR-D-CROP -O OCR-D-SEG-REG" \
   "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-DEWARP" \
