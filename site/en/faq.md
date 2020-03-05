@@ -60,7 +60,7 @@ server-client architecture with an Eclipse-based graphical user interface at
 its core whereas OCR-D's focus is on mass digitization and command line
 interaction.
 
-### What is the difference between OCR-D and ocrd4all?
+### What is the difference between OCR-D and ocr4all?
 
 ### Is OCR-D production-ready?
 
