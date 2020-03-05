@@ -916,7 +916,6 @@ Overall the results are good for all kind of pages.
       <td></td>
     </tr>
     <tr>
-    <tr>
       <td>6</td>
       <td>ocrd-cis-ocropy-segment</td>
       <td>{"level-of-operation":"page"}</td>
@@ -942,7 +941,7 @@ Overall the results are good for all kind of pages.
       <td>{"textequiv_level":"glyph",<br/>"overwrite_words":true,<br/>
         "model":"GT4HistOCR_50000000.997_191951"}</td>
     </tr>
-  </tbody> 
+  </tbody>
 </table>
 
 ### Example with ocrd-process
@@ -996,7 +995,6 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
     <tr>
-    <tr>
       <td>6</td>
       <td>ocrd-tesserocr-segment-region</td>
       <td></td>
@@ -1039,7 +1037,3 @@ ocrd process \
   "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-DEWARP" \
   "tesserocr-recognize -I OCR-D-SEG-LINE-DEWARP -O OCR-D-OCR -p '{\"textequiv_level\":\"glyph\",\"overwrite_words\":true,\"model\":\"GT4HistOCR_50000000.997_191951\"}'"
 ```
-
-
-
-## 
