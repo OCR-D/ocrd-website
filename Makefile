@@ -24,7 +24,6 @@ KWALITEE_CONFIG := $(REPODIR)/kwalitee.yml
 
 # Languages to build. Default: '$(LANGS)'
 LANGS = de en
-.PHONY: LANGS
 
 # BEGIN-EVAL makefile-parser --make-help Makefile
 
@@ -71,7 +70,6 @@ LANGS_DST = $(LANGS:%=$(GTDIR)/%)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
 gt: $(LANGS_DST)
-.PHONY: $(LANGS_DST)
 
 $(LANGS_DST): $(GTDIR)/% : $(SRCDIR)/%/gt-guidelines
 	make -C "$(GTDIR)" \
@@ -98,6 +96,13 @@ build-modules: ocrd-kwalitee.json
 # TODO Build processor information
 build-processors:
 	@echo NIH
+
+css: site/assets/ocrd.css
+
+site/assets/ocrd.css: site/assets/ocrd.sass
+	sass "$<" "$@"
+
+
 
 # serve the site dynamically
 serve:
@@ -154,3 +159,7 @@ spec:
 			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
 	done
+
+
+
+.PHONY: $(LANGS_DST) LANGS LANGS css
