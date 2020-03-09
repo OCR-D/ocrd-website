@@ -9,9 +9,9 @@ toc: true
 
 # User Guide for Non-IT Users
 
-The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](#preparing_a_workspace) is obligatory for both Docker and Non-Docker users!
+The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is obligatory for both Docker and Non-Docker users!
 
-Furthermore, Docker commands have a [different syntax than native calls](#translating_native_commands_to_docker_calls). This guide always states native calls first and then provides the respective command for Docker users. 
+Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). This guide always states native calls first and then provides the respective command for Docker users. 
 
 ## Prerequisites and Preparations
 
@@ -322,7 +322,7 @@ e.g.
 
 **Note:** Avoid white spaces and escape double quotes with backslash.
 
-For information on the available processors see [section at the end](#get_more_information_about_processors).
+For information on the available processors see [section at the end](#get-more-information-about-processors).
 
 
 
@@ -398,7 +398,7 @@ When you want to specify a new workflow adapted to the features of particular
 images, we recommend using an exisiting workflow as specified in `Taverna` or
 `workflow-config` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
-the existing processors, their tasks and features, see the [next section](#get_more_information_about_processors) and our [workflow guide](workflows.html).
+the existing processors, their tasks and features, see the [next section](#get-more-information-about-processors) and our [workflow guide](workflows.html).
 
 
 
