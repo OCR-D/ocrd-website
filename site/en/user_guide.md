@@ -9,9 +9,9 @@ toc: true
 
 # User Guide for Non-IT Users
 
-The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](### Preparing a workspace) is obligatory for both Docker and Non-Docker users!
+The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](#preparing_a_workspace) is obligatory for both Docker and Non-Docker users!
 
-Furthermore, Docker commands have a [different syntax than native calls](#### Translating native commands to docker calls). This guide always states native calls first and then provides the respective command for Docker users. 
+Furthermore, Docker commands have a [different syntax than native calls](#translating_native_commands_to_docker_calls). This guide always states native calls first and then provides the respective command for Docker users. 
 
 ## Prerequisites and Preparations
 
@@ -325,11 +325,10 @@ e.g.
 For information on the available processors see [section at the end](#get_more_information_about_processors).
 
 
-👷
 
 #### workflow-config
 
-👷
+
 workflow-configuration is another tool for specifying OCR-D-workflows. It allows you to run workflows which are configured and controlled via GNU makefiles. In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.
 
 The `workflow-configuration` directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see [the table on GitHub](https://github.com/bertsky/workflow-configuration#usage).
@@ -395,18 +394,14 @@ parameter.
 
 ### Specifying New OCR-D-Workflows
 
-👷
-
 When you want to specify a new workflow adapted to the features of particular
 images, we recommend using an exisiting workflow as specified in `Taverna` or
 `workflow-config` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
-the existing processors, their tasks and features, see [next section](#get_more_information_about_processors).
+the existing processors, their tasks and features, see the [next section](#get_more_information_about_processors) and our [workflow guide](workflows.html).
 
 
 
-
-TODO: add link to description of processors
 
 ### Get more Information about Processors
 
