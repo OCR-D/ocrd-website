@@ -117,4 +117,4 @@ lang-ref: that-weird-cars-page
 weil es fuer die wirtschaft gut ist.
 ```
 
-You could then go to https://ocr-d.github.io/en/cars and to https://ocr-d.github.io/de/autos from there.
+You could then go to https://ocr-d.de/en/cars and to https://ocr-d.de/de/autos from there.
