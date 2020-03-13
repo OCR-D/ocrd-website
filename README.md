@@ -45,20 +45,20 @@ Run `make help` to see a list of commands.
     gt                Build gt-guidelines. This takes a few minutes. Be patient.
     build-modules     TODO Build module information
     build-processors  TODO Build processor information
-    serve-site        serve the site
-    serve-from-sbb    serve the site so at least @cneud and @kba can see it
+    serve             serve the site dynamically
     build-site        build the site
     core-docs         Build sphinx documentation for core
     spec              Build the spec documents TODO translate
 
   Variables
 
-    REPODIR          Directory containing this Makefile. Don't change it. Default '/data/monorepo/ocr-relaunch'
+    REPODIR          Directory containing this Makefile. Don't change it. Default '/data/monorepo/ocrd-website'
     JEKYLL           Which jekyll binary to use. Default 'jekyll'
-    DSTDIR           Where to build site. Default '/data/monorepo/ocr-relaunch/docs'
-    SRCDIR           Where site is stored. Default '/data/monorepo/ocr-relaunch/site'
-    GTDIR            Repositories mit dne DITA Quelltexten. Default: /data/monorepo/ocr-relaunch/repo/gt-guidelines
-    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /data/monorepo/ocr-relaunch/kwalitee.yml
+    DSTDIR           Where to build site. Default '/data/monorepo/ocrd-website/docs'
+    SRCDIR           Where site is stored. Default '/data/monorepo/ocrd-website/site'
+    GTDIR            Repositories mit dne DITA Quelltexten. Default: /data/monorepo/ocrd-website/repo/gt-guidelines
+    JEKYLL_HOST      host to serve from. Default: 10.46.3.57
+    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /data/monorepo/ocrd-website/kwalitee.yml
     LANGS            Languages to build. Default: 'de en'
     LANGS_DST        Guideline langs to build. Default: 
 
@@ -118,3 +118,32 @@ weil es fuer die wirtschaft gut ist.
 ```
 
 You could then go to https://ocr-d.de/en/cars and to https://ocr-d.de/de/autos from there.
+
+## Deploying the site
+
+First, clone https://github.com/OCR-D/ocr-d.github.io:
+
+```sh
+git clone https://github.com/OCR-D/ocr-d.github.io:
+```
+
+Then, rebuild the website to render the changes to Markdown to HTML:
+
+
+```sh
+make build-site
+```
+
+Copy all the contents of `./docs` to `ocr-d.github.io`:
+
+```sh
+cp -r ./docs/* ocr-d.github.io
+```
+
+Commit and push the changes in `ocr-d.github.io`:
+
+```sh
+cd ocr-d.github.io
+git add .
+git commit -m 'website updated'
+```
