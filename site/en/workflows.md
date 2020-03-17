@@ -172,7 +172,7 @@ that document. The input images have to be binarized for this module to work.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -229,7 +229,7 @@ This processor takes a document image as input and makes the text line straight 
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -288,7 +288,7 @@ around the page content area).
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -340,7 +340,7 @@ marginalia, image, ...) should also be done.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -392,7 +392,7 @@ The binarization should be at least executed once (on page/block/line level).
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -437,7 +437,7 @@ This processor takes an image as input and does the skew correction for all text
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -470,7 +470,7 @@ TODO: add images
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -518,7 +518,7 @@ outline to the annotation of the output PAGE.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -550,7 +550,7 @@ This processor can be used to correct the segmented lines.
 TODO: add images
 
 #### Available processors
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -607,7 +607,7 @@ This processor can be used to dewarp the segmented lines.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -641,7 +641,7 @@ This processor recognizes text in segmented lines.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -665,7 +665,7 @@ This processor recognizes text in segmented lines.
       </code>
       </p>
       </td>
-      <td>Recommended <br/> Model can be found [here](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50<br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50">here</a><br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
 	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
     </tr>
     <tr>
@@ -676,7 +676,7 @@ This processor recognizes text in segmented lines.
         </code>
       </td>
       <td>
-        Recommended<br/>Model can be found [here](https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz) 
+        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> 
       </td>
 	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"checkpoint": "Fraktur"}'</code></td>
     </tr>
@@ -698,7 +698,7 @@ This processor alignes texts from multiple OCR-engines in one PAGE.xml.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -724,7 +724,7 @@ This processor tries to optimize the recognized text.
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -759,7 +759,7 @@ This processor can be used to analyse the output of the OCR.
 
 #### Available processors
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Processor</th>
@@ -796,7 +796,7 @@ Depending on your particular images, you might want to include those processors 
 The following workflow has produced best results for 'simple' pages (e.g. [this
 page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))  (CER ~1%).
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Step</th>
@@ -886,7 +886,7 @@ ocrd process \
 
 Overall the results are good for all kind of pages. 
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Step</th>
@@ -965,7 +965,7 @@ ocrd process \
 
 If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.
 
-<table>
+<table class="processor-table">
   <thead>
     <tr>
       <th>Step</th>
