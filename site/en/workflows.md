@@ -870,7 +870,7 @@ ocrd process \
   "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola-ms-split\"}'" \
   "cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
   "anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW" \
-  "anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -I OCR-D-CROP" \
+  "anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-CROP" \
   "cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{\"level-of-operation\":\"page\"}'" \
   "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
