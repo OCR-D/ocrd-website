@@ -115,10 +115,10 @@ May not be necessary for all prints.
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png" alt=""></a>
+        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-IMG-CROP-ALTERNATE_0009.png" alt=""></a>
       </td>
       <td>
-        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/denoise.PNG" alt=""></a>
+        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/OCR-D-IMG-DENOISE-ALTERNATE_0009.png" alt=""></a>
         </td>
     </tr>
   </tbody>
