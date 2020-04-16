@@ -866,11 +866,11 @@ In this processing step you can try to correct the recognized text.
 
 ## Evaluation (Optional)
 
-If Ground Truth data is available, the OCR can be analysed.
+If Ground Truth data is available, the OCR can be evaluated.
 
-### Step 17: Analysis
+### Step 17: Evaluation
 
-This processor can be used to analyse the output of the OCR.
+In this processing step the output of the OCR can be evaluated.
 
 #### Available processors
 
@@ -889,6 +889,56 @@ This processor can be used to analyse the output of the OCR.
       <td>&nbsp;</td>
       <td>First input group should point to the ground truth.</td>
 	  <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+## Format Conversion (Optional)
+
+OCR-D produces PAGE XML files which contain the recognized text as well as detailed
+information on the structure of the processed pages, the coordinates of the recognized
+elements etc. Optionally, the PAGE XML can be converted to a different output format.
+
+### Step 18: Format Conversion
+
+In this processing step the produced PAGE XML files can be converted to
+ALTO, hOCR or text files. Note that ALTO and hOCR can also be converted into
+different formats. 
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-fileformat-transform</td>
+      <td><code>
+	  {"from-to": "alto2.0 alto3.0",
+            "alto2.0 alto3.1",
+            "alto2.0 hocr",
+            "alto2.1 alto3.0",
+            "alto2.1 alto3.1",
+            "alto2.1 hocr",
+            "alto page",
+            "alto text",
+            "gcv hocr",
+            "hocr alto2.0",
+            "hocr alto2.1",
+            "hocr text",
+            "page alto",
+            "page hocr",
+            "page text"}
+	  </code>
+	  </td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
   </tbody>
 </table>
