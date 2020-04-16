@@ -773,7 +773,7 @@ An overview on the existing model repositories and short descriptions on the mos
       </code>
       </p>
       </td>
-      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50">here</a><br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
 	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
     </tr>
     <tr>
