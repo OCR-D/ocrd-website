@@ -1,12 +1,12 @@
 ---
 layout: page
-lang-ref: first test
+lang-ref: initial-tests
 lang: de
 ---
 
 # Ergebnisse und Erkenntnisse der ersten OCR-D-Teststellung
 ## Hintergrund
-Um die Jahreswende 2019/2020 wurde die OCR-D-Software erstmals in neun Pilotbibliotheken getestet. Damit sollte die praktische Akzeptanz der Software bei künftigen, potentiellen Nutzern sichergestellt werden, weshalb der Fokus auf deren Funktionalität und Einsetzbarkeit in der Praxis lag. An der Teststellung teilgenommen haben neben den Häusern des Koordinierungsprojekts auch zwei an den Modulprojekten beteiligte Bibliotheken sowie vier weitere Bibliotheken. Die Erkenntnisse dieses ersten Testlaufs fließen in die Weiterentwicklung des OCR-D-Prototypen ein.
+Um die Jahreswende 2019/2020 wurde die OCR-D-Software erstmals in neun Pilotbibliotheken getestet. Damit sollte die praktische Akzeptanz der Software bei künftigen, potentiellen\*innen sichergestellt werden, weshalb der Fokus auf deren Funktionalität und Einsetzbarkeit in der Praxis lag. An der Teststellung teilgenommen haben neben den Häusern des Koordinierungsprojekts auch zwei an den Modulprojekten beteiligte Bibliotheken sowie vier weitere Bibliotheken. Die Erkenntnisse dieses ersten Testlaufs fließen in die Weiterentwicklung des OCR-D-Prototypen ein.
 
 Alle Pilotbibliotheken verfügen über erste Kenntnisse und Erfahrungen zu OCR, da sie zumindest auf Projektebene bzw. über Dienstleister bereits Volltexte erstellt haben. Inwieweit die als wichtig angesehene OCR künftig eigenständig durchgeführt und fest im Digitalisierungsworkflow verankert werden soll, wird derzeit noch in den Häusern abgestimmt. Für welche Nutzergruppe Volltexte erstellt werden, wird von den einzelnen Häusern unterschiedlich angegeben. Während ein Drittel allgemein GeisteswissenschaftlerInnen nennt, möchte ein weiteres Drittel eine sehr breite Zielgruppe (Geisteswissenschaft, Digital Humanities, Computerlinguistik und Wirtschaftswissenschaften) bedienen. Die übrigen Bibliotheken sehen lediglich einen kleinen Nutzerkreis (Digital Humanities oder Computerlinguistik) als Zielgruppe der OCR-Texte.
 
@@ -30,7 +30,7 @@ Um die Vergleichbarkeit der einzelnen Tests in den Pilotbibliotheken gewährleis
 
 In der Teststellung wurden die verschiedenen Möglichkeiten zur Installation der OCR-D-Software mit und ohne Docker-Container genutzt und die Software erfolgreich auf einer breiten Auswahl an unterschiedlich leistungsstarken, teils virtuellen Servern installiert. Bei Nicht-Intel-Rechnern (ARM, PowerPC64) war diese komplizierter und zeitaufwändiger, da einzelne Python-Pakete auf diesen Rechnern nicht ausführbar waren und erst manuell angepasst werden mussten. Die während der Teststellung entwickelte Gesamt-Installation aller verfügbarer OCR-D-Prozessoren (``ocrd_all``) wurde als einfachste und unaufwändigste Variante dabei als am empfehlenswertesten bestätigt. In eine Workflow-Software wie bspw. Kitodo wurde die OCR-D-Software an keiner Pilotbibliothek integriert, da der Aufwand für eine Einbindung der Software für den Testlauf zu hoch gewesen wäre. 
 
-Als Herausforderung wurde die Verwendung der zahlreichen OCR-D-Prozessoren beschrieben. Hier bereitete weniger deren Aufruf Probleme, als das Verständnis von deren jeweiligem Einsatzbereich und insbesondere Auswahl sowie Zusammenstellung der Prozessoren zu sinnvollen Workflows. Für die erste Teststellung lag neben der technischen Dokumentation der Software noch keine Gesamtdokumentation zu deren Nutzung vor, die sich auch an im OCR-Bereich unerfahrene Anwender richtet. Die Anforderungen und Wünsche der Tester an eine solche Dokumentation wurden noch in der Ausarbeitung der inzwischen [im Nutzerbereich der OCR-D-Website eingestellten Anleitungen](https://ocr-d.de/de/use.html) berücksichtigt. 
+Als Herausforderung wurde die Verwendung der zahlreichen OCR-D-Prozessoren beschrieben. Hier bereitete weniger deren Aufruf Probleme, als das Verständnis von deren jeweiligem Einsatzbereich und insbesondere Auswahl sowie Zusammenstellung der Prozessoren zu sinnvollen Workflows. Für die erste Teststellung lag neben der technischen Dokumentation der Software noch keine Gesamtdokumentation zu deren Nutzung vor, die sich auch an im OCR-Bereich unerfahrene Anwender richtet. Die Anforderungen und Wünsche der Tester an eine solche Dokumentation wurden noch in der Ausarbeitung der inzwischen [im Nutzerbereich der OCR-D-Website eingestellten Anleitungen](https://ocr-d.de/de/use) berücksichtigt. 
 
 Die OCR-D-Software läuft insgesamt sehr stabil, Abbrüche wurden von keiner Bibliothek gemeldet. Die benötigten Ausgabeformate werden bereits alle angeboten, wohingegen die wenigen noch erforderlichen Arbeiten im Bereich der Schnittstellen für die Weiterentwicklung des Prototyps eingeplant sind.
 
