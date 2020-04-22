@@ -10,7 +10,7 @@ lang: de
 
 Um die Jahreswende 2019/2020 wurde die OCR-D-Software erstmals in neun
 Pilotbibliotheken getestet. Damit sollte die praktische Akzeptanz der Software
-bei künftigen, potentiellen\*innen sichergestellt werden, weshalb der Fokus auf
+bei künftigen, potentiellen Nutzer\*innen sichergestellt werden, weshalb der Fokus auf
 deren Funktionalität und Einsetzbarkeit in der Praxis lag. An der Teststellung
 teilgenommen haben neben den Häusern des Koordinierungsprojekts auch zwei an
 den Modulprojekten beteiligte Bibliotheken sowie vier weitere Bibliotheken. Die
