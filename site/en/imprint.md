@@ -4,124 +4,96 @@ toc: true
 lang: en
 lang-ref: impressum
 ---
-# Imprint and Privacy Policy
 
-Below you will find the legally regulated mandatory information on provider
-identification and legal information on the internet presence of the OCR-D
-project.
+# Imprint
+
+In the following you will find the legally regulated obligatory information on provider
+identification as well as legal information on the Internet presence of the OCR-D project. 
+
+Information according to § 5 TMG
 
 ## Provider
+The provider of this internet presence in the legal sense is the Duke August Library
+Wolfenbüttel.
 
-The provider of this website is the Duke August Library Wolfenbüttel in the legal sense.
-
-Duke August Library<br/>
-Lessingplatz 1<br/>
-D-38304 Wolfenbüttel<br/>
-Phone: +49 (0) 5331 808-0<br/>
-Fax: +49 (0) 5331 808-302<br/>
-e-mail: [auskunft@hab.de](mailto:auskunft@hab.de)<br/>
-[www.hab.de](http://www.hab.de)<br/>
-
-## Representatives
-
-HAB Wolfenbüttel is represented by its Director, Prof. Dr. Peter Burschel.
-
-## Editor-in-Chief
-
-Andrea Opitz
-Duke August Library
-Lessingplatz 1
+Duke August Library,
+Lessingplatz 1,
 D-38304 Wolfenbüttel
-Phone: +49 (0) 5331 808-303
-e-mail: [opitz@hab.de](mailto:opitz@hab.de)
+Phone: +49(0)5331/808-0,
+Fax: +49(0)5331/808-302,
+e-mail: mailto:auskunft@hab.de
+[http://www.hab.de](http://www.hab.de)
 
-## Legal Notice on Copyright
+## Representative
+The HAB Wolfenbüttel is represented by its director, Prof. Dr. Peter Burschel
 
-The used logo as well as the other contents are protected by copyright. Other
-graphics were taken from [Pixabay](http://pixabay.com) and are licensed under
-CC0.
+Sales tax identification number: DE811255517
 
-## Disclaimer
+Responsible for the content according to § 55 Abs. 2 RStV:
+Andrea Opitz
+Duke August Library,
+Lessingplatz 1,
+D-38304 Wolfenbüttel
+Phone: +49(0)5331/808-314,
+e-mail: mailto:opitz@hab.de
 
-### Content of the Online Offer
+## Disclaimer:
 
-The author assumes no liability for the topicality, correctness, completeness
-or quality of the information provided. Liability claims against the author
-relating to material or immaterial damage caused by the use or non-use of the
-information provided or by the use of incorrect or incomplete information are
-excluded, unless there is evidence of willful intent or gross negligence on the
-part of the author.
+### Liability for contents
+The contents of our pages were created with the greatest care. However, we cannot guarantee
+that the contents are correct, complete and up-to-date. As a service provider, we are
+responsible for our own content on these pages according to § 7 para.1 TMG (German Telemedia
+Act) and general laws. According to §§ 8 to 10 TMG we are not obliged to monitor transmitted
+or stored information from third parties or to investigate circumstances that indicate
+illegal activity. Obligations for the removal or blocking of the use of information according
+to the general laws remain unaffected. However, liability in this respect is only possible
+from the time of knowledge of a concrete infringement. If we become aware of any such legal
+infringements, we will remove these contents immediately.
 
-All offers are subject to change and non-binding. The author expressly reserves
-the right to change, supplement or delete parts of the pages or the entire
-offer without prior notice or to discontinue publication temporarily or
-permanently.
+### Liability for links
+Our offer contains links to external websites of third parties, on whose contents we have
+no influence. Therefore we cannot assume any liability for these external contents. As the
+Contents of the linked pages are always the responsibility of the respective provider or
+operator of the pages.The linked pages were checked for possible legal violations at the
+time of linking. Illegal contents were not identified at the time of linking. However, a
+permanent control of the contents of the linked pages is not reasonable without concrete
+evidence of a violation of the law.  If infringements of rights become known
+we will remove such links immediately.
 
-### References and Links
+### Copyright
 
-The author is not responsible for any contents linked or referred to from his
-pages – unless he has full knowledge of illegal contents and would technically
-be able to prevent the visitors of his site from viewing those pages.
+The contents and works on these pages created by the site operators are subject to the
+German copyright law. The duplication, processing, distribution and any kind of
+use outside the limits of copyright law requires the written consent of the
+the respective author or creator.Downloads and copies of these pages are only permitted
+for private, non-commercial use. Insofar as the contents on this site were not created by
+the operator, the copyrights of third parties are observed. In particular, third-party
+content is identified as such. Should you nevertheless become aware of a copyright
+infringement, please inform us accordingly. If we become aware of any infringements, we
+will remove such contents immediately.
 
-The author hereby expressly declares that at the time the links were created,
-no illegal content was recognizable on the linked pages. The author has no
-influence whatsoever on the current and future design, content or authorship of
-the linked pages. The author therefore expressly distances himself from all
-contents of all linked pages that have been changed since the link was created.
-This statement applies to all links and references set within the author's own
-Internet offer as well as to third-party entries in guest books, discussion
-forums and mailing lists set up by the author. For illegal, incorrect or
-incomplete contents and in particular for damages arising from the use or
-non-use of such information, the provider of the page to which reference is
-made is solely liable, not the party who merely refers to the respective
-publication via links.
+### Privacy policy
 
-**Copyright and Trademark Law
+The use of our website is usually possible without providing personal data.
+As far as personal data (e.g. name, address or e-mail addresses) is collected on our website,
+this is always done on a voluntary basis, as far as possible.
+This data will not be passed on to third parties without your express consent.
+We would like to point out that data transmission on the Internet (e.g. communication via
+E-Mail) can have security gaps. A complete protection of the data against access
+by third parties is not possible.
+The usage of contact data published within the scope of the imprint obligation by third
+parties for the transmission of not expressly requested advertising and information material
+is hereby expressly contradicted. The operators of the pages expressly reserve the right to
+take legal action in the event of the unsolicited sending of advertising information, for
+example through spam mails.
 
-The author endeavours to observe the copyrights of the graphics, sound documents, video sequences and texts used in all publications, to use graphics, sound documents, video sequences and texts created by himself or to make use of licence-free graphics, sound documents, video sequences and texts.
-All brands and trademarks mentioned within the Internet offer and possibly protected by third parties are subject without restriction to the provisions of the applicable trademark law and the ownership rights of the respective registered owners. The mere fact that a trademark is mentioned should not lead to the conclusion that it is not protected by the rights of third parties!
-The copyright for published objects created by the author himself remains solely with the author of the pages. Any duplication or use of objects such as diagrams, sounds or texts in other electronic or printed publications is not permitted without the author's agreement.
+### Images used
+This website uses the following images from Wikimedia Commons:
+Copper engraving "Le cabinet de la Bibliotheque de Sainte Genevieve", Paris: 1692, by
+Franz Ertinger
+Type 615.92.341, Houghton Library, Harvard University
 
-**Data Protection**
+Copper engraving "Calculating machine designed by Pascal". Louvet sculpt. Rue Galande No. 51
+[https://lccn.loc.gov/2006690493](https://lccn.loc.gov/2006690493), Library of Congress
 
-As part of its participation in the German Library Statistics, the Herzog
-August Bibliothek uses a procedure for counting visits to its website. When
-calling up the homepage and/or the catalogue page ("OPAC"), an identifier of
-the library and the page concerned, the time of the call and a signature of the
-calling computer are stored. The signature is generated using a one-way
-function consisting of IP address, browser identification and proxy
-information. The collection, storage and evaluation of this data takes place in
-pseudoanonymised form, i.e. the signature cannot be assigned to specific
-persons. The IP address in particular is not stored. The pseudonymous
-individual data are summed up after 24 hours at the latest and thus anonymised.
-
-The stored data is statistically evaluated in order to design and further
-develop our website in line with requirements. The data will only be used for
-this purpose and will be deleted after evaluation.
-
-The Stuttgart Media University is responsible for the technical and
-organisational implementation of the procedure. It has developed the procedure
-in accordance with the provisions of the Data Protection Act and the Telemedia
-Act (TMG) and undertakes to comply with them.
-
-You have the opportunity to object to the collection, processing and use of the
-aforementioned data of your visits for the aforementioned purpose. Please click
-on the following external
-[Link](http://dbspixel.hbz-nrw.de/widerspruch.html).
-
-If the opportunity for the input of personal or business data (email addresses,
-name, addresses) is given, the input of these data takes place voluntarily. The
-use and payment of all offered services are permitted – if and so far
-technically possible and reasonable – without specification of any personal
-data or under specification of anonymized data or an alias.
-
-### Legal Validity of this Disclaime
-
-This disclaimer is to be regarded as part of the internet publication which you
-were referred from. If sections or individual terms of this statement are not
-legal or correct, the content or validity of the other parts remain
-uninfluenced by this fact.
-
-(This disclaimer is based on the text of [www.disclaimer.de](http://www.disclaimer.de)].
-
-Unless otherwise stated, images are taken from [Pixabay](http://pixabay.com).
+Website imprint created by impressum-generator.de of the law firm Hasselbach
