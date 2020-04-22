@@ -117,7 +117,7 @@ expanded.
 
 The testers positively emphasized the modular and transparent structure of the
 OCR-D software, which distinguishes it in particular from other OCR solutions
-and allows the its users to confiure optimal workflows for particular use
+and allows the its users to configure optimal workflows for particular use
 cases. Furthermore, all OCR-D source code is freely available and can be
 further developed by experts specialized in their respective fields and can be
 adapted in-house for usage in experiments on the OCR workflow without extensive
