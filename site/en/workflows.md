@@ -581,7 +581,7 @@ In this processing step, text block images are taken as input and their skew is 
 In this processing step intrusions of neighbouring segments in
 regions / lines of a workspace can be removed. A (ad-hoc binarization and) connected
 component analysis is run on every text region / line of every PAGE in the input file
-group, as well as its overlapping neighbours. For each binary object of
+as well as its overlapping neighbours. Now for each conflicting binary object,
 conflict, it is determined whether it belongs to the neighbour, and can therefore
 be clipped to white. The resulting segment image files are referenced in the
 output PAGE (as AlternativeImage).
