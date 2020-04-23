@@ -384,8 +384,8 @@ In this processing step, an (optimized) document image is taken as an input and 
 image is segmented into the various regions or blocks, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** If you use `ocrd-tesserocr-segment-region`, you should use `ocrd-segment-repair`
-afterwards to obtain better results.
+**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
+then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
 **Note:** The sbb-textline-detector does not only segment the page but also the lines within
 the detected regions in one step. Therefore with this (and only with this!) processor you don't
