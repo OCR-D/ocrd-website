@@ -6,19 +6,18 @@ wichtigsten Modelle und Modell-Repositorien.
 
 ## ocrd-tesserocr-recognize
 
-Dieses Modul verwendet Tesseract 4.1 oder neuer für die Texterkennung. Tesseract benötigt
-Sprach- oder Schriftmodelle. Dies sind Dateien in einem speziellen Format. Sie enthalten
-mindestens eine Liste mit dem bekannten Zeichensatz ("unicharset") und das neuronale Netz
-für die Texterkennung ("lstm"), optional auch noch Wörterbücher ("wordlist") und weitere Komponenten.
-Sprachmodelle sind im Zeichensatz und im Wörterbuch auf eine Sprache (z. B. deu = deutsch) beschränkt.
-Schriftmodelle enthalten einen umfangreicheren Zeichensatz und Wörterbücher aus mehreren Sprachen mit
-der gleichen Schrift (z. B. Latin = lateinische Schrift mit englisch, deutsch, französisch,
-spanisch, italienisch, ...).
+Dieser Prozessor verwendet Tesseract (ab Version 4.1) für die Texterkennung. Tesseract benötigt
+_Sprach-_ oder _Schriftmodelle_. Dies sind Dateien in einem speziellen Format (`*.traineddata`). Sie enthalten
+mindestens eine Liste mit dem Erkennungs-Zeichensatz ("unicharset") und die Gewichte des neuronalen Erkennungs-Modells ("lstm"), optional auch noch Wörterbücher ("wordlist"/"dawg") und weitere Komponenten.
+Sprachmodelle sind im Zeichensatz und im Wörterbuch auf eine Muttersprache (z. B. `deu` = Deutsch) beschränkt.
+Schriftmodelle dagegen enthalten einen umfangreicheren Zeichensatz und Wörterbücher aus mehreren Sprachen mit der gleichen Schrift (z. B. `Latin` = lateinische Schrift mit Englisch, Deutsch, Französisch,
+Spanisch, Italienisch, ...).
 
-Für Tesseract gibt es mehr als 100 Sprach- und Schriftmodelle, die von Google erzeugt ("trainiert")
+Für Tesseract gibt es mehr als 100 Sprach- und Schriftmodelle, die von Google mittels synthetischer Daten
+(d.h. per Rasterung großer Mengen von Text mit vielen verschiedenen Vektorfonts) erzeugt ("trainiert")
 wurden. Daneben gibt es aber auch noch weitere Modelle von anderen Anbietern, und man kann auch eigene
 Modelle entweder komplett neu oder auf Basis vorhandener Modelle erstellen. Eigenes Training wird durch
-`tesstrain` gut unterstützt.
+[tesstrain](https://github.com/tesseract-ocr/tesstrain) gut unterstützt.
 
 Die Modelle von Google gibt es jeweils in drei Varianten:
 

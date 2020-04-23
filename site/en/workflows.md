@@ -12,14 +12,14 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 ![](/assets/Funktionsmodell.png)
 
-The following instruction describes all steps of the OCR workflow. Depending on your particular print or rather images not all of those steps will be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
+The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
 
 ## Image Optimization (on Page Level)
 At first, the image should be prepared for OCR.
 
 
 ### Step 1: Binarization
-First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
+First, all the images should be binarized. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
 
 In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
 
@@ -114,8 +114,8 @@ In this processing step, a scanned colored /gray scale document image is taken a
 
 ### Step 2: Cropping
 
-In this processing step a document image is taken as input and the page
-content area only is cropped/selected (i.e. noise around the page content area is removed).
+In this processing step, a document image is taken as input and the page
+is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
 
 
 <table class="before-after">
@@ -220,9 +220,9 @@ For better results, the cropped images can be binarized again at this point or l
 
 ### Step 4: Denoising
 
-In this processing step artifacts are removed from the binarized image. 
+In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. 
 
-This may not be necessary for all prints.
+This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
 
 
 <table class="before-after">
@@ -267,8 +267,8 @@ This may not be necessary for all prints.
 
 ### Step 5: Deskewing
 
-In this processing step a document image is taken as input and the skew of
-that document is corrected. The input images have to be binarized for this module to work.
+In this processing step, a document image is taken as input and the skew of
+that page is corrected by annotating the detected angle and rotating the image. The input images have to be binarized for this module to work.
 
 
 <table class="before-after">
@@ -385,18 +385,18 @@ if its curved. The input image has to be binarized for the module to work.
 
 By now the image should be well prepared for segmentation.
 
-### Step 7: Text segmentation (on Page Level)
+### Step 7: Page segmentation
 
-In this processing step an (optimized) document image is taken as an input and the
-image is segmented into the different text blocks. During this step a classification (text,
-marginalia, image, ...) should also be done.
+In this processing step, an (optimized) document image is taken as an input and the
+image is segmented into the various regions or blocks, including columns.
+Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** If you use `ocrd-tesserocr-segment-region`, you should use `ocrd-segment-repair`
-afterwards to obtain better results.
+**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
+then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
-**Note:** The sbb-textline-detector does not only segment the page but also the lines within
-the detected regions in one step. Therefore with this (and only with this!) processor you don't
-have to segment the lines in an extra step.
+**Note:** The `ocrd-sbb-textline-detector` processor does not only segment the page, but also the text lines within
+the detected text regions in one step. Therefore with this (and only with this!) processor you don't
+need to segment into lines in an extra step.
 
 
 <table class="before-after">
@@ -439,7 +439,7 @@ have to segment the lines in an extra step.
     </tr>
 	<tr>
       <td>ocrd-segment-repair</td>
-      <td><code>{"sanitize":true}</code></td>
+      <td><code>{"plausibilize":true}</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
 	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
     </tr>
@@ -472,7 +472,7 @@ have to segment the lines in an extra step.
 
 ## Image Optimization (on Block Level)
 
-In the following steps the blocks should be optimized for OCR.
+In the following steps, the text blocks should be optimized for OCR.
 
 ### Step 8:  Binarization 
 
@@ -480,7 +480,7 @@ In this processing step, a scanned colored /gray scale document image is taken a
 and white binarized image is produced. This step should separate the background from the foreground.
 
 The binarization should be at least executed once (on page or block level). If you already binarized
-your image twice on page level, you can skip this step.
+your image twice on page level, and have no large images, you can probably skip this step.
 
 
 #### Available processors
@@ -540,7 +540,7 @@ your image twice on page level, you can skip this step.
 
 ### Step 9:  Deskewing 
 
-In this processing step an image is taken as input and the skew is corrected for all text blocks.
+In this processing step, text block images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
 
 <table class="before-after">
@@ -588,10 +588,11 @@ In this processing step an image is taken as input and the skew is corrected for
 In this processing step intrusions of neighbouring segments in
 regions / lines of a workspace can be removed. A (ad-hoc binarization and) connected
 component analysis is run on every text region / line of every PAGE in the input file
-group, as well as its overlapping neighbours. For each binary object of
-conflict, it is determined whether it belongs to the neighbour, and can therefore
-be clipped to white. The resulting segment image files are referenced in the
-output PAGE (as AlternativeImage).
+as well as its overlapping neighbours. Now for each conflicting binary object,
+a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
+be clipped to the background. 
+
+This basic text-nontext segmentation ensures that for each text block there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
 
 TODO: add images
 
@@ -780,7 +781,7 @@ An overview on the existing model repositories and short descriptions on the mos
       </code>
       </p>
       </td>
-      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50">here</a><br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
 	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
     </tr>
     <tr>
@@ -840,8 +841,7 @@ To obtain good results the input texts should be recognized in the previous step
 
 In this processing step you can try to correct the recognized text. 
 
-**Note:** `ocrd-cor-asv-ann-process` takes the unaligned OCR text as input, whereas
-`ocrd-cis-post-correct.sh` needs aligned texts.
+**Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process` are optimised for input from single OCR engines, whereas `ocrd-cis-post-correct.sh` expects input from multi-OCR alignment.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
@@ -875,9 +875,9 @@ In this processing step you can try to correct the recognized text.
 
 If Ground Truth data is available, the OCR can be evaluated.
 
-### Step 17: Evaluation
+### Step 17: OCR Evaluation
 
-In this processing step the output of the OCR can be evaluated.
+In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.
 
 #### Available processors
 
