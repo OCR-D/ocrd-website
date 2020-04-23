@@ -378,7 +378,7 @@ if its curved. The input image has to be binarized for the module to work.
 
 By now the image should be well prepared for segmentation.
 
-### Step 7: Text segmentation (on Page Level)
+### Step 7: Page segmentation
 
 In this processing step, an (optimized) document image is taken as an input and the
 image is segmented into the various regions or blocks, including columns.
