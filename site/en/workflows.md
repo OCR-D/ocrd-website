@@ -582,9 +582,10 @@ In this processing step intrusions of neighbouring segments in
 regions / lines of a workspace can be removed. A (ad-hoc binarization and) connected
 component analysis is run on every text region / line of every PAGE in the input file
 as well as its overlapping neighbours. Now for each conflicting binary object,
-conflict, it is determined whether it belongs to the neighbour, and can therefore
-be clipped to white. The resulting segment image files are referenced in the
-output PAGE (as AlternativeImage).
+a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
+be clipped to the background. 
+
+This basic text-nontext segmentation ensures that for each text block there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
 
 TODO: add images
 
