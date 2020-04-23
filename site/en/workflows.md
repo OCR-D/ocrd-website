@@ -533,7 +533,7 @@ your image twice on page level, and have no large images, you can probably skip 
 
 ### Step 9:  Deskewing 
 
-In this processing step an image is taken as input and the skew is corrected for all text blocks.
+In this processing step, text block images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
 
 <table class="before-after">
