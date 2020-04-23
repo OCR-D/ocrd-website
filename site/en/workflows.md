@@ -432,7 +432,7 @@ need to segment into lines in an extra step.
     </tr>
 	<tr>
       <td>ocrd-segment-repair</td>
-      <td><code>{"sanitize":true}</code></td>
+      <td><code>{"plausibilize":true}</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
 	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
     </tr>
