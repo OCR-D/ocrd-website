@@ -380,9 +380,9 @@ By now the image should be well prepared for segmentation.
 
 ### Step 7: Text segmentation (on Page Level)
 
-In this processing step an (optimized) document image is taken as an input and the
-image is segmented into the different text blocks. During this step a classification (text,
-marginalia, image, ...) should also be done.
+In this processing step, an (optimized) document image is taken as an input and the
+image is segmented into the various regions or blocks, including columns.
+Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
 **Note:** If you use `ocrd-tesserocr-segment-region`, you should use `ocrd-segment-repair`
 afterwards to obtain better results.
