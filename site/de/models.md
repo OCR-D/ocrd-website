@@ -13,10 +13,11 @@ Sprachmodelle sind im Zeichensatz und im Wörterbuch auf eine Muttersprache (z. 
 Schriftmodelle dagegen enthalten einen umfangreicheren Zeichensatz und Wörterbücher aus mehreren Sprachen mit der gleichen Schrift (z. B. `Latin` = lateinische Schrift mit Englisch, Deutsch, Französisch,
 Spanisch, Italienisch, ...).
 
-Für Tesseract gibt es mehr als 100 Sprach- und Schriftmodelle, die von Google erzeugt ("trainiert")
+Für Tesseract gibt es mehr als 100 Sprach- und Schriftmodelle, die von Google mittels synthetischer Daten
+(d.h. per Rasterung großer Mengen von Text mit vielen verschiedenen Vektorfonts) erzeugt ("trainiert")
 wurden. Daneben gibt es aber auch noch weitere Modelle von anderen Anbietern, und man kann auch eigene
 Modelle entweder komplett neu oder auf Basis vorhandener Modelle erstellen. Eigenes Training wird durch
-`tesstrain` gut unterstützt.
+[tesstrain](https://github.com/tesseract-ocr/tesstrain) gut unterstützt.
 
 Die Modelle von Google gibt es jeweils in drei Varianten:
 
