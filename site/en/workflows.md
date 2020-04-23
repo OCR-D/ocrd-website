@@ -12,7 +12,7 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 ![](/assets/Funktionsmodell.png)
 
-The following instruction describes all steps of the OCR workflow. Depending on your particular print or rather images not all of those steps will be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
+The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
 
 ## Image Optimization (on Page Level)
 At first, the image should be prepared for OCR.
