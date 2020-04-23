@@ -868,7 +868,7 @@ In this processing step you can try to correct the recognized text.
 
 If Ground Truth data is available, the OCR can be evaluated.
 
-### Step 17: Evaluation
+### Step 17: OCR Evaluation
 
 In this processing step the output of the OCR can be evaluated.
 
