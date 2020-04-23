@@ -23,6 +23,8 @@ First, all the images should be binarized. Many of the following processors requ
 
 In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
 
+**Note:** Binarization tools usually provide a threshold parameter which allows you to increase or decrease the weight of the foreground. This is optional and can be especially usefull for images which have not been enhanced.
+
 <table class="before-after">
   <tbody>
     <tr>
@@ -51,13 +53,21 @@ In this processing step, a scanned colored /gray scale document image is taken a
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-binarize</td>
-      <td></td>
+      <td>
+	  <p><code>
+{"threshold": float}
+      </code></p>
+	  </td>
       <td>Fast</td>
       <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
-      <td></td>
+      <td>
+	  <p><code>
+{"noise_maxsize": float}
+      </code></p>	  
+	  </td>
       <td></td>
       <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
@@ -90,6 +100,9 @@ In this processing step, a scanned colored /gray scale document image is taken a
       </code></p>
       <p><code>
 {"impl": "otsu"}
+      </code></p>
+      <p><code>
+{"k": float}
       </code></p>
       </td>
       <td>Recommended</td>
@@ -161,12 +174,6 @@ For better results, the cropped images can be binarized again at this point or l
 	</tr>
   </thead>
   <tbody>
-    <tr>
-      <td>ocrd-anybaseocr-binarize</td>
-      <td></td>
-      <td>Fast</td>
-      <td><code>ocrd-anybaseocr-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
-    </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
@@ -304,7 +311,7 @@ that document is corrected. The input images have to be binarized for this modul
     <tr>
       <td>ocrd-tesserocr-deskew</td>
       <td><code>{"operation_level”:”page”}</code></td>
-      <td>Fast</td>
+      <td>Fast, also performs a decent orientation correction</td>
 	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{"operation_level”:”page”}'</code></td>
     </tr>
     <tr>
@@ -571,7 +578,7 @@ In this processing step an image is taken as input and the skew is corrected for
       <td>ocrd-cis-ocropy-deskew</td>
       <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocrd-anybaseocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -889,6 +896,21 @@ In this processing step the output of the OCR can be evaluated.
       <td>&nbsp;</td>
       <td>First input group should point to the ground truth.</td>
 	  <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-cor-asv-ann-evaluate</td>
+      <td>
+      <p>
+      <code>
+      {"metric": "Levenshtein" (default), "NFC", "NFKC", "historic-latin"}
+      </code>
+      <code>
+      {"confusion": integer}
+      </code>
+      </p>	  
+	  </td>
+      <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add 2> `eval.txt` at the end of your command</td>
+	  <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
     </tr>
   </tbody>
 </table>
