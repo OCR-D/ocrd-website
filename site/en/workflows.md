@@ -870,7 +870,7 @@ If Ground Truth data is available, the OCR can be evaluated.
 
 ### Step 17: OCR Evaluation
 
-In this processing step the output of the OCR can be evaluated.
+In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.
 
 #### Available processors
 
