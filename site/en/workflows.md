@@ -19,7 +19,7 @@ At first, the image should be prepared for OCR.
 
 
 ### Step 1: Binarization
-First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
+First, all the images should be binarized. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
 
 In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
 
