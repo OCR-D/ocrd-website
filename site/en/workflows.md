@@ -465,7 +465,7 @@ need to segment into lines in an extra step.
 
 ## Image Optimization (on Block Level)
 
-In the following steps the blocks should be optimized for OCR.
+In the following steps, the text blocks should be optimized for OCR.
 
 ### Step 8:  Binarization 
 
