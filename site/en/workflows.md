@@ -101,8 +101,8 @@ In this processing step, a scanned colored /gray scale document image is taken a
 
 ### Step 2: Cropping
 
-In this processing step a document image is taken as input and the page
-content area only is cropped/selected (i.e. noise around the page content area is removed).
+In this processing step, a document image is taken as input and the page
+is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
 
 
 <table class="before-after">
