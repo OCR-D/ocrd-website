@@ -473,7 +473,7 @@ In this processing step, a scanned colored /gray scale document image is taken a
 and white binarized image is produced. This step should separate the background from the foreground.
 
 The binarization should be at least executed once (on page or block level). If you already binarized
-your image twice on page level, you can skip this step.
+your image twice on page level, and have no large images, you can probably skip this step.
 
 
 #### Available processors
