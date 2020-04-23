@@ -260,8 +260,8 @@ This may not be necessary for all prints, and depends heavily on the selected bi
 
 ### Step 5: Deskewing
 
-In this processing step a document image is taken as input and the skew of
-that document is corrected. The input images have to be binarized for this module to work.
+In this processing step, a document image is taken as input and the skew of
+that page is corrected by annotating the detected angle and rotating the image. The input images have to be binarized for this module to work.
 
 
 <table class="before-after">
