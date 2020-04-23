@@ -213,9 +213,9 @@ For better results, the cropped images can be binarized again at this point or l
 
 ### Step 4: Denoising
 
-In this processing step artifacts are removed from the binarized image. 
+In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. 
 
-This may not be necessary for all prints.
+This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
 
 
 <table class="before-after">
