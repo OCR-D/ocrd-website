@@ -387,9 +387,9 @@ Segments are also classified, either coarse (text, separator, image, table, ...)
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
 then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
-**Note:** The sbb-textline-detector does not only segment the page but also the lines within
-the detected regions in one step. Therefore with this (and only with this!) processor you don't
-have to segment the lines in an extra step.
+**Note:** The `ocrd-sbb-textline-detector` processor does not only segment the page, but also the text lines within
+the detected text regions in one step. Therefore with this (and only with this!) processor you don't
+need to segment into lines in an extra step.
 
 
 <table class="before-after">
