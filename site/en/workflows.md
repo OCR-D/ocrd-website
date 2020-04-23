@@ -834,8 +834,7 @@ To obtain good results the input texts should be recognized in the previous step
 
 In this processing step you can try to correct the recognized text. 
 
-**Note:** `ocrd-cor-asv-ann-process` takes the unaligned OCR text as input, whereas
-`ocrd-cis-post-correct.sh` needs aligned texts.
+**Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process` are optimised for input from single OCR engines, whereas `ocrd-cis-post-correct.sh` expects input from multi-OCR alignment.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
