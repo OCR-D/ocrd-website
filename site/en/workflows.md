@@ -909,7 +909,7 @@ In this processing step, the text output of the OCR or post-correction can be ev
       </code>
       </p>	  
 	  </td>
-      <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add 2> `eval.txt` at the end of your command</td>
+      <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add `2> eval.txt` at the end of your command</td>
 	  <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
     </tr>
   </tbody>
