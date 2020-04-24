@@ -945,20 +945,20 @@ accessible format that can be used as-is by expert and layman alike.
       <td>ocrd-fileformat-transform</td>
       <td><code>
         {"from-to": "alto2.0 alto3.0"} 
-        # or {from-to: "alto2.0 alto3.1"}
-        # or {from-to: "alto2.0 hocr"}
-        # or {from-to: "alto2.1 alto3.0"}
-        # or {from-to: "alto2.1 alto3.1"}
-        # or {from-to: "alto2.1 hocr"}
-        # or {from-to: "alto page"}
-        # or {from-to: "alto text"}
-        # or {from-to: "gcv hocr"}
-        # or {from-to: "hocr alto2.0"}
-        # or {from-to: "hocr alto2.1"}
-        # or {from-to: "hocr text"}
-        # or {from-to: "page alto"}
-        # or {from-to: "page hocr"}
-        # or {from-to: "page text"}
+        <br># or {from-to: "alto2.0 alto3.1"}
+        <br># or {from-to: "alto2.0 hocr"}
+        <br># or {from-to: "alto2.1 alto3.0"}
+        <br># or {from-to: "alto2.1 alto3.1"}
+        <br># or {from-to: "alto2.1 hocr"}
+        <br># or {from-to: "alto page"}
+        <br># or {from-to: "alto text"}
+        <br># or {from-to: "gcv hocr"}
+        <br># or {from-to: "hocr alto2.0"}
+        <br># or {from-to: "hocr alto2.1"}
+        <br># or {from-to: "hocr text"}
+        <br># or {from-to: "page alto"}
+        <br># or {from-to: "page hocr"}
+        <br># or {from-to: "page text"}
       </code>
       </td>
       <td>&nbsp;</td>
@@ -969,10 +969,14 @@ accessible format that can be used as-is by expert and layman alike.
       <td>ocrd-pagetopdf</td>
       <td><code>
       {
-        "negative2zero": true,      # fix (invalid) negative coordinates
-        "multipage": true,          # create a single "fat" PDF
-        "textequiv_level": "word",  # render text on this level
-        "outlines": "line"          # outline lines in the PDF
+        <br># fix (invalid) negative coordinates
+        <br>"negative2zero": true,
+        <br># create a single "fat" PDF
+        <br>"multipage": true,
+        <br># render text on this level
+        <br>"textequiv_level": "word",
+        <br># outline lines in the PDF
+        <br>"outlines": "line"
       }
       </code>
       </td>
