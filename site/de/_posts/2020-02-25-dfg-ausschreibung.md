@@ -33,5 +33,5 @@ Schritt, damit die Erzeugung hochqualitativer Volltexte stattfinden kann.
 Zentrales Ziel der neuen Ausschreibung ist die Entwicklung (generischer)
 Implementierungspakete mit akzeptabler Performanz für unterschiedliche
 Anforderungen. Sie richtet sich vorwiegend an bestandshaltende Einrichtungen,
-Anträge können bis zum 7. Oktober 2020 bei der DFG eingereicht werden. Bei
+Anträge können bis zum 7. Oktober 2020 bei der DFG eingereicht werden. Die DFG erwartet von Antragstellern vorab eine Absichtserklärung, die bis zum ~~5.~~ 22. Mai abzugeben ist. Bei
 Interesse an der Ausschreibung nehmen Sie gerne [mit uns Kontakt auf](/de/contact).
