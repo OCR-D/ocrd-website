@@ -923,47 +923,66 @@ elements etc. Optionally, the PAGE XML can be converted to a different output fo
 
 ### Step 18: Format Conversion
 
-In this processing step the produced PAGE XML files can be converted to
-ALTO, hOCR or text files. Note that ALTO and hOCR can also be converted into
-different formats. 
+In this processing step the produced PAGE XML files can be converted to ALTO,
+PDF, hOCR or text files. Note that ALTO and hOCR can also be converted into
+different formats whereas the PDF version of PAGE XML OCR results is a widely
+accessible format that can be used as-is by expert and layman alike.
 
 #### Available processors
 
 <table class="processor-table">
-  <thead>
+<thead>
     <tr>
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+      <th>Call</th>
     </tr>
-  </thead>
-  <tbody>
+
+</thead>
+<tbody>
     <tr>
       <td>ocrd-fileformat-transform</td>
       <td><code>
-	  {"from-to": "alto2.0 alto3.0",
-            "alto2.0 alto3.1",
-            "alto2.0 hocr",
-            "alto2.1 alto3.0",
-            "alto2.1 alto3.1",
-            "alto2.1 hocr",
-            "alto page",
-            "alto text",
-            "gcv hocr",
-            "hocr alto2.0",
-            "hocr alto2.1",
-            "hocr text",
-            "page alto",
-            "page hocr",
-            "page text"}
-	  </code>
-	  </td>
+        {"from-to": "alto2.0 alto3.0"} 
+        # or {from-to: "alto2.0 alto3.1"}
+        # or {from-to: "alto2.0 hocr"}
+        # or {from-to: "alto2.1 alto3.0"}
+        # or {from-to: "alto2.1 alto3.1"}
+        # or {from-to: "alto2.1 hocr"}
+        # or {from-to: "alto page"}
+        # or {from-to: "alto text"}
+        # or {from-to: "gcv hocr"}
+        # or {from-to: "hocr alto2.0"}
+        # or {from-to: "hocr alto2.1"}
+        # or {from-to: "hocr text"}
+        # or {from-to: "page alto"}
+        # or {from-to: "page hocr"}
+        # or {from-to: "page text"}
+      </code>
+      </td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
+      <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
-  </tbody>
+
+    <tr>
+      <td>ocrd-pagetopdf</td>
+      <td><code>
+      {
+        "negative2zero": true,      # fix (invalid) negative coordinates
+        "multipage": true,          # create a single "fat" PDF
+        "textequiv_level": "word",  # render text on this level
+        "outlines": "line"          # outline lines in the PDF
+      }
+      </code>
+      </td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-pagetopdf -I PAGE-FILGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
+    </tr>
+
+</tbody>
 </table>
+
 
 # Recommendations
 
