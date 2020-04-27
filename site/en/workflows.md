@@ -837,7 +837,7 @@ To obtain good results the input texts should be recognized in the previous step
   </tbody>
 </table>
 
-### Step 16: Post correction
+### Step 16: Post-correction
 
 In this processing step you can try to correct the recognized text. 
 
