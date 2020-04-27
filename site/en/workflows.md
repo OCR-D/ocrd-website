@@ -839,7 +839,7 @@ To obtain good results the input texts should be recognized in the previous step
 
 ### Step 16: Post-correction
 
-In this processing step you can try to correct the recognized text. 
+In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, morphology and orthography).
 
 **Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process` are optimised for input from single OCR engines, whereas `ocrd-cis-post-correct.sh` expects input from multi-OCR alignment.
 
