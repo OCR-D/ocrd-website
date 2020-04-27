@@ -705,7 +705,7 @@ TODO: add images
 
 ### Step 13: Dewarping (on Line Level)
 
-In this processing step the segmented lines can the dewarped.
+In this processing step, the text line images get vertically aligned if they are curved.
 
 <table class="">
   <thead>
