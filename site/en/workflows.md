@@ -585,9 +585,8 @@ In this processing step, text block images are taken as input and their skew is 
 
 ### Step 10:  Clipping 
 
-In this processing step intrusions of neighbouring segments in
-regions / lines of a workspace can be removed. A (ad-hoc binarization and) connected
-component analysis is run on every text region / line of every PAGE in the input file
+In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
+text regions of a page can be removed. A connected component analysis is run on every text region,
 as well as its overlapping neighbours. Now for each conflicting binary object,
 a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
 be clipped to the background. 
