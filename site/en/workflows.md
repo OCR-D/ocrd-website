@@ -619,8 +619,8 @@ TODO: add images
 
 ### Step 11: Line segmentation 
 
-In this processing step regions are segmented into lines. A (ad-hoc
-binarization and) line segmentation is run on every text region of every PAGE in the
+In this processing step, text regions are segmented into text lines. 
+A line detection algorithm is run on every text region of every PAGE in the
 input file group, and a TextLine element with the resulting polygon
 outline is added to the annotation of the output PAGE.
 
