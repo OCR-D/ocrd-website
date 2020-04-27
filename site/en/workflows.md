@@ -325,8 +325,8 @@ that page is corrected by annotating the detected angle and rotating the image. 
 
 ### Step 6: Dewarping
 
-In this processing step a document image is taken as input and the text line is straightened
-if its curved. The input image has to be binarized for the module to work.
+In this processing step, a document image is taken as input and the text lines are straightened or stretched
+if they are curved. The input image has to be binarized for the module to work.
 
 
 <table class="before-after">
