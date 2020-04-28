@@ -55,6 +55,15 @@ help:
 
 # END-EVAL
 
+
+# ubuntu deps
+deps-ubuntu:
+	sudo apt-get install ruby-dev ruby-bundle
+
+# Install jekyll dependencies
+jekyll:
+	bundle install --path vendor/bundle
+
 # Set up the repos, site and tools
 bootstrap:
 	git submodule sync
@@ -101,7 +110,7 @@ build-processors:
 
 # serve the site dynamically
 serve:
-	jekyll serve \
+	bundle exec jekyll serve \
 		--baseurl '' \
 		--host $(JEKYLL_HOST) \
 		--port 4040 \
@@ -111,7 +120,7 @@ serve:
 
 # build the site
 build-site:
-	jekyll build \
+	bundle exec jekyll build \
 		--strict_front_matter \
 		-s '$(SRCDIR)' -d '$(DSTDIR)'
 
