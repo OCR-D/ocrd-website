@@ -823,11 +823,11 @@ directory should at least contain the following models: `deu.traineddata`,
 
 ### Step 15: Text alignment
 
-In this processing step texts from multiple OCR-engines are aligned in one PAGE.xml.
+In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned into one annotation with `TextEquiv` alternatives.
 
-**Note:** This step is only required if you want to correct the text afterwards
-by using the output of several OCR-engines as with `ocrd-cis-post-correct.sh`. 
-To obtain good results the input texts should be recognized in the previous step on glyph or at least on word level.
+**Note:** This step is only required if you want to do post-correction afterwards,
+feeding alternative character hypotheses from several OCR-engines to improve the search space.
+The previous recognition step must be run on glyph or at least on word level.
 
 
 #### Available processors
