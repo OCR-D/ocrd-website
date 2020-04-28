@@ -981,18 +981,18 @@ accessible format that can be used as-is by expert and layman alike.
 
     <tr>
       <td>ocrd-pagetopdf</td>
-      <td><code>
+      <td><code><pre>
       {
-        <br># fix (invalid) negative coordinates
-        <br>"negative2zero": true,
-        <br># create a single "fat" PDF
-        <br>"multipage": true,
-        <br># render text on this level
-        <br>"textequiv_level": "word",
-        <br># outline lines in the PDF
-        <br>"outlines": "line"
+        # fix (invalid) negative coordinates
+        "negative2zero": true,
+        # create a single "fat" PDF
+        "multipage": true,
+        # render text on this level
+        "textequiv_level": "word",
+        # draw polygon outlines in the PDF
+        "outlines": "line"
       }
-      </code>
+      </pre></code>
       </td>
       <td>&nbsp;</td>
       <td><code>ocrd-pagetopdf -I PAGE-FILGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
