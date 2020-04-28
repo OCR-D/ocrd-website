@@ -12,16 +12,45 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 ![](/assets/Funktionsmodell.png)
 
-The following instruction describes all steps of the OCR workflow. Depending on your particular print or rather images not all of those steps will be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
+The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
 
-## Image Optimization
-Prepare image for better OCR.
+## Image Optimization (Page Level)
+At first, the image should be prepared for OCR.
 
+### Step 0: Image Enhancement (Page Level, optional)
+Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
+the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.  
 
-### Step 1: Binarization
-First, all the images should be binarized. Many of the following processors require binarized images. Note that some segmentation algorithms seem to produce better results using the original image.
+#### Available processors
 
-This processor takes a scanned colored /gray scale document image as input and produces a black and white binarized image. This step should separate the background from the foreground.
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Procecssor</th>
+      <th>Parameter</th>
+      <th>Remark</th>
+      <th>Call</th>
+	</tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-im6convert</td>
+      <td>
+	  <p><code>
+{"output-format": "image/tiff", "image/jp2", "image/png"}	  
+	  </code>
+	  </p>
+	  </td>
+      <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
+      <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
+    </tr>
+
+### Step 1: Binarization (Page Level)
+All the images should be binarized right at the beginning of your workflow. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
+
+In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
+
+**Note:** Binarization tools usually provide a threshold parameter which allows you to increase or decrease the weight of the foreground. This is optional and can be especially usefull for images which have not been enhanced.
 
 <table class="before-after">
   <tbody>
@@ -51,13 +80,21 @@ This processor takes a scanned colored /gray scale document image as input and p
   <tbody>
     <tr>
       <td>ocrd-anybaseocr-binarize</td>
-      <td></td>
+      <td>
+	  <p><code>
+{"threshold": float}
+      </code></p>
+	  </td>
       <td>Fast</td>
       <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
-      <td></td>
+      <td>
+	  <p><code>
+{"noise_maxsize": float}
+      </code></p>	  
+	  </td>
       <td></td>
       <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
@@ -91,18 +128,128 @@ This processor takes a scanned colored /gray scale document image as input and p
       <p><code>
 {"impl": "otsu"}
       </code></p>
+      <p><code>
+{"k": float}
+      </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p'{"impl": "sauvola"}'</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p'{"impl": "sauvola-ms-split"}'</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 2: Denoising
 
-This processor removes artifacts from the binarized image. 
+### Step 2: Cropping (Page Level)
 
-May not be necessary for all prints.
+In this processing step, a document image is taken as input and the page
+is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
+
+
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
+      </td>
+      <td>
+        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-anybaseocr-crop</td>
+      <td>&nbsp;</td>
+      <td>The input image has to be binarized and <br>should be deskewed for the module to work.</td>
+	  <td><code>ocrd-anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Step 3: Binarization (Page Level)
+For better results, the cropped images can be binarized again at this point or later on (on region level).
+
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Procecssor</th>
+      <th>Parameter</th>
+      <th>Remark</th>
+      <th>Call</th>
+	</tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+    <tr>
+      <td>ocrd-olena-binarize</td>
+      <td>
+      <p><code>
+      {"impl": "sauvola"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms-fg"}
+      </code></p>
+      <p><code>
+{"impl": "sauvola-ms-split"}
+      </code></p>
+      <p><code>
+{"impl": "kim"}
+      </code></p>
+      <p><code>
+{"impl": "wolf"}
+      </code></p>
+      <p><code>
+{"impl": "niblack"}
+      </code></p>
+      <p><code>
+{"impl": "singh"}
+      </code></p>
+      <p><code>
+{"impl": "otsu"}
+      </code></p>
+      </td>
+      <td>Recommended</td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p'{"impl": "sauvola-ms-split"}'</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+### Step 4: Denoising (Page Level)
+
+In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. 
+
+This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
 
 
 <table class="before-after">
@@ -140,16 +287,16 @@ May not be necessary for all prints.
       <td>ocrd-cis-ocropy-denoise</td>
       <td><code>{“level-of-operation”:”page”}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-DENOISE</code></td>
+	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 3: Deskewing
+### Step 5: Deskewing (Page Level)
 
-This processor takes a document image as input and does the skew correction of
-that document. The input images have to be binarized for this module to work.
-
+In this processing step, a document image is taken as input and the skew of
+that page is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
+The input images have to be binarized for this module to work.
 
 <table class="before-after">
   <thead>
@@ -191,21 +338,22 @@ that document. The input images have to be binarized for this module to work.
     <tr>
       <td>ocrd-tesserocr-deskew</td>
       <td><code>{"operation_level”:”page”}</code></td>
-      <td>Fast</td>
+      <td>Fast, also performs a decent orientation correction</td>
 	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{"operation_level”:”page”}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-deskew</td>
       <td><code>{“level-of-operation”:”page”}</code></td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{“level-of-operation”:”page”}'</code></td>
       <td>Recommended</td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{“level-of-operation”:”page”}'</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 4: Dewarping
+### Step 6: Dewarping (Page Level)
 
-This processor takes a document image as input and makes the text line straight if its curved. The input image has to be binarized for the module to work.
+In this processing step, a document image is taken as input and the text lines are straightened or stretched
+if they are curved. The input image has to be binarized for the module to work.
 
 
 <table class="before-after">
@@ -259,63 +407,23 @@ This processor takes a document image as input and makes the text line straight 
   </tbody>
 </table>
 
-### Step 5: Cropping
-
-This processor takes a document image as input and crops/selects the page
-content area only (i.e. it removes textual noise as well as any other noise
-around the page content area).
-
-
-<table class="before-after">
-  <thead>
-    <tr>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
-      </td>
-      <td>
-        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-#### Available processors
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Processor</th>
-      <th>Parameter</th>
-      <th>Remarks</th>
-	  <th>Call</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>ocrd-anybaseocr-crop</td>
-      <td>&nbsp;</td>
-      <td>The input image has to be binarized and <br>should be deskewed for the module to work.</td>
-	  <td><code>ocrd-anybaseocr-crop -I OCR-D-DEWARP-PAGE -O OCR-D-CROP</code></td>
-    </tr>
-  </tbody>
-</table>
 
 ## Layout Analysis
 
-Now the image should be optimized for segmentation.
+By now the image should be well prepared for segmentation.
 
-### Step 6: Text segmentation (page)
+### Step 7: Page segmentation
 
-This processor takes an (optimized) document image as an input and segments the
-image into the different text blocks. During this step a classification (text,
-marginalia, image, ...) should also be done.
+In this processing step, an (optimized) document image is taken as an input and the
+image is segmented into the various regions, including columns.
+Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
+
+**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
+then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
+
+**Note:** The `ocrd-sbb-textline-detector` processor does not only segment the page, but also the text lines within
+the detected text regions in one step. Therefore with this (and only with this!) processor you don't
+need to segment into lines in an extra step.
 
 
 <table class="before-after">
@@ -353,10 +461,22 @@ marginalia, image, ...) should also be done.
     <tr>
       <td>ocrd-tesserocr-segment-region</td>
       <td>&nbsp;</td>
-      <td>Should also work for original images!?</td>
-	  <td><code>ocrd-tesserocr-segment-region -I OCR-D-CROP -O OCR-D-SEG-REG</code></td>
+      <td>Recommended</td>
+	  <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-segment-repair</td>
+      <td><code>{"plausibilize":true}</code></td>
+      <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
+	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
     </tr>
     <tr>
+      <td>ocrd-sbb-textline-detector</td>
+      <td>&nbsp;</td>
+      <td></td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
+    </tr>
+	<tr>
       <td>ocrd-anybaseocr-block-segmentation</td>
       <td><pre>
 {
@@ -366,28 +486,28 @@ marginalia, image, ...) should also be done.
       </pre>
       </td>
       <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Should also work for original images!?</td>
-	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-CROP -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
+	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
     </tr>
-    <tr>
+    	<tr>
       <td>ocrd-cis-ocropy-segment</td>
       <td><code>{"level-of-operation":"page"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
     </tr>
   </tbody>
 </table>
 
-## Image Optimization (on Block Level)
+## Image Optimization (Region Level)
 
-Now the blocks should be optimized for OCR.
+In the following steps, the text regions should be optimized for OCR.
 
-### Step 7:  Binarization 
+### Step 8:  Binarization (Region Level)
 
-This processor takes a scanned colored /gray scale block as input and produces
-a black and white binarized image. This step should separate the background
-from the foreground.
+In this processing step, a scanned colored /gray scale document image is taken as input and a black
+and white binarized image is produced. This step should separate the background from the foreground.
 
-The binarization should be at least executed once (on page/block/line level).
+The binarization should be at least executed once (on page or region level). If you already binarized
+your image twice on page level, and have no large images, you can probably skip this step.
 
 
 #### Available processors
@@ -408,12 +528,22 @@ The binarization should be at least executed once (on page/block/line level).
       <td>&nbsp;</td>
 	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
     </tr>
+    <tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td>
+	  <p><code>
+{"level-of-operation": "region", "noise_maxsize": float}
+      </code></p>	  
+	  </td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
+    </tr>
   </tbody>
 </table>
 
-### Step 8:  Deskewing 
+### Step 9:  Deskewing (Region Level)
 
-This processor takes an image as input and does the skew correction for all text blocks.
+In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
 
 <table class="before-after">
@@ -451,20 +581,26 @@ This processor takes an image as input and does the skew correction for all text
       <td>ocrd-cis-ocropy-deskew</td>
       <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocrd-anybaseocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
     </tr>
+    <tr>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>&nbsp;</td>
+      <td>Fast, also performs a decent orientation correction</td>
+	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
+    </tr>	
   </tbody>
 </table>
 
-### Step 9:  Cliping 
+### Step 10:  Clipping (Region Level)
 
-This processor can be used to remove intrusions of neighbouring segments in
-regions / lines of a workspace. It runs a (ad-hoc binarization and) connected
-component analysis on every text region / line of every PAGE in the input file
-group, as well as its overlapping neighbours. For each binary object of
-conflict, it determines whether it belongs to the neighbour, and can therefore
-be clipped to white. It references the resulting segment image files in the
-output PAGE (as AlternativeImage).
+In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
+text regions of a page can be removed. A connected component analysis is run on every text region,
+as well as its overlapping neighbours. Now for each conflicting binary object,
+a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
+be clipped to the background. 
+
+This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
 
 TODO: add images
 
@@ -489,13 +625,19 @@ TODO: add images
   </tbody>
 </table>
 
-### Step 10: Line segmentation 
+### Step 11: Line segmentation 
 
-This processor can be used to segment regions into lines. It runs a (ad-hoc
-binarization and) line segmentation on every text region of every PAGE in the
-input file group, and adds a TextLine element with the resulting polygon
-outline to the annotation of the output PAGE.
+In this processing step, text regions are segmented into text lines. 
+A line detection algorithm is run on every text region of every PAGE in the
+input file group, and a TextLine element with the resulting polygon
+outline is added to the annotation of the output PAGE.
 
+**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates, 
+then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
+If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
+
+**Note:** As described in [Step 7](#step-7-page-segmentation), the `ocrd-sbb-textline-detector` also segments text lines. As it segments the page in a first step, too,
+with this (and only with this!) processor you don't need to segment into regions in an extra step.
 
 <table class="">
   <thead>
@@ -543,9 +685,9 @@ outline to the annotation of the output PAGE.
   </tbody>
 </table>
 
-### Step 11:  Line correction 
+### Step 12: Resegmentation (Line Level) 
 
-This processor can be used to correct the segmented lines.
+In this processing step the segmented lines can be corrected.
 
 TODO: add images
 
@@ -572,19 +714,12 @@ TODO: add images
       <td>&nbsp;</td>
 	  <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
     </tr>
-    <tr>
-      <td>ocrd-segment-repair</td>
-      <td><code>{"sanitize":true}</code></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
-    </tr>
   </tbody>
 </table>
 
-### Step 12: Dewarping (on line level)
+### Step 13: Dewarping (Line Level)
 
-This processor can be used to dewarp the segmented lines.
-
+In this processing step, the text line images get vertically aligned if they are curved.
 
 <table class="">
   <thead>
@@ -618,12 +753,6 @@ This processor can be used to dewarp the segmented lines.
   </thead>
   <tbody>
     <tr>
-      <td>ocrd-anybaseocr-dewarp</td>
-      <td><code>{"operation_level":"line",<br>"pix2pixHD":"/path/to/pix2pixHD/",<br>"model_name":"/path/to/pix2pixHD/models"}</code></td>
-      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter ‘model_name’ is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
-	  <td><code>ocrd-anybaseocr-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE -p '{"operation_level":"line","pix2pixHD":"/path/to/pix2pixHD/","model_name":"/path/to/pix2pixHD/models"}'</code></td>
-    </tr>
-    <tr>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -632,12 +761,13 @@ This processor can be used to dewarp the segmented lines.
   </tbody>
 </table>
 
-## Text Recognition and Optimization
+## Text Recognition
 
-### Step 13: Text recognition
+### Step 14: Text recognition
 
 This processor recognizes text in segmented lines.
 
+An overview on the existing model repositories and short descriptions on the most important models can be found [here](TODO: add link).
 
 #### Available processors
 
@@ -665,7 +795,7 @@ This processor recognizes text in segmented lines.
       </code>
       </p>
       </td>
-      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_50">here</a><br/>00000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
 	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
     </tr>
     <tr>
@@ -691,9 +821,13 @@ directory should at least contain the following models: `deu.traineddata`,
 
 ## Post Correction (Optional)
 
-### Step 14: Text aligning
+### Step 15: Text alignment
 
-This processor alignes texts from multiple OCR-engines in one PAGE.xml. 
+In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned into one annotation with `TextEquiv` alternatives.
+
+**Note:** This step is only required if you want to do post-correction afterwards,
+feeding alternative character hypotheses from several OCR-engines to improve the search space.
+The previous recognition step must be run on glyph or at least on word level.
 
 
 #### Available processors
@@ -717,9 +851,11 @@ This processor alignes texts from multiple OCR-engines in one PAGE.xml.
   </tbody>
 </table>
 
-### Step 15: Post correction
+### Step 16: Post-correction
 
-This processor tries to optimize the recognized text. 
+In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, morphology and orthography).
+
+**Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process` are optimised for input from single OCR engines, whereas `ocrd-cis-post-correct.sh` expects input from multi-OCR alignment.
 
 **See also:  ToDo reference to the result inside talk on final workshop** 
 
@@ -738,7 +874,7 @@ This processor tries to optimize the recognized text.
       <td>ocrd-cor-asv-ann-process</td>
       <td><code>{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}</code></td>
       <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
-	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-ALIGN -O OCR-D-PROCESS -p '{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}'</code></td>
+	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -p '{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}'</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-post-correct.sh</td>
@@ -749,13 +885,13 @@ This processor tries to optimize the recognized text.
   </tbody>
 </table>
 
-## Analysis (Optional)
+## Evaluation (Optional)
 
-If Ground Truth data is available, the OCR can be analysed.
+If Ground Truth data is available, the OCR can be evaluated.
 
-### Step 16: Analysis
+### Step 17: OCR Evaluation
 
-This processor can be used to analyse the output of the OCR.
+In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.
 
 #### Available processors
 
@@ -775,8 +911,95 @@ This processor can be used to analyse the output of the OCR.
       <td>First input group should point to the ground truth.</td>
 	  <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
+	<tr>
+      <td>ocrd-cor-asv-ann-evaluate</td>
+      <td>
+      <p>
+      <code>
+      {"metric": "Levenshtein" (default), "NFC", "NFKC", "historic-latin"}
+      </code>
+      <code>
+      {"confusion": integer}
+      </code>
+      </p>	  
+	  </td>
+      <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add `2> eval.txt` at the end of your command</td>
+	  <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
+    </tr>
   </tbody>
 </table>
+
+## Format Conversion (Optional)
+
+OCR-D produces PAGE XML files which contain the recognized text as well as detailed
+information on the structure of the processed pages, the coordinates of the recognized
+elements etc. Optionally, the PAGE XML can be converted to a different output format.
+
+### Step 18: Format Conversion
+
+In this processing step the produced PAGE XML files can be converted to ALTO,
+PDF, hOCR or text files. Note that ALTO and hOCR can also be converted into
+different formats whereas the PDF version of PAGE XML OCR results is a widely
+accessible format that can be used as-is by expert and layman alike.
+
+#### Available processors
+
+<table class="processor-table">
+<thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+      <th>Call</th>
+    </tr>
+
+</thead>
+<tbody>
+    <tr>
+      <td>ocrd-fileformat-transform</td>
+      <td><code><pre>
+        {"from-to": "alto2.0 alto3.0"} 
+        # or {from-to: "alto2.0 alto3.1"}
+        # or {from-to: "alto2.0 hocr"}
+        # or {from-to: "alto2.1 alto3.0"}
+        # or {from-to: "alto2.1 alto3.1"}
+        # or {from-to: "alto2.1 hocr"}
+        # or {from-to: "alto page"}
+        # or {from-to: "alto text"}
+        # or {from-to: "gcv hocr"}
+        # or {from-to: "hocr alto2.0"}
+        # or {from-to: "hocr alto2.1"}
+        # or {from-to: "hocr text"}
+        # or {from-to: "page alto"}
+        # or {from-to: "page hocr"}
+        # or {from-to: "page text"}
+      </pre></code>
+      </td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
+    </tr>
+    <tr>
+      <td>ocrd-pagetopdf</td>
+      <td><code><pre>
+      {
+        # fix (invalid) negative coordinates
+        "negative2zero": true,
+        # create a single "fat" PDF
+        "multipage": true,
+        # render text on this level
+        "textequiv_level": "word",
+        # draw polygon outlines in the PDF
+        "outlines": "line"
+      }
+      </pre></code>
+      </td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-pagetopdf -I PAGE-FILGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
+    </tr>
+
+</tbody>
+</table>
+
 
 # Recommendations
 
