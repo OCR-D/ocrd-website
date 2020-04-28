@@ -14,12 +14,39 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
 
-## Image Optimization (on Page Level)
+## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
 
+### Step 0: Image Enhancement (Page Level, optional)
+Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
+the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.  
 
-### Step 1: Binarization
-First, all the images should be binarized. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Procecssor</th>
+      <th>Parameter</th>
+      <th>Remark</th>
+      <th>Call</th>
+	</tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-im6convert</td>
+      <td>
+	  <p><code>
+{"output-format": "image/tiff", "image/jp2", "image/png"}	  
+	  </code>
+	  </p>
+	  </td>
+      <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
+      <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
+    </tr>
+
+### Step 1: Binarization (Page Level)
+All the images should be binarized right at the beginning of your workflow. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
 
 In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
 
@@ -112,7 +139,7 @@ In this processing step, a scanned colored /gray scale document image is taken a
 </table>
 
 
-### Step 2: Cropping
+### Step 2: Cropping (Page Level)
 
 In this processing step, a document image is taken as input and the page
 is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
@@ -158,8 +185,8 @@ is cropped to the content area only (i.e. without noise at the margins or facing
   </tbody>
 </table>
 
-### Step 3: Binarization
-For better results, the cropped images can be binarized again at this point or later on (on block level).
+### Step 3: Binarization (Page Level)
+For better results, the cropped images can be binarized again at this point or later on (on region level).
 
 
 #### Available processors
@@ -218,7 +245,7 @@ For better results, the cropped images can be binarized again at this point or l
 </table>
 
 
-### Step 4: Denoising
+### Step 4: Denoising (Page Level)
 
 In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. 
 
@@ -265,11 +292,11 @@ This may not be necessary for all prints, and depends heavily on the selected bi
   </tbody>
 </table>
 
-### Step 5: Deskewing
+### Step 5: Deskewing (Page Level)
 
 In this processing step, a document image is taken as input and the skew of
-that page is corrected by annotating the detected angle and rotating the image. The input images have to be binarized for this module to work.
-
+that page is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
+The input images have to be binarized for this module to work.
 
 <table class="before-after">
   <thead>
@@ -323,7 +350,7 @@ that page is corrected by annotating the detected angle and rotating the image. 
   </tbody>
 </table>
 
-### Step 6: Dewarping
+### Step 6: Dewarping (Page Level)
 
 In this processing step, a document image is taken as input and the text lines are straightened or stretched
 if they are curved. The input image has to be binarized for the module to work.
@@ -388,7 +415,7 @@ By now the image should be well prepared for segmentation.
 ### Step 7: Page segmentation
 
 In this processing step, an (optimized) document image is taken as an input and the
-image is segmented into the various regions or blocks, including columns.
+image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
@@ -470,16 +497,16 @@ need to segment into lines in an extra step.
   </tbody>
 </table>
 
-## Image Optimization (on Block Level)
+## Image Optimization (Region Level)
 
-In the following steps, the text blocks should be optimized for OCR.
+In the following steps, the text regions should be optimized for OCR.
 
-### Step 8:  Binarization 
+### Step 8:  Binarization (Region Level)
 
 In this processing step, a scanned colored /gray scale document image is taken as input and a black
 and white binarized image is produced. This step should separate the background from the foreground.
 
-The binarization should be at least executed once (on page or block level). If you already binarized
+The binarization should be at least executed once (on page or region level). If you already binarized
 your image twice on page level, and have no large images, you can probably skip this step.
 
 
@@ -501,46 +528,22 @@ your image twice on page level, and have no large images, you can probably skip 
       <td>&nbsp;</td>
 	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
     </tr>
-	<tr>
-      <td>ocrd-olena-binarize</td>
+    <tr>
+      <td>ocrd-cis-ocropy-binarize</td>
       <td>
-      <p><code>
-      {"impl": "sauvola"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-fg"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-split"}
-      </code></p>
-      <p><code>
-{"impl": "kim"}
-      </code></p>
-      <p><code>
-{"impl": "wolf"}
-      </code></p>
-      <p><code>
-{"impl": "niblack"}
-      </code></p>
-      <p><code>
-{"impl": "singh"}
-      </code></p>
-      <p><code>
-{"impl": "otsu"}
-      </code></p>
-      </td>
-      <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p'{"impl": "sauvola-ms-split"}'</code></td>
+	  <p><code>
+{"level-of-operation": "region", "noise_maxsize": float}
+      </code></p>	  
+	  </td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 9:  Deskewing 
+### Step 9:  Deskewing (Region Level)
 
-In this processing step, text block images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
+In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
 
 <table class="before-after">
@@ -580,10 +583,16 @@ In this processing step, text block images are taken as input and their skew is 
       <td>&nbsp;</td>
 	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
     </tr>
+    <tr>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>&nbsp;</td>
+      <td>Fast, also performs a decent orientation correction</td>
+	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
+    </tr>	
   </tbody>
 </table>
 
-### Step 10:  Clipping 
+### Step 10:  Clipping (Region Level)
 
 In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
 text regions of a page can be removed. A connected component analysis is run on every text region,
@@ -591,7 +600,7 @@ as well as its overlapping neighbours. Now for each conflicting binary object,
 a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
 be clipped to the background. 
 
-This basic text-nontext segmentation ensures that for each text block there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
+This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
 
 TODO: add images
 
@@ -623,6 +632,12 @@ A line detection algorithm is run on every text region of every PAGE in the
 input file group, and a TextLine element with the resulting polygon
 outline is added to the annotation of the output PAGE.
 
+**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates, 
+then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
+If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
+
+**Note:** As described in [Step 7](#step-7-page-segmentation), the `ocrd-sbb-textline-detector` also segments text lines. As it segments the page in a first step, too,
+with this (and only with this!) processor you don't need to segment into regions in an extra step.
 
 <table class="">
   <thead>
@@ -670,7 +685,7 @@ outline is added to the annotation of the output PAGE.
   </tbody>
 </table>
 
-### Step 12:  Line correction 
+### Step 12: Resegmentation (Line Level) 
 
 In this processing step the segmented lines can be corrected.
 
@@ -702,7 +717,7 @@ TODO: add images
   </tbody>
 </table>
 
-### Step 13: Dewarping (on Line Level)
+### Step 13: Dewarping (Line Level)
 
 In this processing step, the text line images get vertically aligned if they are curved.
 
