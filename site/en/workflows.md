@@ -978,7 +978,6 @@ accessible format that can be used as-is by expert and layman alike.
       <td>&nbsp;</td>
       <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
-
     <tr>
       <td>ocrd-pagetopdf</td>
       <td><code><pre>
