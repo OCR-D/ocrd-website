@@ -44,6 +44,8 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
       <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
       <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
     </tr>
+  </tbody>
+</table>
 
 ### Step 1: Binarization (Page Level)
 All the images should be binarized right at the beginning of your workflow. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
