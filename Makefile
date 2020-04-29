@@ -58,7 +58,7 @@ help:
 
 # ubuntu deps
 deps-ubuntu:
-	sudo apt-get install ruby-dev ruby-bundle
+	sudo apt-get install ruby-dev ruby-bundler
 
 # Install jekyll dependencies
 jekyll:
