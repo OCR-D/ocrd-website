@@ -30,27 +30,39 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
-	</tr>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-im6convert</td>
       <td>
-	  <p><code>
-{"output-format": "image/tiff", "image/jp2", "image/png"}	  
-	  </code>
-	  </p>
-	  </td>
+      <p><code><pre>
+{
+  "output-format": "image/tiff" # or "image/jp2", "image/png"...
+}
+      </pre></code></p>
+      </td>
       <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
       <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
     </tr>
+  </tbody>
+</table>
 
 ### Step 1: Binarization (Page Level)
-All the images should be binarized right at the beginning of your workflow. Many of the following processors require binarized images. Some implementations (for deskewing, segmentation or recognition) may produce better results using the original image. But these can always retrieve the raw image instead of the binarized version automatically.
 
-In this processing step, a scanned colored /gray scale document image is taken as input and a black and white binarized image is produced. This step should separate the background from the foreground.
+All the images should be binarized right at the beginning of your workflow.
+Many of the following processors require binarized images. Some implementations
+(for deskewing, segmentation or recognition) may produce better results using
+the original image. But these can always retrieve the raw image instead of the
+binarized version automatically.
 
-**Note:** Binarization tools usually provide a threshold parameter which allows you to increase or decrease the weight of the foreground. This is optional and can be especially usefull for images which have not been enhanced.
+In this processing step, a scanned colored /gray scale document image is taken
+as input and a black and white binarized image is produced. This step should
+separate the background from the foreground.
+
+**Note:** Binarization tools usually provide a threshold parameter which allows
+you to increase or decrease the weight of the foreground. This is optional and
+can be especially usefull for images which have not been enhanced.
 
 <table class="before-after">
   <tbody>
@@ -186,6 +198,7 @@ is cropped to the content area only (i.e. without noise at the margins or facing
 </table>
 
 ### Step 3: Binarization (Page Level)
+
 For better results, the cropped images can be binarized again at this point or later on (on region level).
 
 
@@ -1212,7 +1225,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-anybaseocr-deskew</td>
       <td></td>
     </tr>
-	<tr>
+    <tr>
       <td>5</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
