@@ -11,6 +11,12 @@ Aus den Projektanträgen für die Modulprojektausschreibung der DFG im März 201
 
 ## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Bildoptimierung
 
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
+
 _Deutsches Forschungszentrum für Künstliche Intelligenz (DFKI)_
 
 Das DFKI war als Projektpartner im OCR-D Projekt mit zwei Modulen vertreten:
@@ -23,12 +29,6 @@ die Performanz der nachfolgenden OCR-Module zu verbessern. Dafür wurden
 Werkzeuge für die Binarisierung, das Deskewing, das Cropping und das Dewarping
 implementiert. 
 
-<p class="poster-image">
-  <a href="/assets/poster/DFKI.pdf">
-    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
-  </a>
-</p>
-
 Das auf Computer Vision basierte Cropping-Werkzeug ist als besonders performant
 hervorzuheben. Es erzielt auf den gesamten Projektdaten vorwiegend sehr gute
 Ergebnisse. Auch das Dewarping-Werkzeug ist aufgrund seiner neuartigen
@@ -37,6 +37,13 @@ entzerrte Varianten von Bildern generiert, anstatt explizite Transformationen
 für die Entzerrung zu bestimmen.
 
 ## Skalierbare Verfahren der Text- und Strukturerkennung für die Volltextdigitalisierung historischer Drucke: Layouterkennung  
+
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Klicken für PDF-Version in Originalgröße"/>
+  </a>
+</p>
+
 _DFKI_
 
 GitHub: [mjenckel/OCR-D-LAYoutERkennung/tree/master](https://github.com/mjenckel/OCR-D-LAYoutERkennung/tree/master)

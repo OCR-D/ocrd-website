@@ -21,7 +21,9 @@ For this purpose, a coordination project was formed by the Berlin-Brandenburg Ac
 
 ![](/assets/Funktionsmodell.png)
 
-Full-text recognition is understood as a complex process that includes several preprocessing and postprocessing steps in addition to the actual text recognition (see Fig. 1). First, a digital image is prepared for text recognition in preprocessing by cropping, deskewing, dewarping, despeckling, and binarization. This is followed by layout recognition, which identifies the text areas of a page down to line level. Especially the recognition of the lines respectively the baseline is important for the following actual text recognition, which in all modern approaches is based on neural networks. The individual structures or elements of the full-text recognized document are then classified according to their typographic function and the OCR result is improved in the post-correction process if necessary, before it is transferred to repositories for long-term archiving.
+Full-text recognition is understood as a complex process that includes several preprocessing and postprocessing steps in addition
+to the actual text recognition (see Fig. 1). First, a digital image is prepared for text recognition in preprocessing by binarization, cropping,
+deskewing, dewarping and despeckling. This is followed by layout recognition, which identifies the text areas of a page down to line level. Especially the recognition of the lines respectively the baseline is important for the following actual text recognition, which in all modern approaches is based on neural networks. The individual structures or elements of the full-text recognized document are then classified according to their typographic function and the OCR result is improved in the post-correction process if necessary, before it is transferred to repositories for long-term archiving.
 
 For the individual process steps, tools of [eight module-projects](module-projects) are developed. Furthermore, already existing Open Source tools or tools developed in other projects can be integrated into the OCR-D framework through the modular structure of OCR-D and thus synergies can be used.
 

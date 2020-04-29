@@ -19,7 +19,11 @@ Dazu wurde ein Koordinationsprojekt aus der Berlin-Brandenburgischen Akademie de
 
 ![](/assets/Funktionsmodell.png)
 
-Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung mehrere vor- und nachgelagerte Schritte mit einschließt (vgl. Abb. 1). Zunächst wird ein Bilddigitalisat im Preprocessing für die Texterkennung aufbereitet, indem es nach Bedarf zugeschnitten (Cropping), begradigt (Deskewing), entzerrt (Dewarping), von Flecken bereinigt (Despeckling) und in ein Schwarz-Weiß-Bild umgewandelt (Binarization) wird. Im Anschluss erfolgt die Layouterkennung, die die Textbereiche einer Seite bis auf Zeilenebene identifiziert. Besonders die Erkennung der Zeilen bzw. der Grundlinie ist wichtig für die anschließende eigentliche Texterkennung, die in allen modernen Ansätzen auf Neuronalen Netzen beruht. Danach werden die einzelnen Strukturen bzw. Elemente des volltexterkannten Dokuments ihrer typografischen Funktion nach klassifiziert und das OCR-Ergebnis ggf. in der Nachkorrektur verbessert, bevor es in Repositorien zur Langzeitarchivierung überführt wird.
+Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung
+mehrere vor- und nachgelagerte Schritte mit einschließt (vgl. Abb. 1). Zunächst wird ein Bilddigitalisat im Preprocessing
+für die Texterkennung aufbereitet, indem es nach Bedarf in ein Schwarz-Weiß-Bild umgewandelt (Binarization), zugeschnitten (Cropping),
+begradigt (Deskewing), entzerrt (Dewarping) und von Flecken bereinigt (Despeckling) wird. Im Anschluss erfolgt die
+Layouterkennung, die die Textbereiche einer Seite bis auf Zeilenebene identifiziert. Besonders die Erkennung der Zeilen bzw. der Grundlinie ist wichtig für die anschließende eigentliche Texterkennung, die in allen modernen Ansätzen auf Neuronalen Netzen beruht. Danach werden die einzelnen Strukturen bzw. Elemente des volltexterkannten Dokuments ihrer typografischen Funktion nach klassifiziert und das OCR-Ergebnis ggf. in der Nachkorrektur verbessert, bevor es in Repositorien zur Langzeitarchivierung überführt wird.
 
 Für die einzelnen Prozessschritte werden zum einen Werkzeuge von [acht Modulprojekten](module-projects) entwickelt. Zum anderen können bereits vorhandene bzw. in anderen Projekten entwickelte Open Source Werkzeuge durch den modularen Aufbau von OCR-D in das OCR-D-Framework integriert und so Synergien genutzt werden.
 

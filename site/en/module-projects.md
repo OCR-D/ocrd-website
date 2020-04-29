@@ -25,6 +25,13 @@ From the project proposals for the DFG's module project call in March 2017,
 eight projects were approved:
 
 ## Scalable methods of text and structure recognition for full text digitization of historical prints: Image Optimisation
+
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 _German Research Center for Artificial Intelligence (DFKI)_
 
 Project participants: Andreas Dengel, Martin Jenckel, Khurram Hashmi  
@@ -39,12 +46,6 @@ the digitized material with the aim of improving the image quality and thus the
 performance of the subsequent OCR modules. For this purpose, tools for
 binarization, deskewing, cropping and dewarping were implemented. 
 
-<p class="poster-image">
-  <a href="/assets/poster/DFKI.pdf">
-    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Click for full-size PDF version"/>
-  </a>
-</p>
-
 The cropping tool based on computer vision is particularly noteworthy for its
 performance. It predominantly achieves very good results on the entire project
 data. The dewarping tool is also interesting due to its novel architecture.
@@ -52,6 +53,13 @@ Generative neural networks are used to generate equalized variants of images
 instead of determining explicit transformations for the equalization.
 
 ## Scalable text and structure recognition methods for the full text digitization of historical prints: Layout Recognition
+
+<p class="poster-image">
+  <a href="/assets/poster/DFKI.pdf">
+    <img src="/assets/poster/DFKI.png" style="height: 400px" title="Click for full-size PDF version"/>
+  </a>
+</p>
+
 _DFKI_
 
 Project participants: Andreas Dengel, Martin Jenckel, Khurram Hashmi  
