@@ -169,6 +169,12 @@ for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -
 
 In the end, your METS file should look like this [example METS](example_mets.md).
 
+Alternatively, `ocrd-import` from [workflow-configuration](#workflow-configuration) is a shell script which does all of the above (and can convert arbitrary image formats) automatically. For usage options, see:
+
+```sh
+ocrd-import -h
+```
+
 ## Using the OCR-D-processors
 
 ### OCR-D-Syntax
@@ -262,7 +268,7 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd proc
   'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'
 ```
 
-**Note:** In contrast to calling a single processor, for ocrd-process you leave
+**Note:** In contrast to calling a single processor, for `ocrd process` you leave
 out the prefix `ocrd-` before the name of a particular processor.
 
 #### Taverna
@@ -326,23 +332,36 @@ For information on the available processors see [section at the end](#get-more-i
 
 
 
-#### workflow-config
+#### workflow-configuration
 
+workflow-configuration is another tool for specifying OCR-D workflows and running them. It uses GNU make as workflow engine, treating document processing like software builds (including incremental and parallel computation). Configurations are just makefiles, targets are workspaces and their file groups.
 
-workflow-configuration is another tool for specifying OCR-D-workflows. It allows you to run workflows which are configured and controlled via GNU makefiles. In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.
+In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.
 
 The `workflow-configuration` directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see [the table on GitHub](https://github.com/bertsky/workflow-configuration#usage).
 
-**Note:** Those workflows are configured for GT-data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail. 
+**Note:** Most workflows are configured for GT data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail. 
 
-In order to run a workflow, change into the `workflow_configuration` directory and call the desired configuration file on your workspace(s):
+In order to run a workflow, change into your data directory (that contains the workspaces) and call the desired configuration file on your workspace(s):
 
 ```sh
-make -f [name_of_your_workflow.mk] [/path/to/your/workspace1] [/path/to/your/workspace2]
+ocrd-make -f [name_of_your_workflow.mk] [/path/to/your/workspace1] [/path/to/your/workspace2]
 ```
 
-As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. The images in your indicated workspace(s) will be processed and the respective
-output along with the log files will be saved into the same workspace(s). 
+As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. Or use the special target `all` for all the workspaces in the current directory.
+The documents in those workspaces will be processed and the respective
+output along with the log files will be saved into the same workspace(s).
+
+For an overview of all available targets and workspaces:
+
+```sh
+ocrd-make help
+```
+
+For general info on `make` invocation, including the `-j` switch for parallel processing:
+```sh
+make --help
+```
 
 When you want to adjust a workflow for better results on your particular
 images, you should start off by copying the original `workflow.mk` 
@@ -352,7 +371,7 @@ file:
 cp workflow.mk [name_of_your_new_workflow_configuration.mk]
 ```
 
-Then open your new `workflow.mk` file with an editor like e.g. Nano and exchange or add the processors or parameters to your needs: 
+Then open the new file with an editor which understands `make` syntax like e.g. `nano`, and exchange or add the processors or parameters to your needs: 
 
 ```sh
 nano [name_of_your_new_workflow_configuration.mk]
@@ -360,7 +379,7 @@ nano [name_of_your_new_workflow_configuration.mk]
 
 You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable `.DEFAULT_GOAL` pointing to that target can be set anywhere in the makefile. 
 
-**Note:** Also see the [extensive Readme of workflow-configuration](https://github.com/bertsky/workflow-configuration#usage) on how to adjust the preconfigured workflows to your needs.
+**Note:** Also see the [extensive Readme of workflow-configuration](https://bertsky.github.io/workflow-configuration) on how to adjust the preconfigured workflows to your needs.
 
 #### Translating native commands to docker calls
 The native calls presented above are simple to translate to commands based on the
@@ -396,7 +415,7 @@ parameter.
 
 When you want to specify a new workflow adapted to the features of particular
 images, we recommend using an exisiting workflow as specified in `Taverna` or
-`workflow-config` as starting point. You can adjust it to your needs by
+`workflow-configuration` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
 the existing processors, their tasks and features, see the [next section](#get-more-information-about-processors) and our [workflow guide](workflows.html).
 
@@ -414,9 +433,9 @@ Type 'ocrd-' followed by `TAB` to get a list of all available processors.
 To get further information about one processor type
 
 ```sh
-[name_of_selected_processor] -J
+[name_of_selected_processor] -h
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_selected_processor] -J
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_selected_processor] -h
 ```
 
 
