@@ -197,7 +197,7 @@
             <ul>
               <li><a href="#ocrd-process">ocrd-process</a></li>
               <li><a href="#taverna">Taverna</a></li>
-              <li><a href="#workflow-config">workflow-config</a></li>
+              <li><a href="#workflow-configuration">workflow-configuration</a></li>
               <li><a href="#translating-native-commands-to-docker-calls">Translating native commands to docker calls</a></li>
             </ul>
           </li>
@@ -308,15 +308,16 @@ don’t, it will simply generate a name by itself.</p>
 can generate it with the following commands. First, you have to create a
 workspace:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace init <span class="o">[</span>/path/to/your/workspace]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace init <span class="o">[</span>/path/to/your/workspace] <span class="c"># or empty for current directory</span>
 <span class="c">## alternatively using docker</span>
 <span class="nb">mkdir</span> <span class="nt">-p</span> <span class="o">[</span>/path/to/your/workspace]
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/workspace]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace init /data
 </code></pre></div></div>
 
-<p>Then you can change into your workspace and set a unique ID</p>
+<p>Then you can change into your workspace directory and set a unique ID</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>workspace<span class="nv">$ </span>ocrd workspace set-id <span class="s1">'unique ID'</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /path/to/your/workspace <span class="c"># if not already there</span>
+ocrd workspace set-id <span class="s1">'unique ID'</span>
 <span class="c">## alternatively using docker</span>
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/workspace]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd set-id <span class="s1">'unique ID'</span>
 </code></pre></div></div>
@@ -361,6 +362,18 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
 </code></pre></div></div>
 
 <p>In the end, your METS file should look like this <a href="example_mets.md">example METS</a>.</p>
+
+<p>Alternatively, <code class="highlighter-rouge">ocrd-import</code> from <a href="#workflow-configuration">workflow-configuration</a> is a shell script which does all of the above (and can also convert arbitrary image formats) automatically. For usage options, see:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-import <span class="nt">-h</span>
+</code></pre></div></div>
+
+<p>For example, to search for all files under <code class="highlighter-rouge">path/to/your/pictures/</code> recursively, and add all image files under file group <code class="highlighter-rouge">OCR-D-IMG</code>, keeping their filename stem as page ID, and converting all unaccepted image file formats like JPEG2000, XPS or PDF (the latter rendered to bitmap at 300 DPI) to TIFF on the fly, and also add any PAGE-XML file of the same filename stem under file group <code class="highlighter-rouge">OCR-D-SEG-PAGE</code>, while ignoring other files, and finally write everything to <code class="highlighter-rouge">path/to/your/pictures/mets.xml</code>, do:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-import <span class="nt">--nonnum-ids</span> <span class="nt">--ignore</span> <span class="nt">--render</span> 300 path/to/your/pictures
+<span class="c">## alternatively using docker</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/data]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-import <span class="nt">-P</span> <span class="nt">-i</span> <span class="nt">-r</span> 300 path/to/your/pictures
+</code></pre></div></div>
 
 <h2 id="using-the-ocr-d-processors">Using the OCR-D-processors</h2>
 
@@ -446,7 +459,7 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
   <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'</span>
 </code></pre></div></div>
 
-<p><strong>Note:</strong> In contrast to calling a single processor, for ocrd-process you leave
+<p><strong>Note:</strong> In contrast to calling a single processor, for <code class="highlighter-rouge">ocrd process</code> you leave
 out the prefix <code class="highlighter-rouge">ocrd-</code> before the name of a particular processor.</p>
 
 <h4 id="taverna">Taverna</h4>
@@ -506,21 +519,33 @@ e.g.
 
 <p>For information on the available processors see <a href="#get-more-information-about-processors">section at the end</a>.</p>
 
-<h4 id="workflow-config">workflow-config</h4>
+<h4 id="workflow-configuration">workflow-configuration</h4>
 
-<p>workflow-configuration is another tool for specifying OCR-D-workflows. It allows you to run workflows which are configured and controlled via GNU makefiles. In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.</p>
+<p>workflow-configuration is another tool for specifying OCR-D workflows and running them. It uses GNU make as workflow engine, treating document processing like software builds (including incremental and parallel computation). Configurations are just makefiles, targets are workspaces and their file groups.</p>
+
+<p>In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.</p>
 
 <p>The <code class="highlighter-rouge">workflow-configuration</code> directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see <a href="https://github.com/bertsky/workflow-configuration#usage">the table on GitHub</a>.</p>
 
-<p><strong>Note:</strong> Those workflows are configured for GT-data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail.</p>
+<p><strong>Note:</strong> Most workflows are configured for GT data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail.</p>
 
-<p>In order to run a workflow, change into the <code class="highlighter-rouge">workflow_configuration</code> directory and call the desired configuration file on your workspace(s):</p>
+<p>In order to run a workflow, change into your data directory (that contains the workspaces) and call the desired configuration file on your workspace(s):</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make <span class="nt">-f</span> <span class="o">[</span>name_of_your_workflow.mk] <span class="o">[</span>/path/to/your/workspace1] <span class="o">[</span>/path/to/your/workspace2]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-make <span class="nt">-f</span> <span class="o">[</span>name_of_your_workflow.mk] <span class="o">[</span>/path/to/your/workspace1] <span class="o">[</span>/path/to/your/workspace2]
 </code></pre></div></div>
 
-<p>As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. The images in your indicated workspace(s) will be processed and the respective
+<p>As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. Or use the special target <code class="highlighter-rouge">all</code> for all the workspaces in the current directory.
+The documents in those workspaces will be processed and the respective
 output along with the log files will be saved into the same workspace(s).</p>
+
+<p>For an overview of all available targets and workspaces:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-make <span class="nb">help</span>
+</code></pre></div></div>
+
+<p>For general info on <code class="highlighter-rouge">make</code> invocation, including the <code class="highlighter-rouge">-j</code> switch for parallel processing:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make <span class="nt">--help</span>
+</code></pre></div></div>
 
 <p>When you want to adjust a workflow for better results on your particular
 images, you should start off by copying the original <code class="highlighter-rouge">workflow.mk</code> 
@@ -529,14 +554,14 @@ file:</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>workflow.mk <span class="o">[</span>name_of_your_new_workflow_configuration.mk]
 </code></pre></div></div>
 
-<p>Then open your new <code class="highlighter-rouge">workflow.mk</code> file with an editor like e.g. Nano and exchange or add the processors or parameters to your needs:</p>
+<p>Then open the new file with an editor which understands <code class="highlighter-rouge">make</code> syntax like e.g. <code class="highlighter-rouge">nano</code>, and exchange or add the processors or parameters to your needs:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano <span class="o">[</span>name_of_your_new_workflow_configuration.mk]
 </code></pre></div></div>
 
 <p>You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable <code class="highlighter-rouge">.DEFAULT_GOAL</code> pointing to that target can be set anywhere in the makefile.</p>
 
-<p><strong>Note:</strong> Also see the <a href="https://github.com/bertsky/workflow-configuration#usage">extensive Readme of workflow-configuration</a> on how to adjust the preconfigured workflows to your needs.</p>
+<p><strong>Note:</strong> Also see the <a href="https://bertsky.github.io/workflow-configuration">extensive Readme of workflow-configuration</a> on how to adjust the preconfigured workflows to your needs.</p>
 
 <h4 id="translating-native-commands-to-docker-calls">Translating native commands to docker calls</h4>
 <p>The native calls presented above are simple to translate to commands based on the
@@ -572,7 +597,7 @@ parameter.</p>
 
 <p>When you want to specify a new workflow adapted to the features of particular
 images, we recommend using an exisiting workflow as specified in <code class="highlighter-rouge">Taverna</code> or
-<code class="highlighter-rouge">workflow-config</code> as starting point. You can adjust it to your needs by
+<code class="highlighter-rouge">workflow-configuration</code> as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
 the existing processors, their tasks and features, see the <a href="#get-more-information-about-processors">next section</a> and our <a href="workflows.html">workflow guide</a>.</p>
 
@@ -586,9 +611,9 @@ the existing processors, their tasks and features, see the <a href="#get-more-in
 
 <p>To get further information about one processor type</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>name_of_selected_processor] <span class="nt">-J</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>name_of_selected_processor] <span class="nt">-h</span>
 <span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum <span class="o">[</span>name_of_selected_processor] <span class="nt">-J</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum <span class="o">[</span>name_of_selected_processor] <span class="nt">-h</span>
 </code></pre></div></div>
 
 
