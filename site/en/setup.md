@@ -62,7 +62,9 @@ Check this table to see which modules are included in which version:
 | -----                       | ----      | ----     | ----      |
 | core                        | ☑         | ☑        | ☑         |
 | ocrd_cis                    | ☑         | ☑        | ☑         |
+| ocrd_fileformat             | ☑         | ☑        | ☑         |
 | ocrd_im6convert             | ☑         | ☑        | ☑         |
+| ocrd_pagetopdf              | ☑         | ☑        | ☑         |
 | ocrd_repair_inconsistencies | ☑         | ☑        | ☑         |
 | ocrd_tesserocr              | ☑         | ☑        | ☑         |
 | tesserocr                   | ☑         | ☑        | ☑         |
@@ -83,7 +85,7 @@ Check this table to see which modules are included in which version:
 | sbb_textline_detector       | -         | -        | ☑         |
 | cor-asv-fst                 | -         | -        | ☑         |
 
-### Fetch docker image
+### Fetch Docker image
 
 To fetch the `maximum` version of the `ocrd/all` Docker image:
 
@@ -93,7 +95,9 @@ docker pull ocrd/all:maximum
 
 Replace `maximum` accordingly if you want the `minimum` or `medium` variant.
 
-### Updating docker image
+(Also, if you want to keep the modules' git repos inside the Docker images – so you can keep making fast updates, without waiting for a new pre-built image but also without building an image yourself –, then add the suffix `-git` to the variant, e.g. `maximum-git`. This will behave like the native installation, only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) made in containers back to your local Docker image.)
+
+### Updating Docker image
 
 To update the docker images to their latest version, just run the `docker pull` command again:
 
@@ -128,10 +132,10 @@ sudo make deps-ubuntu
 
 ### Cloning the repository
 
-Clone the repository and all its submodules:
+Clone the repository (still without submodules):
 
 ```sh
-git clone --recursive https://github.com/OCR-D/ocrd_all
+git clone https://github.com/OCR-D/ocrd_all
 cd ocrd_all
 ```
 
@@ -143,16 +147,14 @@ regularly update the repository and its submodules:
 
 ```sh
 git pull
-git submodule sync
-git submodule update --init --recursive
 ```
 
 ### Installing with ocrd_all
 
 You can either install
-  1. all the software at once with the `all` target (equivalent to the [`maximum` Docker version](#mini-medi-maxi))
-  2. modules individually by using an executable from that module as the target or :
-  3. modules invidually by using the project name for the `OCRD_MODULES` variable:
+  1. all the software at once with the `all` target (equivalent to the [`maximum` Docker version](#mini-medi-maxi)),
+  2. modules individually by using an executable from that module as the target, or
+  3. a subset of modules by listing the project names in the `OCRD_MODULES` variable (equivalent to a custom selection of the [`medium` Docker version](#mini-medi-maxi)):
 
 ```sh
 make all                       # Installs all the software (recommended)
@@ -160,8 +162,14 @@ make all                       # Installs all the software (recommended)
 make ocrd-tesserocr-binarize   # Install ocrd_tesserocr which contains ocrd-tesserocr-binarize
 make ocrd-cis-ocropy-binarize  # Install ocrd_cis  which contains ocrd-cis-ocropy-binarize
 
-make all OCRD_MODULES="ocrd_tesserocr ocrd_cis"  # Will install both ocrd_tesserocr and ocrd_cis
+make all OCRD_MODULES="core ocrd_tesserocr ocrd_cis" # Will install only ocrd_tesserocr and ocrd_cis
 ```
+
+(Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `Makefile.local`.)
+
+Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.
+
+Running `make` will also take care of cloning and updating all required submodules.
 
 ## Individual installation
 
