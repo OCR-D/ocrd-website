@@ -182,8 +182,8 @@
       <li><a href="#ocrd_all-via-docker">ocrd_all via Docker</a>
         <ul>
           <li><a href="#mini-medi-maxi">mini medi maxi</a></li>
-          <li><a href="#fetch-docker-image">Fetch docker image</a></li>
-          <li><a href="#updating-docker-image">Updating docker image</a></li>
+          <li><a href="#fetch-docker-image">Fetch Docker image</a></li>
+          <li><a href="#updating-docker-image">Updating Docker image</a></li>
         </ul>
       </li>
       <li><a href="#ocrd_all-natively">ocrd_all natively</a>
@@ -334,7 +334,19 @@ we encourage you to use the large but complete <code class="highlighter-rouge">m
       <td>☑</td>
     </tr>
     <tr>
+      <td>ocrd_fileformat</td>
+      <td>☑</td>
+      <td>☑</td>
+      <td>☑</td>
+    </tr>
+    <tr>
       <td>ocrd_im6convert</td>
+      <td>☑</td>
+      <td>☑</td>
+      <td>☑</td>
+    </tr>
+    <tr>
+      <td>ocrd_pagetopdf</td>
       <td>☑</td>
       <td>☑</td>
       <td>☑</td>
@@ -456,7 +468,7 @@ we encourage you to use the large but complete <code class="highlighter-rouge">m
   </tbody>
 </table>
 
-<h3 id="fetch-docker-image">Fetch docker image</h3>
+<h3 id="fetch-docker-image">Fetch Docker image</h3>
 
 <p>To fetch the <code class="highlighter-rouge">maximum</code> version of the <code class="highlighter-rouge">ocrd/all</code> Docker image:</p>
 
@@ -465,7 +477,9 @@ we encourage you to use the large but complete <code class="highlighter-rouge">m
 
 <p>Replace <code class="highlighter-rouge">maximum</code> accordingly if you want the <code class="highlighter-rouge">minimum</code> or <code class="highlighter-rouge">medium</code> variant.</p>
 
-<h3 id="updating-docker-image">Updating docker image</h3>
+<p>(Also, if you want to keep the modules’ git repos inside the Docker images – so you can keep making fast updates, without waiting for a new pre-built image but also without building an image yourself –, then add the suffix <code class="highlighter-rouge">-git</code> to the variant, e.g. <code class="highlighter-rouge">maximum-git</code>. This will behave like the native installation, only inside the container. Yes, you can also <a href="https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/">commit changes</a> made in containers back to your local Docker image.)</p>
+
+<h3 id="updating-docker-image">Updating Docker image</h3>
 
 <p>To update the docker images to their latest version, just run the <code class="highlighter-rouge">docker pull</code> command again:</p>
 
@@ -497,9 +511,9 @@ README</a>.</p>
 
 <h3 id="cloning-the-repository">Cloning the repository</h3>
 
-<p>Clone the repository and all its submodules:</p>
+<p>Clone the repository (still without submodules):</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone <span class="nt">--recursive</span> https://github.com/OCR-D/ocrd_all
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/OCR-D/ocrd_all
 <span class="nb">cd </span>ocrd_all
 </code></pre></div></div>
 
@@ -510,17 +524,15 @@ development</a>, it is wise to
 regularly update the repository and its submodules:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull
-git submodule <span class="nb">sync
-</span>git submodule update <span class="nt">--init</span> <span class="nt">--recursive</span>
 </code></pre></div></div>
 
 <h3 id="installing-with-ocrd_all">Installing with ocrd_all</h3>
 
 <p>You can either install</p>
 <ol>
-  <li>all the software at once with the <code class="highlighter-rouge">all</code> target (equivalent to the <a href="#mini-medi-maxi"><code class="highlighter-rouge">maximum</code> Docker version</a>)</li>
-  <li>modules individually by using an executable from that module as the target or :</li>
-  <li>modules invidually by using the project name for the <code class="highlighter-rouge">OCRD_MODULES</code> variable:</li>
+  <li>all the software at once with the <code class="highlighter-rouge">all</code> target (equivalent to the <a href="#mini-medi-maxi"><code class="highlighter-rouge">maximum</code> Docker version</a>),</li>
+  <li>modules individually by using an executable from that module as the target, or</li>
+  <li>a subset of modules by listing the project names in the <code class="highlighter-rouge">OCRD_MODULES</code> variable (equivalent to a custom selection of the <a href="#mini-medi-maxi"><code class="highlighter-rouge">medium</code> Docker version</a>):</li>
 </ol>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make all                       <span class="c"># Installs all the software (recommended)</span>
@@ -528,8 +540,14 @@ git submodule <span class="nb">sync
 make ocrd-tesserocr-binarize   <span class="c"># Install ocrd_tesserocr which contains ocrd-tesserocr-binarize</span>
 make ocrd-cis-ocropy-binarize  <span class="c"># Install ocrd_cis  which contains ocrd-cis-ocropy-binarize</span>
 
-make all <span class="nv">OCRD_MODULES</span><span class="o">=</span><span class="s2">"ocrd_tesserocr ocrd_cis"</span>  <span class="c"># Will install both ocrd_tesserocr and ocrd_cis</span>
+make all <span class="nv">OCRD_MODULES</span><span class="o">=</span><span class="s2">"core ocrd_tesserocr ocrd_cis"</span> <span class="c"># Will install only ocrd_tesserocr and ocrd_cis</span>
 </code></pre></div></div>
+
+<p>(Custom choices for <code class="highlighter-rouge">OCRD_MODULES</code> and other control variables (cf. <code class="highlighter-rouge">make help</code>) can also be made permanent by writing them into <code class="highlighter-rouge">Makefile.local</code>.)</p>
+
+<p>Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.</p>
+
+<p>Running <code class="highlighter-rouge">make</code> will also take care of cloning and updating all required submodules.</p>
 
 <h2 id="individual-installation">Individual installation</h2>
 
