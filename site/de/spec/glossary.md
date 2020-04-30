@@ -15,11 +15,7 @@ This section is non-normative.
 
 ### Block
 
-A block is a region described by a polygon inside a page.
-
-### Block type
-
-The semantics or function of a [block](#block) such as heading, page number, column, table...
+See [Region](#region)
 
 ### Font family
 
@@ -40,11 +36,15 @@ See [TextLine](#textline)
 
 ### Reading Order
 
-Reading order describes the logical sequence of [blocks](#block) within a document.
+Reading order describes the logical sequence of [regions](#region) within a document.
 
 ### Region
 
-See [Block](#block)
+A region is described by a polygon inside a page.
+
+### Region type
+
+The semantics or function of a [region](#region) such as heading, page number, column, table...
 
 ### Symbol
 
@@ -52,7 +52,7 @@ See [Glyph](#glyph)
 
 ### TextLine
 
-A TextLine is a [block](#block) of text without line break.
+A TextLine is a [region](#region) of text without line break.
 
 ### Word
 
@@ -146,12 +146,12 @@ Document analysis is the detection of structure on the document level to e.g. cr
 
 ### Reading order detection
 
-Detect the [reading order](#reading-order) of [blocks](#block).
+Detect the [reading order](#reading-order) of [regions](#region).
 
 ### Cropping
 
 Detecting the print space in a page, as opposed to the margins. It is a form of
-[block segmentation](#block-segmentation).
+[region segmentation](#region-segmentation).
 
 Controlled term: `preprocessing/optimization/cropping`.
 
@@ -165,23 +165,23 @@ Segmentation means detecting areas within an image.
 
 Specific segmentation algorithms are labelled by the semantics of the regions
 they detect not the semantics of the input, i.e. an algorithm that detects
-blocks is called [block segmentation](#block-segmentation).
+regions is called [region segmentation](#region-segmentation).
 
-### Block segmentation
+### Region segmentation
 
-Segment an image into [blocks](#block). Also determines whether this is a text
-or non-text block (e.g. images).
+Segment an image into [regions](#region). Also determines whether this is a text
+or non-text region (e.g. images).
 
 Controlled term:
-- `SEG-BLOCK` (`USE`)
+- `SEG-REGION` (`USE`)
 - `layout/segmentation/region` (step)
 
-### Block classification
+### Region classification
 
-Determine the [type](#block-type) of a detected block.
+Determine the [type](#region-type) of a detected region.
 
 ### Line segmentation
-Segment text [blocks](#block) into [textlines](#textline).
+Segment text [regions](#region) into [textlines](#textline).
 
 Controlled term:
 - `SEG-LINE` (`USE`)
@@ -190,7 +190,7 @@ Controlled term:
 ### MP
 
 Module Project, a software project producing one or more tools to OCR-D. There
-are [currently eight MP](https://ocr-d.github.io/projects) active in the OCR-D
+are [currently eight MP](https://ocr-d.de/en/module-projects) active in the OCR-D
 community.
 
 ### OCR

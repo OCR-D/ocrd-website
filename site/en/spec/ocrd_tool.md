@@ -189,10 +189,10 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
       "description": "Detect script, orientation and skew angle for pages or regions",
       "input_file_grp": [
         "OCR-D-IMG",
-        "OCR-D-SEG-BLOCK"
+        "OCR-D-SEG-REGION"
       ],
       "output_file_grp": [
-        "OCR-D-DESKEW-BLOCK"
+        "OCR-D-DESKEW-REGION"
       ],
       "steps": ["preprocessing/optimization/deskewing"],
       "parameters": {
@@ -221,7 +221,7 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
       "categories": ["Text recognition and optimization"],
       "description": "Recognize text in lines with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons)",
       "input_file_grp": [
-        "OCR-D-SEG-BLOCK",
+        "OCR-D-SEG-REGION",
         "OCR-D-SEG-LINE",
         "OCR-D-SEG-WORD",
         "OCR-D-SEG-GLYPH"
@@ -284,7 +284,7 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
         "OCR-D-GT-SEG-PAGE"
       ],
       "output_file_grp": [
-        "OCR-D-SEG-BLOCK"
+        "OCR-D-SEG-REGION"
       ],
       "steps": ["layout/segmentation/region"],
       "parameters": {
@@ -322,11 +322,11 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
       "categories": ["Layout analysis"],
       "description": "Segment table regions into cell text regions with Tesseract",
       "input_file_grp": [
-        "OCR-D-SEG-BLOCK",
-        "OCR-D-GT-SEG-BLOCK"
+        "OCR-D-SEG-REGION",
+        "OCR-D-GT-SEG-REGION"
       ],
       "output_file_grp": [
-        "OCR-D-SEG-BLOCK"
+        "OCR-D-SEG-REGION"
       ],
       "steps": ["layout/segmentation/region"],
       "parameters": {
@@ -348,8 +348,8 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
       "categories": ["Layout analysis"],
       "description": "Segment regions into lines with Tesseract",
       "input_file_grp": [
-        "OCR-D-SEG-BLOCK",
-        "OCR-D-GT-SEG-BLOCK"
+        "OCR-D-SEG-REGION",
+        "OCR-D-GT-SEG-REGION"
       ],
       "output_file_grp": [
         "OCR-D-SEG-LINE"
@@ -427,11 +427,11 @@ This is from the [ocrd_tesserocr project](https://github.com/OCR-D/ocrd_tesseroc
       "description": "Binarize regions or lines with Tesseract's global Otsu",
       "input_file_grp": [
         "OCR-D-IMG",
-        "OCR-D-SEG-BLOCK",
+        "OCR-D-SEG-REGION",
         "OCR-D-SEG-LINE"
       ],
       "output_file_grp": [
-        "OCR-D-BIN-BLOCK",
+        "OCR-D-BIN-REGION",
         "OCR-D-BIN-LINE"
       ],
       "steps": ["preprocessing/optimization/binarization"],

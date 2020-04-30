@@ -7,14 +7,17 @@ toc: true
 
 # Command Line Interface (CLI)
 
+All tools provided by MP must be standalone executables, installable into `$PATH`.
+
+Those tools intended for run-time data processing (but not necessarily tools for training or deployment) are called **processors**.
+Processors must adhere to the following uniform interface, including mandatory and optional parameters (i.e. no more or fewer are permissible).
+
 **NOTE:** Command line options cannot be repeated. Parameters marked
-**MULTI-VALUE** specify multiple values, provide a single string with
+**MULTI-VALUE** specify multiple values, formatted as a single string with
 comma-separated items (e.g. `-I group1,group2,group3` instead of `-I group1 -I
 group2 -I group3`).
 
 ## CLI executable name
-
-All CLI provided by MP must be standalone executables, installable into `$PATH`.
 
 Every CLI executable's name must begin with `ocrd-`.
 
@@ -28,7 +31,9 @@ Examples:
 
 **MULTI-VALUE**
 
-File group(s) used as input.
+[METS](mets) file group(s) used as input.
+
+Input file groups must not be modified.
 
 ## Optional parameters
 
@@ -36,18 +41,9 @@ File group(s) used as input.
 
 **MULTI-VALUE**
 
-File group(s) used as output.
+[METS](mets) file group(s) used as output.
 
-Omit to resort to default output file groups of the processor or for processors that do not produce output files.
-
-### `-m, --mets METS_IN`
-
-Input METS URL. Default: `mets.xml`
-
-### `-w, --working-dir DIR`
-
-Working Directory. Default: current working directory.
-
+Omit to resort to default output file groups of the processor, or for processors that inherently do not produce output files.
 
 ### `-g, --page-id ID`
 
@@ -58,11 +54,45 @@ to files representing a page. Effectively, only those files in the [input file
 group](#-i---input-file-grp-grp) that are referenced in these
 `mets:div[@TYPE="page"]` will be processed.
 
+Omit to process all pages.
+
+### `--overwrite`
+
+Delete files in the output file group(s) before processing.
+
+If `--overwrite` is set, but [`--page-id`](-g---page-id-id) is not set, delete
+all output file groups set with
+[`--output-file-grp`](-o---output-file-grp-grp), including all files that belong to
+those file groups.
+
+If `--overwrite` is set and [`--page-id`](-g---page-id-id) is set, delete all files that represent
+any of the page IDs given with [`--page-id`](-g---page-id-id) from all output
+file groups set with
+[`--output-file-grp`](-o---output-file-grp-grp)
+
+"File deletion" in the context of `--overwrite` means deletion of matching
+`mets:file` elements from the METS document and all local files these
+`mets:file` represent.
+
+"Group deletion" in the context of `--overwrite` means deletion of the
+`mets:fileGrp` element from METS, and deletion of all files that belong to this
+`mets:fileGrp` element.
+
 ### `-p, --parameter PARAM_JSON`
 
-URL of parameter file in JSON format. If that file is not readable and
-`PARAM_JSON` begins with `{` (opening brace), try to parse `PARAM_JSON` as
-JSON. If that also fails, throw an exception.
+URL of parameter file in [JSON format](https://json.org/) corresponding to the `parameters` section of the processor's [ocrd-tool metadata](ocrd_tool).
+If that file is not readable and `PARAM_JSON` begins with `{` (opening brace), try to parse `PARAM_JSON` as JSON.
+If that also fails, throw an exception.
+
+Omit to use default parameters only, or for processors without any parameters.
+
+### `-m, --mets METS_IN`
+
+Input [METS](mets) URL. Default: `mets.xml`
+
+### `-w, --working-dir DIR`
+
+Working Directory. Default: current working directory.
 
 ### `-l, --log-level LOGLEVEL`
 
@@ -78,6 +108,12 @@ other implementation-specific means of logging configuration. For example, with
 
 Instead of processing METS, output the [ocrd-tool](ocrd_tool) description for
 this executable, in particular its parameters.
+
+### `-h, --help`
+
+Print a concise description of the tool, the command line options and
+parameters it accepts as well as the input/output groups. This information should
+be generated from [`ocrd-tool.json`](ocrd_tool) as much as possible.
 
 ## Return value
 

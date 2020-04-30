@@ -83,7 +83,7 @@ PROCESSOR := [A-Z0-9\-]{3,}
 `WORKFLOW_STEP` can be one of:
 
 - `IMG`: Image(s)
-- `SEG`: Segmented [blocks](glossary#block) / [lines](glossary#textline) / [words](glossary#word)
+- `SEG`: Segmented [regions](glossary#region) / [lines](glossary#textline) / [words](glossary#word)
 - `OCR`: OCR produced from image
 - `COR`: Post-correction
 
@@ -102,7 +102,7 @@ with the type of manipulation (`BIN-KRAKEN`).
 `<mets:fileGrp USE="OCR-D-IMG-DESKEW">`     | Deskewed images
 `<mets:fileGrp USE="OCR-D-IMG-DESPECK">`    | Despeckled images
 `<mets:fileGrp USE="OCR-D-IMG-DEWARP">`     | Dewarped images
-`<mets:fileGrp USE="OCR-D-SEG-BLOCK">`      | Block segmentation
+`<mets:fileGrp USE="OCR-D-SEG-REGION">`      | Region segmentation
 `<mets:fileGrp USE="OCR-D-SEG-LINE">`       | Line segmentation
 `<mets:fileGrp USE="OCR-D-SEG-WORD">`       | Word segmentation
 `<mets:fileGrp USE="OCR-D-SEG-GLYPH">`      | Glyph segmentation
@@ -115,7 +115,7 @@ with the type of manipulation (`BIN-KRAKEN`).
 `<mets:fileGrp USE="OCR-D-GT-IMG-DESKEW">`  | Deskewed images ground truth
 `<mets:fileGrp USE="OCR-D-GT-IMG-DESPECK">` | Despeckled images ground truth
 `<mets:fileGrp USE="OCR-D-GT-IMG-DEWARP">`  | Dewarped images ground truth
-`<mets:fileGrp USE="OCR-D-GT-SEG-BLOCK">`   | Block segmentation ground truth
+`<mets:fileGrp USE="OCR-D-GT-SEG-REGION">`   | Region segmentation ground truth
 `<mets:fileGrp USE="OCR-D-GT-SEG-LINE">`    | Line segmentation ground truth
 `<mets:fileGrp USE="OCR-D-GT-SEG-WORD">`    | Word segmentation ground truth
 `<mets:fileGrp USE="OCR-D-GT-SEG-GLYPH">`   | Glyph segmentation ground truth

@@ -8,14 +8,14 @@ toc: true
 # Conventions for PAGE
 
 In addition to these conventions, refer to the [PAGE API
-docs](https://ocr-d.github.io/gt/trans_documentation/trPage.html) for extensive
+docs](https://ocr-d.de/en/gt-guidelines/trans/trPage.html) for extensive
 documentation on the PAGE XML format itself.
 
 ## Media Type
 
 The [preliminary media type](https://github.com/OCR-D/spec/issues/33) of a PAGE
 document is `application/vnd.prima.page+xml`, which MUST be used [as the `MIMETYPE` of a `<mets:file>`
-representing a PAGE document](https://ocr-d.github.io/mets#media-type-for-page-xml).
+representing a PAGE document](https://ocr-d.de/en/spec/mets#media-type-for-page-xml).
 
 ## One page in one PAGE
 
@@ -28,11 +28,10 @@ The PAGE XML root element `<pc:PcGts>` MUST have exactly one `<pc:Page>`.
 ### URL for imageFilename / filename
 
 The `imageFilename` of the `<pg:Page>` and `filename` of the
-`<pg:AlternativeImage>` element MUST be a URL. A local filename should be a
-`file://` URL.
+`<pg:AlternativeImage>` element MUST be a filename relative to the `mets.xml`.
 
 All URL used in `imageFilename` and `filename` [MUST be referenced in a fileGrp
-in METS](https://ocr-d.github.io/mets#if-in-page-then-in-mets).
+in METS](https://ocr-d.de/en/spec/mets#if-in-page-then-in-mets).
 
 ### Original image as imageFilename
 
@@ -45,8 +44,7 @@ To encode images derived from the original image, the `<pc:AlternativeImage>`
 should be used. Its `filename` attribute should reference the URL of the
 derived image.
 
-The `comments` attribute should be one or more (separated by comma) terms of
-the following list:
+The `comments` attribute SHOULD be used according to the [AlternativeImage classification](#alternativeimage-classification).
 
 ### AlternativeImage: classification
 
@@ -73,7 +71,7 @@ For such use cases, `<pg:AlternativeImage>` may be used as a child of
 ## Attaching text recognition results to elements
 
 A PAGE document can attach recognized text to typographical units of
-a page at different levels, such as block (`<pg:TextRegion>`), line
+a page at different levels, such as region (`<pg:TextRegion>`), line
 (`<pg:TextLine>`), word (`<pg:Word>`) or glyph (`<pg:Glyph>`).
 
 To attach recognized text to an element `E`, it must be encoded as

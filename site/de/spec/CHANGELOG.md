@@ -14,6 +14,26 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.6.0] - 2020-04-30
+
+Added:
+
+  * CLI: `--overwrite` flag to delete existing output files before processing, #151
+
+## [3.5.0] - 2020-04-20
+
+Changed:
+
+  * CLI: clarify requirements on processors, ht @bertsky, #148
+  * Use `region` instead of `block` for areas on the page, #135
+  * PAGE: `imageFilename` must NOT be a URL but a relative filename, #140
+  * Updated URLs to point to https://ocr-d.de instead of https://ocr-d.github.io, #149
+
+Added:
+
+  * docker: instructions on naming and labelling images, #139
+  * CLI tools must implement `-h/--help`, #115
+
 ## [3.4.2] - 2020-01-08
 
 Changed:
@@ -312,6 +332,8 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.6.0]: ../../compare/v3.6.0...v3.5.0
+[3.5.0]: ../../compare/v3.5.0...v3.4.2
 [3.4.2]: ../../compare/v3.4.2...v3.4.1
 [3.4.1]: ../../compare/v3.4.1...v3.4.0
 [3.4.0]: ../../compare/v3.4.0...v3.3.0
