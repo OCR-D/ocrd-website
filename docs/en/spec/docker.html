@@ -180,9 +180,16 @@
   <li><a href="#dockerfile-provided-by-mp">Dockerfile provided by MP</a>
     <ul>
       <li><a href="#based-on-ocrdcore">Based on ocrd:core</a></li>
+      <li><a href="#naming-images">Naming images</a></li>
+      <li><a href="#labelling-images">Labelling images</a></li>
       <li><a href="#shell-entrypoint">Shell entrypoint</a></li>
       <li><a href="#data-as-volume"><code class="highlighter-rouge">/data</code> as volume</a></li>
-      <li><a href="#example">Example</a></li>
+      <li><a href="#example">Example</a>
+        <ul>
+          <li><a href="#dockerfile"><code class="highlighter-rouge">Dockerfile</code></a></li>
+          <li><a href="#command-to-build-docker-image">Command to build docker image</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -206,6 +213,56 @@ image</a> which itself is based on Ubuntu
 in a spec-conformant way. Besides, it locally installed and containerized
 <a href="cli">CLI</a> interchangeable.</p>
 
+<h2 id="naming-images">Naming images</h2>
+
+<p>Image tags MUST be the same as the project name but with underscore (<code class="highlighter-rouge">_</code>)
+replaced with forward slash (<code class="highlighter-rouge">/</code>).</p>
+
+<p>Examples:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>project name</th>
+      <th>docker tag</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/OCR-D/ocrd_tesserocr"><code class="highlighter-rouge">ocrd_tesserocr</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/tesserocr"><code class="highlighter-rouge">ocrd/tesserocr</code></a></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/OCR-D/ocrd_calamari"><code class="highlighter-rouge">ocrd_calamari</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/calamari"><code class="highlighter-rouge">ocrd/calamari</code></a></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/OCR-D/ocrd_olena"><code class="highlighter-rouge">ocrd_olena</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/olena"><code class="highlighter-rouge">ocrd/olena</code></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="labelling-images">Labelling images</h2>
+
+<p>The Dockerfile MUST accept build args <code class="highlighter-rouge">VCS_REF</code> and <code class="highlighter-rouge">BUILD_DATE</code>.</p>
+
+<p><code class="highlighter-rouge">VCS_REF</code> contains the short id of the latest commit this image was built upon.</p>
+
+<p><code class="highlighter-rouge">BUILD_DATE</code> contains an ISO-8601 date.</p>
+
+<p>From these build args, the image shall be labelled with this command:</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">LABEL</span><span class="s"> \</span>
+    maintainer="https://github.com/YOUR/PROJECT/issues" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/YOUR/PROJECT" \
+    org.label-schema.build-date=$BUILD_DATE
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">maintainer</code> and <code class="highlighter-rouge">org.label-schema.cvs-url</code> shall point to the issues and
+landing page of the GitHub project resp.</p>
+
 <h2 id="shell-entrypoint">Shell entrypoint</h2>
 
 <p>No <code class="highlighter-rouge">CMD</code> should be provided.</p>
@@ -221,14 +278,31 @@ allow processing host data in the container in a uniform way.</p>
 
 <h2 id="example">Example</h2>
 
+<h3 id="dockerfile"><code class="highlighter-rouge">Dockerfile</code></h3>
+
 <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ocrd:core</span>
 <span class="k">VOLUME</span><span class="s"> ["/data"]</span>
+<span class="k">ARG</span><span class="s"> VCS_REF</span>
+<span class="k">ARG</span><span class="s"> BUILD_DATE</span>
+<span class="k">LABEL</span><span class="s"> \</span>
+    maintainer="https://github.com/bar/ocrd_foo/issues" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/bar/ocrd_foo" \
+    org.label-schema.build-date=$BUILD_DATE
 
 <span class="c"># RUN-commands to install requirements, build and install</span>
 <span class="c"># e.g.</span>
 <span class="c"># apt-get install -y curl</span>
 
 <span class="k">ENTRYPOINT</span><span class="s"> []</span>
+</code></pre></div></div>
+
+<h3 id="command-to-build-docker-image">Command to build docker image</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="se">\</span>
+  <span class="nt">-t</span> <span class="s1">'ocrd/foo'</span> <span class="se">\</span>
+	<span class="nt">--build-arg</span> <span class="nv">VCS_REF</span><span class="o">=</span><span class="si">$(</span>git rev-parse <span class="nt">--short</span> HEAD<span class="si">)</span> <span class="se">\</span>
+	<span class="nt">--build-arg</span> <span class="nv">BUILD_DATE</span><span class="o">=</span><span class="si">$(</span><span class="nb">date</span> <span class="nt">-u</span> +<span class="s2">"%Y-%m-%dT%H:%M:%SZ"</span><span class="si">)</span>
 </code></pre></div></div>
 
       </main>

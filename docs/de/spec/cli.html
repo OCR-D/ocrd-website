@@ -188,12 +188,14 @@
       <li><a href="#optional-parameters">Optional parameters</a>
         <ul>
           <li><a href="#-o---output-file-grp-grp"><code class="highlighter-rouge">-O, --output-file-grp GRP</code></a></li>
+          <li><a href="#-g---page-id-id"><code class="highlighter-rouge">-g, --page-id ID</code></a></li>
+          <li><a href="#--overwrite"><code class="highlighter-rouge">--overwrite</code></a></li>
+          <li><a href="#-p---parameter-param_json"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></a></li>
           <li><a href="#-m---mets-mets_in"><code class="highlighter-rouge">-m, --mets METS_IN</code></a></li>
           <li><a href="#-w---working-dir-dir"><code class="highlighter-rouge">-w, --working-dir DIR</code></a></li>
-          <li><a href="#-g---page-id-id"><code class="highlighter-rouge">-g, --page-id ID</code></a></li>
-          <li><a href="#-p---parameter-param_json"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></a></li>
           <li><a href="#-l---log-level-loglevel"><code class="highlighter-rouge">-l, --log-level LOGLEVEL</code></a></li>
           <li><a href="#-j---dump-json"><code class="highlighter-rouge">-J, --dump-json</code></a></li>
+          <li><a href="#-h---help"><code class="highlighter-rouge">-h, --help</code></a></li>
         </ul>
       </li>
       <li><a href="#return-value">Return value</a></li>
@@ -216,14 +218,17 @@
       <main class="container content column is-two-thirds" aria-label="Content">
         <h1 id="command-line-interface-cli">Command Line Interface (CLI)</h1>
 
+<p>All tools provided by MP must be standalone executables, installable into <code class="highlighter-rouge">$PATH</code>.</p>
+
+<p>Those tools intended for run-time data processing (but not necessarily tools for training or deployment) are called <strong>processors</strong>.
+Processors must adhere to the following uniform interface, including mandatory and optional parameters (i.e. no more or fewer are permissible).</p>
+
 <p><strong>NOTE:</strong> Command line options cannot be repeated. Parameters marked
-<strong>MULTI-VALUE</strong> specify multiple values, provide a single string with
+<strong>MULTI-VALUE</strong> specify multiple values, formatted as a single string with
 comma-separated items (e.g. <code class="highlighter-rouge">-I group1,group2,group3</code> instead of <code class="highlighter-rouge">-I group1 -I
 group2 -I group3</code>).</p>
 
 <h2 id="cli-executable-name">CLI executable name</h2>
-
-<p>All CLI provided by MP must be standalone executables, installable into <code class="highlighter-rouge">$PATH</code>.</p>
 
 <p>Every CLI executable’s name must begin with <code class="highlighter-rouge">ocrd-</code>.</p>
 
@@ -239,7 +244,9 @@ group2 -I group3</code>).</p>
 
 <p><strong>MULTI-VALUE</strong></p>
 
-<p>File group(s) used as input.</p>
+<p><a href="mets">METS</a> file group(s) used as input.</p>
+
+<p>Input file groups must not be modified.</p>
 
 <h2 id="optional-parameters">Optional parameters</h2>
 
@@ -247,17 +254,9 @@ group2 -I group3</code>).</p>
 
 <p><strong>MULTI-VALUE</strong></p>
 
-<p>File group(s) used as output.</p>
+<p><a href="mets">METS</a> file group(s) used as output.</p>
 
-<p>Omit to resort to default output file groups of the processor or for processors that do not produce output files.</p>
-
-<h3 id="-m---mets-mets_in"><code class="highlighter-rouge">-m, --mets METS_IN</code></h3>
-
-<p>Input METS URL. Default: <code class="highlighter-rouge">mets.xml</code></p>
-
-<h3 id="-w---working-dir-dir"><code class="highlighter-rouge">-w, --working-dir DIR</code></h3>
-
-<p>Working Directory. Default: current working directory.</p>
+<p>Omit to resort to default output file groups of the processor, or for processors that inherently do not produce output files.</p>
 
 <h3 id="-g---page-id-id"><code class="highlighter-rouge">-g, --page-id ID</code></h3>
 
@@ -268,11 +267,45 @@ to files representing a page. Effectively, only those files in the <a href="#-i-
 group</a> that are referenced in these
 <code class="highlighter-rouge">mets:div[@TYPE="page"]</code> will be processed.</p>
 
+<p>Omit to process all pages.</p>
+
+<h3 id="--overwrite"><code class="highlighter-rouge">--overwrite</code></h3>
+
+<p>Delete files in the output file group(s) before processing.</p>
+
+<p>If <code class="highlighter-rouge">--overwrite</code> is set, but <a href="-g---page-id-id"><code class="highlighter-rouge">--page-id</code></a> is not set, delete
+all output file groups set with
+<a href="-o---output-file-grp-grp"><code class="highlighter-rouge">--output-file-grp</code></a>, including all files that belong to
+those file groups.</p>
+
+<p>If <code class="highlighter-rouge">--overwrite</code> is set and <a href="-g---page-id-id"><code class="highlighter-rouge">--page-id</code></a> is set, delete all files that represent
+any of the page IDs given with <a href="-g---page-id-id"><code class="highlighter-rouge">--page-id</code></a> from all output
+file groups set with
+<a href="-o---output-file-grp-grp"><code class="highlighter-rouge">--output-file-grp</code></a></p>
+
+<p>“File deletion” in the context of <code class="highlighter-rouge">--overwrite</code> means deletion of matching
+<code class="highlighter-rouge">mets:file</code> elements from the METS document and all local files these
+<code class="highlighter-rouge">mets:file</code> represent.</p>
+
+<p>“Group deletion” in the context of <code class="highlighter-rouge">--overwrite</code> means deletion of the
+<code class="highlighter-rouge">mets:fileGrp</code> element from METS, and deletion of all files that belong to this
+<code class="highlighter-rouge">mets:fileGrp</code> element.</p>
+
 <h3 id="-p---parameter-param_json"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></h3>
 
-<p>URL of parameter file in JSON format. If that file is not readable and
-<code class="highlighter-rouge">PARAM_JSON</code> begins with <code class="highlighter-rouge">{</code> (opening brace), try to parse <code class="highlighter-rouge">PARAM_JSON</code> as
-JSON. If that also fails, throw an exception.</p>
+<p>URL of parameter file in <a href="https://json.org/">JSON format</a> corresponding to the <code class="highlighter-rouge">parameters</code> section of the processor’s <a href="ocrd_tool">ocrd-tool metadata</a>.
+If that file is not readable and <code class="highlighter-rouge">PARAM_JSON</code> begins with <code class="highlighter-rouge">{</code> (opening brace), try to parse <code class="highlighter-rouge">PARAM_JSON</code> as JSON.
+If that also fails, throw an exception.</p>
+
+<p>Omit to use default parameters only, or for processors without any parameters.</p>
+
+<h3 id="-m---mets-mets_in"><code class="highlighter-rouge">-m, --mets METS_IN</code></h3>
+
+<p>Input <a href="mets">METS</a> URL. Default: <code class="highlighter-rouge">mets.xml</code></p>
+
+<h3 id="-w---working-dir-dir"><code class="highlighter-rouge">-w, --working-dir DIR</code></h3>
+
+<p>Working Directory. Default: current working directory.</p>
 
 <h3 id="-l---log-level-loglevel"><code class="highlighter-rouge">-l, --log-level LOGLEVEL</code></h3>
 
@@ -288,6 +321,12 @@ other implementation-specific means of logging configuration. For example, with
 
 <p>Instead of processing METS, output the <a href="ocrd_tool">ocrd-tool</a> description for
 this executable, in particular its parameters.</p>
+
+<h3 id="-h---help"><code class="highlighter-rouge">-h, --help</code></h3>
+
+<p>Print a concise description of the tool, the command line options and
+parameters it accepts as well as the input/output groups. This information should
+be generated from <a href="ocrd_tool"><code class="highlighter-rouge">ocrd-tool.json</code></a> as much as possible.</p>
 
 <h2 id="return-value">Return value</h2>
 

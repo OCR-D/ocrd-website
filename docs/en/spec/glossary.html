@@ -182,13 +182,13 @@
       <li><a href="#layout-and-typography">Layout and Typography</a>
         <ul>
           <li><a href="#block">Block</a></li>
-          <li><a href="#block-type">Block type</a></li>
           <li><a href="#font-family">Font family</a></li>
           <li><a href="#glyph">Glyph</a></li>
           <li><a href="#grapheme-cluster">Grapheme Cluster</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#reading-order">Reading Order</a></li>
           <li><a href="#region">Region</a></li>
+          <li><a href="#region-type">Region type</a></li>
           <li><a href="#symbol">Symbol</a></li>
           <li><a href="#textline">TextLine</a></li>
           <li><a href="#word">Word</a></li>
@@ -218,8 +218,8 @@
           <li><a href="#cropping">Cropping</a></li>
           <li><a href="#border-removal">Border removal</a></li>
           <li><a href="#segmentation">Segmentation</a></li>
-          <li><a href="#block-segmentation">Block segmentation</a></li>
-          <li><a href="#block-classification">Block classification</a></li>
+          <li><a href="#region-segmentation">Region segmentation</a></li>
+          <li><a href="#region-classification">Region classification</a></li>
           <li><a href="#line-segmentation">Line segmentation</a></li>
           <li><a href="#mp">MP</a></li>
           <li><a href="#ocr">OCR</a></li>
@@ -267,11 +267,7 @@
 
 <h3 id="block">Block</h3>
 
-<p>A block is a region described by a polygon inside a page.</p>
-
-<h3 id="block-type">Block type</h3>
-
-<p>The semantics or function of a <a href="#block">block</a> such as heading, page number, column, table…</p>
+<p>See <a href="#region">Region</a></p>
 
 <h3 id="font-family">Font family</h3>
 
@@ -292,11 +288,15 @@ semantics of a <em>font family</em> are up to the data producer.</p>
 
 <h3 id="reading-order">Reading Order</h3>
 
-<p>Reading order describes the logical sequence of <a href="#block">blocks</a> within a document.</p>
+<p>Reading order describes the logical sequence of <a href="#region">regions</a> within a document.</p>
 
 <h3 id="region">Region</h3>
 
-<p>See <a href="#block">Block</a></p>
+<p>A region is described by a polygon inside a page.</p>
+
+<h3 id="region-type">Region type</h3>
+
+<p>The semantics or function of a <a href="#region">region</a> such as heading, page number, column, table…</p>
 
 <h3 id="symbol">Symbol</h3>
 
@@ -304,7 +304,7 @@ semantics of a <em>font family</em> are up to the data producer.</p>
 
 <h3 id="textline">TextLine</h3>
 
-<p>A TextLine is a <a href="#block">block</a> of text without line break.</p>
+<p>A TextLine is a <a href="#region">region</a> of text without line break.</p>
 
 <h3 id="word">Word</h3>
 
@@ -314,7 +314,7 @@ semantics of a <em>font family</em> are up to the data producer.</p>
 
 <h3 id="ground-truth">Ground Truth</h3>
 
-<p>Ground truth (GT) <a href="https://ocr-d.github.io/en/data">in the context of OCR-D</a> are
+<p>Ground truth (GT) <a href="http://ocr-d.de/daten">in the context of OCR-D</a> are
 transcriptions, specific structure descriptions and word lists. These are
 essentially available in PAGE XML format in combination with the original
 image. Essential parts of the GT were created manually.</p>
@@ -382,6 +382,10 @@ remove “salt-and-pepper” noise resulting from <a href="#Binarization">Binari
 
 <h3 id="grayscale-normalization">Grayscale normalization</h3>
 
+<blockquote>
+  <p>ISSUE: https://github.com/OCR-D/spec/issues/41</p>
+</blockquote>
+
 <p>Controlled term:</p>
 <ul>
   <li><code class="highlighter-rouge">gray_normalized</code> (<code class="highlighter-rouge">comments</code> in file)</li>
@@ -398,12 +402,12 @@ combining glyphs when they are very close together.</p>
 
 <h3 id="reading-order-detection">Reading order detection</h3>
 
-<p>Detect the <a href="#reading-order">reading order</a> of <a href="#block">blocks</a>.</p>
+<p>Detect the <a href="#reading-order">reading order</a> of <a href="#region">regions</a>.</p>
 
 <h3 id="cropping">Cropping</h3>
 
 <p>Detecting the print space in a page, as opposed to the margins. It is a form of
-<a href="#block-segmentation">block segmentation</a>.</p>
+<a href="#region-segmentation">region segmentation</a>.</p>
 
 <p>Controlled term: <code class="highlighter-rouge">preprocessing/optimization/cropping</code>.</p>
 
@@ -417,25 +421,25 @@ combining glyphs when they are very close together.</p>
 
 <p>Specific segmentation algorithms are labelled by the semantics of the regions
 they detect not the semantics of the input, i.e. an algorithm that detects
-blocks is called <a href="#block-segmentation">block segmentation</a>.</p>
+regions is called <a href="#region-segmentation">region segmentation</a>.</p>
 
-<h3 id="block-segmentation">Block segmentation</h3>
+<h3 id="region-segmentation">Region segmentation</h3>
 
-<p>Segment an image into <a href="#block">blocks</a>. Also determines whether this is a text
-or non-text block (e.g. images).</p>
+<p>Segment an image into <a href="#region">regions</a>. Also determines whether this is a text
+or non-text region (e.g. images).</p>
 
 <p>Controlled term:</p>
 <ul>
-  <li><code class="highlighter-rouge">SEG-BLOCK</code> (<code class="highlighter-rouge">USE</code>)</li>
+  <li><code class="highlighter-rouge">SEG-REGION</code> (<code class="highlighter-rouge">USE</code>)</li>
   <li><code class="highlighter-rouge">layout/segmentation/region</code> (step)</li>
 </ul>
 
-<h3 id="block-classification">Block classification</h3>
+<h3 id="region-classification">Region classification</h3>
 
-<p>Determine the <a href="#block-type">type</a> of a detected block.</p>
+<p>Determine the <a href="#region-type">type</a> of a detected region.</p>
 
 <h3 id="line-segmentation">Line segmentation</h3>
-<p>Segment text <a href="#block">blocks</a> into <a href="#textline">textlines</a>.</p>
+<p>Segment text <a href="#region">regions</a> into <a href="#textline">textlines</a>.</p>
 
 <p>Controlled term:</p>
 <ul>
@@ -446,7 +450,7 @@ or non-text block (e.g. images).</p>
 <h3 id="mp">MP</h3>
 
 <p>Module Project, a software project producing one or more tools to OCR-D. There
-are <a href="https://ocr-d.github.io/en/module-projects">currently eight MP</a> active in the OCR-D
+are <a href="https://ocr-d.de/en/module-projects">currently eight MP</a> active in the OCR-D
 community.</p>
 
 <h3 id="ocr">OCR</h3>
@@ -506,7 +510,7 @@ be developed.</p>
 
 <h2 id="ocr-d-modules">OCR-D modules</h2>
 
-<p>The <a href="https://ocr-d.github.io/en/about">OCR-D project</a> divided the various elements of an OCR
+<p>The <a href="https://ocr-d.de">OCR-D project</a> divided the various elements of an OCR
 workflow into six modules.</p>
 
 <h3 id="image-preprocessing">Image preprocessing</h3>
