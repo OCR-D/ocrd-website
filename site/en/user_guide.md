@@ -109,16 +109,17 @@ can generate it with the following commands. First, you have to create a
 workspace:
 
 ```sh
-ocrd workspace init [/path/to/your/workspace]
+ocrd workspace init [/path/to/your/workspace] # or empty for current directory
 ## alternatively using docker
 mkdir -p [/path/to/your/workspace]
 docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace init /data
 ```
 
-Then you can change into your workspace and set a unique ID
+Then you can change into your workspace directory and set a unique ID
 
 ```sh
-workspace$ ocrd workspace set-id 'unique ID'
+cd /path/to/your/workspace # if not already there
+ocrd workspace set-id 'unique ID'
 ## alternatively using docker
 docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd set-id 'unique ID'
 ```
@@ -169,10 +170,18 @@ for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -
 
 In the end, your METS file should look like this [example METS](example_mets.md).
 
-Alternatively, `ocrd-import` from [workflow-configuration](#workflow-configuration) is a shell script which does all of the above (and can convert arbitrary image formats) automatically. For usage options, see:
+Alternatively, `ocrd-import` from [workflow-configuration](#workflow-configuration) is a shell script which does all of the above (and can also convert arbitrary image formats) automatically. For usage options, see:
 
 ```sh
 ocrd-import -h
+```
+
+For example, to search for all files under `path/to/your/pictures/` recursively, and add all image files under file group `OCR-D-IMG`, keeping their filename stem as page ID, and converting all unaccepted image file formats like JPEG2000, XPS or PDF (the latter rendered to bitmap at 300 DPI) to TIFF on the fly, and also add any PAGE-XML file of the same filename stem under file group `OCR-D-SEG-PAGE`, while ignoring other files, and finally write everything to `path/to/your/pictures/mets.xml`, do:
+
+```sh
+ocrd-import --nonnum-ids --ignore --render 300 path/to/your/pictures
+## alternatively using docker
+docker run --rm -u $(id -u) -v [/path/to/your/data]:/data -w /data -- ocrd/all:maximum ocrd-import -P -i -r 300 path/to/your/pictures
 ```
 
 ## Using the OCR-D-processors
