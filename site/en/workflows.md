@@ -321,7 +321,7 @@ The input images have to be binarized for this module to work.
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/denoise.PNG" alt=""></a>
+        <a href="/assets/workflow/OCR-D-IMG-DESPECK_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESPECK_0001.png" alt=""></a>
       </td>
       <td>
         <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
