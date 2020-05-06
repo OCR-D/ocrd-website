@@ -32,6 +32,8 @@ help:
 	@echo ""
 	@echo "  Targets"
 	@echo ""
+	@echo "    deps-ubuntu       ubuntu deps"
+	@echo "    jekyll            Install jekyll dependencies"
 	@echo "    bootstrap         Set up the repos, site and tools"
 	@echo "    gt                Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    build-modules     TODO Build module information"
