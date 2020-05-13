@@ -194,7 +194,7 @@ docker pull ocrd/olena  # Installs ocrd_olena
 ```
 
 To run the containers, please see [the notes on translating native command line
-calls to docker calls above](#translating-native-commands-to-docker-calls). Make sure the image
+calls to docker calls above](/en/user_guide.md#translating-native-commands-to-docker-calls). Make sure the image
 name matches the executable. For example to run the same example in the dedicated `ocrd_tesserocr` container:
 
 ```sh
