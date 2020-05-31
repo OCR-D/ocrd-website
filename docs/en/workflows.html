@@ -309,14 +309,9 @@
           <li><a href="#example-with-ocrd-process">Example with ocrd-process</a></li>
         </ul>
       </li>
-      <li><a href="#good-results-for-all-pages">Good results for all pages</a>
-        <ul>
-          <li><a href="#example-with-ocrd-process-1">Example with ocrd-process</a></li>
-        </ul>
-      </li>
       <li><a href="#good-results-for-slower-processors">Good results for slower processors</a>
         <ul>
-          <li><a href="#example-with-ocrd-process-2">Example with ocrd-process</a></li>
+          <li><a href="#example-with-ocrd-process-1">Example with ocrd-process</a></li>
         </ul>
       </li>
     </ul>
@@ -1349,55 +1344,70 @@ page</a>)  (CER ~1%).</p>
     <tr>
       <td>1</td>
       <td>ocrd-olena-binarize</td>
-      <td>{"impl": "sauvola-ms-split"}</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>ocrd-cis-ocropy-denoise</td>
-      <td>{"level-of-operation":"page"}</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>ocrd-anybaseocr-deskew</td>
-      <td></td>
+      <td>{"impl": "sauvola"}</td>
     </tr>
 	<tr>
-      <td>5</td>
+      <td>2</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
     <tr>
-      <td>6</td>
-      <td>ocrd-cis-ocropy-segment</td>
+      <td>3</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{"impl": "kim"}</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ocrd-cis-ocropy-denoise</td>
       <td>{"level-of-operation":"page"}</td>
     </tr>
     <tr>
+      <td>5</td>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td>{"level-of-operation":"page"}</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>ocrd-tesserocr-segment-region</td>
+      <td></td>
+    </tr>
+    <tr>  
+	  <td>7a</td>
+      <td>ocrd-segment-repair</td>
+      <td>{"plausibilize": true}</td>
+    </tr>
+    <tr>
       <td>8</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{"impl": "kim"}</td>
+    </tr>
+    <tr>
+      <td>9</td>
       <td>ocrd-cis-ocropy-deskew</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
     <tr>
-      <td>9</td>
+      <td>10</td>
       <td>ocrd-cis-ocropy-clip</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
     <tr>
-      <td>10</td>
+      <td>11</td>
       <td>ocrd-cis-ocropy-segment</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
-    <tr>
-      <td>11</td>
-      <td>ocrd-cis-ocropy-resegment</td>
-      <td></td>
+    <tr>  
+	  <td>11a</td>
+      <td>ocrd-segment-repair</td>
+      <td>{"sanitize": true}</td>
     </tr>
     <tr>
-      <td>12</td>
+      <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
     </tr>
     <tr>
-      <td>13</td>
+      <td>14</td>
       <td>ocrd-calamari-recognize</td>
       <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
     </tr>
@@ -1407,93 +1417,20 @@ page</a>)  (CER ~1%).</p>
 <h3 id="example-with-ocrd-process">Example with ocrd-process</h3>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s2">"olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">sauvola-ms-split</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-CROP"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">sauvola</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
+  <span class="s2">"olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">kim</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG"</span> <span class="se">\</span>
+  <span class="s2">"segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{</span><span class="se">\"</span><span class="s2">plausibilize</span><span class="se">\"</span><span class="s2">:true}'"</span> <span class="se">\</span>
+  <span class="s2">"olena-binarize -I OCR-D-SEG-REPAIR -O OCR-D-BIN3 -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">kim</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE-RESEG -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -p '{</span><span class="se">\"</span><span class="s2">sanitize</span><span class="se">\"</span><span class="s2">:true}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
   <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{</span><span class="se">\"</span><span class="s2">checkpoint</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">/path/to/models/*.ckpt.json</span><span class="se">\"</span><span class="s2">}'"</span>
-</code></pre></div></div>
-
-<h2 id="good-results-for-all-pages">Good results for all pages</h2>
-
-<p>Overall the results are good for all kind of pages.</p>
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Step</th>
-      <th>Processor</th>
-      <th>Parameter</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "sauvola-ms-split"}</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>ocrd-cis-ocropy-denoise</td>
-      <td>{"level-of-operation":"page"}</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>ocrd-anybaseocr-deskew</td>
-      <td></td>
-    </tr>
-	<tr>
-      <td>5</td>
-      <td>ocrd-anybaseocr-crop</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>ocrd-cis-ocropy-segment</td>
-      <td>{"level-of-operation":"page"}</td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td>ocrd-tesserocr-segment-line</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>11</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td>{"level-of-operation":"line"}</td>
-    </tr>
-    <tr>
-      <td>12</td>
-      <td>ocrd-cis-ocropy-dewarp</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>13</td>
-      <td>ocrd-tesserocr-recognize</td>
-      <td>{"textequiv_level":"glyph",<br />"overwrite_words":true,<br />
-        "model":"GT4HistOCR_50000000.997_191951"}</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s2">"olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">sauvola-ms-split</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-crop -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-CROP"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-segment -I OCR-D-CROP -O OCR-D-SEG-REG -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-segment-line -I OCR-D-SEG-REG -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">line</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-CLIP-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-CLIP-DEWARP -O OCR-D-OCR -p '{</span><span class="se">\"</span><span class="s2">textequiv_level</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">glyph</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">overwrite_words</span><span class="se">\"</span><span class="s2">:true,</span><span class="se">\"</span><span class="s2">model</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">GT4HistOCR_50000000.997_191951</span><span class="se">\"</span><span class="s2">}'"</span>
 </code></pre></div></div>
 
 <h2 id="good-results-for-slower-processors">Good results for slower processors</h2>
@@ -1512,64 +1449,87 @@ page</a>)  (CER ~1%).</p>
     <tr>
       <td>1</td>
       <td>ocrd-olena-binarize</td>
-      <td>{"impl": "sauvola-ms-split"}</td>
+      <td>{"impl": "sauvola"}</td>
     </tr>
-    <tr>
+	<tr>
       <td>2</td>
-      <td>ocrd-cis-ocropy-denoise</td>
-      <td>{"level-of-operation":"page"}</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>ocrd-anybaseocr-deskew</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>5</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
     <tr>
-      <td>6</td>
+      <td>3</td>
+      <td>ocrd-olena-binarize</td>
+      <td>{"impl": "kim"}</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ocrd-cis-ocropy-denoise</td>
+      <td>{"level-of-operation":"page"}</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>{"operation_level":"page"}</td>
+    </tr>
+    <tr>
+      <td>7</td>
       <td>ocrd-tesserocr-segment-region</td>
       <td></td>
     </tr>
+    <tr>  
+	  <td>7a</td>
+      <td>ocrd-segment-repair</td>
+      <td>{"plausibilize": true}</td>
+    </tr>
     <tr>
-      <td>8</td>
+      <td>9</td>
       <td>ocrd-cis-ocropy-deskew</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
     <tr>
       <td>10</td>
-      <td>ocrd-cis-ocropy-segment</td>
+      <td>ocrd-cis-ocropy-clip</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
     <tr>
-      <td>12</td>
+      <td>11</td>
+      <td>ocrd-tesserocr-segment-line</td>
+      <td></td>
+    </tr>
+    <tr>  
+	  <td>11a</td>
+      <td>ocrd-segment-repair</td>
+      <td>{"sanitize": true}</td>
+    </tr>
+    <tr>
+      <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
     </tr>
     <tr>
-      <td>13</td>
-      <td>ocrd-tesserocr-recognize</td>
-      <td>{"textequiv_level":"glyph",<br />"overwrite_words":true,<br />
-        "model":"GT4HistOCR_50000000.997_191951"}</td>
+      <td>14</td>
+      <td>ocrd-calamari-recognize</td>
+      <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
     </tr>
   </tbody> 
 </table>
 
-<h3 id="example-with-ocrd-process-2">Example with ocrd-process</h3>
+<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s2">"olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">sauvola-ms-split</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-denoise -I OCR-D-BIN -O OCR-D-BIN-DENOISE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-DESKEW-PAGE"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-crop -I OCR-D-DESKEW-PAGE -O OCR-D-CROP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-segment-region -I OCR-D-CROP -O OCR-D-SEG-REG"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-DEWARP -O OCR-D-OCR -p '{</span><span class="se">\"</span><span class="s2">textequiv_level</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">glyph</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">overwrite_words</span><span class="se">\"</span><span class="s2">:true,</span><span class="se">\"</span><span class="s2">model</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">GT4HistOCR_50000000.997_191951</span><span class="se">\"</span><span class="s2">}'"</span>
+  <span class="s2">"olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">sauvola</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
+  <span class="s2">"olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{</span><span class="se">\"</span><span class="s2">impl</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">kim</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -p '{</span><span class="se">\"</span><span class="s2">operation_level</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">page</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG"</span> <span class="se">\</span>
+  <span class="s2">"segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{</span><span class="se">\"</span><span class="s2">plausibilize</span><span class="se">\"</span><span class="s2">:true}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{</span><span class="se">\"</span><span class="s2">level-of-operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">region</span><span class="se">\"</span><span class="s2">}'"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
+  <span class="s2">"segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -p '{</span><span class="se">\"</span><span class="s2">sanitize</span><span class="se">\"</span><span class="s2">:true}'"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{</span><span class="se">\"</span><span class="s2">checkpoint</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">/path/to/models/*.ckpt.json</span><span class="se">\"</span><span class="s2">}'"</span>
 </code></pre></div></div>
 
       </main>
