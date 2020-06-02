@@ -1126,7 +1126,7 @@ ocrd process \
   "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
   "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{\"plausibilize\":true}'" \
   "olena-binarize -I OCR-D-SEG-REPAIR -O OCR-D-BIN3 -p '{\"impl\": \"kim\"}'" \
-  "cis-ocropy-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
+  "cis-ocropy-deskew -I OCR-D-BIN3 -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
   "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
   "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -p '{\"sanitize\":true}'" \
