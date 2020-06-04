@@ -15,6 +15,6 @@ kennenlernen und die Pilotierungsarbeiten abgestimmt werden können.
 Zu der Videokonferenz sind auch Interessenten willkommen, die selbst keine Absichtserklärung eingereicht haben und derzeit noch auf der Suche
 nach einem geeigneten Partner sind, mit dem sie sich in die dritte OCR-D-Phase einbringen könnten. 
 
-Bei Interesse melden Sie sich bitte **bis zum 12. Juni** unter mailto:engl@hab.de zur Videokonferenz an.
+Bei Interesse melden Sie sich bitte **bis zum 12. Juni** unter engl@hab.de zur Videokonferenz an.
 
 Wir freuen uns auf die Zusammenarbeit und eine erfolgreiche Pilotierungsphase!
