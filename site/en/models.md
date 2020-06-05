@@ -45,7 +45,7 @@ OCR-D's Tesseract wrapper,
 [ocrd_tesserocr](https://github.com/OCR-D/ocrd_tesserocr) and more
 specifically, the `ocrd-tesserocr-recognize` processor, expects the name of the
 model(s) to be provided as the `model` parameter. Multiple models can be
-combined by concatenating with `+`:
+combined by concatenating with `+` (which generally improves accuracy but always slows processing):
 
 ```sh
 # Use the deu and frk models
