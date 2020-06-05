@@ -1,7 +1,7 @@
 # Models for OCR-D processors
 
 OCR engines rely on pre-trained models for their recognition. Every engine has
-its own internal format(s) for models, some support central storage of models
+its own internal format(s) for models. Some support central storage of models
 at a specific location (tesseract, ocropy, kraken) while others require the full
 path to a model (calamari).
 
@@ -17,7 +17,7 @@ In the meantime, this guide will show you, for each OCR engine:
 
 ## Tesseract / ocrd_tesserocr
 
-Tesseract models are single files witha `.traineddata` extension.
+Tesseract models are single files with a `.traineddata` extension.
 
 Tesseract expects models to be in a directory `tessdata` within what Tesseract
 calls `TESSDATA_PREFIX`. When installing Tesseract from Ubuntu packages, that
@@ -57,13 +57,13 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -p '{"model": "scri
 ## Ocropy / ocrd_cis
 
 An Ocropy model is simply the neural network serialized as with Python's pickle
-mechanism and are generally distributed in a gzipped form, with an `.pyrnn.gz`
+mechanism and is generally distributed in a gzipped form, with an `.pyrnn.gz`
 extension.
 
 Ocropy has a rather convoluted algorithm to look up models, so we recommend you
 explicitly set the `OCROPUS_DATA` variable to point to the directory with
 ocropy's models. E.g. if you intend to store your models in `$HOME/ocropus-models`, add the following
-to you `$HOME/.bashrc`: `export OCROPUS_DATA=$HOME/ocropus-models`.
+to your `$HOME/.bashrc`: `export OCROPUS_DATA=$HOME/ocropus-models`.
 
 We recommend you download the following models, either by downloading and
 saving to the right location or by running `make install-models-ocropus` when
@@ -101,5 +101,5 @@ To use a specific model with OCR-D's calamari wrapper
 the `ocrd-calamari-recognize` processor, use the `checkpoint` parameter:
 
 ```sh
-ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -p '{"checkpoint": "/path/to/mode/*.ckpt.json"}'
+ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -p '{"checkpoint": "/path/to/model/*.ckpt.json"}'
 ```
