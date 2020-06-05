@@ -41,6 +41,17 @@ using `ocrd_all`:
   * [script/Fraktur](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata)
   * [@stweil's GT4HistOCR model](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/fast/Fraktur_50000000.334_450937.traineddata)
 
+If you installed Tesseract with Ubuntu's `apt` package manager, you may want to install
+standard models like `deu` or `script/Fraktur` with `apt`:
+
+```sh
+sudo apt install tesseract-ocr-deu tesseract-ocr-script-frak
+```
+
+**NOTE:** When installing with `apt`, he `script/*` models are installed
+without the `script/` prefix, so `script/Latin` becomes just `Latin`,
+`script/Fraktur` becomes `Fraktur` etc.
+
 OCR-D's Tesseract wrapper,
 [ocrd_tesserocr](https://github.com/OCR-D/ocrd_tesserocr) and more
 specifically, the `ocrd-tesserocr-recognize` processor, expects the name of the
@@ -57,7 +68,7 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -p '{"model": "scri
 ## Ocropy / ocrd_cis
 
 An Ocropy model is simply the neural network serialized as with Python's pickle
-mechanism and is generally distributed in a gzipped form, with an `.pyrnn.gz`
+mechanism and is generally distributed in a gzipped form, with a `.pyrnn.gz`
 extension.
 
 Ocropy has a rather convoluted algorithm to look up models, so we recommend you
