@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <link rel="stylesheet" href="/assets/ocrd.css"></link>
+</head>
+<body><nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/about">The OCR-D-project</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/contact">Get in touch!</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/blog">Blog</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/data">Data</a>
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/initial-tests">Initial tests</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/user_survey">User Survey</a>
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/imprint">Imprint</a>
+          
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Developers</a>
+        <div class="navbar-dropdown">
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/spec">Specifications</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+          
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">Users</a>
+        <div class="navbar-dropdown">
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/setup">Setup Guide</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/user_guide">User Guide</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/workflows">Workflows</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/models">Models</a>
+          
+          
+          
+          
+          
+          <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+          
+          
+        </div>
+      </div>
+      
+      
+      
+      <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+         <a href="/de/faq.html" title="View in German">
+              de
+            </a> 
+      </span>
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#models-for-ocr-d-processors">Models for OCR-D processors</a>
+    <ul>
+      <li><a href="#tesseract--ocrd_tesserocr">Tesseract / ocrd_tesserocr</a></li>
+      <li><a href="#ocropy--ocrd_cis">Ocropy / ocrd_cis</a></li>
+      <li><a href="#calamari--ocrd_calamari">Calamari / ocrd_calamari</a></li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="models-for-ocr-d-processors">Models for OCR-D processors</h1>
+
+<p>OCR engines rely on pre-trained models for their recognition. Every engine has
+its own internal format(s) for models. Some support central storage of models
+at a specific location (tesseract, ocropy, kraken) while others require the full
+path to a model (calamari).</p>
+
+<p>Likewise, model distribution is not currently centralised within OCR-D though we
+are working towards a central model repository.</p>
+
+<p>In the meantime, this guide will show you, for each OCR engine:</p>
+
+<ul>
+  <li>which types of models are supported</li>
+  <li>where to store models locally</li>
+  <li>which currently available models we recommend</li>
+  <li>how to invoke the resp. OCR-D wrapper for the engine with a specific model</li>
+</ul>
+
+<h2 id="tesseract--ocrd_tesserocr">Tesseract / ocrd_tesserocr</h2>
+
+<p>Tesseract models are single files with a <code class="highlighter-rouge">.traineddata</code> extension.</p>
+
+<p>Tesseract expects models to be in a directory <code class="highlighter-rouge">tessdata</code> within what Tesseract
+calls <code class="highlighter-rouge">TESSDATA_PREFIX</code>. When installing Tesseract from Ubuntu packages, that
+location is <code class="highlighter-rouge">/usr/share/tesseract-ocr/4.00/tessdata</code>. When building from source
+using <a href="htttps://github.com/OCR-D/ocrd_all">ocrd_all</a>, the models are searched
+at <code class="highlighter-rouge">/path/to/ocrd_all/venv/share/tessdata</code>. If you want to override the
+locations, you can set the <code class="highlighter-rouge">TESSDATA_PREFIX</code> environment variable, e.g. if you
+want the models location to be <code class="highlighter-rouge">$HOME/tessdata</code>, you can by adding to your
+<code class="highlighter-rouge">$HOME/.bashrc</code>: <code class="highlighter-rouge">export TESSDATA_PREFIX=$HOME</code>.</p>
+
+<p>We recommend you download the following models, either by downloading and
+saving to the right location or by running <code class="highlighter-rouge">make install-models-tesseract</code> when
+using <code class="highlighter-rouge">ocrd_all</code>:</p>
+
+<ul>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/equ.traineddata">equ</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/osd.traineddata">osd</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/eng.traineddata">eng</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/deu.traineddata">deu</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/frk.traineddata">frk</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata">script/Latin</a></li>
+  <li><a href="https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata">script/Fraktur</a></li>
+  <li><a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/fast/Fraktur_50000000.334_450937.traineddata">@stweil’s GT4HistOCR model</a></li>
+</ul>
+
+<p>OCR-D’s Tesseract wrapper,
+<a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr</a> and more
+specifically, the <code class="highlighter-rouge">ocrd-tesserocr-recognize</code> processor, expects the name of the
+model(s) to be provided as the <code class="highlighter-rouge">model</code> parameter. Multiple models can be
+combined by concatenating with <code class="highlighter-rouge">+</code> (which generally improves accuracy but always slows processing):</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Use the deu and frk models</span>
+ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESS <span class="nt">-p</span> <span class="s1">'{"model": "deu+frk"}'</span>
+<span class="c"># Use the script/Fraktur model</span>
+ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESS <span class="nt">-p</span> <span class="s1">'{"model": "script/Fraktur"}'</span>
+</code></pre></div></div>
+
+<h2 id="ocropy--ocrd_cis">Ocropy / ocrd_cis</h2>
+
+<p>An Ocropy model is simply the neural network serialized as with Python’s pickle
+mechanism and is generally distributed in a gzipped form, with an <code class="highlighter-rouge">.pyrnn.gz</code>
+extension.</p>
+
+<p>Ocropy has a rather convoluted algorithm to look up models, so we recommend you
+explicitly set the <code class="highlighter-rouge">OCROPUS_DATA</code> variable to point to the directory with
+ocropy’s models. E.g. if you intend to store your models in <code class="highlighter-rouge">$HOME/ocropus-models</code>, add the following
+to your <code class="highlighter-rouge">$HOME/.bashrc</code>: <code class="highlighter-rouge">export OCROPUS_DATA=$HOME/ocropus-models</code>.</p>
+
+<p>We recommend you download the following models, either by downloading and
+saving to the right location or by running <code class="highlighter-rouge">make install-models-ocropus</code> when
+using <code class="highlighter-rouge">ocrd_all</code>:</p>
+
+<ul>
+  <li><a href="https://github.com/zuphilip/ocropy-models/raw/master/en-default.pyrnn.gz">en-default.pyrnn.gz</a></li>
+  <li><a href="https://github.com/zuphilip/ocropy-models/raw/master/fraktur.pyrnn.gz">fraktur.pyrnn.gz</a></li>
+  <li><a href="https://github.com/jze/ocropus-model_fraktur/raw/master/fraktur.pyrnn.gz">@jze’s fraktur.pyrnn.gz</a> (save as <code class="highlighter-rouge">fraktur-jze.pyrnn.gz</code>)</li>
+  <li><a href="https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz">@chreul’s  LatinHist.pyrnn.gz</a></li>
+</ul>
+
+<p>To use a specific model with OCR-D’s ocropus wrapper in <a href="https://github.com/cisocrgroup/ocrd_cis">ocrd_cis</a> and more specifically, the <code class="highlighter-rouge">ocrd-cis-ocropy-recognize</code> processor, use the <code class="highlighter-rouge">model</code> parameter:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-cis-ocropy-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-OCRO <span class="nt">-p</span> <span class="s1">'{"model": "fraktur-jze.pyrnn.gz"}'</span>
+</code></pre></div></div>
+
+<h2 id="calamari--ocrd_calamari">Calamari / ocrd_calamari</h2>
+
+<p>Calamari models are Tensorflow model directories. For distribution, this
+directory is usually packed to a tarball or ZIP file. Once downloaded, these
+containers must be unpacked to a directory again.</p>
+
+<p>As calamari does not have a model discovery setup, you must always provide the
+path with a wildcard listing all <code class="highlighter-rouge">*.ckpt.json</code> (“checkpoint”) files.</p>
+
+<p>We recommend you download the following model, either by downloading and
+unpacking manually or by using <code class="highlighter-rouge">make install-models-calamari</code> if using
+<code class="highlighter-rouge">ocrd_all</code>:</p>
+
+<ul>
+  <li><a href="https://qurator-data.de/calamari-models/GT4HistOCR/model.tar.xz">@mike-gerber’s GT4HistOCR model</a></li>
+</ul>
+
+<p>To use a specific model with OCR-D’s calamari wrapper
+<a href="https://github.com/OCR-D/ocrd_calamari">ocrd_calamari</a> and more specifically,
+the <code class="highlighter-rouge">ocrd-calamari-recognize</code> processor, use the <code class="highlighter-rouge">checkpoint</code> parameter:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-CALA <span class="nt">-p</span> <span class="s1">'{"checkpoint": "/path/to/model/*.ckpt.json"}'</span>
+</code></pre></div></div>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+      <a href="https://github.com/OCR-D">GitHub</a>
+      |
+      <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+      |
+      <a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+      |
+      <a href="/sitemap.xml">sitemap.xml</a>
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>
