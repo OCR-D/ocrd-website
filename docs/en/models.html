@@ -239,6 +239,16 @@ using <code class="highlighter-rouge">ocrd_all</code>:</p>
   <li><a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/fast/Fraktur_50000000.334_450937.traineddata">@stweil’s GT4HistOCR model</a></li>
 </ul>
 
+<p>If you installed Tesseract with Ubuntu’s <code class="highlighter-rouge">apt</code> package manager, you may want to install
+standard models like <code class="highlighter-rouge">deu</code> or <code class="highlighter-rouge">script/Fraktur</code> with <code class="highlighter-rouge">apt</code>:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>tesseract-ocr-deu tesseract-ocr-script-frak
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> When installing with <code class="highlighter-rouge">apt</code>, he <code class="highlighter-rouge">script/*</code> models are installed
+without the <code class="highlighter-rouge">script/</code> prefix, so <code class="highlighter-rouge">script/Latin</code> becomes just <code class="highlighter-rouge">Latin</code>,
+<code class="highlighter-rouge">script/Fraktur</code> becomes <code class="highlighter-rouge">Fraktur</code> etc.</p>
+
 <p>OCR-D’s Tesseract wrapper,
 <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr</a> and more
 specifically, the <code class="highlighter-rouge">ocrd-tesserocr-recognize</code> processor, expects the name of the
@@ -254,7 +264,7 @@ ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="
 <h2 id="ocropy--ocrd_cis">Ocropy / ocrd_cis</h2>
 
 <p>An Ocropy model is simply the neural network serialized as with Python’s pickle
-mechanism and is generally distributed in a gzipped form, with an <code class="highlighter-rouge">.pyrnn.gz</code>
+mechanism and is generally distributed in a gzipped form, with a <code class="highlighter-rouge">.pyrnn.gz</code>
 extension.</p>
 
 <p>Ocropy has a rather convoluted algorithm to look up models, so we recommend you
