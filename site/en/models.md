@@ -1,3 +1,10 @@
+---
+layout: page
+lang: en
+lang-ref: faq
+toc: true
+---
+
 # Models for OCR-D processors
 
 OCR engines rely on pre-trained models for their recognition. Every engine has
