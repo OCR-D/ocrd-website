@@ -121,7 +121,7 @@ Then you can change into your workspace directory and set a unique ID
 cd /path/to/your/workspace # if not already there
 ocrd workspace set-id 'unique ID'
 ## alternatively using docker
-docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd set-id 'unique ID'
+docker run --rm -u $(id -u) -v [/path/to/your/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace set-id 'unique ID'
 ```
 
 and copy the folder containing your pictures to be processed into the workspace:
