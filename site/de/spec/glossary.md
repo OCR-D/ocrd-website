@@ -17,6 +17,12 @@ This section is non-normative.
 
 See [Region](#region)
 
+### Border
+
+From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_BorderType.html)
+
+> Border of the actual page (if the scanned image contains parts not belonging to the page).
+
 ### Font family
 
 Within OCR-D, *font family* refers to grouping elements by font similarity. The
@@ -273,6 +279,17 @@ the prediction of text and layout recognition engines.
 Storing results of OCR and OLR indefinitely, taking into account versioning,
 multiple runs, provenance/parametrization and providing access to these saved
 snapshots in a granular fashion.
+
+### Print space
+
+From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
+
+> Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
+>
+> It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
+>
+> It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.
+
 
 ### Quality assurance
 

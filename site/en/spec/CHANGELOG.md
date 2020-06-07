@@ -14,6 +14,13 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.7.0] - 2020-06-07
+
+Added:
+
+  * ocrd-tool.json: Parameter values may be objects, #143
+  * glossary: definitions of "print space" and "border", #114
+
 ## [3.6.0] - 2020-04-30
 
 Added:
@@ -332,6 +339,7 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.7.0]: ../../compare/v3.7.0...v3.6.0
 [3.6.0]: ../../compare/v3.6.0...v3.5.0
 [3.5.0]: ../../compare/v3.5.0...v3.4.2
 [3.4.2]: ../../compare/v3.4.2...v3.4.1
