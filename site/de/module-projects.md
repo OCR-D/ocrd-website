@@ -71,8 +71,8 @@ und andererseits das volle Informationsspektrum ausgenutzt werden kann.
   </a>
 </p>
 
-_Julius-Maximilians-Universität Würzburg  <br/>
-  Institut für Informatik: Lehrstuhl für Künstliche Intelligenz und angewandte Informatik_
+_Julius-Maximilians-Universität Würzburg_ <br/>
+_Institut für Informatik: Lehrstuhl für Künstliche Intelligenz und angewandte Informatik_
 
 GitHub: [ocr-d-modul-2-segmentierung](https://github.com/ocr-d-modul-2-segmentierung)
 
@@ -104,8 +104,8 @@ weiteren nah am Text liegenden Bildern sowie mehrspaltigen Layouts.
   </a>
 </p>
 
-_Universität Leipzig  <br/>
-  Institut für Informatik: Abteilung Automatische Sprachverarbeitung_
+_Universität Leipzig_  <br/>
+ Institut für Informatik: Abteilung Automatische Sprachverarbeitung_
 
 GitHub: [ASVLeipzig/cor-asv-fst](https://github.com/ASVLeipzig/cor-asv-fst)
 
@@ -161,8 +161,8 @@ zur Verfügung.
   </a>
 </p>
 
-_Universität Mannheim  <br/>
-  Universitätsbibliothek Mannheim_
+_Universität Mannheim_<br/>
+_Universitätsbibliothek Mannheim_
 
 GitHub: [tesseract-ocr/tesseract/](http://github.com/tesseract-ocr/tesseract/ "http://github.com/tesseract-ocr/tesseract/")
 
@@ -205,8 +205,8 @@ Datensammlung [_GT4HistOCR_](https://zenodo.org/record/1344132) trainiert.
   </a>
 </p>
 
-_Ludwig-Maximilians-Universität München  
-  Centrum für Informations- und Sprachverarbeitung (CIS)_
+_Ludwig-Maximilians-Universität München_<br/>
+_Centrum für Informations- und Sprachverarbeitung (CIS)_
 
 GitHub: cisocrgroup/ocrd-postcorrection](https://github.com/cisocrgroup/ocrd-postcorrection), [cisocrgroup/cis-ocrd-py](https://github.com/cisocrgroup/cis-ocrd-py)
 
@@ -246,12 +246,12 @@ gültigen Konventionen.
   </a>
 </p>
 
-_Universität Leipzig_   <br/>
-  _Institut für Informatik: Lehrstuhl für Digital Humanities_   <br/>
-_Friedrich-Alexander-Universität Erlangen-Nürnberg    <br/>
-  Department Informatik: Lehrstuhl für Informatik 5: Mustererkennung_  
-_Johannes Gutenberg-Universität Mainz   <br/>
-  Gutenberg-Institut für Weltliteratur und schriftorientierte Medien: Abteilung Buchwissenschaft_
+_Universität Leipzig_<br/>
+_Institut für Informatik: Lehrstuhl für Digital Humanities_<br/>
+_Friedrich-Alexander-Universität Erlangen-Nürnberg_ <br/>
+_Department Informatik: Lehrstuhl für Informatik 5: Mustererkennung_<br/>
+_Johannes Gutenberg-Universität Mainz_<br/>
+ Gutenberg-Institut für Weltliteratur und schriftorientierte Medien: Abteilung Buchwissenschaft_
 
 GitHub: [OCR-D/okralact](https://github.com/OCR-D/okralact), [seuretm/ocrd_typegroups_classifier](https://github.com/seuretm/ocrd_typegroups_classifier)
 
@@ -295,9 +295,9 @@ der historischen Forschung adressieren würde.
   </a>
 </p>
 
-_Georg-August-Universität Göttingen  <br/>bb
-  Niedersächsische Staats- und Universitätsbibliothek_   <br/>bb
-_Gesellschaft für Wissenschaftliche Datenverarbeitung mbH Göttingen_ <br/>bb
+_Georg-August-Universität Göttingen_  <br/>
+_Niedersächsische Staats- und Universitätsbibliothek_   <br/>
+_Gesellschaft für Wissenschaftliche Datenverarbeitung mbH Göttingen_ <br/>
 
 GitHub: [subugoe/OLA-HD-IMPL](https://github.com/subugoe/OLA-HD-IMPL)
 

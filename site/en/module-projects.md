@@ -89,8 +89,8 @@ can be used.
   </a>
 </p>
 
-_Julius-Maximilians-University of Würzburg   <br/>
-Institute of Computer Science: Chair of Artificial Intelligence and Applied Computer Science_
+_Julius-Maximilians-University of Würzburg_   <br/>
+_Institute of Computer Science: Chair of Artificial Intelligence and Applied Computer Science_
 
 Project participants: Frank Puppe, Alexander Gehrke  
 GitHub: [ocr-d-modul-2-segmentierung](https://github.com/ocr-d-modul-2-segmentierung)
@@ -123,8 +123,8 @@ the text as well as multi-column layouts.
   </a>
 </p>
 
-_University of Leipzig  <br/>
-Institut für Informatik: Department of Automatic Language Processing_
+_University of Leipzig_ <br/>
+_Institut für Informatik: Department of Automatic Language Processing_
 
 Project participants: Gerhard Heyer, Robert Sachunsky  
 GitHub: [ASVLeipzig/cor-asv-fst](https://github.com/ASVLeipzig/cor-asv-fst)
@@ -179,8 +179,8 @@ interfaces for processing and evaluation are available for all modules.
   </a>
 </p>
 
-_University of Mannheim  <br/>
-University Library Mannheim_
+_University of Mannheim_ <br/>
+_University Library Mannheim_
 
 Project participants: Stefan Weil, Noah Metzger  
 GitHub: [tesseract-ocr/tesseract/](http://github.com/tesseract-ocr/tesseract/ "http://github.com/tesseract-ocr/tesseract/")
@@ -222,8 +222,8 @@ data collection [_GT4HistOCR_](https://zenodo.org/record/1344132).
   </a>
 </p>
 
-_Ludwig-Maximilians-University of Munich  
-Centre for Information and Language Processing (CIS)_
+_Ludwig-Maximilians-University of Munich_<br/>
+_Centre for Information and Language Processing (CIS)_
 
 Project participants: Klaus Schulz, Floran Fink, Tobias Englmeier  
 GitHub: [https://github.com/cisocrgroup/ocrd-postcorrection](https://github.com/cisocrgroup/ocrd-postcorrection), [https://github.com/cisocrgroup/cis-ocrd-py](https://github.com/cisocrgroup/cis-ocrd-py)
@@ -243,14 +243,12 @@ The entire system is integrated into the OCR-D workflow and follows the conventi
   </a>
 </p>
 
-<address>
-_University Leipzig_	<br/>  
-  _Institute of Computer Science: Chair of Digital Humanities_	<br/>
-_Friedrich Alexander University Erlangen-Nuremberg	<br/>
-  Department of Computer Science: Chair of Computer Science 5: Pattern Recognition_  
-_Johannes Gutenberg University Mainz	<br/>
-  Gutenberg Institute for World Literature and Writing-Oriented Media: Department of Book Science_
-</address>
+_University Leipzig_<br/>  
+_Institute of Computer Science: Chair of Digital Humanities_<br/>
+_Friedrich Alexander University Erlangen-Nuremberg_<br/>
+_Department of Computer Science: Chair of Computer Science 5: Pattern Recognition_<br/>
+_Johannes Gutenberg University Mainz_<br/>
+_Gutenberg Institute for World Literature and Writing-Oriented Media: Department of Book Science_
 
 Project participants: Gregory Crane, Nikolaus Weichselbaumer, Saskia Limbach, Andreas Meier, Vincent Christlein, Mathias Seuret, Rui Dong  
 
@@ -296,8 +294,8 @@ desiderata of historical research.
   </a>
 </p>
 
-_Georg-August-University of Göttingen  
-State and University Library of Lower Saxony_  
+_Georg-August-University of Göttingen_<br/>
+_State and University Library of Lower Saxony_<br/>
 _Society for Scientific Data Processing mbH Göttingen_
 
 Project participants: Mustafa Dogan, Kristine Schima-Voigt, Philip Wieder, Triet Doan, Jörg-Holger Panzer  
