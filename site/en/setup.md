@@ -208,7 +208,7 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/tesserocr ocrd-tesserocr-s
 > ocrd_tesserocr requires **tesseract-ocr >= 4.1.0**. But the Tesseract packages
 > bundled with **Ubuntu < 19.10** are too old. If you are on Ubuntu 18.04 LTS,
 > please enable [Alexander Pozdnyakov PPA](https://launchpad.net/~alex-p/+archive/ubuntu/tesseract-ocr),
-> which has up-to-date builds of tesseract and its dependecies:
+> which has up-to-date builds of tesseract and its dependencies:
 > 
 > ```sh
 > sudo add-apt-repository ppa:alex-p/tesseract-ocr
