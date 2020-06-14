@@ -26,7 +26,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
@@ -62,7 +62,7 @@ separate the background from the foreground.
 
 **Note:** Binarization tools usually provide a threshold parameter which allows
 you to increase or decrease the weight of the foreground. This is optional and
-can be especially usefull for images which have not been enhanced.
+can be especially useful for images which have not been enhanced.
 
 <table class="before-after">
   <tbody>
@@ -83,7 +83,7 @@ can be especially usefull for images which have not been enhanced.
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
@@ -207,7 +207,7 @@ For better results, the cropped images can be binarized again at this point or l
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
@@ -412,7 +412,7 @@ if they are curved. The input image has to be binarized for the module to work.
       </pre>
       </code>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is missleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is misleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
       <td>
         <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -p '{\"pix2pixHD\":\"/path/to/pix2pixHD/\",\"model_name\":\"/path/to/pix2pixHD/models\"}'</code>
       </td>
@@ -610,7 +610,7 @@ In this processing step, text region images are taken as input and their skew is
 In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
 text regions of a page can be removed. A connected component analysis is run on every text region,
 as well as its overlapping neighbours. Now for each conflicting binary object,
-a rule based on majority and proper containment determins whether it belongs to the neighbour, and can therefore
+a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
 be clipped to the background. 
 
 This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)

@@ -423,7 +423,7 @@ parameter.
 ### Specifying New OCR-D-Workflows
 
 When you want to specify a new workflow adapted to the features of particular
-images, we recommend using an exisiting workflow as specified in `Taverna` or
+images, we recommend using an existing workflow as specified in `Taverna` or
 `workflow-configuration` as starting point. You can adjust it to your needs by
 exchanging or adding the specified processors of parameters. For an overview on
 the existing processors, their tasks and features, see the [next section](#get-more-information-about-processors) and our [workflow guide](workflows.html).
