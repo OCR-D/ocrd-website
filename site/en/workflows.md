@@ -26,7 +26,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
@@ -83,7 +83,7 @@ can be especially useful for images which have not been enhanced.
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
@@ -207,7 +207,7 @@ For better results, the cropped images can be binarized again at this point or l
 <table class="processor-table">
   <thead>
     <tr>
-      <th>Procecssor</th>
+      <th>Processor</th>
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
