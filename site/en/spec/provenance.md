@@ -69,7 +69,7 @@ All files not referenced in METS must be linked to their content in provenance. 
 
 ### Ingest Workspace to OCR-D Repositorium
 At least before ingesting into repository/LTA, the entire provenance must be stored in one file (metadata/ocrd_provenance.xml) to make the provenance searchable.
-Therfore all the provenance files are merged into one big file.
+Therefore all the provenance files are merged into one big file.
 This file replaces all provenance files stored in subfolder 'metadata'
 
 ## Example

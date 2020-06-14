@@ -101,7 +101,7 @@ Bavarian State Library Munich
 
 ## Scientific Advisory Board
 
-The project is counseled by a scientific advisory board, which is consituted by the following persons at the moment:
+The project is counseled by a scientific advisory board, which is constituted by the following persons at the moment:
 
 ### Gregory Crane
 

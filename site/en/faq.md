@@ -30,7 +30,7 @@ gamut of possible OCR workflow steps. ABBYY is simple to use but offers few
 options for customization whereas OCR-D workflows can be fine-tuned for best
 recognition of specific corpora. OCR-D has a strong focus on historical prints,
 trainable layout detection and text recognition and open interfaces to
-accomodate future developments, whereas ABBYY performs more strongly for modern
+accommodate future developments, whereas ABBYY performs more strongly for modern
 print. Finally, OCR-D is a community effort with a strong focus on transparency
 and Free Software.
 
@@ -50,7 +50,7 @@ the wider Tesseract community.
 ### What is the difference between OCR-D and TRANSKRIBUS?
 
 [TRANSKRIBUS](https://transkribus.eu) is a software platform and server
-infrastructure to make it easier for Digital Humanities practicioners to
+infrastructure to make it easier for Digital Humanities practitioners to
 collaborate on Handwriting Text Recognition. Apart from the different use cases
 - historical prints for OCR-D, historical manuscripts for TRANSKRIBUS - there
 are differences in philosophy: All components of OCR-D are freely available as
@@ -91,7 +91,7 @@ tool offers simple ways to create new METS files or augment existing ones.
 OCR-D is Free Software, licensed under the terms of the Apache 2.0 license and
 will be free to use and adapt in perpetuity.
 
-### How are the full texts produced by OCR-D presented to the (library) user? Are they integrated into the library catalogue and can therefore be used for full text search in the catalogue?
+### How are the full texts produced by OCR-D presented to the (library) user? Are they integrated into the library catalog and can therefore be used for full text search in the catalog?
 
 ### What are the system requirements for OCR-D-software?
 

@@ -137,7 +137,7 @@ $ pip install ocrd
 ### Generic setup
 
 In this variant, you still need to install the `ocrd` Python package. But since
-it's only used for its CLI (and as a depencency for Python-based OCR-D
+it's only used for its CLI (and as a dependency for Python-based OCR-D
 software), you can install it system-wide:
 
 ```sh
@@ -286,7 +286,7 @@ Example:
 
 The `tools` section is an object with the key being the name of the executable described and the value being an object with the following properties (bold means required):
 
-  * **`executable`**: Name of the exceutable. Must match the key and start with `ocrd-`
+  * **`executable`**: Name of the executable. Must match the key and start with `ocrd-`
   * `parameters`: Description of [the parameters this tool accepts](#metadata-about-parameters)
   * **`description`**: Concise description what the tool does
   * **`categories`**: Tools belong to these categories, representing modules within the OCR-D project structure, [list is part of the specs](https://ocr-d.github.io/ocrd_tool)
@@ -601,7 +601,7 @@ $ ocrd ocrd-tool /path/to/ocrd_wip/ocrd-tool.json tool ocrd-wip-xyzzy dump
   "description": "Nothing happens",
   "categories": ["Text recognition and optimization", "Arcane Magic"],
   "steps": ["recognition/text-recognition"],
-  "exceutable": "ocrd-wip-xyzzy"
+  "executable": "ocrd-wip-xyzzy"
 }
 
 # Description
