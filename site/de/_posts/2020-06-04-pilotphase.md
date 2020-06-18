@@ -7,7 +7,7 @@ lang-ref: pilotphase
 author: Elisabeth Engl
 ---
 
-Wir freuen uns sehr über das große Interesse an der DFG-Ausschreibung zur Implementierung der OCR-D-Software. Als OCR-D-Koordinierungsprojekt
+Wir freuen uns sehr über das [große Interesse an der DFG-Ausschreibung zur Implementierung der OCR-D-Software](große Interesse an der DFG-Ausschreibung zur Implementierung der OCR-D-Software). Als OCR-D-Koordinierungsprojekt
 werden wir die geplanten Vorhaben von der Pilotierung an begleiten und den von der DFG gewünschten Austausch unter den Interessenten befördern.
 Zum Auftakt der Pilotierungsphase veranstalten wir am **19. Juni, 9-13 Uhr** eine große **Videokonferenz**, bei der sich alle Interessenten
 kennenlernen und die Pilotierungsarbeiten abgestimmt werden können.
