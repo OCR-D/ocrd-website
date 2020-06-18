@@ -1,6 +1,6 @@
 ---
 lang: en
-title: OCR-D auf EuropeanaTech Insights
+title: OCR-D in EuropeanaTech Insights
 tags: [paper, DATeCH, 2019]
 layout: post
 ---
