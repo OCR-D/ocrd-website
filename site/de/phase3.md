@@ -16,7 +16,7 @@ Bei der DFG sind fristgerecht 14 Absichtserklärungen eingegangen:
 
 * [SUUB Bremen, Uni Frankfurt, ULB Bonn](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/bremen_frankfurt_bonn.pdf)
 * [ULB Darmstadt](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/darmstadt.pdf)
-* [SLUB Dresden, UB Mannheim, UB Braunschweig](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/darmstadt.pdf)
+* [SLUB Dresden, UB Mannheim, UB Braunschweig](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/dresden_mannheim_braunschweig.pdf)
 * [SUB Göttingen, GWDG Göttingen](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/goettingen.pdf)
 * [ULB Halle](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/halle.pdf)
 * [Uni Hamburg](https://www.dfg.de/download/pdf/foerderung/programme/lis/absichtserklaerungen_ocrd_2020/hamburg.pdf)
