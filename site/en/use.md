@@ -14,5 +14,7 @@ This section contains all information relevant for using the OCR-D-software in l
   * Instructions how to use OCR-D components
 * [Workflows](/en/workflows)
   * Steps of an OCR-D-workflow with sample workflows
+* [Models](/en/models)
+  * Overview of models for different OCR-engines
 * [Glossary](/en/spec/glossary)
   * Glossary of technical terms used in OCR-D
