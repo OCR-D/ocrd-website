@@ -71,7 +71,7 @@ It is worth investing some time in studying quality-of-life features of git, suc
 
 ### Branches and Pull Requests
 
-As mentioned in the [section on Pull Requests](#pull-requests), you should create *feature branches* that contain a narrow set of commits.
+As mentioned in the [section on Pull Requests](#pull-requests), you should organize your changes in *feature branches* that contain a narrow set of commits. When new features depend on others, don't hesitate to branch from branches.
 
 ### Unit tests
 
