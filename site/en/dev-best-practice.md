@@ -44,7 +44,7 @@ If you are maintaining a project and somebody sends a PR: great, because that me
 
 ### Wiki
 
-The [wiki of the ocrd-website](https://github.com/OCR-D/ocrd-website) is the central repository for user-generated documentation and complements [the official OCR-D website](#website). If you have any experiences, configurations, scenarios and documentation in general related to your use of OCR-D software, feel free to contribute it to the Wiki. To add a new page, click on "New Page", decide on a concise title for the page and add your information.
+The [wiki of the ocrd-website](https://github.com/OCR-D/ocrd-website) is the central repository for user-generated documentation, and complements [the official OCR-D website](#website). If you have any experiences, configurations, scenarios or documentation in general which are related to your use of OCR-D software, feel free to contribute them to the Wiki. To add a new page, click on "New Page", decide on a concise title for the page and add your information.
 
 It is easy to reorganize and edit pages later, so do not feel pressured to overcome a relevancy threshold. Everybody profits from sharing experiences in the long run. Additionally, the wiki serves as a source for [official documentation](#website) and the coordination project is very much interested in letting the official documentation be strongly informed by the experience of OCR-D users.
 
