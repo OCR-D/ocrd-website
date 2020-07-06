@@ -23,6 +23,7 @@ Since all development shall be openly and transparently carried out on GitHub, i
 
 The [OCR-D gitter "Lobby"](https://gitter.im/OCR-D/Lobby) is the general channel for all things OCR-D. We strive to keep the threshold for participation as low as possible. Every question or is welcome. It is also the channel we use to announce changes to [OCR-D core](https://github.com/OCR-D/core), the [specifications](https://github.com/OCR-D/spec) or updates on [processors](https://github.com/topics/ocr-d).
 
+Gitter accounts can also be used for private/direct conversations, for which the contacts in the Lobby are a good starting point.
 ### GitHub Issues
 
 As with the [chat](#chat), we aim for low barriers of entry for participation on issues in GitHub. If something is not working within OCR-D projects, you encounter error messages or unexpected behavior: Feel free to open an issue. If you cannot identify which component or project is the cause of the problem, [open an issue in OCR-D/core](https://github.com/OCR-D/core/issues/new), the moderators can transfer it to the right place later.
@@ -142,4 +143,3 @@ We use `setuptools` for python packaging in OCR-D.
 ### Dockerfile
 
 ### ocrd_all
-
