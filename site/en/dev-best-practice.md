@@ -75,7 +75,7 @@ As mentioned in the [section on Pull Requests](#pull-requests), you should creat
 
 ### Unit tests
 
-Unit tests are code that make assertions over the behavior of the components of your main code.
+Unit tests are code that makes assertions over the behavior of the components of your main code, which can be used for automatic regression testing.
 
 ### Code Coverage
 
