@@ -124,8 +124,10 @@ When starting a new project `ocrd_foo`, create this folder layout:
 ```sh
 ocrd_foo/
 ocrd_foo/__init__.py
+ocrd_foo/ocrd-tool.json
 tests/test_foo.py
 LICENSE
+Makefile
 README.md
 setup.py
 ```
@@ -137,6 +139,8 @@ We use `setuptools` for python packaging in OCR-D.
 ### `tests/`
 
 ### `LICENSE`
+
+## Makefile
 
 ## Deployment
 
