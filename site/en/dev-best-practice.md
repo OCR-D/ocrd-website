@@ -32,7 +32,7 @@ This openness must go both ways: If you maintain or contribute to a project, it 
 
 ### GitHub Forks
 
-A *fork* is a clone of a GitHub repository hosted on the same site. If you fork a repository, a clone of it will be created under your username. The advantage of a fork over just the original repository is that you have full control to it and can make changes to it to fit your use case, while others also can access it. If you deem your changes a useful contribution to the original project, you can create a [pull request](#pull-request) to allow discussing and refining them with others, and ultimately merge.
+A *fork* is a clone of a GitHub repository hosted on the same site. If you fork a repository, a clone of it will be created under your username. The advantage of a fork over just the original repository is that you have full control of it and can make changes to it to fit your use case, while others also can access it. If you deem your changes a useful contribution to the original project, you can create a [pull request](#pull-request) to allow discussing and refining them with others, and ultimately merge.
 
 ### Pull Requests
 
