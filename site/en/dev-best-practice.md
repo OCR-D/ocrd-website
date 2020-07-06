@@ -99,7 +99,7 @@ There is a wide variety of versioning schemes, such as date-based or plain incre
   * Increase `MINOR` by one if a changeset introduces **new features**.
   * Increase `PATCH` by one if a changeset **fixes problems with the minor version**.
 
-You should start versioning at `0.0.1`. While `MAJOR` is `0`, the software is to be considered alpha but you should still stick to the scheme for minor and patch revisions. Once you consider the software mature enought to merit a `1.0.0` release, take extra care to adhere to the convention as much as possible.
+You should start versioning at `0.0.1`. While `MAJOR` is `0`, the software is to be considered alpha but you should still stick to the scheme for minor and patch revisions. Once you consider the software mature enough to merit a `1.0.0` release, please take extra care to adhere to the convention as much as possible.
 
 The advantage of semantic versioning is that it conveys the consequences of an upgrade to the user. There is never a reason not to upgrade to the latest patch release whereas a upgrading to a new major version should be undertaken with care.
 
