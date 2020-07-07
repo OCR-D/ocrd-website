@@ -89,7 +89,7 @@ Making uniform and well-described test data available to all serves everybody an
 
 ### Continuous Integration
 
-Continuous Integration (CI) platforms offer computing ressources to software developers that allow building and testing software. These platforms, such as [Travis CI](https://travis.com), [Circle CI](https://circleci.com), [Scrutinizer](https://scrutinizer.com) or [GitHub Actions](https://github.com/actions) can be integrated into GitHub repositories to automatically build/test when certain actions happen, such as "a PR was opened" or "new commit to master branch". The big advantage of CI is that you can automate testing of changes to your software in a variety of environments, so you can be confident that a PR did not introduce introduce regressions or break for an operating system you didn't anticipate.
+Continuous Integration (CI) platforms offer computing ressources to software developers that allow building and testing software. These platforms, such as [Travis CI](https://travis.com), [Circle CI](https://circleci.com), [Scrutinizer](https://scrutinizer.com) or [GitHub Actions](https://github.com/actions) can be integrated into GitHub repositories to automatically build/test when certain actions happen, such as "a PR was opened" or "new commit to master branch". The big advantage of CI is that you can automate testing of changes to your software in a variety of environments, so you can be confident that a PR did not introduce regressions, or make the module break for an operating system you didn't anticipate.
 
 ### Semantic Versioning
 
