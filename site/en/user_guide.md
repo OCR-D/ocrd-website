@@ -137,9 +137,9 @@ METS file was created, too, to which you can add the pictures to be processed.
 You can do this manually with the following command:
 
 ```sh
-ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page] -m image/[format of your picture] [/path/to/your/picture/in/workspace]
+ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page, has to start with a letter] -m image/[format of your picture] [/path/to/your/picture/in/workspace]
 ## alternatively using docker
-docker run --rm -u $(id -u) -v [/path/to/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page] -m image/[format of your picture] [relative/path/to/your/picture/in/workspace]
+docker run --rm -u $(id -u) -v [/path/to/workspace]:/data -w /data -- ocrd/all:maximum ocrd workspace add -g [ID of the physical page, has to start with a letter] -G [name of picture folder in your workspace] -i [ID of the scanned page, has to start with a letter] -m image/[format of your picture] [relative/path/to/your/picture/in/workspace]
 ```
 
 Your command could e.g. look like this:
