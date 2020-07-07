@@ -21,7 +21,7 @@ Since all development shall be openly and transparently carried out on GitHub, i
 
 ### Chat
 
-The [OCR-D gitter "Lobby"](https://gitter.im/OCR-D/Lobby) is the general channel for all things OCR-D. We strive to keep the threshold for participation as low as possible. Every question or is welcome. It is also the channel we use to announce changes to [OCR-D core](https://github.com/OCR-D/core), the [specifications](https://github.com/OCR-D/spec) or updates on [processors](https://github.com/topics/ocr-d).
+The [OCR-D gitter "Lobby"](https://gitter.im/OCR-D/Lobby) is the general channel for all things OCR-D. We strive to keep the threshold for participation as low as possible. Every question or comment is welcome. It is also the channel we use to announce changes to [OCR-D core](https://github.com/OCR-D/core), the [specifications](https://github.com/OCR-D/spec) or updates on [processors](https://github.com/topics/ocr-d).
 
 Gitter accounts can also be used for private/direct conversations, for which the contacts in the Lobby are a good starting point.
 ### GitHub Issues
