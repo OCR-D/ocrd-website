@@ -202,7 +202,7 @@ For some processors parameters are purely optional, other processors as e.g. `oc
 ### Calling a single processor
 If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:
 ```sh
-ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]'
+ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]'
 ```
