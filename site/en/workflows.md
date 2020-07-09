@@ -552,7 +552,7 @@ need to segment into lines in an extra step.
       <td>ocrd-cis-ocropy-segment</td>
       <td><code>{"level-of-operation":"page"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
     </tr>
 	<tr>
       <td>ocrd-anybaseocr-block-segmentation</td>
