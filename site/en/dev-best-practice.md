@@ -9,6 +9,8 @@ lang-ref: best-practices
 
 This guide is informed by the experience of coordinating distributed development of the [OCR-D software and specifications](https://github.com/OCR-D). We strive for a broad consensus on the practicalities and logistics of software development, particular in preparation of the upcoming [Phase III of OCR-D](https://ocr-d.de/en/2020/06/04/pilot.html).
 
+You can find a concise summmary [in the slides to our call on Best Practices, 2020-07-07](https://docs.google.com/presentation/d/1ZYcLx5lPxH6k3SLubzk55rUf22la0Hsf9_TEGFTydl0)
+
 ## Communications
 
 > [Be bold](https://en.wikipedia.org/wiki/Wikipedia:Be_bold)
