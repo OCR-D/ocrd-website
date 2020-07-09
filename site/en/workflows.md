@@ -50,14 +50,11 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
     <tr>
       <td>ocrd-image-preprocess</td>
       <td>
-      <p><code><pre>
-{
-  "output_feature_added": e.g. "binarized"
-}
-      </pre></code></p>
-      <p><code>
-{"command": ""scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE'"}
-      </code></p>
+      <p><code><pre>{
+  "input_feature_filter": "binarized",
+  "output_feature_added": "binarized",
+  "command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"
+  }</pre></code></p>
 	  </td>
       <td>
 	  for the optional parameters and command exmaples see [the Readme](https://github.com/bertsky/ocrd_wrap)
