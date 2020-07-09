@@ -607,17 +607,16 @@ your image twice on page level, and have no large images, you can probably skip 
 	  </td>
       <td>
 	  </td>
-      <td><code>
-	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -p '{"level-of-operation": "region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
-	  </code></td>
-	  </td>
-      <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
-    </tr>
+	  <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
+    </tr>    
 	<tr>
       <td>ocrd-preprocess-image</td>
-      <td><code>{"level-of-operation":"region"}</code></td>
+      <td><code>{"level-of-operation":"region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
+	  <td><code>
+	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  </code></td>
+	  </td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
@@ -1036,9 +1035,16 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 Some processors change the original image by e.g. scaling, deskewing or cropping it and produce alternative images, whose coordinates differ
-from the original images. However, OCR-D processors adhere to the coordinates of the original image. To work with these alternative images,
-such as visualizing them in a GUI, the coordinates have to be translated from the original image. `ocrd-segment-repair` exchanges the original
-(`@filename`) image with one of the alternative images\` <code>@imageFilename</code> and thereby translates the coordinates.
+from the original images. All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original
+image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to work with
+these alternative images, such as visualizing them in a GUI. `ocrd-segment-replace-original` exchanges the original (`@filename`) image with one
+of the alternative images\` `@imageFilename` and thereby translates the coordinates.
+
+Furthermore, this is sometimes necessary to get the overall workflow to work. For example, if you have a page-level dewarping step, it is currently
+impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation
+of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped
+image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are
+re-calculated accordingly as well.
 
 #### Available processors
 
