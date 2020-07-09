@@ -1027,7 +1027,7 @@ In this processing step, the text output of the OCR or post-correction can be ev
 
 OCR-D produces PAGE XML files which contain the recognized text as well as detailed
 information on the structure of the processed pages, the coordinates of the recognized
-elements etc. Optionally, the output can be converted, changed or dummy output can be generated. 
+elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)
 
 ### Step 18: Adaptation of Coordinates
 Some processors change the original image by e.g. scaling, deskewing or cropping it and produce alternative images, whose coordinates differ
