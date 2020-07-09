@@ -12,7 +12,11 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 ![](/assets/Funktionsmodell.png)
 
-The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
+The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
+steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
+This guide provides an overview of the available OCR-D processors and their required parameters. For more complex workflows and recommendations
+see the [OCR-D-Website-Wiki](https://github.com/OCR-D/ocrd-website/wiki). Feel free to add your own experiences and recommendations in the Wiki!
+We will regularly amend this guide with valuable contributions from the Wiki.
 
 ## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
