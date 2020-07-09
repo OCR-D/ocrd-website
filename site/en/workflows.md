@@ -57,7 +57,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
   }</pre></code></p>
 	  </td>
       <td>
-	  for the optional parameters and command exmaples see [the Readme](https://github.com/bertsky/ocrd_wrap)
+	  for parameters and command examples (presets) see [the Readme](https://github.com/bertsky/ocrd_wrap#ocr-d-processor-interface-ocrd-preprocess-image)
 	  </td>
       <td><code>
 	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -p '{"output_feature_added": "binarized","input_mimetype": "image/tiff","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
