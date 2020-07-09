@@ -12,7 +12,11 @@ There are several steps necessary to get the fulltext of a scanned print. The wh
 
 ![](/assets/Funktionsmodell.png)
 
-The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step. 
+The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
+steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
+This guide provides an overview of the available OCR-D processors and their required parameters. For more complex workflows and recommendations
+see the [OCR-D-Website-Wiki](https://github.com/OCR-D/ocrd-website/wiki). Feel free to add your own experiences and recommendations in the Wiki!
+We will regularly amend this guide with valuable contributions from the Wiki.
 
 ## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
@@ -20,6 +24,8 @@ At first, the image should be prepared for OCR.
 ### Step 0: Image Enhancement (Page Level, optional)
 Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
 the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.  
+
+**Note:** `ocrd-preprocess-image` can be used to run arbitrary shell commands for preprocessing (original or derived) images, and can be seen as a generic OCR-D wrapper for many of the following workflow steps, provided a matching external tool exists. (The only restriction is that the tool must not change image size or the position/coordinates of its content.)
 
 #### Available processors
 
@@ -42,8 +48,44 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 }
       </pre></code></p>
       </td>
-      <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
+      <td>for <code>output-options</code> see <a href="https://imagemagick.org/script/command-line-options.php">IM Documentation</a></td>
       <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
+    </tr>
+    <tr>
+      <td>ocrd-image-preprocess</td>
+      <td>
+      <p><code><pre>{
+  "input_feature_filter": "binarized",
+  "output_feature_added": "binarized",
+  "command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"
+  }</pre></code></p>
+	  </td>
+      <td>
+	  for parameters and command examples (presets) see [the Readme](https://github.com/bertsky/ocrd_wrap#ocr-d-processor-interface-ocrd-preprocess-image)
+	  </td>
+      <td><code>
+	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -p '{"output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  </code></td>
+    </tr>
+    <tr>
+      <td>ocrd-skimage-normalize</td>
+      <td>
+	  </td>
+      <td>
+	  </td>
+      <td><code>
+	  ocrd-skimage-normalize -I OCR-D-IMG -O OCR-D-NORM
+	  </code></td>
+    </tr>
+	<tr>
+      <td>ocrd-skimage-denoise-raw</td>
+      <td>
+	  </td>
+      <td>
+	  </td>
+      <td><code>
+	  ocrd-skimage-denoise-raw -I OCR-D-IMG -O OCR-D-DENOISE
+	  </code></td>
     </tr>
   </tbody>
 </table>
@@ -89,27 +131,7 @@ can be especially useful for images which have not been enhanced.
       <th>Call</th>
 	</tr>
   </thead>
-  <tbody>
-    <tr>
-      <td>ocrd-anybaseocr-binarize</td>
-      <td>
-	  <p><code>
-{"threshold": float}
-      </code></p>
-	  </td>
-      <td>Fast</td>
-      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
-    </tr>
-    <tr>
-      <td>ocrd-cis-ocropy-binarize</td>
-      <td>
-	  <p><code>
-{"noise_maxsize": float}
-      </code></p>	  
-	  </td>
-      <td></td>
-      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
-    </tr>
+  <tbody>   
     <tr>
       <td>ocrd-olena-binarize</td>
       <td>
@@ -146,6 +168,33 @@ can be especially useful for images which have not been enhanced.
       </td>
       <td>Recommended</td>
       <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p'{"impl": "sauvola-ms-split"}'</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td>
+	  <p><code>
+{"threshold": float}
+      </code></p>	  
+	  </td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-skimage-binarize</td>
+      <td>
+	  </td>
+      <td>
+	  </td>  
+      <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+	</tr>	
+	  <td>ocrd-anybaseocr-binarize</td>
+      <td>
+	  <p><code>
+{"threshold": float}
+      </code></p>
+	  </td>
+      <td>Fast</td>
+      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
   </tbody>
 </table>
@@ -215,12 +264,6 @@ For better results, the cropped images can be binarized again at this point or l
   </thead>
   <tbody>
     <tr>
-      <td>ocrd-cis-ocropy-binarize</td>
-      <td></td>
-      <td></td>
-      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
-    </tr>
-    <tr>
       <td>ocrd-olena-binarize</td>
       <td>
       <p><code>
@@ -252,7 +295,21 @@ For better results, the cropped images can be binarized again at this point or l
       </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p'{"impl": "sauvola-ms-split"}'</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{"impl": "sauvola-ms-split"}'</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-skimage-binarize</td>
+      <td>
+	  </td>
+      <td>
+	  </td>
+      <td><code>ocrd-skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
     </tr>
   </tbody>
 </table>
@@ -302,6 +359,12 @@ This may not be necessary for all prints, and depends heavily on the selected bi
       <td>&nbsp;</td>
 	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
+	<tr>
+      <td>ocrd-skimage-denoise</td>
+      <td></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-skimage-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -342,24 +405,24 @@ The input images have to be binarized for this module to work.
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>ocrd-anybaseocr-deskew</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
-    </tr>
-    <tr>
+   <tr>
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td><code>{"level-of-operation": "page"}</code></td>
+      <td>Recommended</td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p '{"level-of-operation": "page"}'</code></td>
+    </tr>    
+	<tr>
       <td>ocrd-tesserocr-deskew</td>
       <td><code>{"operation_level”:”page”}</code></td>
       <td>Fast, also performs a decent orientation correction</td>
 	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{"operation_level”:”page”}'</code></td>
     </tr>
     <tr>
-      <td>ocrd-cis-ocropy-deskew</td>
-      <td><code>{“level-of-operation”:”page”}</code></td>
-      <td>Recommended</td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{“level-of-operation”:”page”}'</code></td>
-    </tr>
+      <td>ocrd-anybaseocr-deskew</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
+    </tr>	
   </tbody>
 </table>
 
@@ -434,8 +497,8 @@ Segments are also classified, either coarse (text, separator, image, table, ...)
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
 then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
-**Note:** The `ocrd-sbb-textline-detector` processor does not only segment the page, but also the text lines within
-the detected text regions in one step. Therefore with this (and only with this!) processor you don't
+**Note:** The `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` processors do not only segment the page, but also the text lines within
+the detected text regions in one step. Therefore with those (and only with those!) processors you don't
 need to segment into lines in an extra step.
 
 
@@ -481,13 +544,19 @@ need to segment into lines in an extra step.
       <td>ocrd-segment-repair</td>
       <td><code>{"plausibilize":true}</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
-	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
+	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"plausibilize":true}'</code></td>
     </tr>
     <tr>
       <td>ocrd-sbb-textline-detector</td>
       <td>&nbsp;</td>
       <td></td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td><code>{"level-of-operation":"page"}</code></td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
     </tr>
 	<tr>
       <td>ocrd-anybaseocr-block-segmentation</td>
@@ -498,14 +567,8 @@ need to segment into lines in an extra step.
 }
       </pre>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Should also work for original images!?</td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
 	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
-    </tr>
-    	<tr>
-      <td>ocrd-cis-ocropy-segment</td>
-      <td><code>{"level-of-operation":"page"}</code></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
     </tr>
   </tbody>
 </table>
@@ -536,10 +599,28 @@ your image twice on page level, and have no large images, you can probably skip 
   </thead>
   <tbody>
     <tr>
-      <td>ocrd-tesserocr-binarize</td>
-      <td><code>{"operation_level":"region"}</code></td>
+      <td>ocrd-skimage-binarize</td>
+      <td>
+	  <p><code>
+{"level-of-operation": "region",
+"input_feature_filter": "binarized",
+  "output_feature_added": "binarized",
+  "command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"
+  }
+      </code></p>	
+	  </td>
+      <td>
+	  </td>
+	  <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
+    </tr>    
+	<tr>
+      <td>ocrd-preprocess-image</td>
+      <td><code>{"level-of-operation":"region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
+	  <td><code>
+	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  </code></td>
+	  </td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-binarize</td>
@@ -890,10 +971,18 @@ In this processing step, the recognized text is corrected by statistical error m
 	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -p '{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}'</code></td>
     </tr>
     <tr>
-      <td>ocrd-cis-post-correct.sh</td>
-      <td>???</td>
-      <td>Not tested yet!</td>
-	  <td><code>ocrd-cis-post-correct.sh -I OCR-D-ALIGN -O OCR-D-CORRECT</code></td>
+      <td>ocrd-cis-postcorrect</td>
+      <td><code>
+	  {"profilerPath": "/path/to/profiler.bash","profilerConfig": str,"nOCR": int,"model": "/path/to/model/model.zip"}
+	  </code></td>
+      <td>
+	  The various parameters should be specified in a JSON file. If you don't want to use a profiler, you can set the value for "profilerConfig" to 
+	  "ignored". In this case, your profiler.bash should look like this: 
+	  `#!/bin/bash
+	  cat > /dev/null
+	  echo '{}'`
+	  </td>
+	  <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
     </tr>
   </tbody>
 </table>
@@ -942,13 +1031,47 @@ In this processing step, the text output of the OCR or post-correction can be ev
   </tbody>
 </table>
 
-## Format Conversion (Optional)
+## Generic Data Management (Optional)
 
 OCR-D produces PAGE XML files which contain the recognized text as well as detailed
 information on the structure of the processed pages, the coordinates of the recognized
-elements etc. Optionally, the PAGE XML can be converted to a different output format.
+elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)
 
-### Step 18: Format Conversion
+### Step 18: Adaptation of Coordinates
+Some processors change the original image by e.g. scaling, deskewing or cropping it and produce alternative images, whose coordinates differ
+from the original images. All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original
+image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to work with
+these alternative images, such as visualizing them in a GUI. `ocrd-segment-replace-original` exchanges the original (`@filename`) image with one
+of the alternative images\` `@imageFilename` and thereby translates the coordinates.
+
+Furthermore, this is sometimes necessary to get the overall workflow to work. For example, if you have a page-level dewarping step, it is currently
+impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation
+of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped
+image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are
+re-calculated accordingly as well.
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-segment-replace-original</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-segment-replace-original -I OCR-D-SEG-LINE -O OCR-D-SUBST</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Step 19: Format Conversion
 
 In this processing step the produced PAGE XML files can be converted to ALTO,
 PDF, hOCR or text files. Note that ALTO and hOCR can also be converted into
@@ -1007,12 +1130,36 @@ accessible format that can be used as-is by expert and layman alike.
       </pre></code>
       </td>
       <td>&nbsp;</td>
-      <td><code>ocrd-pagetopdf -I PAGE-FILGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
+      <td><code>ocrd-pagetopdf -I PAGE-FILEGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
     </tr>
 
 </tbody>
 </table>
 
+### Step 20: Dummy Processing
+Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
+copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model. 
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-dummy</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+	  <td><code>ocrd-dummy -I OCR-D-FILEGRP -O OCR-D-DUMMY</code></td>
+    </tr>
+  </tbody>
+</table>
 
 # Recommendations
 

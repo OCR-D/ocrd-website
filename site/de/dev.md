@@ -12,6 +12,8 @@ Dieser Bereich enthält alle Informationen, die für die Entwicklung der OCR-D-S
   * Spezifikationen für CLI, METS, PAGE, etc.
 * [OCR-D/core API Dokumentation](/core)
   * Python API Dokumentation für die ``core`` Referenzimplementierung
+* [Best practices für Software Entwicklung in OCR-D](/en/dev-best-practice)
+  * Praktische Informationen zur verteilten Entwicklung von Software und Spezifikationen in OCR-D
 * [Ground Truth Richtlinien](/de/gt-guidelines/trans)
   * Transkriptionsrichtlinien für Ground Truth
 * [PAGE-XML Formatdokumentation](/de/gt-guidelines/trans/trPage)
