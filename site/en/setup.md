@@ -11,12 +11,23 @@ OCR-D's software is a modular collection of many projects (called _modules_)
 with many tools per module (called _processors_) that you can combine freely
 to achieve the workflow best suited for OCRing your content.
 
+## System requirements
+
+Minimum system requirements
+* 8 GB RAM (more recommended)
+* min. 100 GB free disk space for local installation 
+  - (min/max similar to Docker?)
+* Linux OS (we recommend Ubuntu 18.04 for native installation)
+* Python 3.5+ (we recommend 3.6 or 3.7;* **don't use 3.8, as there are several packages unavailable for it***)
+
+Alternatively, use [Docker](https://hub.docker.com/u/ocrd)
+
+## Installation
+
 All [OCR-D modules](https://github.com/topics/ocr-d) follow the same
 [interface](https://ocr-d.github.io/cli) and common design patterns. So once
 you understand how to install and use one project, you know how to install and
 use all of them.
-
-## Installation
 
 There are four ways to install OCR-D modules:
 
