@@ -1363,17 +1363,12 @@ information on the structure of the processed pages, the coordinates of the reco
 elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)</p>
 
 <h3 id="step-18-adaptation-of-coordinates">Step 18: Adaptation of Coordinates</h3>
-<p>Some processors change the original image by e.g. scaling, deskewing or cropping it and produce alternative images, whose coordinates differ
-from the original images. All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original
-image reference (<code class="highlighter-rouge">Page/@imageFilename</code>). However, sometimes it may be necessary to deviate from that strict requirement in order to work with
-these alternative images, such as visualizing them in a GUI. <code class="highlighter-rouge">ocrd-segment-replace-original</code> exchanges the original (<code class="highlighter-rouge">@filename</code>) image with one
-of the alternative images` <code class="highlighter-rouge">@imageFilename</code> and thereby translates the coordinates.</p>
 
-<p>Furthermore, this is sometimes necessary to get the overall workflow to work. For example, if you have a page-level dewarping step, it is currently
-impossible to correctly relate to the original image’s coordinates for any segments annotated after that, because there is no descriptive annotation
-of the underlying coordinate transform in PAGE-XML. Therefore, it is better to <em>replace the original image</em> of the output PAGE-XML by the dewarped
-image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are
-re-calculated accordingly as well.</p>
+<p>All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (<code class="highlighter-rouge">Page/@imageFilename</code>). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to work.</p>
+
+<p>For example, if you have a page-level dewarping step, it is currently impossible to correctly relate to the original image’s coordinates for any segments annotated after that, because there is no descriptive annotation of the underlying coordinate transform in PAGE-XML. Therefore, it is better to <em>replace the original image</em> of the output PAGE-XML by the dewarped image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are re-calculated accordingly as well.</p>
+
+<p>Another use case is exporting PAGE-XML for tools that cannot apply cropping or deskewing, like <a href="https://github.com/OCR4all/LAREX">LAREX</a> or Transkribus.</p>
 
 <h4 id="available-processors-18">Available processors</h4>
 
