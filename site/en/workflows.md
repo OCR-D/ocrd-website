@@ -546,7 +546,7 @@ need to segment into lines in an extra step.
       <td>ocrd-sbb-textline-detector</td>
       <td>&nbsp;</td>
       <td></td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-segment</td>
