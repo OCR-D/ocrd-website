@@ -21,7 +21,7 @@ At first, the image should be prepared for OCR.
 Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
 the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.  
 
-**Note:** `ocrd-image-preprocess` converts or enhances images and can thereby replace some processors described in the following workflow steps
+**Note:** `ocrd-preprocess-image` can be used to run arbitrary shell commands for preprocessing (original or derived) images, and can be seen as a generic OCR-D wrapper for many of the following workflow steps, provided a matching external tool exists. (The only restriction is that the tool must not change image size or the position/coordinates of its content.)
 
 #### Available processors
 
