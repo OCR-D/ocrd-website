@@ -299,7 +299,7 @@ For better results, the cropped images can be binarized again at this point or l
 	  </td>
       <td>
 	  </td>
-      <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+      <td><code>ocrd-skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-binarize</td>
@@ -493,8 +493,8 @@ Segments are also classified, either coarse (text, separator, image, table, ...)
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
 then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
-**Note:** The `ocrd-sbb-textline-detector` processor does not only segment the page, but also the text lines within
-the detected text regions in one step. Therefore with this (and only with this!) processor you don't
+**Note:** The `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` processors do not only segment the page, but also the text lines within
+the detected text regions in one step. Therefore with those (and only with those!) processors you don't
 need to segment into lines in an extra step.
 
 
@@ -540,7 +540,7 @@ need to segment into lines in an extra step.
       <td>ocrd-segment-repair</td>
       <td><code>{"plausibilize":true}</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
-	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"sanitize":true}'</code></td>
+	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"plausibilize":true}'</code></td>
     </tr>
     <tr>
       <td>ocrd-sbb-textline-detector</td>
@@ -598,16 +598,24 @@ your image twice on page level, and have no large images, you can probably skip 
       <td>ocrd-skimage-binarize</td>
       <td>
 	  <p><code>
-{"level-of-operation": "region"}
+{"level-of-operation": "region",
+"input_feature_filter": "binarized",
+  "output_feature_added": "binarized",
+  "command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"
+  }
       </code></p>	
 	  </td>
       <td>
 	  </td>
+      <td><code>
+	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -p '{"level-of-operation": "region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  </code></td>
+	  </td>
       <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
     </tr>
 	<tr>
-      <td>ocrd-tesserocr-binarize</td>
-      <td><code>{"operation_level":"region"}</code></td>
+      <td>ocrd-preprocess-image</td>
+      <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
 	  <td><code>ocrd-tesserocr-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -p '{"operation_level":"region"}'</code></td>
     </tr>
@@ -1028,8 +1036,9 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 Some processors change the original image by e.g. scaling, deskewing or cropping it and produce alternative images, whose coordinates differ
-from the original images. Nevertheless, all output from the OCR-D-Processors sticks to the coordinates of the original images. If you want to 
-visualize the output with the produced alternative images, the coordinates have to be re-calculated accordingly.
+from the original images. However, OCR-D processors adhere to the coordinates of the original image. To work with these alternative images,
+such as visualizing them in a GUI, the coordinates have to be translated from the original image. `ocrd-segment-repair` exchanges the original
+(`@filename`) image with one of the alternative images\` <code>@imageFilename</code> and thereby translates the coordinates.
 
 #### Available processors
 
@@ -1118,8 +1127,8 @@ accessible format that can be used as-is by expert and layman alike.
 </table>
 
 ### Step 20: Dummy Processing
-Sometimes it can be useful to have a dummy processor, which just takes the files in an Input fileGrp and
-copies them the a new Output fileGrp.
+Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
+copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model. 
 
 #### Available processors
 
