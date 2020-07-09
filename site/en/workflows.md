@@ -44,7 +44,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 }
       </pre></code></p>
       </td>
-      <td>for `output-options` see [IM Documentation](https://imagemagick.org/script/command-line-options.php)</td>
+      <td>for <code>output-options</code> see <a href="https://imagemagick.org/script/command-line-options.php">IM Documentation</a></td>
       <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
     </tr>
     <tr>
