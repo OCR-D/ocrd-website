@@ -563,7 +563,7 @@ need to segment into lines in an extra step.
 }
       </pre>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Should also work for original images!?</td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
 	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
     </tr>
   </tbody>
