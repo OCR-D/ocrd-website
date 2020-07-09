@@ -291,7 +291,7 @@ For better results, the cropped images can be binarized again at this point or l
       </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p'{"impl": "sauvola-ms-split"}'</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{"impl": "sauvola-ms-split"}'</code></td>
     </tr>
 	<tr>
       <td>ocrd-skimage-binarize</td>
