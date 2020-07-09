@@ -169,7 +169,7 @@ can be especially useful for images which have not been enhanced.
       <td>ocrd-cis-ocropy-binarize</td>
       <td>
 	  <p><code>
-{"noise_maxsize": float}
+{"threshold": float}
       </code></p>	  
 	  </td>
       <td></td>
