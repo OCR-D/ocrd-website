@@ -178,6 +178,8 @@ make all OCRD_MODULES="core ocrd_tesserocr ocrd_cis" # Will install only ocrd_te
 
 (Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `Makefile.local`.)
 
+**Note: Never run `make all` as root!
+
 Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.
 
 Running `make` will also take care of cloning and updating all required submodules.
