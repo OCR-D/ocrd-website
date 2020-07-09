@@ -406,7 +406,7 @@ The input images have to be binarized for this module to work.
   <tbody>
    <tr>
       <td>ocrd-cis-ocropy-deskew</td>
-      <td><code>{“level-of-operation”:”page”}</code></td>
+      <td><code>{"level-of-operation": "page"}</code></td>
       <td>Recommended</td>
 	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{“level-of-operation”:”page”}'</code></td>
     </tr>    
