@@ -18,7 +18,9 @@ Minimum system requirements
 * min. 100 GB free disk space for local installation 
   - (min/max similar to Docker?)
 * Linux OS (we recommend Ubuntu 18.04 for native installation)
-* Python 3.5+ (we recommend 3.6 or 3.7;* **don't use 3.8, as there are several packages unavailable for it***)
+* Python 3.5+ (we recommend 3.6 or 3.7;* **don't use 3.8, as there are currently (July 2020) no pre-build Python packages for Tensorflow and other GPU related software***)
+
+For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
 
 Alternatively, use [Docker](https://hub.docker.com/u/ocrd)
 
@@ -178,7 +180,7 @@ make all OCRD_MODULES="core ocrd_tesserocr ocrd_cis" # Will install only ocrd_te
 
 (Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `Makefile.local`.)
 
-**Note: Never run `make all` as root!
+**Note: Never run `make all` as root unless you know *exactly* what you are doing!
 
 Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.
 
