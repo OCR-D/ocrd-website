@@ -15,10 +15,23 @@ to achieve the workflow best suited for OCRing your content.
 
 Minimum system requirements
 * 8 GB RAM (more recommended)
+  * The more RAM is available, the more concurrent processes can be run
+  * Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
 * min. 100 GB free disk space for local installation 
-  - (min/max similar to Docker?)
-* Linux OS (we recommend Ubuntu 18.04 for native installation)
-* Python 3.5+ (we recommend 3.6 or 3.7;* **don't use 3.8, as there are currently (July 2020) no pre-build Python packages for Tensorflow and other GPU related software***)
+  * ~10 GB for [`ocrd_all`](https://github.com/OCR-D/ocrd_all), including dependencies
+  * ~10 GB for various [pretrained models](https://ocr-d.de/en/models)
+  * ~10 GB for training and evaluation data for training, as well as trained (intermediate) models
+  * ~20 GB for data to process
+  * double the space requirements to be able to [isolate virtualenvs](https://github.com/OCR-D/ocrd_all/pull/118) and store backups of (intermediate) data
+* Operating system: Ubuntu 18.04
+  * Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and [will be supported for the foreseeable future](https://ubuntu.com/about/release-cycle)
+  * Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)
+  * With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is [also possible to set up an Ubuntu 18.04 installation within Microsoft Windows](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows)
+  * OCR-D can be deployed on an [Apple MacOSX machine using Homebrew](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS)
+* Python 3.5, 3.6 or 3.7
+  * OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least the end of 2020
+  * Python 3.6 and 3.7 are also tested and supported
+  * We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q4 2020 or Q1 2021 the latest.
 
 For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
 
