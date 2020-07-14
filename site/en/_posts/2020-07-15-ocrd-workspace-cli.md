@@ -203,5 +203,6 @@ messages with `--skip pixel_density`.
 ## Further reading
 
 * [Setup Guide](https://ocr-d.de/en/setup)
+* [User Guide](https://ocr-d.de/en/user_guide#preparing-a-workspace)
 * [OCR-D Chat](https://gitter.im/OCR-D/Lobby)
 * [OCR-D Wiki](https://github.com/OCR-D/ocrd-website/wiki)
