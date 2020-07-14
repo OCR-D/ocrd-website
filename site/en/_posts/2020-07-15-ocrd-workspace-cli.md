@@ -139,7 +139,7 @@ Here's a breakdown of the options
 * `-G OCR-D-IMG`: Add this file to the `OCR-D-IMG` file group (or create it if it does not yet exist). The names of `mets:fileGrp` are **completely arbitrary**. By convention, OCR-D uses `OCR-D-IMG` for the unprocessed images in [the Ground Truth](https://ocr-d.de/gt-repo/) but other conventions call this file group `MAX` (for MAXimum resolution).
 * `-m image/png`: The media type or MIME type of the file, `image/png` for PNG images, `image/tiff` for TIFF, etc.
 * `-g PHYS_0001`: The ID of the physical page, i.e. the `mets:div` that groups together all files representing the same page. The identifier is arbitrary as well, though many METS tools chose `PHYS_` + numerical identifier as the naming convention.
-
+Note that -i and -g always have to start with a letter
 After running the command, you will find the file copied into the workspace at `<fileGrp>/<ID>.ext`, so in this case at `OCR-D-IMG/IMG_0001.png`.
 
 To make sure that the file was added, you can use the `ocrd workspace find` command:
