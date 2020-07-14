@@ -193,7 +193,7 @@ Options:
 
 If you don't provide any options, the validation will run all checks on your
 workspace and report any issues, grouped by severity ("notice", "warning",
-"error") as a simple XML document that is both human-readable bnd
+"error") as a simple XML document that is both human-readable and
 machine-readable.
 
 To skip certain tests that are not helpful for you, use the `--skip` option.
