@@ -46,26 +46,26 @@ use all of them.
 
 There are four ways to install OCR-D modules:
 
-  1. Using the [`ocrd/all` Docker module collection](https://hub.docker.com/r/ocrd/all) (**recommended**)
-  2. Using `ocrd/all` to install OCR-D modules locally
-  3. Installing modules indivudally via Docker or natively (not recommended)
-  4. Using [OCR-D Framework with Docker](https://github.com/VolkerHartmann/ocrd_framework) to install all available processors, taverna workflow and local research data repository
+  1. [Using](#ocrd_all-via-docker) the [ocrd_all prebuilt Docker images `ocrd/all`](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
+  2. [Using](#ocrd_all-natively) the [ocrd_all git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
+  3. [Installing](#individual-installation) modules individually, either via Docker or natively (not recommended)
+  4. [Using](#installation-of-ocrd_framework) the [ocrd_framework repository](https://github.com/VolkerHartmann/ocrd_framework) to install all modules, Taverna workflow and research data repository as a local Docker image
 
-We recommend using the Docker image since this does not require any changes to
+We recommend using the prebuilt Docker images since this does not require any changes to
 the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
 
-We do not recommend installing modules individually because it can be difficult to keep the
-software up-to-date and ensure that they are at working and interoperable versions.
+We do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
+keep the software up-to-date and ensure that they are at usable and interoperable versions.
 
 ## ocrd_all
 
 The [`ocrd_all`](https://github.com/OCR-D/ocrd_all) project is an effort by the
 OCR-D community, now maintained by the OCR-D coordination team. It streamlines
 the native installation of OCR-D modules with a versatile Makefile approach.
-Besides allowing local installation of the full OCR-D stack, it is also the
-base for the [`ocrd/all`](https://hub.docker.com/r/ocrd/all)
-Docker images available from DockerHub that contain the full stack of OCR-D
-modules ready for deployment.
+Besides allowing native installation of the full OCR-D stack (or any subset),
+it is also the base for the [`ocrd/all`](https://hub.docker.com/r/ocrd/all)
+Docker images available from DockerHub that contain the full stack (or certain subsets)
+of OCR-D modules ready for deployment.
 
 Technically, `ocrd_all` is a Git repository that keeps all the necessary software
 as Git submodules at specific revisions. This way, the software tools are known
@@ -213,7 +213,7 @@ Docker containers.
 
 You need to have [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-All OCR-D modules are also [published as Docker containers to DockerHub](https://hub.docker.com/u/ocrd). To find the docker
+Many OCR-D modules are also [published as Docker containers to DockerHub](https://hub.docker.com/u/ocrd). To find the Docker
 image for a module, replace the `ocrd_` prefix with `ocrd/`:
 
 ```sh
@@ -231,6 +231,12 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/tesserocr ocrd-tesserocr-s
 
 ### Native installation
 
+Installing each module into your system natively requires you to know and install all its _dependencies_ first.
+That can be _system packages_ (or even system package repositories) or _Python packages_. 
+
+To learn about system dependencies, consult the module's README files. In contrast, Python dependencies should
+be resolved automatically by using the Python package manager `pip`.
+
 > **NOTE**
 > 
 > ocrd_tesserocr requires **tesseract-ocr >= 4.1.0**. But the Tesseract packages
@@ -242,6 +248,11 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/tesserocr ocrd-tesserocr-s
 > sudo add-apt-repository ppa:alex-p/tesseract-ocr
 > sudo apt-get update
 > ```
+
+Next subsections:
+- For Python you also first need [virtualenv](#virtualenv). Then you have two options: 
+- installing [via PyPI](#from-pypi) or 
+- installing [via local git clone](#from-git).
 
 #### virtualenv
 
@@ -391,20 +402,20 @@ curl -XGET http://localhost:8090/api/v1/dataresources/123..../data/zippedBagItCo
 ```
 You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/bagit)
 
-## Installation Taverna Workflow
+## Installation of Taverna Workflow
 
 ### Why using Taverna?
 
-Taverna creates a 'metadata' sub directory containing collected output of all
+Taverna creates a `metadata` subdirectory containing collected output of all
 processors: all intermediate METS files and a provenance file containing all
 provenance of the workflow including start/end time of processor/workflow, used
 input group(s), used parameters and created output group(s).
 
-There are two ways to install taverna workflow.
-1 'Local' installation
+There are two ways to install `taverna_workflow`:
+1. native installation
 2. Docker installation
 
-### 'Local' installation
+### Native installation
 
 ```sh
 git clone https://github.com/OCR-D/taverna_workflow.git
@@ -479,7 +490,7 @@ OCR-D-SEG-REGION
 
 Each sub folder starting with 'OCR-D-OCR' should now contain 4 files with the detected full text.
 
-## Running a small workflow without taverna 
+## Running a small workflow without Taverna 
 
 ### With PyPI and workflow engine from core
 
@@ -525,19 +536,19 @@ ocrd process \
   'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json' 
 ```
 
-## Installation of the whole OCR-D Framework
+## Installation of ocrd_framework
 
-To install the complete OCR-D framework docker is highly recommended.
+To install the complete OCR-D framework Docker is highly recommended.
 
 ```sh
 wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_framework.sh
 bash install_OCR-D_framework.sh ~/ocrd_framework
 ```
 
-Now there exists several folders
+Now there exists several folders:
 
-- repository - Contains all files of repository and the databases
-- taverna - Contains all files workspaces and configuration of workflows
+- `repository` - Contains all files of repository and the databases
+- `taverna` - Contains all files workspaces and configuration of workflows
 
 ### Prepare '/etc/hosts' for accessing files in repository via browser
 
