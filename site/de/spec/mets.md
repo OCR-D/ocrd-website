@@ -61,10 +61,6 @@ For this purpose, the METS file MUST contain a `mods:identifier` that must conta
 * `url`
 
 
-## File Group 
-
-All `mets:file` inside a `mets:fileGrp` MUST have the same `MIMETYPE`.
-
 ## File Group USE syntax
 
 All `mets:fileGrp` MUST have a **unique** `USE` attribute that hints at the provenance of the files.
@@ -94,31 +90,26 @@ with the type of manipulation (`BIN-KRAKEN`).
 
 ### Examples
 
-`<mets:fileGrp USE>` | Type of use for OCR-D
---                                          | --
-`<mets:fileGrp USE="OCR-D-IMG">`            | The unmanipulated source images
-`<mets:fileGrp USE="OCR-D-IMG-BIN">`        | Black-and-White images
-`<mets:fileGrp USE="OCR-D-IMG-CROP">`       | Cropped images
-`<mets:fileGrp USE="OCR-D-IMG-DESKEW">`     | Deskewed images
-`<mets:fileGrp USE="OCR-D-IMG-DESPECK">`    | Despeckled images
-`<mets:fileGrp USE="OCR-D-IMG-DEWARP">`     | Dewarped images
-`<mets:fileGrp USE="OCR-D-SEG-REGION">`      | Region segmentation
-`<mets:fileGrp USE="OCR-D-SEG-LINE">`       | Line segmentation
-`<mets:fileGrp USE="OCR-D-SEG-WORD">`       | Word segmentation
-`<mets:fileGrp USE="OCR-D-SEG-GLYPH">`      | Glyph segmentation
-`<mets:fileGrp USE="OCR-D-OCR-TESS">`       | Tesseract OCR
-`<mets:fileGrp USE="OCR-D-OCR-ANY">`        | AnyOCR
-`<mets:fileGrp USE="OCR-D-COR-CIS">`        | CIS post-correction
-`<mets:fileGrp USE="OCR-D-COR-ASV">`        | ASV post-correction
-`<mets:fileGrp USE="OCR-D-GT-IMG-BIN">`     | Black-and-White images ground truth
-`<mets:fileGrp USE="OCR-D-GT-IMG-CROP">`    | Cropped images ground truth
-`<mets:fileGrp USE="OCR-D-GT-IMG-DESKEW">`  | Deskewed images ground truth
-`<mets:fileGrp USE="OCR-D-GT-IMG-DESPECK">` | Despeckled images ground truth
-`<mets:fileGrp USE="OCR-D-GT-IMG-DEWARP">`  | Dewarped images ground truth
-`<mets:fileGrp USE="OCR-D-GT-SEG-REGION">`   | Region segmentation ground truth
-`<mets:fileGrp USE="OCR-D-GT-SEG-LINE">`    | Line segmentation ground truth
-`<mets:fileGrp USE="OCR-D-GT-SEG-WORD">`    | Word segmentation ground truth
-`<mets:fileGrp USE="OCR-D-GT-SEG-GLYPH">`   | Glyph segmentation ground truth
+`<mets:fileGrp USE>`                       | Type of use for OCR-D
+--                                         | --
+`<mets:fileGrp USE="OCR-D-IMG">`           | The unmanipulated source images
+`<mets:fileGrp USE="OCR-D-PRE-BIN">`       | Binarization preprocessing
+`<mets:fileGrp USE="OCR-D-PRE-CROP">`      | Cropping preprocessing
+`<mets:fileGrp USE="OCR-D-PRE-DESKEW">`    | Deskewing preprocessing
+`<mets:fileGrp USE="OCR-D-PRE-DESPECK">`   | Despeckling preprocessing
+`<mets:fileGrp USE="OCR-D-PRE-DEWARP">`    | Dewarping preprocessing
+`<mets:fileGrp USE="OCR-D-SEG-REGION">`    | Region segmentation
+`<mets:fileGrp USE="OCR-D-SEG-LINE">`      | Line segmentation
+`<mets:fileGrp USE="OCR-D-SEG-WORD">`      | Word segmentation
+`<mets:fileGrp USE="OCR-D-SEG-GLYPH">`     | Glyph segmentation
+`<mets:fileGrp USE="OCR-D-OCR-TESS">`      | [Tesseract OCR](https://github.com/OCR-D/ocrd_tesserocr)
+`<mets:fileGrp USE="OCR-D-OCR-OCRO">`      | [Ocropus OCR](https://github.com/OCR-D/ocrd_cis)
+`<mets:fileGrp USE="OCR-D-COR-CIS">`       | [CIS post-correction](https://github.com/cisocrgroup/ocrd_cis)
+`<mets:fileGrp USE="OCR-D-COR-ASV">`       | [ASV post-correction](https://github.com/ASVLeipzig/cor-asv-ann)
+`<mets:fileGrp USE="OCR-D-GT-SEG-REGION">` | Region segmentation ground truth
+`<mets:fileGrp USE="OCR-D-GT-SEG-LINE">`   | Line segmentation ground truth
+`<mets:fileGrp USE="OCR-D-GT-SEG-WORD">`   | Word segmentation ground truth
+`<mets:fileGrp USE="OCR-D-GT-SEG-GLYPH">`  | Glyph segmentation ground truth
 
 ## File ID syntax
 
@@ -127,16 +118,17 @@ The `ID` MUST be unique inside the METS file.
 
 ```
 FILEID := ID + "_" + [0-9]{4}
-ID := "OCR-D-" + WORKFLOW_STEP + ("-" + PROCESSOR)?
-WORKFLOW_STEP := ("IMG" | "SEG" | "OCR" | "COR")
-PROCESSOR := [A-Z0-9\-]{3,}
+ID := FILEGRP + (".IMG")?
 ```
 ### Examples
 
 `<mets:file ID>` | ID of the file for OCR-D
 --               | --
 `<mets:file ID="OCR-D-IMG_0001">`            | The unmanipulated source image
-`<mets:file ID="OCR-D-IMG-BIN_0001">`        | Black-and-White image
+`<mets:file ID="OCR-D-PRE-BIN_0001">`        | PAGE encapsulating the result from binarization
+`<mets:file ID="OCR-D-PRE-BIN.IMG_0001">`    | Black-and-white image
+`<mets:file ID="OCR-D-PRE-CROP_0001">`       | PAGE encapsulating the result from (binarization and) cropping
+`<mets:file ID="OCR-D-PRE-CROP.IMG_0001">`   | Cropped black-and-white image
 
 ## Grouping files by page
 
@@ -207,7 +199,13 @@ Invalid `mets:FLocat/@xlink:href` in `/tmp/foo/ws1/mets.xml`:
 
 ## If in PAGE then in METS
 
-Every image URL referenced via `imageFileName` or the `filename` attribute of any `pc:AlternativeImage` MUST be represented in the METS file as a `mets:file` with corresponding `mets:FLocat@xlink:href`. 
+All URL used in `imageFilename` and `filename` attributes of
+`<pc:Page>`/`<pc:AlternativeImage>` MUST be referenced in a `mets:fileGrp` as the
+`@xlink:href` attribute of a `mets:file`. This MUST be the same file group as
+the PAGE-XML that was the result of the processing step that produced the
+`<pg:AlternativeImage>`. In other words: `<pg:AlternativeImage>` should be
+written to the same `mets:fileGrp` as its source PAGE-XML, which in most
+implementations will mean the same folder.
 
 ## Recording processing information in METS
 

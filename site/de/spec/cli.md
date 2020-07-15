@@ -12,10 +12,13 @@ All tools provided by MP must be standalone executables, installable into `$PATH
 Those tools intended for run-time data processing (but not necessarily tools for training or deployment) are called **processors**.
 Processors must adhere to the following uniform interface, including mandatory and optional parameters (i.e. no more or fewer are permissible).
 
-**NOTE:** Command line options cannot be repeated. Parameters marked
-**MULTI-VALUE** specify multiple values, formatted as a single string with
-comma-separated items (e.g. `-I group1,group2,group3` instead of `-I group1 -I
-group2 -I group3`).
+**NOTE:** Command line options cannot be repeated, except those explicitly
+marked as **REPEATABLE** (e.g. `-p params.json -p '{"val": 1}'` is allowed
+because [`-p` is repeatable](#-p---parameter-param_json).
+
+**NOTE**: Parameters marked **MULTI-VALUE** cannot be repeated but can specify
+multiple values, formatted as a single string with comma-separated items (e.g.
+`-I group1,group2,group3` instead of `-I group1 -I group2 -I group3`).
 
 ## CLI executable name
 
@@ -80,11 +83,40 @@ file groups set with
 
 ### `-p, --parameter PARAM_JSON`
 
-URL of parameter file in [JSON format](https://json.org/) corresponding to the `parameters` section of the processor's [ocrd-tool metadata](ocrd_tool).
-If that file is not readable and `PARAM_JSON` begins with `{` (opening brace), try to parse `PARAM_JSON` as JSON.
-If that also fails, throw an exception.
+**REPEATABLE**
 
-Omit to use default parameters only, or for processors without any parameters.
+URL of parameter file in [JSON format](https://json.org/) corresponding to the
+`parameters` section of the processor's [ocrd-tool metadata](ocrd_tool). If
+that file is not readable and `PARAM_JSON` begins with `{` (opening brace), try
+to parse `PARAM_JSON` as JSON. If that also fails, throw an exception.
+
+When parsing JSON, all lines matching the regular expression `^\s*#.*`, i.e.
+lines whose first non-whitespace character is `#`, are to be disregarded as
+comments.
+
+When `-p` is repeated, the parsed values should be shallowly merged from right
+to left.
+
+`-p` can be omitted to use default parameters only, or for processors without
+any parameters.
+
+### `-P, --parameter-override KEY VAL`
+
+**REPEATABLE**
+
+Companion to [`-p, --parameter PARAM_JSON`](#-p--parameter-PARAM_JSON) that allows overriding `KEY` in the parameter JSON object with `VAL`. All `P` key-value-pairs are applied to the parameter JSON in the order they are given on the command line.
+
+Syntactically, `VAL` SHOULD be a valid JSON datatype:
+  * `"a string"` - a string should be enclosed with double quotes, contained double quotes backslash-escaped
+  * `123` - an int
+  * `123.45` - a float
+  * `true`, `false` - a boolean
+  * `[1, "two", 3.33]` - an array
+  * `{"foo": 42}` - an object
+
+As a convenience, if `VAL` fails to parse as a valid JSON type, it is
+interpreted as a string (`a string` is equivalent to `"a string"`, but `true`
+will be parsed as the boolean value `true`, not the string `"true"`).
 
 ### `-m, --mets METS_IN`
 
@@ -108,6 +140,14 @@ other implementation-specific means of logging configuration. For example, with
 
 Instead of processing METS, output the [ocrd-tool](ocrd_tool) description for
 this executable, in particular its parameters.
+
+### `-C, --show-resource FILENAME`
+
+Print the contents of processor resource `FILENAME`. Look up the resp. absolute filename according to the [file parameter lookup rules](ocrd_tool#file-parameter).
+
+### `-L, --list-resources`
+
+List the names of [processor resources](#processor-resources) in all of the paths defined by.the [file parameter lookup rules](ocrd_tool#file-parameter), one name per line.
 
 ### `-h, --help`
 
@@ -134,6 +174,23 @@ The log messages must have the format `TIME LEVEL LOGGERNAME - MESSAGE\n`, where
 * `LOGGERNAME` is the name of the logging component, such as the class name. Segments of `LOGGERNAME` should be separated by dot `.`, e.g. `ocrd.fancy_tool.analyze`
 * `MESSAGE` is the message to log, should not contain new lines.
 * `\n` is ASCII char `0x0a` (newline)
+
+## Processor resources
+
+Parameters that reference files can be resolved from relative to absolute
+filename by following the [conventions laid out in the `ocrd_tool`
+spec](ocrd_tool#file-parameters). These files, either bundled by the processor
+developer or put in place by the user, are called *processor resources*. The
+*processor resources* of a processor can be listed with the `-L/--list-resources`
+option and individual *processor resources* can be retrieved with the
+`-C/--show-resource` option. Since *processor resources* use the same mechanism
+as file parameters, they can be used
+
+  * as the argument to the `-p/--parameter` option (i.e. a **preset** file), and
+  * as the value of a file-type parameter (e.g. a **model** file)
+
+and the processor must resolve them to absolute paths [according to the rules
+for file parameters](ocrd_tool#file-parameters).
 
 ## URL/file convention
 

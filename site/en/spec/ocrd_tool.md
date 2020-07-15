@@ -26,6 +26,26 @@ Optionally, workflow processors can be notified that this file is potentially
 large and static (e.g. a fixed dataset or a precomputed model) and should be cached
 indefinitely after download by setting the `cacheable` property to `true`.
 
+The filename itself, i.e. the concrete value `<fpath>` of a file parameter
+should be resolved in the following way:
+
+* If `<fpath>` is an `http`/`https` URL: Download to a temporary directory (if
+  `cacheable==False`) or a semi-temporary cache directory (if `cacheable==True`)
+* If `<fpath>` is an absolute path: Use as-is.
+* If `<fpath>` is a relative path, try resolving the following paths and return
+  the first one found if any, otherwise abort with an error message stating so:
+  * `$CWD/<fpath>`
+  * If an environment variable is defined that has the name of the processor in
+    upper-case and with `-` replaced with `-` and followed by `_PATH` (e.g. for a processor
+    `ocrd-dummy`, the variable would need to be called `OCRD_DUMMY_PATH`):
+    * Split the variable value at `:` and try to resolve by appending `<fpath>`
+      to each token and return the first found file if any
+  * `$VIRTUAL_ENV/share/<name-of-processor>/<fpath>`
+  * `$XDG_DATA_HOME/<name-of-processor>/<fpath>` (with `$HOME/.local/share` instead of `$XDG_DATA_HOME` if unset)
+  * `$XDG_CONFIG_HOME/<name-of-processor>/<fpath>` (with `$HOME/.config` instead of `$XDG_CONFIG_HOME` if unset)
+  * `/usr/local/share/<name-of-processor>/<fpath>`
+  * If it is a Python implementation: try to resolve with `pkg_resources.resource_filename(__name__, "<fpath>")`
+
 ## Input / Output file groups
 
 Tools should define the names of both expected input and produced output file
