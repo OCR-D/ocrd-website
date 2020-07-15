@@ -282,7 +282,6 @@
       <li><a href="#pixel-density-of-images-must-be-explicit-and-high-enough">Pixel density of images must be explicit and high enough</a></li>
       <li><a href="#no-multi-page-images">No multi-page images</a></li>
       <li><a href="#unique-id-for-the-document-processed">Unique ID for the document processed</a></li>
-      <li><a href="#file-group">File Group</a></li>
       <li><a href="#file-group-use-syntax">File Group USE syntax</a>
         <ul>
           <li><a href="#examples">Examples</a></li>
@@ -372,10 +371,6 @@ missing or suspiciously low pixel density metadata.</p>
   <li><code class="highlighter-rouge">url</code></li>
 </ul>
 
-<h2 id="file-group">File Group</h2>
-
-<p>All <code class="highlighter-rouge">mets:file</code> inside a <code class="highlighter-rouge">mets:fileGrp</code> MUST have the same <code class="highlighter-rouge">MIMETYPE</code>.</p>
-
 <h2 id="file-group-use-syntax">File Group USE syntax</h2>
 
 <p>All <code class="highlighter-rouge">mets:fileGrp</code> MUST have a <strong>unique</strong> <code class="highlighter-rouge">USE</code> attribute that hints at the provenance of the files.</p>
@@ -419,24 +414,24 @@ with the type of manipulation (<code class="highlighter-rouge">BIN-KRAKEN</code>
       <td>The unmanipulated source images</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG-BIN"&gt;</code></td>
-      <td>Black-and-White images</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-BIN"&gt;</code></td>
+      <td>Binarization preprocessing</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG-CROP"&gt;</code></td>
-      <td>Cropped images</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-CROP"&gt;</code></td>
+      <td>Cropping preprocessing</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG-DESKEW"&gt;</code></td>
-      <td>Deskewed images</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DESKEW"&gt;</code></td>
+      <td>Deskewing preprocessing</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG-DESPECK"&gt;</code></td>
-      <td>Despeckled images</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DESPECK"&gt;</code></td>
+      <td>Despeckling preprocessing</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG-DEWARP"&gt;</code></td>
-      <td>Dewarped images</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DEWARP"&gt;</code></td>
+      <td>Dewarping preprocessing</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-SEG-REGION"&gt;</code></td>
@@ -456,39 +451,19 @@ with the type of manipulation (<code class="highlighter-rouge">BIN-KRAKEN</code>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-OCR-TESS"&gt;</code></td>
-      <td>Tesseract OCR</td>
+      <td><a href="https://github.com/OCR-D/ocrd_tesserocr">Tesseract OCR</a></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-OCR-ANY"&gt;</code></td>
-      <td>AnyOCR</td>
+      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-OCR-OCRO"&gt;</code></td>
+      <td><a href="https://github.com/OCR-D/ocrd_cis">Ocropus OCR</a></td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-COR-CIS"&gt;</code></td>
-      <td>CIS post-correction</td>
+      <td><a href="https://github.com/cisocrgroup/ocrd_cis">CIS post-correction</a></td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-COR-ASV"&gt;</code></td>
-      <td>ASV post-correction</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-IMG-BIN"&gt;</code></td>
-      <td>Black-and-White images ground truth</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-IMG-CROP"&gt;</code></td>
-      <td>Cropped images ground truth</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-IMG-DESKEW"&gt;</code></td>
-      <td>Deskewed images ground truth</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-IMG-DESPECK"&gt;</code></td>
-      <td>Despeckled images ground truth</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-IMG-DEWARP"&gt;</code></td>
-      <td>Dewarped images ground truth</td>
+      <td><a href="https://github.com/ASVLeipzig/cor-asv-ann">ASV post-correction</a></td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-SEG-REGION"&gt;</code></td>
@@ -515,9 +490,7 @@ with the type of manipulation (<code class="highlighter-rouge">BIN-KRAKEN</code>
 The <code class="highlighter-rouge">ID</code> MUST be unique inside the METS file.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FILEID := ID + "_" + [0-9]{4}
-ID := "OCR-D-" + WORKFLOW_STEP + ("-" + PROCESSOR)?
-WORKFLOW_STEP := ("IMG" | "SEG" | "OCR" | "COR")
-PROCESSOR := [A-Z0-9\-]{3,}
+ID := FILEGRP + (".IMG")?
 </code></pre></div></div>
 <h3 id="examples-1">Examples</h3>
 
@@ -534,8 +507,20 @@ PROCESSOR := [A-Z0-9\-]{3,}
       <td>The unmanipulated source image</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">&lt;mets:file ID="OCR-D-IMG-BIN_0001"&gt;</code></td>
-      <td>Black-and-White image</td>
+      <td><code class="highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-BIN_0001"&gt;</code></td>
+      <td>PAGE encapsulating the result from binarization</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-BIN.IMG_0001"&gt;</code></td>
+      <td>Black-and-white image</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-CROP_0001"&gt;</code></td>
+      <td>PAGE encapsulating the result from (binarization and) cropping</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-CROP.IMG_0001"&gt;</code></td>
+      <td>Cropped black-and-white image</td>
     </tr>
   </tbody>
 </table>
@@ -611,7 +596,13 @@ encodings of the same page.</p>
 
 <h2 id="if-in-page-then-in-mets">If in PAGE then in METS</h2>
 
-<p>Every image URL referenced via <code class="highlighter-rouge">imageFileName</code> or the <code class="highlighter-rouge">filename</code> attribute of any <code class="highlighter-rouge">pc:AlternativeImage</code> MUST be represented in the METS file as a <code class="highlighter-rouge">mets:file</code> with corresponding <code class="highlighter-rouge">mets:FLocat@xlink:href</code>.</p>
+<p>All URL used in <code class="highlighter-rouge">imageFilename</code> and <code class="highlighter-rouge">filename</code> attributes of
+<code class="highlighter-rouge">&lt;pc:Page&gt;</code>/<code class="highlighter-rouge">&lt;pc:AlternativeImage&gt;</code> MUST be referenced in a <code class="highlighter-rouge">mets:fileGrp</code> as the
+<code class="highlighter-rouge">@xlink:href</code> attribute of a <code class="highlighter-rouge">mets:file</code>. This MUST be the same file group as
+the PAGE-XML that was the result of the processing step that produced the
+<code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code>. In other words: <code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> should be
+written to the same <code class="highlighter-rouge">mets:fileGrp</code> as its source PAGE-XML, which in most
+implementations will mean the same folder.</p>
 
 <h2 id="recording-processing-information-in-mets">Recording processing information in METS</h2>
 
