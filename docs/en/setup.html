@@ -324,10 +324,10 @@
           <li><a href="#testing-the-installation-1">Testing the installation</a></li>
         </ul>
       </li>
-      <li><a href="#installation-taverna-workflow">Installation Taverna Workflow</a>
+      <li><a href="#installation-of-taverna-workflow">Installation of Taverna Workflow</a>
         <ul>
           <li><a href="#why-using-taverna">Why using Taverna?</a></li>
-          <li><a href="#local-installation">‘Local’ installation</a>
+          <li><a href="#native-installation-1">Native installation</a>
             <ul>
               <li><a href="#testing-the-installation-2">Testing the installation</a></li>
             </ul>
@@ -339,12 +339,12 @@
           </li>
         </ul>
       </li>
-      <li><a href="#running-a-small-workflow-without-taverna">Running a small workflow without taverna</a>
+      <li><a href="#running-a-small-workflow-without-taverna">Running a small workflow without Taverna</a>
         <ul>
           <li><a href="#with-pypi-and-workflow-engine-from-core">With PyPI and workflow engine from core</a></li>
         </ul>
       </li>
-      <li><a href="#installation-of-the-whole-ocr-d-framework">Installation of the whole OCR-D Framework</a>
+      <li><a href="#installation-of-ocrd_framework">Installation of ocrd_framework</a>
         <ul>
           <li><a href="#prepare-etchosts-for-accessing-files-in-repository-via-browser">Prepare ‘/etc/hosts’ for accessing files in repository via browser</a>
             <ul>
@@ -420,27 +420,27 @@ use all of them.</p>
 <p>There are four ways to install OCR-D modules:</p>
 
 <ol>
-  <li>Using the <a href="https://hub.docker.com/r/ocrd/all"><code class="highlighter-rouge">ocrd/all</code> Docker module collection</a> (<strong>recommended</strong>)</li>
-  <li>Using <code class="highlighter-rouge">ocrd/all</code> to install OCR-D modules locally</li>
-  <li>Installing modules indivudally via Docker or natively (not recommended)</li>
-  <li>Using <a href="https://github.com/VolkerHartmann/ocrd_framework">OCR-D Framework with Docker</a> to install all available processors, taverna workflow and local research data repository</li>
+  <li><a href="#ocrd_all-via-docker">Using</a> the <a href="https://hub.docker.com/r/ocrd/all">ocrd_all prebuilt Docker images <code class="highlighter-rouge">ocrd/all</code></a> to install a module collection (<strong>recommended</strong>)</li>
+  <li><a href="#ocrd_all-natively">Using</a> the <a href="https://github.com/OCR-D/ocrd_all">ocrd_all git repository</a> to install selected modules natively</li>
+  <li><a href="#individual-installation">Installing</a> modules individually, either via Docker or natively (not recommended)</li>
+  <li><a href="#installation-of-ocrd_framework">Using</a> the <a href="https://github.com/VolkerHartmann/ocrd_framework">ocrd_framework repository</a> to install all modules, Taverna workflow and research data repository as a local Docker image</li>
 </ol>
 
-<p>We recommend using the Docker image since this does not require any changes to
+<p>We recommend using the prebuilt Docker images since this does not require any changes to
 the host system besides <a href="https://hub.docker.com/r/ocrd/all">installing Docker</a>.</p>
 
-<p>We do not recommend installing modules individually because it can be difficult to keep the
-software up-to-date and ensure that they are at working and interoperable versions.</p>
+<p>We do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
+keep the software up-to-date and ensure that they are at usable and interoperable versions.</p>
 
 <h2 id="ocrd_all">ocrd_all</h2>
 
 <p>The <a href="https://github.com/OCR-D/ocrd_all"><code class="highlighter-rouge">ocrd_all</code></a> project is an effort by the
 OCR-D community, now maintained by the OCR-D coordination team. It streamlines
 the native installation of OCR-D modules with a versatile Makefile approach.
-Besides allowing local installation of the full OCR-D stack, it is also the
-base for the <a href="https://hub.docker.com/r/ocrd/all"><code class="highlighter-rouge">ocrd/all</code></a>
-Docker images available from DockerHub that contain the full stack of OCR-D
-modules ready for deployment.</p>
+Besides allowing native installation of the full OCR-D stack (or any subset),
+it is also the base for the <a href="https://hub.docker.com/r/ocrd/all"><code class="highlighter-rouge">ocrd/all</code></a>
+Docker images available from DockerHub that contain the full stack (or certain subsets)
+of OCR-D modules ready for deployment.</p>
 
 <p>Technically, <code class="highlighter-rouge">ocrd_all</code> is a Git repository that keeps all the necessary software
 as Git submodules at specific revisions. This way, the software tools are known
@@ -713,7 +713,7 @@ Docker containers.</p>
 
 <p>You need to have <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">Docker</a></p>
 
-<p>All OCR-D modules are also <a href="https://hub.docker.com/u/ocrd">published as Docker containers to DockerHub</a>. To find the docker
+<p>Many OCR-D modules are also <a href="https://hub.docker.com/u/ocrd">published as Docker containers to DockerHub</a>. To find the Docker
 image for a module, replace the <code class="highlighter-rouge">ocrd_</code> prefix with <code class="highlighter-rouge">ocrd/</code>:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/tesserocr  <span class="c"># Installs ocrd_tesserocr</span>
@@ -729,6 +729,12 @@ name matches the executable. For example to run the same example in the dedicate
 
 <h3 id="native-installation">Native installation</h3>
 
+<p>Installing each module into your system natively requires you to know and install all its <em>dependencies</em> first.
+That can be <em>system packages</em> (or even system package repositories) or <em>Python packages</em>.</p>
+
+<p>To learn about system dependencies, consult the module’s README files. In contrast, Python dependencies should
+be resolved automatically by using the Python package manager <code class="highlighter-rouge">pip</code>.</p>
+
 <blockquote>
   <p><strong>NOTE</strong></p>
 
@@ -741,6 +747,13 @@ which has up-to-date builds of tesseract and its dependencies:</p>
 <span class="nb">sudo </span>apt-get update
 </code></pre></div>  </div>
 </blockquote>
+
+<p>Next subsections:</p>
+<ul>
+  <li>For Python you also first need <a href="#virtualenv">virtualenv</a>. Then you have two options:</li>
+  <li>installing <a href="#from-pypi">via PyPI</a> or</li>
+  <li>installing <a href="#from-git">via local git clone</a>.</li>
+</ul>
 
 <h4 id="virtualenv">virtualenv</h4>
 
@@ -883,22 +896,22 @@ files. (Password: <code class="highlighter-rouge">ingest</code>)</p>
   </li>
 </ol>
 
-<h2 id="installation-taverna-workflow">Installation Taverna Workflow</h2>
+<h2 id="installation-of-taverna-workflow">Installation of Taverna Workflow</h2>
 
 <h3 id="why-using-taverna">Why using Taverna?</h3>
 
-<p>Taverna creates a ‘metadata’ sub directory containing collected output of all
+<p>Taverna creates a <code class="highlighter-rouge">metadata</code> subdirectory containing collected output of all
 processors: all intermediate METS files and a provenance file containing all
 provenance of the workflow including start/end time of processor/workflow, used
 input group(s), used parameters and created output group(s).</p>
 
-<p>There are two ways to install taverna workflow.
-1 ‘Local’ installation</p>
+<p>There are two ways to install <code class="highlighter-rouge">taverna_workflow</code>:</p>
 <ol>
+  <li>native installation</li>
   <li>Docker installation</li>
 </ol>
 
-<h3 id="local-installation">‘Local’ installation</h3>
+<h3 id="native-installation-1">Native installation</h3>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/OCR-D/taverna_workflow.git
 <span class="nb">cd </span>taverna_workflow/
@@ -969,7 +982,7 @@ OCR-D-SEG-REGION
 
 <p>Each sub folder starting with ‘OCR-D-OCR’ should now contain 4 files with the detected full text.</p>
 
-<h2 id="running-a-small-workflow-without-taverna">Running a small workflow without taverna</h2>
+<h2 id="running-a-small-workflow-without-taverna">Running a small workflow without Taverna</h2>
 
 <h3 id="with-pypi-and-workflow-engine-from-core">With PyPI and workflow engine from core</h3>
 
@@ -1011,19 +1024,19 @@ ocrd process <span class="se">\</span>
   <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'</span> 
 </code></pre></div></div>
 
-<h2 id="installation-of-the-whole-ocr-d-framework">Installation of the whole OCR-D Framework</h2>
+<h2 id="installation-of-ocrd_framework">Installation of ocrd_framework</h2>
 
-<p>To install the complete OCR-D framework docker is highly recommended.</p>
+<p>To install the complete OCR-D framework Docker is highly recommended.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_framework.sh
 bash install_OCR-D_framework.sh ~/ocrd_framework
 </code></pre></div></div>
 
-<p>Now there exists several folders</p>
+<p>Now there exist several folders:</p>
 
 <ul>
-  <li>repository - Contains all files of repository and the databases</li>
-  <li>taverna - Contains all files workspaces and configuration of workflows</li>
+  <li><code class="highlighter-rouge">repository</code> - Contains all files of repository and the databases</li>
+  <li><code class="highlighter-rouge">taverna</code> - Contains all files workspaces and configuration of workflows</li>
 </ul>
 
 <h3 id="prepare-etchosts-for-accessing-files-in-repository-via-browser">Prepare ‘/etc/hosts’ for accessing files in repository via browser</h3>
@@ -1072,7 +1085,6 @@ The repository is available at http://localhost:8080/api/v1/metastore/bagit</p>
 
 <p>For defining your own workflow with taverna please refer to the
 <a href="https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow">README</a></p>
-
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
