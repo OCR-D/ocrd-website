@@ -144,16 +144,10 @@ README](https://github.com/OCR-D/ocrd_all).
 
 There are some [system requirements](https://github.com/OCR-D/ocrd_all#system-packages) for ocrd_all.
 
-You need to have `git` and `make` installed to make use of `ocrd_all`:
+You need to have `make` installed to make use of `ocrd_all`:
 
 ```sh
-sudo apt install git make
-```
-
-It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
-
-```sh
-sudo make deps-ubuntu
+sudo apt install make
 ```
 
 ### Cloning the repository
@@ -174,6 +168,15 @@ regularly update the repository and its submodules:
 ```sh
 git pull
 ```
+
+### Install system requirements
+
+It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
+
+```sh
+sudo make deps-ubuntu
+```
+
 
 ### Installing with ocrd_all
 
