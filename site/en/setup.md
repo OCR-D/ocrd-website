@@ -144,7 +144,7 @@ README](https://github.com/OCR-D/ocrd_all).
 
 There are some [system requirements](https://github.com/OCR-D/ocrd_all#system-packages) for ocrd_all.
 
-You need to have `git`, `make` and GNU parallel installed to make use of `ocrd_all`:
+You need to have `git`, `make` and `GNU parallel` installed to make use of `ocrd_all`:
 
 ```sh
 sudo apt install git make parallel
@@ -591,4 +591,3 @@ The repository is available at http://localhost:8080/api/v1/metastore/bagit
 
 For defining your own workflow with taverna please refer to the
 [README](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
-
