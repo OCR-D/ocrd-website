@@ -545,7 +545,7 @@ wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_
 bash install_OCR-D_framework.sh ~/ocrd_framework
 ```
 
-Now there exists several folders:
+Now there exist several folders:
 
 - `repository` - Contains all files of repository and the databases
 - `taverna` - Contains all files workspaces and configuration of workflows
@@ -599,4 +599,3 @@ The repository is available at http://localhost:8080/api/v1/metastore/bagit
 
 For defining your own workflow with taverna please refer to the
 [README](https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow)
-
