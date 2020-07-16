@@ -44,7 +44,7 @@ using `ocrd_all`:
   * [eng](https://github.com/tesseract-ocr/tessdata_fast/raw/master/eng.traineddata)
   * [deu](https://github.com/tesseract-ocr/tessdata_fast/raw/master/deu.traineddata)
   * [frk](https://github.com/tesseract-ocr/tessdata_fast/raw/master/frk.traineddata)
-  * [script/Latin](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata)
+  * [script/Latin](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Latin.traineddata)
   * [script/Fraktur](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata)
   * [@stweil's GT4HistOCR model](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/fast/Fraktur_50000000.334_450937.traineddata)
 
