@@ -144,10 +144,10 @@ README](https://github.com/OCR-D/ocrd_all).
 
 There are some [system requirements](https://github.com/OCR-D/ocrd_all#system-packages) for ocrd_all.
 
-You need to have `git`, `make` and `GNU parallel` installed to make use of `ocrd_all`:
+You need to have `make` installed to make use of `ocrd_all`:
 
 ```sh
-sudo apt install git make parallel
+sudo apt install make
 ```
 
 ### Cloning the repository
