@@ -292,15 +292,19 @@
           <li><a href="#-g---page-id-id"><code class="highlighter-rouge">-g, --page-id ID</code></a></li>
           <li><a href="#--overwrite"><code class="highlighter-rouge">--overwrite</code></a></li>
           <li><a href="#-p---parameter-param_json"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></a></li>
+          <li><a href="#-p---parameter-override-key-val"><code class="highlighter-rouge">-P, --parameter-override KEY VAL</code></a></li>
           <li><a href="#-m---mets-mets_in"><code class="highlighter-rouge">-m, --mets METS_IN</code></a></li>
           <li><a href="#-w---working-dir-dir"><code class="highlighter-rouge">-w, --working-dir DIR</code></a></li>
           <li><a href="#-l---log-level-loglevel"><code class="highlighter-rouge">-l, --log-level LOGLEVEL</code></a></li>
           <li><a href="#-j---dump-json"><code class="highlighter-rouge">-J, --dump-json</code></a></li>
+          <li><a href="#-c---show-resource-filename"><code class="highlighter-rouge">-C, --show-resource FILENAME</code></a></li>
+          <li><a href="#-l---list-resources"><code class="highlighter-rouge">-L, --list-resources</code></a></li>
           <li><a href="#-h---help"><code class="highlighter-rouge">-h, --help</code></a></li>
         </ul>
       </li>
       <li><a href="#return-value">Return value</a></li>
       <li><a href="#logging">Logging</a></li>
+      <li><a href="#processor-resources">Processor resources</a></li>
       <li><a href="#urlfile-convention">URL/file convention</a></li>
       <li><a href="#example">Example</a>
         <ul>
@@ -325,10 +329,13 @@
 <p>Those tools intended for run-time data processing (but not necessarily tools for training or deployment) are called <strong>processors</strong>.
 Processors must adhere to the following uniform interface, including mandatory and optional parameters (i.e. no more or fewer are permissible).</p>
 
-<p><strong>NOTE:</strong> Command line options cannot be repeated. Parameters marked
-<strong>MULTI-VALUE</strong> specify multiple values, formatted as a single string with
-comma-separated items (e.g. <code class="highlighter-rouge">-I group1,group2,group3</code> instead of <code class="highlighter-rouge">-I group1 -I
-group2 -I group3</code>).</p>
+<p><strong>NOTE:</strong> Command line options cannot be repeated, except those explicitly
+marked as <strong>REPEATABLE</strong> (e.g. <code class="highlighter-rouge">-p params.json -p '{"val": 1}'</code> is allowed
+because <a href="#-p---parameter-param_json"><code class="highlighter-rouge">-p</code> is repeatable</a>.</p>
+
+<p><strong>NOTE</strong>: Parameters marked <strong>MULTI-VALUE</strong> cannot be repeated but can specify
+multiple values, formatted as a single string with comma-separated items (e.g.
+<code class="highlighter-rouge">-I group1,group2,group3</code> instead of <code class="highlighter-rouge">-I group1 -I group2 -I group3</code>).</p>
 
 <h2 id="cli-executable-name">CLI executable name</h2>
 
@@ -395,11 +402,42 @@ file groups set with
 
 <h3 id="-p---parameter-param_json"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></h3>
 
-<p>URL of parameter file in <a href="https://json.org/">JSON format</a> corresponding to the <code class="highlighter-rouge">parameters</code> section of the processor’s <a href="ocrd_tool">ocrd-tool metadata</a>.
-If that file is not readable and <code class="highlighter-rouge">PARAM_JSON</code> begins with <code class="highlighter-rouge">{</code> (opening brace), try to parse <code class="highlighter-rouge">PARAM_JSON</code> as JSON.
-If that also fails, throw an exception.</p>
+<p><strong>REPEATABLE</strong></p>
 
-<p>Omit to use default parameters only, or for processors without any parameters.</p>
+<p>URL of parameter file in <a href="https://json.org/">JSON format</a> corresponding to the
+<code class="highlighter-rouge">parameters</code> section of the processor’s <a href="ocrd_tool">ocrd-tool metadata</a>. If
+that file is not readable and <code class="highlighter-rouge">PARAM_JSON</code> begins with <code class="highlighter-rouge">{</code> (opening brace), try
+to parse <code class="highlighter-rouge">PARAM_JSON</code> as JSON. If that also fails, throw an exception.</p>
+
+<p>When parsing JSON, all lines matching the regular expression <code class="highlighter-rouge">^\s*#.*</code>, i.e.
+lines whose first non-whitespace character is <code class="highlighter-rouge">#</code>, are to be disregarded as
+comments.</p>
+
+<p>When <code class="highlighter-rouge">-p</code> is repeated, the parsed values should be shallowly merged from right
+to left.</p>
+
+<p><code class="highlighter-rouge">-p</code> can be omitted to use default parameters only, or for processors without
+any parameters.</p>
+
+<h3 id="-p---parameter-override-key-val"><code class="highlighter-rouge">-P, --parameter-override KEY VAL</code></h3>
+
+<p><strong>REPEATABLE</strong></p>
+
+<p>Companion to <a href="#-p--parameter-PARAM_JSON"><code class="highlighter-rouge">-p, --parameter PARAM_JSON</code></a> that allows overriding <code class="highlighter-rouge">KEY</code> in the parameter JSON object with <code class="highlighter-rouge">VAL</code>. All <code class="highlighter-rouge">P</code> key-value-pairs are applied to the parameter JSON in the order they are given on the command line.</p>
+
+<p>Syntactically, <code class="highlighter-rouge">VAL</code> SHOULD be a valid JSON datatype:</p>
+<ul>
+  <li><code class="highlighter-rouge">"a string"</code> - a string should be enclosed with double quotes, contained double quotes backslash-escaped</li>
+  <li><code class="highlighter-rouge">123</code> - an int</li>
+  <li><code class="highlighter-rouge">123.45</code> - a float</li>
+  <li><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code> - a boolean</li>
+  <li><code class="highlighter-rouge">[1, "two", 3.33]</code> - an array</li>
+  <li><code class="highlighter-rouge">{"foo": 42}</code> - an object</li>
+</ul>
+
+<p>As a convenience, if <code class="highlighter-rouge">VAL</code> fails to parse as a valid JSON type, it is
+interpreted as a string (<code class="highlighter-rouge">a string</code> is equivalent to <code class="highlighter-rouge">"a string"</code>, but <code class="highlighter-rouge">true</code>
+will be parsed as the boolean value <code class="highlighter-rouge">true</code>, not the string <code class="highlighter-rouge">"true"</code>).</p>
 
 <h3 id="-m---mets-mets_in"><code class="highlighter-rouge">-m, --mets METS_IN</code></h3>
 
@@ -423,6 +461,14 @@ other implementation-specific means of logging configuration. For example, with
 
 <p>Instead of processing METS, output the <a href="ocrd_tool">ocrd-tool</a> description for
 this executable, in particular its parameters.</p>
+
+<h3 id="-c---show-resource-filename"><code class="highlighter-rouge">-C, --show-resource FILENAME</code></h3>
+
+<p>Print the contents of processor resource <code class="highlighter-rouge">FILENAME</code>. Look up the resp. absolute filename according to the <a href="ocrd_tool#file-parameter">file parameter lookup rules</a>.</p>
+
+<h3 id="-l---list-resources"><code class="highlighter-rouge">-L, --list-resources</code></h3>
+
+<p>List the names of <a href="#processor-resources">processor resources</a> in all of the paths defined by.the <a href="ocrd_tool#file-parameter">file parameter lookup rules</a>, one name per line.</p>
 
 <h3 id="-h---help"><code class="highlighter-rouge">-h, --help</code></h3>
 
@@ -451,6 +497,25 @@ be generated from <a href="ocrd_tool"><code class="highlighter-rouge">ocrd-tool.
   <li><code class="highlighter-rouge">MESSAGE</code> is the message to log, should not contain new lines.</li>
   <li><code class="highlighter-rouge">\n</code> is ASCII char <code class="highlighter-rouge">0x0a</code> (newline)</li>
 </ul>
+
+<h2 id="processor-resources">Processor resources</h2>
+
+<p>Parameters that reference files can be resolved from relative to absolute
+filename by following the <a href="ocrd_tool#file-parameters">conventions laid out in the <code class="highlighter-rouge">ocrd_tool</code>
+spec</a>. These files, either bundled by the processor
+developer or put in place by the user, are called <em>processor resources</em>. The
+<em>processor resources</em> of a processor can be listed with the <code class="highlighter-rouge">-L/--list-resources</code>
+option and individual <em>processor resources</em> can be retrieved with the
+<code class="highlighter-rouge">-C/--show-resource</code> option. Since <em>processor resources</em> use the same mechanism
+as file parameters, they can be used</p>
+
+<ul>
+  <li>as the argument to the <code class="highlighter-rouge">-p/--parameter</code> option (i.e. a <strong>preset</strong> file), and</li>
+  <li>as the value of a file-type parameter (e.g. a <strong>model</strong> file)</li>
+</ul>
+
+<p>and the processor must resolve them to absolute paths <a href="ocrd_tool#file-parameters">according to the rules
+for file parameters</a>.</p>
 
 <h2 id="urlfile-convention">URL/file convention</h2>
 

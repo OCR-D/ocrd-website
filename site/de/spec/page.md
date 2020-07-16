@@ -31,7 +31,11 @@ The `imageFilename` of the `<pg:Page>` and `filename` of the
 `<pg:AlternativeImage>` element MUST be a filename relative to the `mets.xml`.
 
 All URL used in `imageFilename` and `filename` [MUST be referenced in a fileGrp
-in METS](https://ocr-d.de/en/spec/mets#if-in-page-then-in-mets).
+in METS](https://ocr-d.de/en/spec/mets#if-in-page-then-in-mets). This MUST be
+the same file group as the PAGE-XML that was the result of the processing step
+that produced the `<pg:AlternativeImage>`. In other words:
+`<pg:AlternativeImage>` should be written to the same `<mets:fileGrp>` as its source
+PAGE-XML, which in most implementations will mean the same folder.
 
 ### Original image as imageFilename
 

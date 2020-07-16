@@ -9,7 +9,11 @@ toc: true
 
 # User Guide for Non-IT Users
 
-The following guide provides a detailed description how to use the OCR-D-Software. There are two options on running the software. You can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can [install the Software](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that the two options require different prerequisites as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is obligatory for both Docker and Non-Docker users!
+The following guide provides a detailed description on how to use the OCR-D-Software after it has been installed successfully. As explained in the
+setup guide, you can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can
+[install the Software locally](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that these two options require different prerequisites to get 
+started with OCR-D after the installation as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is
+obligatory for both Docker and Non-Docker users!
 
 Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). This guide always states native calls first and then provides the respective command for Docker users. 
 
