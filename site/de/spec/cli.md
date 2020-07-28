@@ -122,6 +122,9 @@ will be parsed as the boolean value `true`, not the string `"true"`).
 
 Input [METS](mets) URL. Default: `mets.xml`
 
+If `METS_IN` is a file path but the file is not readable, processors must
+show the [`--help` message](#-h---help) message and exit with return code `1`.
+
 ### `-w, --working-dir DIR`
 
 Working Directory. Default: current working directory.

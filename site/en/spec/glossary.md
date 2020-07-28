@@ -195,13 +195,22 @@ Controlled term:
 
 ### MP
 
-Module Project, a software project producing one or more tools to OCR-D. There
-are [currently eight MP](https://ocr-d.de/en/module-projects) active in the OCR-D
-community.
+Module Project, a software project producing one or more tools. Tools can
+comprise multiple methods/activities that are called [*processors*](#processor)
+for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
+second phase of OCR-D (2018-2020).
 
 ### OCR
 
 Map pixel areas to [glyphs](#glyph) and [words](#words).
+
+### Processor
+
+A processor is a method provided by a tool that implements the [OCR-D
+CLI](https://ocr-d.de/en/spec/cli) and implements one or more
+[activities](#activities).
+
+→ [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
 
 ### Word segmentation
 

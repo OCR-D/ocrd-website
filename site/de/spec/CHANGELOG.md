@@ -14,6 +14,12 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.9.0] - 2020-07-21
+
+Changed:
+
+  * CLI: Processors being called without valid METS file -> show help, #156
+
 ## [3.8.0] - 2020-07-13
 
 Added:
@@ -360,6 +366,7 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.9.0]: ../../compare/v3.9.0...v3.8.0
 [3.8.0]: ../../compare/v3.8.0...v3.7.0
 [3.7.0]: ../../compare/v3.7.0...v3.6.0
 [3.6.0]: ../../compare/v3.6.0...v3.5.0
