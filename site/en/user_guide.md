@@ -201,14 +201,16 @@ ways make use of the following syntax:
 -P parameter      # indication of parameters for a particular processor
 ```
 
+**Note:** The `-P` option accepts a parameter name and a parameter value. When we write `-P parameter`, we mean that `parameter` consists of
+`parameter name` and `parameter value`.
 For some processors parameters are purely optional, other processors as e.g. `ocrd-tesserocr-recognize` won't work without one or several parameters.
 
 ### Calling a single processor
 If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:
 ```sh
-ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [param value]
+ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [parameter]
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [param value]'
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [parameter]'
 ```
 Your command could e.g. look like this:
 ```sh
@@ -227,12 +229,12 @@ ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 ```
 
-**Note:** If multiple parameters are necessary, each of them has to be preceded by `-P`
+**Note:** If multiple parameter key-value pairs are necessary, each of them has to be preceded by `-P`
 
 E.g.: 
 
 ```sh
--P param1 value1 -P param2 value2] -P param3 value3
+-P param1 value1 -P param2 value2 -P param3 value3
 ```
 
 ### Calling several processors
@@ -245,11 +247,11 @@ ocrd-process, which has a similar syntax as calling single processors.
 ```sh
 ocrd process \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
-  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [param value]'
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [parameter]'
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd process \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
-  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [param value]'
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [parameter]'
 ```
 
 Your command could e.g. look like this:

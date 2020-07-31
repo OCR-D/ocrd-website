@@ -968,7 +968,7 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
   <tbody>
     <tr>
       <td>ocrd-cor-asv-ann-process</td>
-      <td><code>{“textequiv_level”:”word”,”model_file”:”/path/to/model/model.h5”}</code></td>
+      <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
       <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
 	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
