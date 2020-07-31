@@ -198,7 +198,7 @@ ways make use of the following syntax:
 ```sh
 -I Input-Group    # folder of the files to be processed
 -O Output-Group   # folder for the output of your processor
--p parameter.json # indication of parameters for a particular processor
+-P parameter      # indication of parameters for a particular processor
 ```
 
 For some processors parameters are purely optional, other processors as e.g. `ocrd-tesserocr-recognize` won't work without one or several parameters.
@@ -206,15 +206,15 @@ For some processors parameters are purely optional, other processors as e.g. `oc
 ### Calling a single processor
 If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:
 ```sh
-ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]
+ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [param value]
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -p [path to parameter.json]'
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-[processor needed] -I [Input-Group] -O [Output-Group] -P [param value]'
 ```
 Your command could e.g. look like this:
 ```sh
-ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json
+ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur
 ```
 
 **Note:** For processors using multiple input-, or output groups you have to use a comma separated list. 
@@ -227,25 +227,12 @@ ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-BIN,OCR-D-IMG-BIN
 ```
 
-The [`parameter.json`](`parameter.json`) file can be created with the following command:
-
-```
-echo '{ "[parameter]": "[specification]" }' > [name of your param.json file]
-```
-
-Instead of calling a `parameter.json` file you can also directly
-write down the parameters when invoking a processor:
-
-```sh
--p '{"[parameter]": "[value]"}'
-```
-
-**Note:** If multiple parameters are necessary they have to be separated by a comma. (No comma after the last parameter!)
+**Note:** If multiple parameters are necessary, each of them has to be preceded by `-P`
 
 E.g.: 
 
 ```sh
--p '{"[param1]": "[value1]", "[param2]": "[value2]", "[param3]": "[value3]"}'
+-P param1 value1 -P param2 value2] -P param3 value3
 ```
 
 ### Calling several processors
@@ -258,11 +245,11 @@ ocrd-process, which has a similar syntax as calling single processors.
 ```sh
 ocrd process \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
-  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [param value]'
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd process \
   '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group]' \
-  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'
+  '[processor needed without prefix 'ocrd-'] -I [Input-Group] -O [Output-Group] -P [param value]'
 ```
 
 Your command could e.g. look like this:
@@ -272,13 +259,13 @@ ocrd process \
   'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE' \
   'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK' \
   'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE' \
-  'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'
+  'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd process \
   'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE' \
   'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK' \
   'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE' \
-  'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'
+  'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'
 ```
 
 **Note:** In contrast to calling a single processor, for `ocrd process` you leave
