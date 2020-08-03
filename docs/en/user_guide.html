@@ -490,21 +490,23 @@ ways make use of the following syntax:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-I</span> Input-Group    <span class="c"># folder of the files to be processed</span>
 <span class="nt">-O</span> Output-Group   <span class="c"># folder for the output of your processor</span>
-<span class="nt">-p</span> parameter.json <span class="c"># indication of parameters for a particular processor</span>
+<span class="nt">-P</span> parameter      <span class="c"># indication of parameters for a particular processor</span>
 </code></pre></div></div>
 
-<p>For some processors parameters are purely optional, other processors as e.g. <code class="highlighter-rouge">ocrd-tesserocr-recognize</code> won’t work without one or several parameters.</p>
+<p><strong>Note:</strong> The <code class="highlighter-rouge">-P</code> option accepts a parameter name and a parameter value. When we write <code class="highlighter-rouge">-P parameter</code>, we mean that <code class="highlighter-rouge">parameter</code> consists of
+<code class="highlighter-rouge">parameter name</code> and <code class="highlighter-rouge">parameter value</code>.
+For some processors parameters are purely optional, other processors as e.g. <code class="highlighter-rouge">ocrd-tesserocr-recognize</code> won’t work without one or several parameters.</p>
 
 <h3 id="calling-a-single-processor">Calling a single processor</h3>
 <p>If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:</p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-p</span> <span class="o">[</span>path to parameter.json]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-P</span> <span class="o">[</span>parameter]
 <span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-p</span> <span class="o">[</span>path to parameter.json]<span class="s1">'
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-P</span> <span class="o">[</span>parameter]<span class="s1">'
 </span></code></pre></div></div>
 <p>Your command could e.g. look like this:</p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESSEROCR <span class="nt">-p</span> param-tess-fraktur.json
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESSEROCR <span class="nt">-P</span> model Fraktur
 <span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESSEROCR <span class="nt">-p</span> param-tess-fraktur.json
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-TESSEROCR <span class="nt">-P</span> model Fraktur
 </code></pre></div></div>
 
 <p><strong>Note:</strong> For processors using multiple input-, or output groups you have to use a comma separated list.</p>
@@ -516,22 +518,11 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-anybaseocr-crop  <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-BIN,OCR-D-IMG-BIN
 </code></pre></div></div>
 
-<p>The <a href="`parameter.json`"><code class="highlighter-rouge">parameter.json</code></a> file can be created with the following command:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo '{ "[parameter]": "[specification]" }' &gt; [name of your param.json file]
-</code></pre></div></div>
-
-<p>Instead of calling a <code class="highlighter-rouge">parameter.json</code> file you can also directly
-write down the parameters when invoking a processor:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-p</span> <span class="s1">'{"[parameter]": "[value]"}'</span>
-</code></pre></div></div>
-
-<p><strong>Note:</strong> If multiple parameters are necessary they have to be separated by a comma. (No comma after the last parameter!)</p>
+<p><strong>Note:</strong> If multiple parameter key-value pairs are necessary, each of them has to be preceded by <code class="highlighter-rouge">-P</code></p>
 
 <p>E.g.:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-p</span> <span class="s1">'{"[param1]": "[value1]", "[param2]": "[value2]", "[param3]": "[value3]"}'</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param1 value1 <span class="nt">-P</span> param2 value2 <span class="nt">-P</span> param3 value3
 </code></pre></div></div>
 
 <h3 id="calling-several-processors">Calling several processors</h3>
@@ -543,11 +534,11 @@ ocrd-process, which has a similar syntax as calling single processors.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
   <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group]'</span> <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'</span>
+  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -P [parameter]'</span>
 <span class="c">## alternatively using docker</span>
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
   <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group]'</span> <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -p [parameter.json]'</span>
+  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -P [parameter]'</span>
 </code></pre></div></div>
 
 <p>Your command could e.g. look like this:</p>
@@ -556,13 +547,13 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
   <span class="s1">'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE'</span> <span class="se">\</span>
-  <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'</span>
+  <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'</span>
 <span class="c">## alternatively using docker</span>
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
   <span class="s1">'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE'</span> <span class="se">\</span>
-  <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'</span>
+  <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'</span>
 </code></pre></div></div>
 
 <p><strong>Note:</strong> In contrast to calling a single processor, for <code class="highlighter-rouge">ocrd process</code> you leave
