@@ -49,10 +49,10 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
       </pre></code></p>
       </td>
       <td>for <code>output-options</code> see <a href="https://imagemagick.org/script/command-line-options.php">IM Documentation</a></td>
-      <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -p'{"output-format": "image/tiff"}'</code></td>
+      <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -P output-format image/tiff</code></td>
     </tr>
     <tr>
-      <td>ocrd-image-preprocess</td>
+      <td>ocrd-preprocess-image</td>
       <td>
       <p><code><pre>{
   "input_feature_filter": "binarized",
@@ -64,7 +64,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 	  for parameters and command examples (presets) see [the Readme](https://github.com/bertsky/ocrd_wrap#ocr-d-processor-interface-ocrd-preprocess-image)
 	  </td>
       <td><code>
-	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -p '{"output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
 	  </code></td>
     </tr>
     <tr>
@@ -167,7 +167,7 @@ can be especially useful for images which have not been enhanced.
       </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"impl": "sauvola-ms-split"}'</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola-ms-split</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-binarize</td>
@@ -295,7 +295,7 @@ For better results, the cropped images can be binarized again at this point or l
       </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{"impl": "sauvola-ms-split"}'</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl sauvola-ms-split</code></td>
     </tr>
 	<tr>
       <td>ocrd-skimage-binarize</td>
@@ -355,7 +355,7 @@ This may not be necessary for all prints, and depends heavily on the selected bi
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-denoise</td>
-      <td><code>{“level-of-operation”:”page”}</code></td>
+      <td><code></code></td>
       <td>&nbsp;</td>
 	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
@@ -409,13 +409,13 @@ The input images have to be binarized for this module to work.
       <td>ocrd-cis-ocropy-deskew</td>
       <td><code>{"level-of-operation": "page"}</code></td>
       <td>Recommended</td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p '{"level-of-operation": "page"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P level-of-operation page</code></td>
     </tr>    
 	<tr>
       <td>ocrd-tesserocr-deskew</td>
       <td><code>{"operation_level”:”page”}</code></td>
       <td>Fast, also performs a decent orientation correction</td>
-	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -p'{"operation_level”:”page”}'</code></td>
+	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P operation_level page</code></td>
     </tr>
     <tr>
       <td>ocrd-anybaseocr-deskew</td>
@@ -544,19 +544,19 @@ need to segment into lines in an extra step.
       <td>ocrd-segment-repair</td>
       <td><code>{"plausibilize":true}</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
-	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{"plausibilize":true}'</code></td>
+	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
     </tr>
     <tr>
       <td>ocrd-sbb-textline-detector</td>
       <td>&nbsp;</td>
       <td></td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-segment</td>
       <td><code>{"level-of-operation":"page"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -p '{"level-of-operation":"page"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P level-of-operation page</code></td>
     </tr>
 	<tr>
       <td>ocrd-anybaseocr-block-segmentation</td>
@@ -568,7 +568,7 @@ need to segment into lines in an extra step.
       </pre>
       </td>
       <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
-	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -p '{"block_segmentation_model": "/path/to/mrcnn","block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"}'</code></td>
+	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
   </tbody>
 </table>
@@ -607,14 +607,14 @@ your image twice on page level, and have no large images, you can probably skip 
 	  </td>
       <td>
 	  </td>
-	  <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
+	  <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>    
 	<tr>
       <td>ocrd-preprocess-image</td>
       <td><code>{"level-of-operation":"region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}</code></td>
       <td>&nbsp;</td>
 	  <td><code>
-	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}'
+	  ocrd-preprocess-image -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
 	  </code></td>
 	  </td>
     </tr>
@@ -626,7 +626,7 @@ your image twice on page level, and have no large images, you can probably skip 
       </code></p>	  
 	  </td>
       <td></td>
-      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{"level-of-operation": "region"}'</code></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
   </tbody>
 </table>
@@ -671,13 +671,13 @@ In this processing step, text region images are taken as input and their skew is
       <td>ocrd-cis-ocropy-deskew</td>
       <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -p '{"level-of-operation":"region"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -P level-of-operation region</code></td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-deskew</td>
       <td>&nbsp;</td>
       <td>Fast, also performs a decent orientation correction</td>
-	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
+	  <td><code>ocrd-tesserocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG</code></td>
     </tr>	
   </tbody>
 </table>
@@ -710,7 +710,7 @@ TODO: add images
       <td>ocrd-cis-ocropy-clip</td>
       <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -p '{"level-of-operation":"region"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
     </tr>
   </tbody>
 </table>
@@ -726,8 +726,9 @@ outline is added to the annotation of the output PAGE.
 then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
 If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
 
-**Note:** As described in [Step 7](#step-7-page-segmentation), the `ocrd-sbb-textline-detector` also segments text lines. As it segments the page in a first step, too,
-with this (and only with this!) processor you don't need to segment into regions in an extra step.
+**Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment 
+the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
+need to segment into lines in an extra step.
 
 <table class="">
   <thead>
@@ -764,7 +765,7 @@ with this (and only with this!) processor you don't need to segment into regions
       <td>ocrd-cis-ocropy-segment</td>
       <td><code>{"level-of-operation":"region"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE -p '{"level-of-operation":"region"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE -P level-of-operation region</code></td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-segment-line</td>
@@ -796,7 +797,7 @@ TODO: add images
       <td>ocrd-cis-ocropy-clip</td>
       <td><code>{"level-of-operation":"line"}</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -p '{"level-of-operation":"line"}'</code></td>
+	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -P level-of-operation line</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-ocropy-resegment</td>
@@ -857,7 +858,7 @@ In this processing step, the text line images get vertically aligned if they are
 
 This processor recognizes text in segmented lines.
 
-An overview on the existing model repositories and short descriptions on the most important models can be found [here](TODO: add link).
+An overview on the existing model repositories and short descriptions on the most important models can be found [here](https://ocr-d.de/en/models).
 
 #### Available processors
 
@@ -876,17 +877,17 @@ An overview on the existing model repositories and short descriptions on the mos
       <td>
       <p>
       <code>
-      {"textequiv_level": "glyph", "overwrite_words": true,"model": "Fraktur"}
+      {"model": "Fraktur"}
       </code>
       </p>
       <p>
       <code>
-      {"textequiv_level": "glyph", "overwrite_words": true, "model": "GT4HistOCR_50000000.997_191951"}
+      {"model": "GT4HistOCR_50000000.997_191951"}
       </code>
       </p>
       </td>
       <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
-	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"model": "Fraktur"}'</code></td>
+	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
     </tr>
     <tr>
       <td>ocrd-calamari-recognize</td>
@@ -898,7 +899,7 @@ An overview on the existing model repositories and short descriptions on the mos
       <td>
         Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> 
       </td>
-	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -p '{"checkpoint": "Fraktur"}'</code></td>
+	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
     </tr>
   </tbody>
 </table>
@@ -909,11 +910,15 @@ to be set to point to the directory where the used models are stored. (The
 directory should at least contain the following models: `deu.traineddata`,
 `eng.taineddata`, `osd.traineddata`)
 
+**Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of 
+`ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`). 
+
 ## Post Correction (Optional)
 
 ### Step 15: Text alignment
 
-In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned into one annotation with `TextEquiv` alternatives.
+In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned 
+into one annotation with `TextEquiv` alternatives.
 
 **Note:** This step is only required if you want to do post-correction afterwards,
 feeding alternative character hypotheses from several OCR-engines to improve the search space.
@@ -943,11 +948,12 @@ The previous recognition step must be run on glyph or at least on word level.
 
 ### Step 16: Post-correction
 
-In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, morphology and orthography).
+In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, 
+morphology and orthography).
 
-**Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process` are optimised for input from single OCR engines, whereas `ocrd-cis-post-correct.sh` expects input from multi-OCR alignment.
+**Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process`
+are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` expects input from multi-OCR alignment.
 
-**See also:  ToDo reference to the result inside talk on final workshop** 
 
 #### Available processors
 <table class="processor-table">
@@ -962,9 +968,9 @@ In this processing step, the recognized text is corrected by statistical error m
   <tbody>
     <tr>
       <td>ocrd-cor-asv-ann-process</td>
-      <td><code>{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}</code></td>
+      <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
       <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
-	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -p '{“textequiv_level”:”line”,”model_file”:”/path/to/model/model.h5”}'</code></td>
+	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
     <tr>
       <td>ocrd-cis-postcorrect</td>
@@ -1112,7 +1118,7 @@ accessible format that can be used as-is by expert and layman alike.
         # fix (invalid) negative coordinates
         "negative2zero": true,
         # create a single "fat" PDF
-        "multipage": true,
+        "multipage": "name_of_pdf",
         # render text on this level
         "textequiv_level": "word",
         # draw polygon outlines in the PDF
@@ -1121,7 +1127,7 @@ accessible format that can be used as-is by expert and layman alike.
       </pre></code>
       </td>
       <td>&nbsp;</td>
-      <td><code>ocrd-pagetopdf -I PAGE-FILEGRP -O PDF-FILEGRP -p '{"textequiv_level" : "word"}'</code></td>
+      <td><code>ocrd-pagetopdf -I PAGE-FILEGRP -O PDF-FILEGRP -P textequiv_level word</code></td>
     </tr>
 
 </tbody>
@@ -1256,20 +1262,20 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
 
 ```sh
 ocrd process \
-  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola\"}'" \
+  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{\"impl\": \"kim\"}'" \
-  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
-  "cis-ocropy-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -p '{\"level-of-operation\":\"page\"}'" \
+  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl kim" \
+  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "cis-ocropy-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P level-of-operation page" \
   "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
-  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{\"plausibilize\":true}'" \
-  "olena-binarize -I OCR-D-SEG-REPAIR -O OCR-D-BIN3 -p '{\"impl\": \"kim\"}'" \
-  "cis-ocropy-deskew -I OCR-D-BIN3 -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
-  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -p '{\"level-of-operation\":\"region\"}'" \
-  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -p '{\"sanitize\":true}'" \
+  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
+  "olena-binarize -I OCR-D-SEG-REPAIR -O OCR-D-BIN3 -P impl kim" \
+  "cis-ocropy-deskew -I OCR-D-BIN3 -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -P level-of-operation region" \
+  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -P level-of-operation region" \
+  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -P sanitize true" \
   "cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/*.ckpt.json\"}'"
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
 
@@ -1358,17 +1364,17 @@ If your computer is not that powerful you may try this workflow. It works fine f
 
 ```sh
 ocrd process \
-  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -p '{\"impl\": \"sauvola\"}'" \
+  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -p '{\"impl\": \"kim\"}'" \
-  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -p '{\"level-of-operation\":\"page\"}'" \
-  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -p '{\"operation_level\":\"page\"}'" \
+  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl kim" \
+  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
-  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -p '{\"plausibilize\":true}'" \
-  "cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -p '{\"level-of-operation\":\"region\"}'" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -p '{\"level-of-operation\":\"region\"}'" \
+  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
+  "cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -P level-of-operation region" \
   "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -p '{\"sanitize\":true}'" \
+  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -P sanitize true" \
   "cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -p '{\"checkpoint\":\"/path/to/models/*.ckpt.json\"}'"
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
