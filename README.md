@@ -147,3 +147,21 @@ cd ocr-d.github.io
 git add .
 git commit -m 'website updated'
 ```
+
+## Updating publications
+
+- Go to https://www.zotero.org/groups/418719/ocr-d
+- Select all items (Hold Shift to mark in bulk, Ctrl-leftclick to mark the first entry)
+- Export as "Zotero RDF"
+- Open Zotero Desktop
+- Import collection from file
+- Delete all "Presentation" (for "articles", delete everything else for "presentations")
+* Sort reverse by date
+- Select all
+- Right click -> export bibliography
+- Use `OCRD_infoclio.ch` style
+- export as html
+- open exported html, crop to just the `<body>` contents
+- `s,>/slides,>https://ocr-d.de/slides,`
+* `s,doi.org//,ocr-d.de/,`
+- paste into site/en/publications.md / site/de/publications.md
