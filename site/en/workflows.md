@@ -136,38 +136,11 @@ can be especially useful for images which have not been enhanced.
       <td>ocrd-olena-binarize</td>
       <td>
       <p><code>
-      {"impl": "sauvola"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-fg"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-split"}
-      </code></p>
-      <p><code>
-{"impl": "kim"}
-      </code></p>
-      <p><code>
-{"impl": "wolf"}
-      </code></p>
-      <p><code>
-{"impl": "niblack"}
-      </code></p>
-      <p><code>
-{"impl": "singh"}
-      </code></p>
-      <p><code>
-{"impl": "otsu"}
-      </code></p>
-      <p><code>
-{"k": float}
+      {"k": float}
       </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola-ms-split</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-binarize</td>
@@ -266,36 +239,9 @@ For better results, the cropped images can be binarized again at this point or l
     <tr>
       <td>ocrd-olena-binarize</td>
       <td>
-      <p><code>
-      {"impl": "sauvola"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-fg"}
-      </code></p>
-      <p><code>
-{"impl": "sauvola-ms-split"}
-      </code></p>
-      <p><code>
-{"impl": "kim"}
-      </code></p>
-      <p><code>
-{"impl": "wolf"}
-      </code></p>
-      <p><code>
-{"impl": "niblack"}
-      </code></p>
-      <p><code>
-{"impl": "singh"}
-      </code></p>
-      <p><code>
-{"impl": "otsu"}
-      </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl sauvola-ms-split</code></td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
     </tr>
 	<tr>
       <td>ocrd-skimage-binarize</td>
@@ -569,6 +515,14 @@ need to segment into lines in an extra step.
       </td>
       <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
 	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
+    </tr>
+	<tr>
+      <td>ocrd-pc-segmentation</td>
+      <td>
+      </td>
+      <td>
+	  </td>
+	  <td><code>ocrd-pc-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
     </tr>
   </tbody>
 </table>
@@ -1221,11 +1175,6 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>{"plausibilize": true}</td>
     </tr>
     <tr>
-      <td>8</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "kim"}</td>
-    </tr>
-    <tr>
       <td>9</td>
       <td>ocrd-cis-ocropy-deskew</td>
       <td>{"level-of-operation":"region"}</td>
@@ -1269,8 +1218,7 @@ ocrd process \
   "cis-ocropy-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P level-of-operation page" \
   "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
   "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
-  "olena-binarize -I OCR-D-SEG-REPAIR -O OCR-D-BIN3 -P impl kim" \
-  "cis-ocropy-deskew -I OCR-D-BIN3 -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
+  "cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
   "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -P level-of-operation region" \
   "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -P level-of-operation region" \
   "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -P sanitize true" \
