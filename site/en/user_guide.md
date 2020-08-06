@@ -70,7 +70,7 @@ be stored in this directory.
 
 How you prepare a workspace depends on whether you already have or don't have a
 METS file with the paths to the images you want to process. For usage within
-OCR-D your METS file should look similar to [this example](example_mets.md). 
+OCR-D your METS file should look similar to [this example](example_mets).
 
 #### Already existing METS
 
