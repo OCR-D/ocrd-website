@@ -83,13 +83,13 @@ make gt
 
 ## Multilinguality
 
-Most elements of the page should be made available as both german and english texts.
+Most elements of the page should be made available as both German and English texts.
 
 Use the keys `lang` and `lang-ref` in YAML front matter to control language:
 * `lang` should be either `en` or `de`.
 * `lang-ref` is a unique arbitrary identifier that marks two pages as translations of each other.
 
-E.g. to create new page about cars:
+E.g. to create a new page about cars:
 
 `site/en/cars.md`
 
