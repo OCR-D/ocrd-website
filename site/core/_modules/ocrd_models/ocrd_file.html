@@ -6,17 +6,18 @@ lang: en
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ocrd_models.ocrd_file &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
@@ -30,7 +31,8 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_models.ocrd_file</a></li> 
       </ul>
     </div>  
 
@@ -43,12 +45,12 @@ lang: en
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">API to ``mets:file``</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">splitext</span><span class="p">,</span> <span class="n">basename</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">splitext</span><span class="p">,</span> <span class="n">basename</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="n">is_local_filename</span><span class="p">,</span> <span class="n">get_local_filename</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">is_local_filename</span><span class="p">,</span> <span class="n">get_local_filename</span><span class="p">,</span> <span class="n">MIME_TO_EXT</span><span class="p">,</span> <span class="n">EXT_TO_MIME</span>
 
-<span class="kn">from</span> <span class="nn">.ocrd_xml_base</span> <span class="k">import</span> <span class="n">ET</span>
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">,</span> <span class="n">TAG_METS_FILE</span>
+<span class="kn">from</span> <span class="nn">.ocrd_xml_base</span> <span class="kn">import</span> <span class="n">ET</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">,</span> <span class="n">TAG_METS_FILE</span>
 
 <div class="viewcode-block" id="OcrdFile"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile">[docs]</a><span class="k">class</span> <span class="nc">OcrdFile</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -59,23 +61,27 @@ lang: en
     <span class="c1">#  def create(mimetype, ID, url, local_filename):</span>
     <span class="c1">#      el_fileGrp.SubElement(&#39;file&#39;)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loctype</span><span class="o">=</span><span class="s1">&#39;OTHER&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loctype</span><span class="o">=</span><span class="s1">&#39;OTHER&#39;</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            el (LxmlElement):</span>
-<span class="sd">            mimetype (string):</span>
-<span class="sd">            instance (OcrdFile):</span>
-<span class="sd">            local_filename (string):</span>
-<span class="sd">            mets (OcrdMets):</span>
+<span class="sd">            el (LxmlElement): etree Element of the mets:file this represents. Create new if not provided</span>
+<span class="sd">            mimetype (string): MIME type of the file</span>
+<span class="sd">            pageId (string): ID of the physical page</span>
+<span class="sd">            loctype (string): METS @LOCTYPE</span>
+<span class="sd">            local_filename (string): Local filename</span>
+<span class="sd">            mets (OcrdMets): Containing OcrdMets</span>
+<span class="sd">            url (string): xlink:href of the file</span>
+<span class="sd">            ID (string): @ID of the mets:file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">el</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">TAG_METS_FILE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_el</span> <span class="o">=</span> <span class="n">el</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="n">mets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">local_filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="n">instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="n">mets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loctype</span> <span class="o">=</span> <span class="n">loctype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
 
         <span class="k">if</span> <span class="n">url</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
@@ -84,7 +90,7 @@ lang: en
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="ow">and</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">get_local_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        String representation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -95,9 +101,15 @@ lang: en
         <span class="c1">#  return &#39;OcrdFile[&#39; + &#39;\n\t&#39; + props + &#39;\n\t]&#39;</span>
         <span class="n">props</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
             <span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;---&#39;</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mimetype&#39;</span><span class="p">,</span> <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;local_filename&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fileGrp&#39;</span><span class="p">,</span> <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;mimetype&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;local_filename&#39;</span><span class="p">]</span>
         <span class="p">])</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;OcrdFile &#39;</span> <span class="o">+</span> <span class="n">props</span> <span class="o">+</span> <span class="s1">&#39;]/&gt; &#39;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">ID</span> <span class="c1"># and \</span>
+               <span class="c1"># self.url == other.url and \</span>
+               <span class="c1"># EXT_TO_MIME[MIME_TO_EXT[self.mimetype]] == EXT_TO_MIME[MIME_TO_EXT[other.mimetype]] and \</span>
+               <span class="c1"># self.fileGrp == other.fileGrp</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -251,6 +263,7 @@ lang: en
         <span class="n">el_FLocat</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;{</span><span class="si">%s</span><span class="s2">}href&quot;</span> <span class="o">%</span> <span class="n">NS</span><span class="p">[</span><span class="s2">&quot;xlink&quot;</span><span class="p">],</span> <span class="n">url</span><span class="p">)</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -265,7 +278,7 @@ lang: en
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -280,12 +293,13 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_models.ocrd_file</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

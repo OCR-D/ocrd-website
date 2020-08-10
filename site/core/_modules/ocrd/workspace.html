@@ -6,17 +6,18 @@ lang: en
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ocrd.workspace &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
@@ -30,7 +31,8 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd.workspace</a></li> 
       </ul>
     </div>  
 
@@ -41,17 +43,18 @@ lang: en
             
   <h1>Source code for ocrd.workspace</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">unlink</span><span class="p">,</span> <span class="n">listdir</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">unlink</span><span class="p">,</span> <span class="n">listdir</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">atomicwrites</span> <span class="k">import</span> <span class="n">atomic_write</span>
-<span class="kn">from</span> <span class="nn">deprecated.sphinx</span> <span class="k">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span> <span class="nn">atomicwrites</span> <span class="kn">import</span> <span class="n">atomic_write</span>
+<span class="kn">from</span> <span class="nn">deprecated.sphinx</span> <span class="kn">import</span> <span class="n">deprecated</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="k">import</span> <span class="n">OcrdMets</span><span class="p">,</span> <span class="n">OcrdExif</span><span class="p">,</span> <span class="n">OcrdFile</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">OcrdMets</span><span class="p">,</span> <span class="n">OcrdExif</span><span class="p">,</span> <span class="n">OcrdFile</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">image_from_polygon</span><span class="p">,</span>
     <span class="n">coordinates_of_segment</span><span class="p">,</span>
@@ -59,6 +62,7 @@ lang: en
     <span class="n">adjust_canvas_to_transposition</span><span class="p">,</span>
     <span class="n">shift_coordinates</span><span class="p">,</span>
     <span class="n">rotate_coordinates</span><span class="p">,</span>
+    <span class="n">transform_coordinates</span><span class="p">,</span>
     <span class="n">transpose_coordinates</span><span class="p">,</span>
     <span class="n">crop_image</span><span class="p">,</span>
     <span class="n">rotate_image</span><span class="p">,</span>
@@ -68,9 +72,11 @@ lang: en
     <span class="n">xywh_from_bbox</span><span class="p">,</span>
     <span class="n">pushd_popd</span><span class="p">,</span>
     <span class="n">MIME_TO_EXT</span><span class="p">,</span>
+    <span class="n">MIME_TO_PIL</span><span class="p">,</span>
+    <span class="n">MIMETYPE_PAGE</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.workspace_backup</span> <span class="k">import</span> <span class="n">WorkspaceBackupManager</span>
+<span class="kn">from</span> <span class="nn">.workspace_backup</span> <span class="kn">import</span> <span class="n">WorkspaceBackupManager</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace&#39;</span><span class="p">)</span>
 
@@ -86,13 +92,15 @@ lang: en
 <span class="sd">        directory (string) : Folder to work in</span>
 <span class="sd">        mets (:class:`OcrdMets`) : OcrdMets representing this workspace. Loaded from &#39;mets.xml&#39; if ``None``.</span>
 <span class="sd">        mets_basename (string) : Basename of the METS XML file. Default: Last URL segment of the mets_url.</span>
+<span class="sd">        overwrite_mode (boolean) : Whether to force add operations on this workspace globally</span>
 <span class="sd">        baseurl (string) : Base URL to prefix to relative URL.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="s1">&#39;mets.xml&#39;</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="s1">&#39;mets.xml&#39;</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span> <span class="o">=</span> <span class="n">resolver</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mets</span> <span class="o">=</span> <span class="n">OcrdMets</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="n">mets</span>
@@ -100,7 +108,7 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">baseurl</span> <span class="o">=</span> <span class="n">baseurl</span>
         <span class="c1">#  print(mets.to_xml(xmllint=True).decode(&#39;utf-8&#39;))</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Workspace[directory=</span><span class="si">%s</span><span class="s1">, baseurl=</span><span class="si">%s</span><span class="s1">, file_groups=</span><span class="si">%s</span><span class="s1">, files=</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">baseurl</span><span class="p">,</span>
@@ -158,7 +166,7 @@ lang: en
             <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span>
             <span class="k">return</span> <span class="n">f</span></div>
 
-<div class="viewcode-block" id="Workspace.remove_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Workspace.remove_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a file from the workspace.</span>
 
@@ -166,25 +174,45 @@ lang: en
 <span class="sd">            ID (string|OcrdFile): ID of the file to delete or the file itself</span>
 <span class="sd">            force (boolean): Continue removing even if file not found in METS</span>
 <span class="sd">            keep_file (boolean): Whether to keep files on disk</span>
+<span class="sd">            page_recursive (boolean): Whether to remove all images referenced in the file if the file is a PAGE-XML document.</span>
+<span class="sd">            page_same_group (boolean): Remove only images in the same file group as the PAGE-XML. Has no effect unless ``page_recursive`` is ``True``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleting mets:file </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">OcrdFile</span><span class="p">):</span>
+            <span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span><span class="o">.</span><span class="n">ID</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ocrd_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+            <span class="n">ocrd_file_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+            <span class="n">ocrd_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">ocrd_file_</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ocrd_file_</span><span class="p">,</span> <span class="n">OcrdFile</span><span class="p">)</span> <span class="k">else</span> <span class="n">ocrd_file_</span>
+            <span class="k">if</span> <span class="n">page_recursive</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">ocrd_file</span> <span class="ow">in</span> <span class="n">ocrd_files</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">!=</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">ocrd_page</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">silence</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">img_url</span> <span class="ow">in</span> <span class="n">ocrd_page</span><span class="o">.</span><span class="n">get_AllAlternativeImagePaths</span><span class="p">():</span>
+                            <span class="n">img_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">img_url</span><span class="p">}</span>
+                            <span class="k">if</span> <span class="n">page_same_group</span><span class="p">:</span>
+                                <span class="n">img_kwargs</span><span class="p">[</span><span class="s1">&#39;fileGrp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">fileGrp</span>
+                            <span class="k">for</span> <span class="n">img_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="o">**</span><span class="n">img_kwargs</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="n">keep_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_file</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ocrd_file</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
-                        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;rm </span><span class="si">%s</span><span class="s2"> [cwd=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
-                        <span class="n">unlink</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ocrd_file</span>
+                <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">ocrd_file</span> <span class="ow">in</span> <span class="n">ocrd_files</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ocrd_file</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;rm </span><span class="si">%s</span><span class="s2"> [cwd=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+                            <span class="n">unlink</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ocrd_file_</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">e</span></div>
 
-<div class="viewcode-block" id="Workspace.remove_file_group"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file_group">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">USE</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Workspace.remove_file_group"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file_group">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">USE</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_files</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a fileGrp.</span>
 
@@ -193,12 +221,16 @@ lang: en
 <span class="sd">            recursive (boolean): Whether to recursively delete all files in the group</span>
 <span class="sd">            force (boolean): Continue removing even if group or containing files not found in METS</span>
 <span class="sd">            keep_files (boolean): When deleting recursively whether to keep files on disk</span>
+<span class="sd">            page_recursive (boolean): Whether to remove all images referenced in the file if the file is a PAGE-XML document.</span>
+<span class="sd">            page_same_group (boolean): Remove only images in the same file group as the PAGE-XML. Has no effect unless ``page_recursive`` is ``True``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">USE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No such fileGrp: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">USE</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">recursive</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">fileGrp</span><span class="o">=</span><span class="n">USE</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="n">keep_files</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="n">keep_files</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="n">page_recursive</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="n">page_same_group</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">USE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file_group</span><span class="p">(</span><span class="n">USE</span><span class="p">)</span>
         <span class="c1"># XXX this only removes directories in the workspace if they are empty</span>
@@ -219,6 +251,8 @@ lang: en
             <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;local_filename&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;content&#39; was set but no &#39;local_filename&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
             <span class="k">if</span> <span class="s1">&#39;local_filename&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -376,33 +410,15 @@ lang: en
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">page_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_image_as_pil</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">imageFilename</span><span class="p">)</span>
         <span class="n">page_image_info</span> <span class="o">=</span> <span class="n">OcrdExif</span><span class="p">(</span><span class="n">page_image</span><span class="p">)</span>
-        <span class="c1"># FIXME: remove PrintSpace here as soon as GT abides by the PAGE standard:</span>
-        <span class="n">border</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">get_Border</span><span class="p">()</span> <span class="ow">or</span> <span class="n">page</span><span class="o">.</span><span class="n">get_PrintSpace</span><span class="p">()</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">border</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="n">page_points</span> <span class="o">=</span> <span class="n">border</span><span class="o">.</span><span class="n">get_Coords</span><span class="p">()</span><span class="o">.</span><span class="n">points</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using explicitly set page border &#39;</span><span class="si">%s</span><span class="s2">&#39; for page &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                      <span class="n">page_points</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
-            <span class="c1"># get polygon outline of page border:</span>
-            <span class="n">page_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">polygon_from_points</span><span class="p">(</span><span class="n">page_points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-            <span class="n">page_bbox</span> <span class="o">=</span> <span class="n">bbox_from_polygon</span><span class="p">(</span><span class="n">page_polygon</span><span class="p">)</span>
-            <span class="c1"># subtract offset in affine coordinate transform:</span>
-            <span class="c1"># (consistent with image cropping or AlternativeImage below)</span>
-            <span class="n">page_coords</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="n">shift_coordinates</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">page_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="o">-</span><span class="n">page_bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
-            <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">page_bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span><span class="p">]</span>
-            <span class="c1"># use identity as affine coordinate transform:</span>
-            <span class="n">page_coords</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="c1"># get size of the page after cropping but before rotation:</span>
-        <span class="n">page_xywh</span> <span class="o">=</span> <span class="n">xywh_from_bbox</span><span class="p">(</span><span class="o">*</span><span class="n">page_bbox</span><span class="p">)</span>
+        <span class="n">page_coords</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c1"># use identity as initial affine coordinate transform:</span>
+        <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># interim bbox (updated with each change to the transform):</span>
+        <span class="n">page_bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span><span class="p">]</span>
+        <span class="n">page_xywh</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">page_image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span><span class="p">}</span>
         
+        <span class="n">border</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">get_Border</span><span class="p">()</span>
         <span class="c1"># page angle: PAGE @orientation is defined clockwise,</span>
         <span class="c1"># whereas PIL/ndimage rotation is in mathematical direction:</span>
         <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">get_orientation</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
@@ -413,39 +429,11 @@ lang: en
         <span class="n">skew</span> <span class="o">=</span> <span class="p">(</span><span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">-</span> <span class="n">orientation</span>
         <span class="n">skew</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">-</span> <span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">skew</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span> <span class="c1"># map to [-45,45]</span>
         <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># nothing applied yet (depends on filters)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page &#39;</span><span class="si">%s</span><span class="s2">&#39; has orientation=</span><span class="si">%d</span><span class="s2"> skew=</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span>
-                  <span class="n">page_id</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">skew</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page &#39;</span><span class="si">%s</span><span class="s2">&#39; has </span><span class="si">%s</span><span class="s2"> orientation=</span><span class="si">%d</span><span class="s2"> skew=</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="n">page_id</span><span class="p">,</span> <span class="s2">&quot;border,&quot;</span> <span class="k">if</span> <span class="n">border</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">skew</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="c1"># Transpose in affine coordinate transform:</span>
-            <span class="c1"># (consistent with image transposition or AlternativeImage below)</span>
-            <span class="n">transposition</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">90</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
-                              <span class="mi">180</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">,</span>
-                              <span class="mi">270</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span>
-            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span> <span class="c1"># no default</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transpose_coordinates</span><span class="p">(</span>
-                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
-                <span class="n">transposition</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span>
-                          <span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]]))</span>
-            <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adjust_canvas_to_transposition</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]],</span> <span class="n">transposition</span><span class="p">)</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orientation</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">skew</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="c1"># Rotate around center in affine coordinate transform:</span>
-            <span class="c1"># (consistent with image rotation or AlternativeImage below)</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotate_coordinates</span><span class="p">(</span>
-                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
-                <span class="n">skew</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span>
-                          <span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]]))</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">skew</span>
-            
         <span class="c1"># initialize AlternativeImage@comments classes as empty:</span>
         <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        
         <span class="n">alternative_image</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">alternative_images</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">alternative_images</span><span class="p">:</span>
@@ -473,64 +461,124 @@ lang: en
                 <span class="n">page_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_image_as_pil</span><span class="p">(</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">get_filename</span><span class="p">())</span>
                 <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span>
         
-        <span class="c1"># crop, if (still) necessary:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">border</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cropping </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; to border&quot;</span><span class="p">,</span> 
-                      <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span>
-                      <span class="n">page_id</span><span class="p">)</span>
-            <span class="c1"># create a mask from the page polygon:</span>
-            <span class="n">page_image</span> <span class="o">=</span> <span class="n">image_from_polygon</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">page_polygon</span><span class="p">,</span>
-                                            <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
-            <span class="c1"># recrop into page rectangle:</span>
-            <span class="n">page_image</span> <span class="o">=</span> <span class="n">crop_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">page_bbox</span><span class="p">)</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,cropped&#39;</span>
-        <span class="c1"># transpose, if (still) necessary:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Transposing </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; by </span><span class="si">%d</span><span class="s2">°&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span>
-                     <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
-            <span class="n">page_image</span> <span class="o">=</span> <span class="n">transpose_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="p">{</span>
-                <span class="mi">90</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
-                <span class="mi">180</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">,</span>
-                <span class="mi">270</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span>
-            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orientation</span><span class="p">))</span> <span class="c1"># no default</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="c1"># FIXME we should enforce consistency here (i.e. split into transposition</span>
-            <span class="c1">#       and minimal rotation)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">page_image</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="ow">and</span>
-                    <span class="n">page_image</span><span class="o">.</span><span class="n">height</span> <span class="o">==</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]):</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;page &quot;</span><span class="si">%s</span><span class="s1">&quot; image (</span><span class="si">%s</span><span class="s1">; </span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">) has not been transposed properly (</span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">) during rotation&#39;</span><span class="p">,</span>
+        <span class="c1"># adjust the coord transformation to the steps applied on the image,</span>
+        <span class="c1"># and apply steps on the existing image in case it is missing there,</span>
+        <span class="c1"># but traverse all steps (crop/reflect/rotate) in a particular order:</span>
+        <span class="c1"># - existing image features take priority (in the order annotated),</span>
+        <span class="c1"># - next is cropping (if necessary but not already applied),</span>
+        <span class="c1"># - next is reflection (if necessary but not already applied),</span>
+        <span class="c1"># - next is rotation (if necessary but not already applied).</span>
+        <span class="c1"># This helps deal with arbitrary workflows (e.g. crop then deskew,</span>
+        <span class="c1"># or deskew then crop), regardless of where images are generated.</span>
+        <span class="n">alternative_image_features</span> <span class="o">=</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alternative_image_features</span> <span class="o">+</span>
+                                    <span class="p">([</span><span class="s1">&#39;cropped&#39;</span><span class="p">]</span>
+                                     <span class="k">if</span> <span class="p">(</span><span class="n">border</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                                     <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span>
+                                    <span class="p">([</span><span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span><span class="p">]</span>
+                                     <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                                     <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span>
+                                    <span class="p">([</span><span class="s1">&#39;deskewed&#39;</span><span class="p">]</span>
+                                     <span class="k">if</span> <span class="p">(</span><span class="n">skew</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
+                                         <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                                     <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span>
+                                    <span class="c1"># not a feature to be added, but merely as a fallback position</span>
+                                    <span class="c1"># to always enter loop at i == len(alternative_image_features)</span>
+                                    <span class="p">[</span><span class="s1">&#39;_check&#39;</span><span class="p">]):</span>
+            <span class="c1"># image geometry vs feature consistency can only be checked</span>
+            <span class="c1"># after all features on the existing AlternativeImage have</span>
+            <span class="c1"># been adjusted for in the transform, and when there is a mismatch,</span>
+            <span class="c1"># additional steps applied here would only repeat the respective</span>
+            <span class="c1"># error message; so we only check once at the boundary between</span>
+            <span class="c1"># existing and new features</span>
+            <span class="c1"># FIXME we should check/enforce consistency when _adding_ AlternativeImage</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">alternative_image_features</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="ow">not</span> <span class="p">(</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">page_image</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="ow">and</span>
+                     <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;page &quot;</span><span class="si">%s</span><span class="s1">&quot; image (</span><span class="si">%s</span><span class="s1">; </span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">) has not been cropped properly (</span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">)&#39;</span><span class="p">,</span>
                           <span class="n">page_id</span><span class="p">,</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">],</span>
                           <span class="n">page_image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
                           <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">])</span>
-        <span class="c1"># deskew, if (still) necessary:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">skew</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Rotating </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; by </span><span class="si">%.2f</span><span class="s2">°&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span>
-                     <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">skew</span><span class="p">)</span>
-            <span class="n">page_image</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">skew</span><span class="p">,</span>
-                                      <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
-            <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,deskewed&#39;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">skew</span> <span class="ow">and</span>
-            <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">feature_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-            <span class="n">w_new</span><span class="p">,</span> <span class="n">h_new</span> <span class="o">=</span> <span class="n">adjust_canvas_to_rotation</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]],</span> <span class="n">skew</span><span class="p">)</span>
-            <span class="c1"># FIXME we should enforce consistency here (i.e. rotation always reshapes,</span>
-            <span class="c1">#       and rescaling never happens)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">w_new</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">page_image</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="n">w_new</span> <span class="o">+</span> <span class="mi">2</span> <span class="ow">and</span>
-                    <span class="n">h_new</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;</span> <span class="n">h_new</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;page &quot;</span><span class="si">%s</span><span class="s1">&quot; image (</span><span class="si">%s</span><span class="s1">; </span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">) has not been reshaped properly (</span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">) during rotation&#39;</span><span class="p">,</span>
-                          <span class="n">page_id</span><span class="p">,</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">],</span>
-                          <span class="n">page_image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">page_image</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
-                          <span class="n">w_new</span><span class="p">,</span> <span class="n">h_new</span><span class="p">)</span>
+            <span class="c1"># adjust transform to feature, possibly apply feature to image</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="o">==</span> <span class="s1">&#39;cropped&#39;</span><span class="p">:</span>
+                <span class="n">page_points</span> <span class="o">=</span> <span class="n">border</span><span class="o">.</span><span class="n">get_Coords</span><span class="p">()</span><span class="o">.</span><span class="n">points</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using explicitly set page border &#39;</span><span class="si">%s</span><span class="s2">&#39; for page &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+                          <span class="n">page_points</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
+                <span class="c1"># get polygon outline of page border:</span>
+                <span class="n">page_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">polygon_from_points</span><span class="p">(</span><span class="n">page_points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">page_polygon</span> <span class="o">=</span> <span class="n">transform_coordinates</span><span class="p">(</span><span class="n">page_polygon</span><span class="p">,</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">])</span>
+                <span class="n">page_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">page_polygon</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">page_bbox</span> <span class="o">=</span> <span class="n">bbox_from_polygon</span><span class="p">(</span><span class="n">page_polygon</span><span class="p">)</span>
+                <span class="c1"># get size of the page after cropping but before rotation:</span>
+                <span class="n">page_xywh</span> <span class="o">=</span> <span class="n">xywh_from_bbox</span><span class="p">(</span><span class="o">*</span><span class="n">page_bbox</span><span class="p">)</span>
+                <span class="c1"># subtract offset in affine coordinate transform:</span>
+                <span class="c1"># (consistent with image cropping or AlternativeImage below)</span>
+                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shift_coordinates</span><span class="p">(</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                              <span class="o">-</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]]))</span>
+                <span class="c1"># crop, if (still) necessary:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cropping </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; to border&quot;</span><span class="p">,</span> 
+                              <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span>
+                              <span class="n">page_id</span><span class="p">)</span>
+                    <span class="c1"># create a mask from the page polygon:</span>
+                    <span class="n">page_image</span> <span class="o">=</span> <span class="n">image_from_polygon</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">page_polygon</span><span class="p">,</span>
+                                                    <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
+                    <span class="c1"># recrop into page rectangle:</span>
+                    <span class="n">page_image</span> <span class="o">=</span> <span class="n">crop_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">page_bbox</span><span class="p">)</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,cropped&#39;</span>
+
+            <span class="k">elif</span> <span class="n">feature</span> <span class="o">==</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span><span class="p">:</span>
+                <span class="c1"># Transpose in affine coordinate transform:</span>
+                <span class="c1"># (consistent with image transposition or AlternativeImage below)</span>
+                <span class="n">transposition</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">90</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
+                                  <span class="mi">180</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">,</span>
+                                  <span class="mi">270</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span>
+                <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span> <span class="c1"># no default</span>
+                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transpose_coordinates</span><span class="p">(</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
+                    <span class="n">transposition</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span>
+                              <span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]]))</span>
+                <span class="p">(</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">])</span> <span class="o">=</span> <span class="n">adjust_canvas_to_transposition</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]],</span> <span class="n">transposition</span><span class="p">)</span>
+                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orientation</span>
+                <span class="c1"># transpose, if (still) necessary:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Transposing </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; by </span><span class="si">%d</span><span class="s2">°&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span>
+                             <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
+                    <span class="n">page_image</span> <span class="o">=</span> <span class="n">transpose_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="mi">90</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
+                        <span class="mi">180</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">,</span>
+                        <span class="mi">270</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span>
+                    <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orientation</span><span class="p">))</span> <span class="c1"># no default</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,rotated-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">orientation</span>
+            <span class="k">elif</span> <span class="n">feature</span> <span class="o">==</span> <span class="s1">&#39;deskewed&#39;</span><span class="p">:</span>
+                <span class="c1"># Rotate around center in affine coordinate transform:</span>
+                <span class="c1"># (consistent with image rotation or AlternativeImage below)</span>
+                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotate_coordinates</span><span class="p">(</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
+                    <span class="n">skew</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span>
+                              <span class="mf">0.5</span> <span class="o">*</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]]))</span>
+                <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">skew</span>
+                <span class="c1"># deskew, if (still) necessary:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;deskewed&#39;</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Rotating </span><span class="si">%s</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; by </span><span class="si">%.2f</span><span class="s2">°&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;AlternativeImage&quot;</span> <span class="k">if</span> <span class="n">alternative_image</span> <span class="k">else</span>
+                             <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">skew</span><span class="p">)</span>
+                    <span class="n">page_image</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="n">skew</span><span class="p">,</span>
+                                              <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
+                    <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,deskewed&#39;</span>
+                <span class="p">(</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">])</span> <span class="o">=</span> <span class="n">adjust_canvas_to_rotation</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">page_xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]],</span> <span class="n">skew</span><span class="p">)</span>
         
         <span class="c1"># verify constraints again:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
@@ -821,8 +869,8 @@ lang: en
                         <span class="n">file_id</span><span class="p">,</span>
                         <span class="n">file_grp</span><span class="p">,</span>
                         <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">,</span>
-                        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                        <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;image/png&#39;</span><span class="p">,</span>
+                        <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Store and reference an image as file into the workspace.</span>
 
 <span class="sd">        Given a PIL.Image `image`, and an ID `file_id` to use in METS,</span>
@@ -832,15 +880,17 @@ lang: en
 
 <span class="sd">        Return the (absolute) path of the created file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">image_bytes</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
-        <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">image_bytes</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_grp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">())))</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">image_bytes</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MIME_TO_PIL</span><span class="p">[</span><span class="n">mimetype</span><span class="p">])</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_grp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">MIME_TO_EXT</span><span class="p">[</span><span class="n">mimetype</span><span class="p">])))</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
             <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
             <span class="n">file_grp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
             <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
             <span class="n">local_filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-            <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;image/&#39;</span> <span class="o">+</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">image_bytes</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;created file ID: </span><span class="si">%s</span><span class="s1">, file_grp: </span><span class="si">%s</span><span class="s1">, path: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -848,6 +898,7 @@ lang: en
         <span class="k">return</span> <span class="n">file_path</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -862,7 +913,7 @@ lang: en
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -877,12 +928,13 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd.workspace</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

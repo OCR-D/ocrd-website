@@ -6,17 +6,18 @@ lang: en
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ocrd_models.ocrd_page &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
@@ -30,7 +31,8 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_models.ocrd_page</a></li> 
       </ul>
     </div>  
 
@@ -43,73 +45,142 @@ lang: en
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">API to PAGE-XML, generated with generateDS from XML schema.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;parse&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parseString&#39;</span><span class="p">,</span>
 
-    <span class="s1">&#39;AlternativeImageType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CoordsType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;GlyphType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ImageRegionType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;LabelType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;LabelsType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;MathsRegionType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;MetadataType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;MetadataItemType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;NoiseRegionType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;OrderedGroupType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;PageType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;PcGtsType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ReadingOrderType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;RegionRefIndexedType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SeparatorRegionType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TextEquivType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TextLineType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TextStyleType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TextRegionType&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;WordType&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;AdvertRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AlternativeImageType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BaselineType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BorderType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ChartRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ChemRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CoordsType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CustomRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GlyphType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GraphemeBaseType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GraphemeGroupType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GraphemeType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GraphemesType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GraphicRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GridPointsType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GridType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ImageRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LabelType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LabelsType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LayerType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LayersType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LineDrawingRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MapRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MathsRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MetadataItemType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MetadataType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MusicRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NoiseRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NonPrintingCharType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OrderedGroupIndexedType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OrderedGroupType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PageType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PcGtsType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PrintSpaceType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ReadingOrderType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RegionRefIndexedType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RegionRefType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RelationType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RelationsType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RolesType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SeparatorRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableCellRoleType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TableRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TextEquivType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TextLineType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TextRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TextStyleType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UnknownRegionType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UnorderedGroupIndexedType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UnorderedGroupType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UserAttributeType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UserDefinedType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WordType&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;to_xml&#39;</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">.ocrd_page_generateds</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.ocrd_page_generateds</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">parse</span><span class="p">,</span>
     <span class="n">parseString</span><span class="p">,</span>
 
     <span class="n">AlternativeImageType</span><span class="p">,</span>
+    <span class="n">BaselineType</span><span class="p">,</span>
+    <span class="n">BorderType</span><span class="p">,</span>
+    <span class="n">ChartRegionType</span><span class="p">,</span>
+    <span class="n">ChemRegionType</span><span class="p">,</span>
     <span class="n">CoordsType</span><span class="p">,</span>
+    <span class="n">CustomRegionType</span><span class="p">,</span>
     <span class="n">GlyphType</span><span class="p">,</span>
+    <span class="n">GraphemeBaseType</span><span class="p">,</span>
+    <span class="n">GraphemeGroupType</span><span class="p">,</span>
+    <span class="n">GraphemeType</span><span class="p">,</span>
+    <span class="n">GraphemesType</span><span class="p">,</span>
+    <span class="n">GraphicRegionType</span><span class="p">,</span>
+    <span class="n">GridPointsType</span><span class="p">,</span>
+    <span class="n">GridType</span><span class="p">,</span>
     <span class="n">ImageRegionType</span><span class="p">,</span>
     <span class="n">LabelType</span><span class="p">,</span>
     <span class="n">LabelsType</span><span class="p">,</span>
+    <span class="n">LayerType</span><span class="p">,</span>
+    <span class="n">LayersType</span><span class="p">,</span>
+    <span class="n">LineDrawingRegionType</span><span class="p">,</span>
+    <span class="n">MapRegionType</span><span class="p">,</span>
     <span class="n">MathsRegionType</span><span class="p">,</span>
-    <span class="n">MetadataType</span><span class="p">,</span>
     <span class="n">MetadataItemType</span><span class="p">,</span>
+    <span class="n">MetadataType</span><span class="p">,</span>
+    <span class="n">MusicRegionType</span><span class="p">,</span>
     <span class="n">NoiseRegionType</span><span class="p">,</span>
+    <span class="n">NonPrintingCharType</span><span class="p">,</span>
+    <span class="n">OrderedGroupIndexedType</span><span class="p">,</span>
     <span class="n">OrderedGroupType</span><span class="p">,</span>
     <span class="n">PageType</span><span class="p">,</span>
     <span class="n">PcGtsType</span><span class="p">,</span>
+    <span class="n">PrintSpaceType</span><span class="p">,</span>
     <span class="n">ReadingOrderType</span><span class="p">,</span>
     <span class="n">RegionRefIndexedType</span><span class="p">,</span>
+    <span class="n">RegionRefType</span><span class="p">,</span>
+    <span class="n">RegionType</span><span class="p">,</span>
+    <span class="n">RelationType</span><span class="p">,</span>
+    <span class="n">RelationsType</span><span class="p">,</span>
+    <span class="n">RolesType</span><span class="p">,</span>
     <span class="n">SeparatorRegionType</span><span class="p">,</span>
+    <span class="n">TableCellRoleType</span><span class="p">,</span>
+    <span class="n">TableRegionType</span><span class="p">,</span>
     <span class="n">TextEquivType</span><span class="p">,</span>
     <span class="n">TextLineType</span><span class="p">,</span>
     <span class="n">TextRegionType</span><span class="p">,</span>
     <span class="n">TextStyleType</span><span class="p">,</span>
-    <span class="n">WordType</span><span class="p">,</span>
+    <span class="n">UnknownRegionType</span><span class="p">,</span>
+    <span class="n">UnorderedGroupIndexedType</span><span class="p">,</span>
+    <span class="n">UnorderedGroupType</span><span class="p">,</span>
+    <span class="n">UserAttributeType</span><span class="p">,</span>
+    <span class="n">UserDefinedType</span><span class="p">,</span>
+    <span class="n">WordType</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="n">NAMESPACES</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span>
 
 <div class="viewcode-block" id="to_xml"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.to_xml">[docs]</a><span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serialize ``pc:PcGts`` document</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-    <span class="n">el</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">sio</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;PcGts&#39;</span><span class="p">,</span>
-            <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;xmlns:pc=&quot;</span><span class="si">%s</span><span class="s1">&quot;  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">/pagecontent.xsd&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+    <span class="n">el</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">outfile</span><span class="o">=</span><span class="n">sio</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;PcGts&#39;</span><span class="p">,</span>
+            <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;pc:&#39;</span><span class="p">,</span>
+            <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;xmlns:pc=&quot;</span><span class="si">%s</span><span class="s1">&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">/pagecontent.xsd&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
                 <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
                 <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">]</span>
@@ -117,6 +188,7 @@ lang: en
     <span class="k">return</span> <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">sio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -131,7 +203,7 @@ lang: en
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -146,12 +218,13 @@ lang: en
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_models.ocrd_page</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>

@@ -136,7 +136,7 @@ core-docs:
 	rm -rf site/core ; \
 	tempdir=`tempfile -d /tmp/core. -s XXXXX`;  \
 	rm -f "$$tempdir" ; \
-	git clone repo/ocrd_all/core "$$tempdir"; \
+	git clone --depth 1 https://github.com/OCR-D/core "$$tempdir"; \
 	make -C "$$tempdir" docs; \
 	mv "$$tempdir/docs/build/html" site/core; \
 	find site/core -name '*.html' | while read html;do \
