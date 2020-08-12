@@ -278,17 +278,18 @@
       <main class="container content column " aria-label="Content">
         <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ocrd_validators.ocrd_tool_validator module &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ocrd_validators.ocrd_zip_validator module" href="ocrd_validators.ocrd_zip_validator.html" />
@@ -311,7 +312,8 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >ocrd_validators</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="ocrd_validators.html" accesskey="U">ocrd_validators package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="ocrd_validators.html" accesskey="U">ocrd_validators package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_validators.ocrd_tool_validator module</a></li> 
       </ul>
     </div>  
 
@@ -324,14 +326,14 @@
 <span id="ocrd-validators-ocrd-tool-validator-module"></span><h1>ocrd_validators.ocrd_tool_validator module<a class="headerlink" href="#module-ocrd_validators.ocrd_tool_validator" title="Permalink to this headline">¶</a></h1>
 <p>Validating <code class="docutils literal notranslate"><span class="pre">ocrd-tool.json</span></code>.</p>
 <p>See <a class="reference external" href="https://ocr-d.github.io/ocrd_tool">specs</a>.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="ocrd_validators.ocrd_tool_validator.OcrdToolValidator">
 <em class="property">class </em><code class="sig-prename descclassname">ocrd_validators.ocrd_tool_validator.</code><code class="sig-name descname">OcrdToolValidator</code><span class="sig-paren">(</span><em class="sig-param">schema</em>, <em class="sig-param">validator_class=&lt;class 'jsonschema.validators.create.&lt;locals&gt;.Validator'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_validators/ocrd_tool_validator.html#OcrdToolValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_validators.ocrd_tool_validator.OcrdToolValidator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ocrd_validators.json_validator.html#ocrd_validators.json_validator.JsonValidator" title="ocrd_validators.json_validator.JsonValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd_validators.json_validator.JsonValidator</span></code></a></p>
 <p>JsonValidator validating against the <code class="docutils literal notranslate"><span class="pre">ocrd-tool.json</span></code> schema.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="ocrd_validators.ocrd_tool_validator.OcrdToolValidator.validate">
-<em class="property">static </em><code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">obj, schema={'additionalProperties': False, 'description': 'Schema for tools by OCR-D MP', 'properties': {'dockerhub': {'description': 'DockerHub image', 'type': 'string'}, 'git_url': {'description': 'Github/Gitlab URL', 'format': 'url', 'type': 'string'}, 'tools': {'additionalProperties': False, 'patternProperties': {'ocrd-.*': {'additionalProperties': False, 'properties': {'categories': {'description': 'Tools belong to this categories, representing modules within the OCR-D project structure', 'items': {'enum': ['Image preprocessing', 'Layout analysis', 'Text recognition and optimization', 'Model training', 'Long-term preservation', 'Quality assurance'], 'type': 'string'}, 'type': 'array'}, 'description': {'description': 'Concise description what the tool does'}, 'executable': {'description': 'The name of the CLI executable in $PATH', 'type': 'string'}, 'input_file_grp': {'description': 'Input fileGrp&#64;USE this tool expects by default', 'items': {'pattern': '^OCR-D-[A-Z0-9-]+$', 'type': 'string'}, 'type': 'array'}, 'output_file_grp': {'description': 'Output fileGrp&#64;USE this tool produces by default', 'items': {'pattern': '^OCR-D-[A-Z0-9-]+$', 'type': 'string'}, 'type': 'array'}, 'parameters': {'description': 'Object describing the parameters of a tool. Keys are parameter names, values sub-schemas.', 'patternProperties': {'.*': {'additionalProperties': False, 'properties': {'cacheable': {'default': False, 'description': &quot;If parameter is reference to file: Whether the file should be cached, e.g. because it is large and won't change.&quot;, 'type': 'boolean'}, 'content-type': {'description': 'If parameter is reference to file: Media type of the file', 'type': 'string'}, 'default': {'description': 'Default value when not provided by the user'}, 'description': {'description': 'Concise description of syntax and semantics of this parameter'}, 'enum': {'description': 'List the allowed values if a fixed list.', 'type': 'array'}, 'format': {'description': 'Subtype, such as `float` for type `number` or `uri` for type `string`.'}, 'required': {'description': 'Whether this parameter is required', 'type': 'boolean'}, 'type': {'description': 'Data type of this parameter', 'enum': ['string', 'number', 'boolean'], 'type': 'string'}}, 'required': ['description', 'type'], 'type': 'object'}}, 'type': 'object'}, 'steps': {'description': 'This tool can be used at these steps in the OCR-D functional model', 'items': {'enum': ['preprocessing/characterization', 'preprocessing/optimization', 'preprocessing/optimization/cropping', 'preprocessing/optimization/deskewing', 'preprocessing/optimization/despeckling', 'preprocessing/optimization/dewarping', 'preprocessing/optimization/binarization', 'preprocessing/optimization/grayscale_normalization', 'recognition/text-recognition', 'recognition/font-identification', 'recognition/post-correction', 'layout/segmentation', 'layout/segmentation/text-nontext', 'layout/segmentation/region', 'layout/segmentation/line', 'layout/segmentation/word', 'layout/segmentation/classification', 'layout/analysis'], 'type': 'string'}, 'sample-calls': {'description': 'Sample calls of the CLI to illustrate typical usage', 'items': {'additionalProperties': False, 'properties': {'call': {'pattern': '^ocrd-', 'type': 'string'}, 'description': {'type': 'string'}}, 'required': ['call', 'description'], 'type': 'object'}, 'type': 'array'}, 'type': 'array'}}, 'required': ['description', 'steps', 'executable', 'categories', 'input_file_grp'], 'type': 'object'}}, 'type': 'object'}, 'version': {'description': 'Version of the tool, expressed as MAJOR.MINOR.PATCH.', 'pattern': '^[0-9]+\\.[0-9]+\\.[0-9]+$', 'type': 'string'}}, 'required': ['version', 'git_url', 'tools'], 'type': 'object'}</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_validators/ocrd_tool_validator.html#OcrdToolValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_validators.ocrd_tool_validator.OcrdToolValidator.validate" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">schema</span><span class="o">=</span><span class="default_value">{'additionalProperties': False, 'description': 'Schema for tools by OCR-D MP', 'properties': {'dockerhub': {'description': 'DockerHub image', 'type': 'string'}, 'git_url': {'description': 'Github/Gitlab URL', 'format': 'url', 'type': 'string'}, 'tools': {'additionalProperties': False, 'patternProperties': {'ocrd-.*': {'additionalProperties': False, 'properties': {'categories': {'description': 'Tools belong to this categories, representing modules within the OCR-D project structure', 'items': {'enum': ['Image preprocessing', 'Layout analysis', 'Text recognition and optimization', 'Model training', 'Long-term preservation', 'Quality assurance'], 'type': 'string'}, 'type': 'array'}, 'description': {'description': 'Concise description what the tool does'}, 'executable': {'description': 'The name of the CLI executable in $PATH', 'type': 'string'}, 'input_file_grp': {'description': 'Input fileGrp&#64;USE this tool expects by default', 'items': {'pattern': '^OCR-D-[A-Z0-9-]+$', 'type': 'string'}, 'type': 'array'}, 'output_file_grp': {'description': 'Output fileGrp&#64;USE this tool produces by default', 'items': {'pattern': '^OCR-D-[A-Z0-9-]+$', 'type': 'string'}, 'type': 'array'}, 'parameters': {'description': 'Object describing the parameters of a tool. Keys are parameter names, values sub-schemas.', 'patternProperties': {'.*': {'additionalProperties': False, 'properties': {'cacheable': {'default': False, 'description': &quot;If parameter is reference to file: Whether the file should be cached, e.g. because it is large and won't change.&quot;, 'type': 'boolean'}, 'content-type': {'description': 'If parameter is reference to file: Media type of the file', 'type': 'string'}, 'default': {'description': 'Default value when not provided by the user'}, 'description': {'description': 'Concise description of syntax and semantics of this parameter'}, 'enum': {'description': 'List the allowed values if a fixed list.', 'type': 'array'}, 'format': {'description': 'Subtype, such as `float` for type `number` or `uri` for type `string`.'}, 'required': {'description': 'Whether this parameter is required', 'type': 'boolean'}, 'type': {'description': 'Data type of this parameter', 'enum': ['string', 'number', 'boolean', 'object'], 'type': 'string'}}, 'required': ['description', 'type'], 'type': 'object'}}, 'type': 'object'}, 'steps': {'description': 'This tool can be used at these steps in the OCR-D functional model', 'items': {'enum': ['preprocessing/characterization', 'preprocessing/optimization', 'preprocessing/optimization/cropping', 'preprocessing/optimization/deskewing', 'preprocessing/optimization/despeckling', 'preprocessing/optimization/dewarping', 'preprocessing/optimization/binarization', 'preprocessing/optimization/grayscale_normalization', 'recognition/text-recognition', 'recognition/font-identification', 'recognition/post-correction', 'layout/segmentation', 'layout/segmentation/text-nontext', 'layout/segmentation/region', 'layout/segmentation/line', 'layout/segmentation/word', 'layout/segmentation/classification', 'layout/analysis'], 'type': 'string'}, 'type': 'array'}}, 'required': ['description', 'steps', 'executable', 'categories', 'input_file_grp'], 'type': 'object'}}, 'type': 'object'}, 'version': {'description': 'Version of the tool, expressed as MAJOR.MINOR.PATCH.', 'pattern': '^[0-9]+\\.[0-9]+\\.[0-9]+$', 'type': 'string'}}, 'required': ['version', 'git_url', 'tools'], 'type': 'object'}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_validators/ocrd_tool_validator.html#OcrdToolValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_validators.ocrd_tool_validator.OcrdToolValidator.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate against <code class="docutils literal notranslate"><span class="pre">ocrd-tool.json</span></code> schema.</p>
 </dd></dl>
 
@@ -340,6 +342,7 @@
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -367,7 +370,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -389,12 +392,13 @@
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">ocrd  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >ocrd_validators</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="ocrd_validators.html" >ocrd_validators package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="ocrd_validators.html" >ocrd_validators package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ocrd_validators.ocrd_tool_validator module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
     </div>
   </body>
 </html>
@@ -413,6 +417,8 @@
       <a href="https://github.com/OCR-D">GitHub</a>
       |
       <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
       |
       <a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
       |
