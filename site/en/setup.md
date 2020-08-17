@@ -194,7 +194,7 @@ make ocrd-cis-ocropy-binarize  # Install ocrd_cis  which contains ocrd-cis-ocrop
 make all OCRD_MODULES="core ocrd_tesserocr ocrd_cis" # Will install only ocrd_tesserocr and ocrd_cis
 ```
 
-(Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `Makefile.local`.)
+(Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `local.mk`.)
 
 **Note: Never run `make all` as root unless you know *exactly* what you are doing!
 
