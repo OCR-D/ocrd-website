@@ -46,7 +46,7 @@ using `ocrd_all`:
   * [frk](https://github.com/tesseract-ocr/tessdata_fast/raw/master/frk.traineddata)
   * [script/Latin](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Latin.traineddata)
   * [script/Fraktur](https://github.com/tesseract-ocr/tessdata_fast/raw/master/script/Fraktur.traineddata)
-  * [@stweil's GT4HistOCR model](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/fast/Fraktur_50000000.334_450937.traineddata)
+  * [@stweil's GT4HistOCR model](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/Fraktur_50000000.334_450937.traineddata)
 
 If you installed Tesseract with Ubuntu's `apt` package manager, you may want to install
 standard models like `deu` or `script/Fraktur` with `apt`:
