@@ -189,7 +189,7 @@ is cropped to the content area only (i.e. without noise at the margins or facing
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
+        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/denoise.PNG" alt=""></a>
       </td>
       <td>
         <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
@@ -1231,7 +1231,10 @@ ocrd process \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
-**Note:** For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
+**Note:** 
+(1) This workflow expects your images to be stored in a directory called `OCR-D-IMG`. If your images are saved in a different directory,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your directory, e.g. `-I my_images`
+(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
 as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
 ```sh
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
@@ -1338,7 +1341,10 @@ ocrd process \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
-**Note:** For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
+**Note:** 
+(1) This workflow expects your images to be stored in a directory called `OCR-D-IMG`. If your images are saved in a different directory,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your directory, e.g. `-I my_images`
+(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
 as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
 ```sh
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
