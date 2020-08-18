@@ -1232,8 +1232,8 @@ ocrd process \
 ```
 
 **Note:** 
-(1) This workflow expects your images to be stored in a directory called `OCR-D-IMG`. If your images are saved in a different directory,
-you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your directory, e.g. `-I my_images`
+(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
 (2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
 as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
 ```sh
@@ -1342,8 +1342,8 @@ ocrd process \
 ```
 
 **Note:** 
-(1) This workflow expects your images to be stored in a directory called `OCR-D-IMG`. If your images are saved in a different directory,
-you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your directory, e.g. `-I my_images`
+(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
 (2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
 as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
 ```sh

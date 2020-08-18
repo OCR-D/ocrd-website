@@ -152,12 +152,14 @@ sudo apt install make
 
 ### Cloning the repository
 
-Clone the repository (still without submodules):
+Clone the repository (still without submodules) and change into the `ocrd_all` directory:
 
 ```sh
 git clone https://github.com/OCR-D/ocrd_all
 cd ocrd_all
 ```
+You should now be in a directory called `ocrd_all`.
+
 
 ### Updating the repository
 
@@ -169,6 +171,9 @@ regularly update the repository and its submodules:
 git pull
 ```
 
+This will download or update all submodules and provide a list specifying the amount of changes in all submodules.
+
+
 ### Install system requirements
 
 It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
@@ -176,6 +181,8 @@ It is easiest to install all the possible system requirements by calling `make d
 ```sh
 sudo make deps-ubuntu
 ```
+
+This will install all system requirements.
 
 
 ### Installing with ocrd_all
@@ -196,11 +203,20 @@ make all OCRD_MODULES="core ocrd_tesserocr ocrd_cis" # Will install only ocrd_te
 
 (Custom choices for `OCRD_MODULES` and other control variables (cf. `make help`) can also be made permanent by writing them into `local.mk`.)
 
-**Note: Never run `make all` as root unless you know *exactly* what you are doing!
+**Note:** Never run `make all` as root unless you know *exactly* what you are doing!
 
 Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.
 
 Running `make` will also take care of cloning and updating all required submodules.
+
+Especially running `make all` will take a while. In the end, it should say that the last processor was installed successfully.
+
+Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of `ocrd core`
+
+```sh
+ocrd --version
+ocrd, version 2.13.1 # your version should be 2.13.1 or later
+``` 
 
 ## Individual installation
 
@@ -342,7 +358,7 @@ First, activate your venv:
 source ~/venv/bin/activate
 ```
 
-Let's segment the images in file group `OCR-D-IMG` into regions (creating a
+Let's segment the images in file group `OCR-D-IMG` from the [zip file we just downloaded](#testing-the-installation) into regions (creating a
 first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 `OCR-D-SEG-BLOCK`):
 
@@ -355,6 +371,10 @@ ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
 This section applies if you installed the software as docker container(s), either [via
 `ocrd_all`](#ocrd_all-via-docker) or [on a per-module basis](#individual-docker-container).
 
+Let's segment the images in file group `OCR-D-IMG` from the [zip file we just downloaded](#testing-the-installation) into regions (creating a
+first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
+`OCR-D-SEG-BLOCK-DOCKER`)
+
 You can spin up a docker container, mounting the current working directory like this:
 
 ```sh
@@ -364,6 +384,10 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr
 Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
 
 ## Installation of OCR-D Research Data Repository
+Optionally, you can also install the OCR-D research data repository. It collects all versions of documents and (intermediate) results created
+during the document analysis. It contains at least the end results of every processed document. During the ingest much metadata about the
+document will be extracted and made available for search/filter (e.g. identifier(s), title, classification(s), genre(s), semantic label(s),
+used processor(s), text). 
 
 It's highly recommended to install the research data repository via Docker. [See link for further information](https://github.com/OCR-D/repository_metastore/blob/master/installDocker/installation.md)
 
