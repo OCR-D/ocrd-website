@@ -52,7 +52,7 @@ software via ocrd_all, or you should have [installed it yourself](https://packag
 installing the OCR-D-software individually. 
 
 ```sh
-source ~/venv/bin/activate
+source venv/bin/activate
 ```
 
 Once you have activated the virtualenv, you should see `(venv)` prepended to

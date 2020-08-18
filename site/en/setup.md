@@ -270,9 +270,9 @@ sudo apt install python3 python3-venv
 
 ```sh
 # If you haven't created the venv yet:
-python3 -m venv ~/venv
+python3 -m venv venv
 # Activate the venv
-source ~/venv/bin/activate
+source venv/bin/activate
 ```
 
 Once you have activated the virtualenv, you should see `(venv)` prepended to
@@ -339,7 +339,7 @@ First, activate your venv:
 
 ```sh
 # Activate the venv
-source ~/venv/bin/activate
+source venv/bin/activate
 ```
 
 Let's segment the images in file group `OCR-D-IMG` into regions (creating a
