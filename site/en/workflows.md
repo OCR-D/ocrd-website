@@ -434,7 +434,7 @@ if they are curved. The input image has to be binarized for the module to work.
 
 By now the image should be well prepared for segmentation.
 
-### Step 7: Page segmentation
+### Step 7: Region segmentation
 
 In this processing step, an (optimized) document image is taken as an input and the
 image is segmented into the various regions, including columns.
@@ -494,9 +494,10 @@ need to segment into lines in an extra step.
     </tr>
     <tr>
       <td>ocrd-sbb-textline-detector</td>
-      <td>&nbsp;</td>
-      <td></td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE</code></td>
+      <td>{"model": /path/to/model"}</td>
+      <td>Models can be found [here](https://qurator-data.de/sbb_textline_detector/); you need to **pass your individual path to the model**
+	  as parameter value for this processor to work!</td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-segment</td>
@@ -513,7 +514,8 @@ need to segment into lines in an extra step.
 }
       </pre>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models"; you need to **pass your individual paths to the models**
+	  as parameter value for this processor to work!>site</a></td>
 	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
 	<tr>
@@ -851,7 +853,8 @@ An overview on the existing model repositories and short descriptions on the mos
         </code>
       </td>
       <td>
-        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> 
+        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>; you need 
+		to **pass your individual path to the model** as parameter value for this processor to work! 
       </td>
 	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
     </tr>
@@ -923,7 +926,8 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
     <tr>
       <td>ocrd-cor-asv-ann-process</td>
       <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
-      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
+      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a>; you need to **pass your individual path to the model**
+	  as parameter value for this processor to work!</td>
 	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
     <tr>
@@ -937,6 +941,7 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
 	  `#!/bin/bash
 	  cat > /dev/null
 	  echo '{}'`
+	  you need to **pass your individual path to the model** as parameter value for this processor to work!
 	  </td>
 	  <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
     </tr>
@@ -1226,6 +1231,12 @@ ocrd process \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
+**Note:** For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
+as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
+```sh
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
+```
+All the other lines can just be copied and pasted.
 
 ## Good results for slower processors
 
@@ -1326,3 +1337,10 @@ ocrd process \
   "cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
+
+**Note:** For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your individual path to the model
+as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
+```sh
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
+```
+All the other lines can just be copied and pasted.
