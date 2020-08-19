@@ -140,7 +140,7 @@ prerequisites as necessary, set up a virtualenv, install the core software,
 install OCR-D modules and more. Detailed documentation [can be found in its
 README](https://github.com/OCR-D/ocrd_all).
 
-### Prerequisites
+### Installation
 
 There are some [system requirements](https://github.com/OCR-D/ocrd_all#system-packages) for ocrd_all.
 
@@ -149,8 +149,6 @@ You need to have `make` installed to make use of `ocrd_all`:
 ```sh
 sudo apt install make
 ```
-
-### Cloning the repository
 
 Clone the repository (still without submodules) and change into the `ocrd_all` directory:
 
@@ -161,20 +159,14 @@ cd ocrd_all
 You should now be in a directory called `ocrd_all`.
 
 
-### Updating the repository
-
-As `ocrd_all` is in [active
-development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
-regularly update the repository and its submodules:
+Now the submodules can be downloaded:
 
 ```sh
 git pull
 ```
 
-This will download or update all submodules and provide a list specifying the amount of changes in all submodules.
+This will download all submodules currently contained in `ocrd_all`.
 
-
-### Install system requirements
 
 It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
 
@@ -185,7 +177,7 @@ sudo make deps-ubuntu
 This will install all system requirements.
 
 
-### Installing with ocrd_all
+Now you are ready for the final step which will actually install the OCR-D-Software.
 
 You can either install
   1. all the software at once with the `all` target (equivalent to the [`maximum` Docker version](#mini-medi-maxi)),
@@ -209,14 +201,37 @@ Installation is incremental, i.e. failed/interrupted attempts can be continued, 
 
 Running `make` will also take care of cloning and updating all required submodules.
 
-Especially running `make all` will take a while. In the end, it should say that the last processor was installed successfully.
+Especially running `make all` will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.
 
-Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of `ocrd core`
+Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of [OCR-D/core](https://github.com/OCR-D/core)
 
 ```sh
 ocrd --version
-ocrd, version 2.13.1 # your version should be 2.13.1 or later
+ocrd, version 2.13.2 # your version should be 2.13.2 or later
 ``` 
+
+### Updating the software
+
+As `ocrd_all` is in [active
+development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
+regularly update the repository and its submodules:
+
+```sh
+git pull 
+```
+
+This will refresh the local clone of ocrd_all with the changes in the official ocrd_all GitHub repository.
+
+Now you can install the changes with
+
+```sh
+make all 
+```
+
+This will run the installation process for all submodules which have been changed. In the end, it should
+say that the last processor was installed successfully. `--version` for the processors which have been changed
+should give you its current version. 
+
 
 ## Individual installation
 
@@ -384,7 +399,7 @@ docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr
 Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
 
 ## Installation of OCR-D Research Data Repository
-Optionally, you can also install the OCR-D research data repository. It collects all versions of documents and (intermediate) results created
+Optionally, you can also install the [OCR-D research data repository](https://github.com/OCR-D/repository_metastore/). It collects all versions of documents and (intermediate) results created
 during the document analysis. It contains at least the end results of every processed document. During the ingest much metadata about the
 document will be extracted and made available for search/filter (e.g. identifier(s), title, classification(s), genre(s), semantic label(s),
 used processor(s), text). 

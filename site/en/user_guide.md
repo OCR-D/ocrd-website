@@ -49,8 +49,8 @@ For installing docker images please refer to the [setup guide](setup.html).
 If you are using a native installation, you should activate the
 virtualenv before starting to work with the OCR-D-software. This has either been installed automatically if you installed the
 software via ocrd_all, or you should have [installed it yourself](https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments) before
-installing the OCR-D-software individually. Note that you need to specify the path to your virtualenv. If you are simply using the `venv` which comes
-with `ocrd_all`, it is contained in your `ocrd_all` directory
+installing the OCR-D-software individually. Note that you need to specify the path to your virtualenv. If you are simply using the `venv` is created
+on-demand by `ocrd_all`, it is contained in your `ocrd_all` directory
 
 ```sh
 source ~/venv/bin/activate
@@ -83,9 +83,9 @@ If you already have a METS file as indicated above, you can create a workspace
 and load the pictures to be processed with the following command: 
 
 ```sh
-ocrd workspace clone [URL of your mets.xml] [name of your workspace]
+ocrd workspace clone -d /path/to/workspace URL_OF_METS
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace clone [URL of your mets.xml]
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace clone -d /data URL_OF_METS
 ```
 
 This will create a directory (called workspace in OCR-D) with your specified name which contains your METS file.
@@ -147,7 +147,11 @@ cp -r [/path/to/your/pictures] .
 ```
 **Note:** All pictures must have the same format (tif, jpg, ...)
 
-You should now have a workspace which contains the aforementioned `mets.xml` and a folder with your images. 
+In OCR-D we  name the image folder OCR-D-IMG, which is used throughout the documentation. Naming your image folder differently is
+certainly possible, but you should be aware that you need to adapt the name of the image folder if copy and paste the sample
+calls provided on this website. 
+
+You should now have a workspace which contains the aforementioned `mets.xml` and a folder OCR-D-IMG with your images. 
 
 Now you can add your pictures to the METS. When creating the workspace, a blank
 METS file was created, too, to which you can add the pictures to be processed. 
@@ -234,7 +238,7 @@ ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola
 ```
 
-The specified processor will take the files in your Input-Group -I, process them and save the results in your Ouput-Group -O. It will also add
+The specified processor will take the files in your Input-Group `-I`, process them and save the results in your Ouput-Group `-O`. It will also add
 the information about this processing step and its results to METS file in your workspace. 
 
 **Note:** For processors using multiple input-, or output groups you have to use a comma separated list. 
@@ -288,8 +292,8 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd proc
   'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'
 ```
 
-Each specified processor will take alle the files in your files in the respective Input-Group -I, process them and save the
-results in the respective Ouput-Group -O. It will also add the information about this processing step and its results to the METS file in your workspace.
+Each specified processor will take all the files in your files in the respective Input-Group `-I`, process them and save the
+results in the respective Ouput-Group `-O`. It will also add the information about this processing step and its results to the METS file in your workspace.
 The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files 
 will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
 in your workflow, which contains the (intermediate) processing results. 
@@ -407,8 +411,8 @@ You can write new rules by using file groups as prerequisites/targets in the nor
 
 **Note:** Also see the [extensive Readme of workflow-configuration](https://bertsky.github.io/workflow-configuration) on how to adjust the preconfigured workflows to your needs.
 
-Each specified processor will take alle the files in your files in the respective Input-Group -I, process them and save the
-results in the respective Ouput-Group -O. It will also add the information about this processing step and its results to the METS file in your workspace.
+Each specified processor will take all the files in your files in the respective Input-Group `-I`, process them and save the
+results in the respective Ouput-Group `-O`. It will also add the information about this processing step and its results to the METS file in your workspace.
 The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files 
 will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
 in your workflow, which contains the (intermediate) processing results.
