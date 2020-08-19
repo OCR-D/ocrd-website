@@ -295,11 +295,8 @@
       </li>
       <li><a href="#ocrd_all-natively">ocrd_all natively</a>
         <ul>
-          <li><a href="#prerequisites">Prerequisites</a></li>
-          <li><a href="#cloning-the-repository">Cloning the repository</a></li>
-          <li><a href="#updating-the-repository">Updating the repository</a></li>
-          <li><a href="#install-system-requirements">Install system requirements</a></li>
-          <li><a href="#installing-with-ocrd_all">Installing with ocrd_all</a></li>
+          <li><a href="#installation-1">Installation</a></li>
+          <li><a href="#updating-the-software">Updating the software</a></li>
         </ul>
       </li>
       <li><a href="#individual-installation">Individual installation</a>
@@ -644,7 +641,7 @@ prerequisites as necessary, set up a virtualenv, install the core software,
 install OCR-D modules and more. Detailed documentation <a href="https://github.com/OCR-D/ocrd_all">can be found in its
 README</a>.</p>
 
-<h3 id="prerequisites">Prerequisites</h3>
+<h3 id="installation-1">Installation</h3>
 
 <p>There are some <a href="https://github.com/OCR-D/ocrd_all#system-packages">system requirements</a> for ocrd_all.</p>
 
@@ -653,31 +650,28 @@ README</a>.</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>make
 </code></pre></div></div>
 
-<h3 id="cloning-the-repository">Cloning the repository</h3>
-
-<p>Clone the repository (still without submodules):</p>
+<p>Clone the repository (still without submodules) and change into the <code class="highlighter-rouge">ocrd_all</code> directory:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/OCR-D/ocrd_all
 <span class="nb">cd </span>ocrd_all
 </code></pre></div></div>
+<p>You should now be in a directory called <code class="highlighter-rouge">ocrd_all</code>.</p>
 
-<h3 id="updating-the-repository">Updating the repository</h3>
-
-<p>As <code class="highlighter-rouge">ocrd_all</code> is in <a href="https://github.com/OCR-D/ocrd_all/commits/master">active
-development</a>, it is wise to
-regularly update the repository and its submodules:</p>
+<p>Now the submodules can be downloaded:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull
 </code></pre></div></div>
 
-<h3 id="install-system-requirements">Install system requirements</h3>
+<p>This will download all submodules currently contained in <code class="highlighter-rouge">ocrd_all</code>.</p>
 
 <p>It is easiest to install all the possible system requirements by calling <code class="highlighter-rouge">make deps-ubuntu</code> as root:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>make deps-ubuntu
 </code></pre></div></div>
 
-<h3 id="installing-with-ocrd_all">Installing with ocrd_all</h3>
+<p>This will install all system requirements.</p>
+
+<p>Now you are ready for the final step which will actually install the OCR-D-Software.</p>
 
 <p>You can either install</p>
 <ol>
@@ -696,11 +690,39 @@ make all <span class="nv">OCRD_MODULES</span><span class="o">=</span><span class
 
 <p>(Custom choices for <code class="highlighter-rouge">OCRD_MODULES</code> and other control variables (cf. <code class="highlighter-rouge">make help</code>) can also be made permanent by writing them into <code class="highlighter-rouge">local.mk</code>.)</p>
 
-<p><em>*Note: Never run <code class="highlighter-rouge">make all</code> as root unless you know *exactly</em> what you are doing!</p>
+<p><strong>Note:</strong> Never run <code class="highlighter-rouge">make all</code> as root unless you know <em>exactly</em> what you are doing!</p>
 
 <p>Installation is incremental, i.e. failed/interrupted attempts can be continued, and modules can be installed one at a time as needed.</p>
 
 <p>Running <code class="highlighter-rouge">make</code> will also take care of cloning and updating all required submodules.</p>
+
+<p>Especially running <code class="highlighter-rouge">make all</code> will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.</p>
+
+<p>Having installed <code class="highlighter-rouge">ocrd_all</code> successfully, <code class="highlighter-rouge">ocrd --version</code> should give you the current version of <a href="https://github.com/OCR-D/core">OCR-D/core</a></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd <span class="nt">--version</span>
+ocrd, version 2.13.2 <span class="c"># your version should be 2.13.2 or later</span>
+</code></pre></div></div>
+
+<h3 id="updating-the-software">Updating the software</h3>
+
+<p>As <code class="highlighter-rouge">ocrd_all</code> is in <a href="https://github.com/OCR-D/ocrd_all/commits/master">active
+development</a>, it is wise to
+regularly update the repository and its submodules:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull 
+</code></pre></div></div>
+
+<p>This will refresh the local clone of ocrd_all with the changes in the official ocrd_all GitHub repository.</p>
+
+<p>Now you can install the changes with</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make all 
+</code></pre></div></div>
+
+<p>This will run the installation process for all submodules which have been changed. In the end, it should
+say that the last processor was installed successfully. <code class="highlighter-rouge">--version</code> for the processors which have been changed
+should give you its current version.</p>
 
 <h2 id="individual-installation">Individual installation</h2>
 
@@ -837,7 +859,7 @@ unzip wundt_grundriss_1896.ocrd.zip
 <span class="nb">source</span> ~/venv/bin/activate
 </code></pre></div></div>
 
-<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> into regions (creating a
+<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the <a href="#testing-the-installation">zip file we just downloaded</a> into regions (creating a
 first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
 <code class="highlighter-rouge">OCR-D-SEG-BLOCK</code>):</p>
 
@@ -849,6 +871,10 @@ first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file
 <p>This section applies if you installed the software as docker container(s), either <a href="#ocrd_all-via-docker">via
 <code class="highlighter-rouge">ocrd_all</code></a> or <a href="#individual-docker-container">on a per-module basis</a>.</p>
 
+<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the <a href="#testing-the-installation">zip file we just downloaded</a> into regions (creating a
+first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
+<code class="highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>)</p>
+
 <p>You can spin up a docker container, mounting the current working directory like this:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
@@ -857,6 +883,10 @@ first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file
 <p>Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as <a href="#mini-medi-maxi">explained above</a></p>
 
 <h2 id="installation-of-ocr-d-research-data-repository">Installation of OCR-D Research Data Repository</h2>
+<p>Optionally, you can also install the <a href="https://github.com/OCR-D/repository_metastore/">OCR-D research data repository</a>. It collects all versions of documents and (intermediate) results created
+during the document analysis. It contains at least the end results of every processed document. During the ingest much metadata about the
+document will be extracted and made available for search/filter (e.g. identifier(s), title, classification(s), genre(s), semantic label(s),
+used processor(s), text).</p>
 
 <p>It’s highly recommended to install the research data repository via Docker. <a href="https://github.com/OCR-D/repository_metastore/blob/master/installDocker/installation.md">See link for further information</a></p>
 

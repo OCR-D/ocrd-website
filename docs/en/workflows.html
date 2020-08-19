@@ -320,7 +320,7 @@
       </li>
       <li><a href="#layout-analysis">Layout Analysis</a>
         <ul>
-          <li><a href="#step-7-page-segmentation">Step 7: Page segmentation</a>
+          <li><a href="#step-7-region-segmentation">Step 7: Region segmentation</a>
             <ul>
               <li><a href="#available-processors-7">Available processors</a></li>
             </ul>
@@ -445,6 +445,10 @@ steps might be necessary to obtain good results. Whether a step is required or o
 This guide provides an overview of the available OCR-D processors and their required parameters. For more complex workflows and recommendations
 see the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D-Website-Wiki</a>. Feel free to add your own experiences and recommendations in the Wiki!
 We will regularly amend this guide with valuable contributions from the Wiki.</p>
+
+<p><strong>Note:</strong> In order to be able to run the workflows described in this guide, you need to have prepared your images in an <a href="https://ocr-d.de/en/user_guide#preparing-a-workspace">OCR-D-workspace</a>. 
+We expect that you are familiar with the <a href="https://ocr-d.de/en/user_guide">OCR-D-user guide</a> which explains all preparatory steps, syntax and different
+solutions for executing whole workflows.</p>
 
 <h2 id="image-optimization-page-level">Image Optimization (Page Level)</h2>
 <p>At first, the image should be prepared for OCR.</p>
@@ -614,7 +618,7 @@ is cropped to the content area only (i.e. without noise at the margins or facing
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt="" /></a>
+        <a href="/assets/workflow/denoise.png"><img src="/assets/workflow/denoise.png" alt="" /></a>
       </td>
       <td>
         <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt="" /></a>
@@ -640,6 +644,12 @@ is cropped to the content area only (i.e. without noise at the margins or facing
       <td>&nbsp;</td>
       <td>The input image has to be binarized and <br />should be deskewed for the module to work.</td>
 	  <td><code>ocrd-anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-crop</td>
+      <td>&nbsp;</td>
+      <td></td>
+	  <td><code>ocrd-tesserocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
     </tr>
   </tbody>
 </table>
@@ -854,7 +864,7 @@ if they are curved. The input image has to be binarized for the module to work.<
 
 <p>By now the image should be well prepared for segmentation.</p>
 
-<h3 id="step-7-page-segmentation">Step 7: Page segmentation</h3>
+<h3 id="step-7-region-segmentation">Step 7: Region segmentation</h3>
 
 <p>In this processing step, an (optimized) document image is taken as an input and the
 image is segmented into the various regions, including columns.
@@ -912,9 +922,10 @@ need to segment into lines in an extra step.</p>
     </tr>
     <tr>
       <td>ocrd-sbb-textline-detector</td>
-      <td>&nbsp;</td>
-      <td></td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE</code></td>
+      <td>{"model": /path/to/model"}</td>
+      <td>Models can be found [here](https://qurator-data.de/sbb_textline_detector/); you need to **pass your local path to the model on your hard drive**
+	  as parameter value for this processor to work!</td>
+	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
 	<tr>
       <td>ocrd-cis-ocropy-segment</td>
@@ -931,7 +942,8 @@ need to segment into lines in an extra step.</p>
 }
       </pre>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a></td>
+      <td>For available models take a look at this &lt;a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models"; you need to **pass your local path to the model on your hard drive**
+	  as parameter value for this processor to work!&gt;site&lt;/a&gt;</td>
 	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
 	<tr>
@@ -1267,7 +1279,8 @@ need to segment into lines in an extra step.</p>
         </code>
       </td>
       <td>
-        Recommended<br />Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a> 
+        Recommended<br />Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>; you need 
+		to **pass your local path to the model on your hard drive** as parameter value for this processor to work! 
       </td>
 	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
     </tr>
@@ -1336,7 +1349,8 @@ are optimised for input from single OCR engines, whereas <code class="highlighte
     <tr>
       <td>ocrd-cor-asv-ann-process</td>
       <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
-      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a></td>
+      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a>; you need to **pass your local path to the model on your hard drive**
+	  as parameter value for this processor to work!</td>
 	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
     <tr>
@@ -1350,6 +1364,7 @@ are optimised for input from single OCR engines, whereas <code class="highlighte
 	  `#!/bin/bash
 	  cat &gt; /dev/null
 	  echo '{}'`
+	  you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
 	  </td>
 	  <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
     </tr>
@@ -1637,6 +1652,15 @@ page</a>)  (CER ~1%).</p>
   <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
 </code></pre></div></div>
 
+<p><strong>Note:</strong> 
+(1) This workflow expects your images to be stored in a folder called <code class="highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
+you need to adjust <code class="highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="highlighter-rouge">-I MAX</code>
+(2) For the last processor in this workflow, <code class="highlighter-rouge">ocrd-calamari-recognize</code>, you need to specify your local path to the model on your hard drive
+as parameter value! The last line of the <code class="highlighter-rouge">ocrd-process</code> call above could e.g. look like this:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
+</code></pre></div></div>
+<p>All the other lines can just be copied and pasted.</p>
+
 <h2 id="good-results-for-slower-processors">Good results for slower processors</h2>
 
 <p>If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.</p>
@@ -1735,6 +1759,15 @@ page</a>)  (CER ~1%).</p>
   <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
   <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
 </code></pre></div></div>
+
+<p><strong>Note:</strong> 
+(1) This workflow expects your images to be stored in a folder called <code class="highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
+you need to adjust <code class="highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="highlighter-rouge">-I my_images</code>
+(2) For the last processor in this workflow, <code class="highlighter-rouge">ocrd-calamari-recognize</code>, you need to specify your local path to the model on your hard drive 
+as parameter value! The last line of the <code class="highlighter-rouge">ocrd-process</code> call above could e.g. look like this:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
+</code></pre></div></div>
+<p>All the other lines can just be copied and pasted.</p>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
