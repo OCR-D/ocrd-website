@@ -193,7 +193,7 @@ is cropped to the content area only (i.e. without noise at the margins or facing
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/denoise.png"><img src="/assets/workflow/denoise.png" alt=""></a>
+        <a href="/assets/workflow/denoised.png"><img src="/assets/workflow/denoised.png" alt=""></a>
       </td>
       <td>
         <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
