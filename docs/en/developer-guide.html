@@ -719,14 +719,14 @@ directory</em>. If you want to use a different directory, use the <code class="h
 <span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> <span class="nv">$WORKSPACE_DIR</span> find
 
 <span class="c"># This will not</span>
-<span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> <span class="nv">$WORKSPACE_DIR</span> <span class="nt">-M</span> mets3000.xml find
+<span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> <span class="nv">$WORKSPACE_DIR</span> <span class="nt">-m</span> mets3000.xml find
 </code></pre></div></div>
 
 <h3 id="creating-an-empty-workspace">Creating an empty workspace</h3>
 
 <p>To create an empty workspace to which you can add files, use the <code class="highlighter-rouge">workspace init</code> command</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace init ws1
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> ws1 init
 /home/ocr/ws1
 </code></pre></div></div>
 
@@ -734,7 +734,7 @@ directory</em>. If you want to use a different directory, use the <code class="h
 
 <p>To create a workspace and save a METS file, use the <code class="highlighter-rouge">workspace clone</code> command:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace clone <span class="nv">$METS_URL</span> new-workspace
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> new-workspace clone <span class="nv">$METS_URL</span>
 /home/ocr/new-workspace
 
 <span class="nv">$ </span>find new-workspace
@@ -747,7 +747,7 @@ new-workspace/mets.xml
 <p>To not only <a href="#load-an-existing-mets-as-a-workspace">clone the METS</a> but also
 download the contained files, use <code class="highlighter-rouge">workspace clone</code> with the <code class="highlighter-rouge">--download</code> flag:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace clone <span class="nt">--download</span> <span class="nv">$METS_URL</span> <span class="nv">$WORKSPACE_DIR</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace <span class="nt">-d</span> <span class="nv">$WORKSPACE_DIR</span> clone <span class="nt">--download</span> <span class="nv">$METS_URL</span>
 
 <span class="nv">$ </span>find <span class="nv">$WORKSPACE_DIR</span>
 <span class="nv">$WORKSPACE_DIR</span>
@@ -841,7 +841,7 @@ attributes. The <code class="highlighter-rouge">workspace add</code> command mak
 specs</a>, use the <code class="highlighter-rouge">workspace validate</code> command:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create a bare workspace</span>
-ocrd workspace init <span class="nv">$WORKSPACE_DIR</span>
+ocrd workspace <span class="nt">-d</span>  <span class="nv">$WORKSPACE_DIR</span> init
 
 <span class="c"># Validate</span>
 &lt;report <span class="nv">valid</span><span class="o">=</span><span class="s2">"false"</span><span class="o">&gt;</span>
