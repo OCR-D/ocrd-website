@@ -395,7 +395,7 @@ $WORKSPACE_DIR/mets3000.xml
 $ ocrd workspace -d $WORKSPACE_DIR find
 
 # This will not
-$ ocrd workspace -d $WORKSPACE_DIR -M mets3000.xml find
+$ ocrd workspace -d $WORKSPACE_DIR -m mets3000.xml find
 ```
 
 ### Creating an empty workspace
@@ -403,7 +403,7 @@ $ ocrd workspace -d $WORKSPACE_DIR -M mets3000.xml find
 To create an empty workspace to which you can add files, use the `workspace init` command
 
 ```sh
-$ ocrd workspace init ws1
+$ ocrd workspace -d ws1 init
 /home/ocr/ws1
 ```
 
@@ -412,7 +412,7 @@ $ ocrd workspace init ws1
 To create a workspace and save a METS file, use the `workspace clone` command:
 
 ```sh
-$ ocrd workspace clone $METS_URL new-workspace
+$ ocrd workspace -d new-workspace clone $METS_URL
 /home/ocr/new-workspace
 
 $ find new-workspace
@@ -426,7 +426,7 @@ To not only [clone the METS](#load-an-existing-mets-as-a-workspace) but also
 download the contained files, use `workspace clone` with the `--download` flag:
 
 ```sh
-$ ocrd workspace clone --download $METS_URL $WORKSPACE_DIR
+$ ocrd workspace -d $WORKSPACE_DIR clone --download $METS_URL
 
 $ find $WORKSPACE_DIR
 $WORKSPACE_DIR
@@ -520,7 +520,7 @@ specs](https://ocr-d.github.io/mets), use the `workspace validate` command:
 
 ```sh
 # Create a bare workspace
-ocrd workspace init $WORKSPACE_DIR
+ocrd workspace -d  $WORKSPACE_DIR init
 
 # Validate
 <report valid="false">
