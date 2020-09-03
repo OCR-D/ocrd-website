@@ -130,15 +130,15 @@ model on your own particular originals.
 
 ## Tesstrain
 
-For training Tesseract models, ['tesstrain'](https://github.com/tesseract-ocr/tesstrain) can be used. As it is
-not included in 'ocrd_all', you will still have to install it, first. For information on the setup and the 
+For training Tesseract models, [`tesstrain`](https://github.com/tesseract-ocr/tesstrain) can be used. As it is
+not included in `ocrd_all`, you will still have to install it, first. For information on the setup and the 
 training process itself see the [Readme](https://github.com/tesseract-ocr/tesstrain) in the GithHub Repository.
 
 ## okralact
 
-While 'tesstrain' only allows you to train models for Tesseract, with ['okralact'](https://github.com/OCR-D/okralact)
+While `tesstrain` only allows you to train models for Tesseract, with [`okralact`](https://github.com/OCR-D/okralact)
 you can train models for four engines compatible with OCR-D - namely Tesseract, Ocropus, Kraken and Calamari - at once. 
 Especially if you want to use several OCR engines for your workflows or are not sure which OCR engine will give you the best
-results, this might be particularly effective for you. Just like 'tesstrain' it is not included in 'ocrd_all', meaning 
+results, this might be particularly effective for you. Just like `tesstrain` it is not included in `ocrd_all`, meaning 
 you will still have to install it, first. For information on the setup and the training process itself see the
 [Readme](https://github.com/OCR-D/okralact) in the GithHub Repository.
