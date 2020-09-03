@@ -141,4 +141,4 @@ you can train models for four engines compatible with OCR-D - namely Tesseract, 
 Especially if you want to use several OCR engines for your workflows or are not sure which OCR engine will give you the best
 results, this might be particularly effective for you. Just like 'tesstrain' it is not included in 'ocrd_all', meaning 
 you will still have to install it, first. For information on the setup and the training process itself see the
-[Readme](https://github.com/tesseract-ocr/tesstrain) in the GithHub Repository.
+[Readme](https://github.com/Doreenruirui/okralact) in the GithHub Repository.
