@@ -121,3 +121,24 @@ the `ocrd-calamari-recognize` processor, use the `checkpoint` parameter:
 ```sh
 ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -p '{"checkpoint": "/path/to/model/*.ckpt.json"}'
 ```
+
+# Model training
+
+With the pretrained models mentioned above, good results can be obtained for many originals. Nevertheless, the
+recognition rate can usually be improved significantly by fine-tuning an existing model or even training a new
+model on your own particular originals. 
+
+## Tesstrain
+
+For training Tesseract models, ['tesstrain'](https://github.com/tesseract-ocr/tesstrain) can be used. As it is
+not included in 'ocrd_all', you will still have to install it, first. For information on the setup and the 
+training process itself see the [Readme](https://github.com/tesseract-ocr/tesstrain) in the GithHub Repository.
+
+## okralact
+
+While 'tesstrain' only allows you to train models for Tesseract, with ['okralact'](https://github.com/OCR-D/okralact)
+you can train models for four engines compatible with OCR-D - namely Tesseract, Ocropus, Kraken and Calamari - at once. 
+Especially if you want to use several OCR engines for your workflows or are not sure which OCR engine will give you the best
+results, this might be particularly effective for you. Just like 'tesstrain' it is not included in 'ocrd_all', meaning 
+you will still have to install it, first. For information on the setup and the training process itself see the
+[Readme](https://github.com/OCR-D/okralact) in the GithHub Repository.
