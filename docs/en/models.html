@@ -289,6 +289,12 @@
       <li><a href="#calamari--ocrd_calamari">Calamari / ocrd_calamari</a></li>
     </ul>
   </li>
+  <li><a href="#model-training">Model training</a>
+    <ul>
+      <li><a href="#tesstrain">Tesstrain</a></li>
+      <li><a href="#okralact">okralact</a></li>
+    </ul>
+  </li>
 </ul>
 
       </aside>
@@ -415,6 +421,27 @@ the <code class="highlighter-rouge">ocrd-calamari-recognize</code> processor, us
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-CALA <span class="nt">-p</span> <span class="s1">'{"checkpoint": "/path/to/model/*.ckpt.json"}'</span>
 </code></pre></div></div>
+
+<h1 id="model-training">Model training</h1>
+
+<p>With the pretrained models mentioned above, good results can be obtained for many originals. Nevertheless, the
+recognition rate can usually be improved significantly by fine-tuning an existing model or even training a new
+model on your own particular originals.</p>
+
+<h2 id="tesstrain">Tesstrain</h2>
+
+<p>For training Tesseract models, <a href="https://github.com/tesseract-ocr/tesstrain">‘tesstrain’</a> can be used. As it is
+not included in ‘ocrd_all’, you will still have to install it, first. For information on the setup and the 
+training process itself see the <a href="https://github.com/tesseract-ocr/tesstrain">Readme</a> in the GithHub Repository.</p>
+
+<h2 id="okralact">okralact</h2>
+
+<p>While ‘tesstrain’ only allows you to train models for Tesseract, with <a href="https://github.com/OCR-D/okralact">‘okralact’</a>
+you can train models for four engines compatible with OCR-D - namely Tesseract, Ocropus, Kraken and Calamari - at once. 
+Especially if you want to use several OCR engines for your workflows or are not sure which OCR engine will give you the best
+results, this might be particularly effective for you. Just like ‘tesstrain’ it is not included in ‘ocrd_all’, meaning 
+you will still have to install it, first. For information on the setup and the training process itself see the
+<a href="https://github.com/OCR-D/okralact">Readme</a> in the GithHub Repository.</p>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
