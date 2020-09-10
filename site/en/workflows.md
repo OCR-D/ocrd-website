@@ -1096,7 +1096,7 @@ accessible format that can be used as-is by expert and layman alike.
       </pre></code>
       </td>
       <td>&nbsp;</td>
-      <td><code>ocrd-pagetopdf -I PAGE-FILEGRP -O PDF-FILEGRP -P textequiv_level word</code></td>
+      <td><code>ocrd-pagetopdf -I OCR-D-OCR -O OCR-D-PDF -P textequiv_level word</code></td>
     </tr>
 
 </tbody>
