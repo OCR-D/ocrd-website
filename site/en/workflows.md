@@ -137,15 +137,40 @@ can be especially useful for images which have not been enhanced.
   </thead>
   <tbody>   
     <tr>
-      <td>ocrd-olena-binarize</td>
+      <td>ocrd-olena-binarize
+      </td>
       <td>
-      <p><code>
-      {"k": float}
-      </code></p>
       </td>
       <td>Recommended</td>
-      <td><code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+      <td><code><div class="native-call">ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</div>
+	  <div class="Docker-call">docker run --user $(id -u) --volume $PWD:/data ocrd/all:maximum ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</div>
+	  </code></td>
     </tr>
+	<tr>
+		<td><details>
+      <summary><i>see all parameters</i></summary>
+		<table>
+		<tbody>
+		<tr>
+		<td>
+		<p><code>
+		{"k": float}
+		</code></p>
+		</td>
+		<td>used to adjust the foreground weight; only relevant to the Sauvola algos</td>
+		</tr>
+		<tr>
+		<td>
+		<p><code>
+		{"impl": "sauvola"}
+		</code></p>
+		</td>
+		<td></td>
+		</tr>
+		</table>
+		</details>
+		</td>
+	</tr>
 	<tr>
       <td>ocrd-cis-ocropy-binarize</td>
       <td>
@@ -181,6 +206,8 @@ can be especially useful for images which have not been enhanced.
 
 In this processing step, a document image is taken as input and the page
 is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
+We strongly recommend to execute this step if your images are not cropped already (i.e. only show the page of a book without a ruler, 
+footer, color scale etc.). Otherwise you might run into severe segmentation problems. 
 
 
 <table class="before-after">
@@ -853,7 +880,7 @@ An overview on the existing model repositories and short descriptions on the mos
       </p>
       </td>
       <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
-	  <td><code>ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
+	  <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
     </tr>
     <tr>
       <td>ocrd-calamari-recognize</td>
@@ -876,6 +903,7 @@ An overview on the existing model repositories and short descriptions on the mos
 to be set to point to the directory where the used models are stored. (The
 directory should at least contain the following models: `deu.traineddata`,
 `eng.taineddata`, `osd.traineddata`)
+
 
 **Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of 
 `ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`). 
@@ -1077,7 +1105,9 @@ accessible format that can be used as-is by expert and layman alike.
         # or {from-to: "page text"}
       </pre></code>
       </td>
-      <td>&nbsp;</td>
+      <td>as the values consist of two words, when using `-P` they have to be enclosed in quotation marks; e.g. -P from-to "alto2.0 alto3.0"<br/>
+	  if you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
+	  </td>
       <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
     <tr>
@@ -1102,7 +1132,40 @@ accessible format that can be used as-is by expert and layman alike.
 </tbody>
 </table>
 
-### Step 20: Dummy Processing
+### Step 20: Archiving
+After you have successfully processed your images, the results should be saved and archived. OLA-HD is
+a longterm archive system which works as a mixture between an archive system and a repository. For further
+details on OLA-HD see the extensive [concept paper](https://github.com/subugoe/OLA-HD-IMPL/blob/master/docs/OLA-HD_Konzept.pdf).
+You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-HD meets your needs and requirements. 
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+	  <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-olahd-client</td>
+      <td>{
+  "endpoint": "http://141.5.98.232/api",
+  "username": "X",
+  "password": "*"
+}</td>
+      <td>the parameters should be written to a json file:<br/>
+	  echo '{  "endpoint": "http://141.5.98.232/api",
+  "username": "X",
+  "password": "*"}' > olahd.json
+	  </td>
+	  <td><code>ocrd-olahd-client -I OCR-D-OCR -p olahd.json</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Step 21: Dummy Processing
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model. 
 

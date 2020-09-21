@@ -269,6 +269,14 @@ E.g.:
 -P param1 value1 -P param2 value2 -P param3 value3
 ```
 
+**Note:** If a value consists of several words with whitespaces, they have to be enclosed in quotation marks
+
+E.g.: 
+
+```sh
+-P param "value value"
+```
+
 ### Calling several processors
 
 #### ocrd-process
@@ -476,12 +484,12 @@ To get all available processors you might use the autocomplete in your preferred
 
 Type 'ocrd-' followed by `TAB` to get a list of all available processors.
 
-To get further information about one processor type
+To get further information about a particular processor, you can call `--help`
 
 ```sh
-[name_of_selected_processor] -h
+[name_of_selected_processor] --help
 ## alternatively using docker
-docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_selected_processor] -h
+docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_selected_processor] --help
 ```
 
 

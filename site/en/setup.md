@@ -35,7 +35,8 @@ Minimum system requirements
 
 For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
 
-Alternatively, use [Docker](https://hub.docker.com/u/ocrd)
+Alternatively, you can use [Docker](https://hub.docker.com/u/ocrd). This way, you will only have to meet the minimum requirements for 
+free disk space. But you can use any operating system you want and do not have to worry about the Python version. 
 
 ## Installation
 
