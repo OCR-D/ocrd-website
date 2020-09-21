@@ -181,12 +181,12 @@ MEDIATYPE='image/tiff'  # the actual media type of the image files
 ## using local ocrd CLI
 for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
   base= `basename ${i} $EXT`;
-  ocrd workspace add -G $FILEGRP -i ${FILE_GRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
+  ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ## alternatively using docker
 for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
   base= `basename ${i} $EXT`;
-  docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G $FILEGRP -i ${FILE_GRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
+  docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ```
 
