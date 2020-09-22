@@ -201,7 +201,7 @@ for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -
 ```
 
 The log information should inform you about every image which was added to the `mets.xml`.
-In the end, your METS file should look like this [example METS](example_mets.md). You are now ready to start processing your images with OCR-D.
+In the end, your METS file should look like this [example METS](example_mets). You are now ready to start processing your images with OCR-D.
 
 Alternatively, `ocrd-import` from [workflow-configuration](#workflow-configuration) is a shell script which does all of the above (and can also convert arbitrary image formats) automatically. For usage options, see:
 
