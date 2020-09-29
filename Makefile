@@ -103,7 +103,7 @@ $(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
 .PHONY: ocrd-all-tool
-ocrd-all-tool: $(SRCDIR)/_data/ocrd-all-tool.json
+ocrd-all-tool: $(SRCDIR)/js/ocrd-all-tool.json
 $(SRCDIR)/js/ocrd-all-tool.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" ocrd-tool > "$@"

@@ -6,6 +6,7 @@
   <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css"></link>
   <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
   <link rel="stylesheet" href="/assets/ocrd.css"></link>
 </head>
@@ -566,6 +567,13 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param1 value1 <span class="nt">-P</span> param2 value2 <span class="nt">-P</span> param3 value3
 </code></pre></div></div>
 
+<p><strong>Note:</strong> If a value consists of several words with whitespaces, they have to be enclosed in quotation marks</p>
+
+<p>E.g.:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param <span class="s2">"value value"</span>
+</code></pre></div></div>
+
 <h3 id="calling-several-processors">Calling several processors</h3>
 
 <h4 id="ocrd-process">ocrd-process</h4>
@@ -759,11 +767,11 @@ the existing processors, their tasks and features, see the <a href="#get-more-in
 
 <p>Type ‘ocrd-‘ followed by <code class="highlighter-rouge">TAB</code> to get a list of all available processors.</p>
 
-<p>To get further information about one processor type</p>
+<p>To get further information about a particular processor, you can call <code class="highlighter-rouge">--help</code></p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>name_of_selected_processor] <span class="nt">-h</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>name_of_selected_processor] <span class="nt">--help</span>
 <span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum <span class="o">[</span>name_of_selected_processor] <span class="nt">-h</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum <span class="o">[</span>name_of_selected_processor] <span class="nt">--help</span>
 </code></pre></div></div>
 
 

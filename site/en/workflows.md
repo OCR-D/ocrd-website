@@ -18,16 +18,16 @@ This guide provides an overview of the available OCR-D processors and their requ
 see the [OCR-D-Website-Wiki](https://github.com/OCR-D/ocrd-website/wiki). Feel free to add your own experiences and recommendations in the Wiki!
 We will regularly amend this guide with valuable contributions from the Wiki.
 
-**Note:** In order to be able to run the workflows described in this guide, you need to have prepared your images in an [OCR-D-workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace). 
+**Note:** In order to be able to run the workflows described in this guide, you need to have prepared your images in an [OCR-D-workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace).
 We expect that you are familiar with the [OCR-D-user guide](https://ocr-d.de/en/user_guide) which explains all preparatory steps, syntax and different
-solutions for executing whole workflows. 
+solutions for executing whole workflows.
 
 ## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
 
 ### Step 0: Image Enhancement (Page Level, optional)
 Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
-the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.  
+the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.
 
 **Note:** `ocrd-preprocess-image` can be used to run arbitrary shell commands for preprocessing (original or derived) images, and can be seen as a generic OCR-D wrapper for many of the following workflow steps, provided a matching external tool exists. (The only restriction is that the tool must not change image size or the position/coordinates of its content.)
 
@@ -43,53 +43,43 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-im6convert">
       <td>ocrd-im6convert</td>
-      <td>
-      <p><code><pre>
-{
-  "output-format": "image/tiff" # or "image/jp2", "image/png"...
-}
-      </pre></code></p>
-      </td>
+      <td><code>-P output-format image/tiff</code></td>
       <td>for <code>output-options</code> see <a href="https://imagemagick.org/script/command-line-options.php">IM Documentation</a></td>
       <td><code>ocrd-im6convert -I OCR-D-IMG -O OCR-D-ENH -P output-format image/tiff</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-preprocess-image">
       <td>ocrd-preprocess-image</td>
       <td>
-      <p><code><pre>{
-  "input_feature_filter": "binarized",
-  "output_feature_added": "binarized",
-  "command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"
-  }</pre></code></p>
-	  </td>
-      <td>
-	  for parameters and command examples (presets) see [the Readme](https://github.com/bertsky/ocrd_wrap#ocr-d-processor-interface-ocrd-preprocess-image)
-	  </td>
+      <code>-P input_feature_filter binarized</code><br/>
+      <code>-P output_feature_added binarized</code><br/>
+      <code>-P command "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"</code>
+      </td>
+      <td>for parameters and command examples (presets) see <a href="https://github.com/bertsky/ocrd_wrap#ocr-d-processor-interface-ocrd-preprocess-image">the Readme</a></td>
       <td><code>
-	  ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
-	  </code></td>
+    ocrd-preprocess-image -I OCR-D-IMG -O OCR-D-PREP -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
+    </code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-skimage-normalize">
       <td>ocrd-skimage-normalize</td>
       <td>
-	  </td>
+    </td>
       <td>
-	  </td>
+    </td>
       <td><code>
-	  ocrd-skimage-normalize -I OCR-D-IMG -O OCR-D-NORM
-	  </code></td>
+    ocrd-skimage-normalize -I OCR-D-IMG -O OCR-D-NORM
+    </code></td>
     </tr>
-	<tr>
+  <tr data-processor="ocrd-skimage-denoise-raw">
       <td>ocrd-skimage-denoise-raw</td>
       <td>
-	  </td>
+    </td>
       <td>
-	  </td>
+    </td>
       <td><code>
-	  ocrd-skimage-denoise-raw -I OCR-D-IMG -O OCR-D-DENOISE
-	  </code></td>
+    ocrd-skimage-denoise-raw -I OCR-D-IMG -O OCR-D-DENOISE
+    </code></td>
     </tr>
   </tbody>
 </table>
@@ -133,68 +123,34 @@ can be especially useful for images which have not been enhanced.
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
-	</tr>
+  </tr>
   </thead>
-  <tbody>   
-    <tr>
+  <tbody>
+    <tr data-processor="ocrd-olena-binarize">
       <td>ocrd-olena-binarize
       </td>
       <td>
       </td>
       <td>Recommended</td>
-      <td><code><div class="native-call">ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</div>
-	  <div class="Docker-call">docker run --user $(id -u) --volume $PWD:/data ocrd/all:maximum ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</div>
-	  </code></td>
+      <td class="processor-call">
+        <code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code>
+      </td>
     </tr>
-	<tr>
-		<td><details>
-      <summary><i>see all parameters</i></summary>
-		<table>
-		<tbody>
-		<tr>
-		<td>
-		<p><code>
-		{"k": float}
-		</code></p>
-		</td>
-		<td>used to adjust the foreground weight; only relevant to the Sauvola algos</td>
-		</tr>
-		<tr>
-		<td>
-		<p><code>
-		{"impl": "sauvola"}
-		</code></p>
-		</td>
-		<td></td>
-		</tr>
-		</table>
-		</details>
-		</td>
-	</tr>
-	<tr>
-      <td>ocrd-cis-ocropy-binarize</td>
-      <td>
-	  <p><code>
-{"threshold": float}
-      </code></p>	  
-	  </td>
-      <td></td>
-      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
-    </tr>
-	<tr>
+    <tr data-processor="ocrd-cis-ocropy-binarize">
+        <td>ocrd-cis-ocropy-binarize</td>
+        <td><code>-P threshold 0.1</code></td>
+        <td></td>
+        <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+      </tr>
+    <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
-      <td>
-	  </td>
-      <td>
-	  </td>  
+      <td></td>
+      <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
-	</tr>	
-	  <td>ocrd-anybaseocr-binarize</td>
-      <td>
-	  <p><code>
-{"threshold": float}
-      </code></p>
-	  </td>
+    </tr>
+    <tr data-processor="ocrd-anybaseocr-binarize">
+      <td>ocrd-anybaseocr-binarize</td>
+      <td><code>-P threshold 0.1</code></td>
       <td>Fast</td>
       <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
@@ -206,8 +162,8 @@ can be especially useful for images which have not been enhanced.
 
 In this processing step, a document image is taken as input and the page
 is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
-We strongly recommend to execute this step if your images are not cropped already (i.e. only show the page of a book without a ruler, 
-footer, color scale etc.). Otherwise you might run into severe segmentation problems. 
+We strongly recommend to execute this step if your images are not cropped already (i.e. only show the page of a book without a ruler,
+footer, color scale etc.). Otherwise you might run into severe segmentation problems.
 
 
 <table class="before-after">
@@ -237,21 +193,21 @@ footer, color scale etc.). Otherwise you might run into severe segmentation prob
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-anybaseocr-crop">
       <td>ocrd-anybaseocr-crop</td>
       <td>&nbsp;</td>
       <td>The input image has to be binarized and <br>should be deskewed for the module to work.</td>
-	  <td><code>ocrd-anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
+      <td><code>ocrd-anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-crop">
       <td>ocrd-tesserocr-crop</td>
       <td>&nbsp;</td>
       <td></td>
-	  <td><code>ocrd-tesserocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
+      <td><code>ocrd-tesserocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
     </tr>
   </tbody>
 </table>
@@ -270,25 +226,22 @@ For better results, the cropped images can be binarized again at this point or l
       <th>Parameter</th>
       <th>Remark</th>
       <th>Call</th>
-	</tr>
+  </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-olena-binarize">
       <td>ocrd-olena-binarize</td>
-      <td>
-      </td>
+      <td></td>
       <td>Recommended</td>
       <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
     </tr>
-	<tr>
+  <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
-      <td>
-	  </td>
-      <td>
-	  </td>
+      <td></td>
+      <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
     </tr>
-	<tr>
+  <tr data-processor="ocrd-cis-ocropy-binarize">
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
       <td></td>
@@ -300,7 +253,7 @@ For better results, the cropped images can be binarized again at this point or l
 
 ### Step 4: Denoising (Page Level)
 
-In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. 
+In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image.
 
 This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
 
@@ -332,21 +285,21 @@ This may not be necessary for all prints, and depends heavily on the selected bi
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-denoise">
       <td>ocrd-cis-ocropy-denoise</td>
-      <td><code></code></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-skimage-denoise">
       <td>ocrd-skimage-denoise</td>
       <td></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-skimage-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
+      <td></td>
+      <td><code>ocrd-skimage-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
   </tbody>
 </table>
@@ -384,28 +337,28 @@ The input images have to be binarized for this module to work.
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-   <tr>
+   <tr data-processor="ocrd-cis-ocropy-deskew">
       <td>ocrd-cis-ocropy-deskew</td>
-      <td><code>{"level-of-operation": "page"}</code></td>
+      <td><code>-P level-of-operation page</code></td>
       <td>Recommended</td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P level-of-operation page</code></td>
-    </tr>    
-	<tr>
-      <td>ocrd-tesserocr-deskew</td>
-      <td><code>{"operation_level”:”page”}</code></td>
-      <td>Fast, also performs a decent orientation correction</td>
-	  <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P operation_level page</code></td>
+      <td><code>ocrd-cis-ocropy-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P level-of-operation page</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-deskew">
+      <td>ocrd-tesserocr-deskew</td>
+      <td><code>-P operation_level page</code></td>
+      <td>Fast, also performs a decent orientation correction</td>
+      <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P operation_level page</code></td>
+    </tr>
+    <tr data-processor="ocrd-anybaseocr-deskew">
       <td>ocrd-anybaseocr-deskew</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
-    </tr>	
+      <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -446,17 +399,11 @@ if they are curved. The input image has to be binarized for the module to work.
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-anybaseocr-dewarp">
       <td>ocrd-anybaseocr-dewarp</td>
       <td>
-      <code>
-      <pre>
-{
-  "pix2pixHD":"/path/to/pix2pixHD/",
-  "model_name":"/path/to/pix2pixHD/models"
-}
-      </pre>
-      </code>
+        <code>-P pix2pixHD /path/to/pix2pixHD/</code><br/>
+        <code>-P model_name:/path/to/pix2pixHD/models</code>
       </td>
       <td>For available models take a look at this <a href="https://github.com/mjenckel/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is misleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
       <td>
@@ -477,7 +424,7 @@ In this processing step, an (optimized) document image is taken as an input and 
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates, 
+**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates,
 then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
 
 **Note:** The `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` processors do not only segment the page, but also the text lines within
@@ -513,55 +460,48 @@ need to segment into lines in an extra step.
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-segment-region">
       <td>ocrd-tesserocr-segment-region</td>
-      <td>&nbsp;</td>
+      <td></td>
       <td>Recommended</td>
-	  <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+      <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-segment-repair">
       <td>ocrd-segment-repair</td>
-      <td><code>{"plausibilize":true}</code></td>
+      <td><code>-P plausibilize true</code></td>
       <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
-	  <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
+      <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
-      <td>{"model": /path/to/model"}</td>
-      <td>Models can be found [here](https://qurator-data.de/sbb_textline_detector/); you need to **pass your local path to the model on your hard drive**
-	  as parameter value for this processor to work!</td>
-	  <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
+      <td><code>-P model /path/to/model</code></td>
+      <td>Models can be found [here](https://qurator-data.de/sbb_textline_detector/); you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!</td>
+      <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-cis-ocropy-segment">
       <td>ocrd-cis-ocropy-segment</td>
-      <td><code>{"level-of-operation":"page"}</code></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P level-of-operation page</code></td>
+      <td><code>-P level-of-operation page</code></td>
+      <td></td>
+    <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P level-of-operation page</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
-      <td><pre>
-{
-  "block_segmentation_model": "/path/to/mrcnn",
-  "block_segmentation_weights": "/path/to/model/block_segmentation_weights.h5"
-}
-      </pre>
+      <td><code>-P block_segmentation_model /path/to/mrcnn</code><br/>
+  <code>block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code>
       </td>
       <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models"; you need to **pass your local path to the model on your hard drive**
-	  as parameter value for this processor to work!>site</a></td>
-	  <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
+    as parameter value for this processor to work!>site</a></td>
+      <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-pc-segmentation">
       <td>ocrd-pc-segmentation</td>
-      <td>
-      </td>
-      <td>
-	  </td>
-	  <td><code>ocrd-pc-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-pc-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
     </tr>
   </tbody>
 </table>
@@ -587,37 +527,31 @@ your image twice on page level, and have no large images, you can probably skip 
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
-      <td>
-	  <p><code>
-{"level-of-operation": "region"}
-      </code></p>	
-	  </td>
-      <td>
-	  </td>
-	  <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
-    </tr>    
-	<tr>
-      <td>ocrd-preprocess-image</td>
-      <td><code>{"level-of-operation":"region","output_feature_added": "binarized","command": "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"}</code></td>
-      <td>&nbsp;</td>
-	  <td><code>
-	  ocrd-preprocess-image -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
-	  </code></td>
-	  </td>
+      <td><p><code>-P level-of-operation region</code></td>
+      <td></td>
+      <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
-    <tr>
-      <td>ocrd-cis-ocropy-binarize</td>
+    <tr data-processor="ocrd-preprocess-image">
+      <td>ocrd-preprocess-image</td>
       <td>
-	  <p><code>
-{"level-of-operation": "region", "noise_maxsize": float}
-      </code></p>	  
-	  </td>
+        <code>-P level-of-operation region</code><br/>
+        <code>-P "output_feature_added" binarized</code><br/>
+        <code>-P command "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"</code>
+      </td>
+      <td>&nbsp;</td>
+      <td><code>
+    ocrd-preprocess-image -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
+      </code></td>
+    </tr>
+    <tr data-processor="ocrd-cis-ocropy-binarize">
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td><code>-P level-of-operation region</code><br/><code>-P "noise_maxsize": float</code></td>
       <td></td>
       <td><code>ocrd-cis-ocropy-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
@@ -656,22 +590,22 @@ In this processing step, text region images are taken as input and their skew is
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-deskew">
       <td>ocrd-cis-ocropy-deskew</td>
-      <td><code>{"level-of-operation":"region"}</code></td>
-      <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -P level-of-operation region</code></td>
+      <td><code>-P level-of-operation region</code></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -P level-of-operation region</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-deskew">
       <td>ocrd-tesserocr-deskew</td>
-      <td>&nbsp;</td>
+      <td></td>
       <td>Fast, also performs a decent orientation correction</td>
-	  <td><code>ocrd-tesserocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG</code></td>
-    </tr>	
+      <td><code>ocrd-tesserocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -681,11 +615,11 @@ In this processing step, intrusions of neighbouring non-text (e.g. separator) or
 text regions of a page can be removed. A connected component analysis is run on every text region,
 as well as its overlapping neighbours. Now for each conflicting binary object,
 a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
-be clipped to the background. 
+be clipped to the background.
 
 This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
 
-TODO: add images
+<!-- TODO: add images -->
 
 #### Available processors
 
@@ -695,31 +629,31 @@ TODO: add images
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>ocrd-cis-ocropy-clip</td>
-      <td><code>{"level-of-operation":"region"}</code></td>
+      <td><code>-P level-of-operation region</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
+      <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 11: Line segmentation 
+### Step 11: Line segmentation
 
-In this processing step, text regions are segmented into text lines. 
+In this processing step, text regions are segmented into text lines.
 A line detection algorithm is run on every text region of every PAGE in the
 input file group, and a TextLine element with the resulting polygon
 outline is added to the annotation of the output PAGE.
 
-**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates, 
-then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
+**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates,
+then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level).
 If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
 
-**Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment 
+**Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
 need to segment into lines in an extra step.
 
@@ -750,26 +684,26 @@ need to segment into lines in an extra step.
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-segment">
       <td>ocrd-cis-ocropy-segment</td>
-      <td><code>{"level-of-operation":"region"}</code></td>
+      <td><code>-P level-of-operation region</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-segment -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE -P level-of-operation region</code></td>
+      <td><code>ocrd-cis-ocropy-segment -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE -P level-of-operation region</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-segment-line">
       <td>ocrd-tesserocr-segment-line</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-tesserocr-segment-line -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE</code></td>
+      <td><code>ocrd-tesserocr-segment-line -I OCR-D-CLIP-REG -O OCR-D-SEG-LINE</code></td>
     </tr>
   </tbody>
 </table>
 
-### Step 12: Resegmentation (Line Level) 
+### Step 12: Resegmentation (Line Level)
 
 In this processing step the segmented lines can be corrected.
 
@@ -782,21 +716,21 @@ TODO: add images
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-clip">
       <td>ocrd-cis-ocropy-clip</td>
-      <td><code>{"level-of-operation":"line"}</code></td>
+      <td><code>-P level-of-operation line</code></td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -P level-of-operation line</code></td>
+      <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -P level-of-operation line</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-resegment">
       <td>ocrd-cis-ocropy-resegment</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
+      <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
     </tr>
   </tbody>
 </table>
@@ -832,15 +766,15 @@ In this processing step, the text line images get vertically aligned if they are
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cis-ocropy-dewarp">
       <td>ocrd-cis-ocropy-dewarp</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-ocropy-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE</code></td>
+      <td><code>ocrd-cis-ocropy-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE</code></td>
     </tr>
   </tbody>
 </table>
@@ -861,39 +795,26 @@ An overview on the existing model repositories and short descriptions on the mos
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-tesserocr-recognize">
       <td>ocrd-tesserocr-recognize</td>
-      <td>
-      <p>
-      <code>
-      {"model": "Fraktur"}
-      </code>
-      </p>
-      <p>
-      <code>
-      {"model": "GT4HistOCR_50000000.997_191951"}
-      </code>
-      </p>
+      <td><code>-P model Fraktur</code><br/>
+        <code>model "GT4HistOCR_50000000.997_191951</code>
       </td>
       <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
-	  <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
+      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-calamari-recognize">
       <td>ocrd-calamari-recognize</td>
+      <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        <code>
-{"checkpoint":"/path/to/models/\*.ckpt.json"}
-        </code>
+        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>; you need
+    to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
       </td>
-      <td>
-        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>; you need 
-		to **pass your local path to the model on your hard drive** as parameter value for this processor to work! 
-      </td>
-	  <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
+      <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
     </tr>
   </tbody>
 </table>
@@ -905,14 +826,14 @@ directory should at least contain the following models: `deu.traineddata`,
 `eng.taineddata`, `osd.traineddata`)
 
 
-**Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of 
-`ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`). 
+**Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of
+`ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`).
 
 ## Post Correction (Optional)
 
 ### Step 15: Text alignment
 
-In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned 
+In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned
 into one annotation with `TextEquiv` alternatives.
 
 **Note:** This step is only required if you want to do post-correction afterwards,
@@ -928,7 +849,7 @@ The previous recognition step must be run on glyph or at least on word level.
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
@@ -936,14 +857,14 @@ The previous recognition step must be run on glyph or at least on word level.
       <td>ocrd-cis-align</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2 -O OCR-D-ALIGN</code></td>
+    <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2 -O OCR-D-ALIGN</code></td>
     </tr>
   </tbody>
 </table>
 
 ### Step 16: Post-correction
 
-In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, 
+In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries,
 morphology and orthography).
 
 **Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process`
@@ -957,31 +878,31 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-cor-asv-ann-process">
       <td>ocrd-cor-asv-ann-process</td>
       <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
       <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a>; you need to **pass your local path to the model on your hard drive**
-	  as parameter value for this processor to work!</td>
-	  <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
+    as parameter value for this processor to work!</td>
+      <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-cis-postcorrect">
       <td>ocrd-cis-postcorrect</td>
       <td><code>
-	  {"profilerPath": "/path/to/profiler.bash","profilerConfig": str,"nOCR": int,"model": "/path/to/model/model.zip"}
-	  </code></td>
-      <td>
-	  The various parameters should be specified in a JSON file. If you don't want to use a profiler, you can set the value for "profilerConfig" to 
-	  "ignored". In this case, your profiler.bash should look like this: 
-	  `#!/bin/bash
-	  cat > /dev/null
-	  echo '{}'`
-	  you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
-	  </td>
-	  <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
+      {"profilerPath": "/path/to/profiler.bash","profilerConfig": str,"nOCR": int,"model": "/path/to/model/model.zip"}
+      </code></td>
+        <td>
+      The various parameters should be specified in a JSON file. If you don't want to use a profiler, you can set the value for "profilerConfig" to
+      "ignored". In this case, your profiler.bash should look like this:
+      `#!/bin/bash
+      cat > /dev/null
+      echo '{}'`
+      you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
+      </td>
+      <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
     </tr>
   </tbody>
 </table>
@@ -1002,17 +923,17 @@ In this processing step, the text output of the OCR or post-correction can be ev
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-dinglehopper">
       <td>ocrd-dinglehopper</td>
       <td>&nbsp;</td>
       <td>First input group should point to the ground truth.</td>
-	  <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
+      <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
-	<tr>
+    <tr data-processor="ocrd-cor-asv-ann-evaluate">
       <td>ocrd-cor-asv-ann-evaluate</td>
       <td>
       <p>
@@ -1022,10 +943,9 @@ In this processing step, the text output of the OCR or post-correction can be ev
       <code>
       {"confusion": integer}
       </code>
-      </p>	  
-	  </td>
+      </p></td>
       <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add `2> eval.txt` at the end of your command</td>
-	  <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
+      <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
     </tr>
   </tbody>
 </table>
@@ -1038,7 +958,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 
-All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to work. 
+All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to work.
 
 For example, if you have a page-level dewarping step, it is currently impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are re-calculated accordingly as well.
 
@@ -1052,15 +972,15 @@ Another use case is exporting PAGE-XML for tools that cannot apply cropping or d
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-segment-replace-original">
       <td>ocrd-segment-replace-original</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-segment-replace-original -I OCR-D-SEG-LINE -O OCR-D-SUBST</code></td>
+    <td><code>ocrd-segment-replace-original -I OCR-D-SEG-LINE -O OCR-D-SUBST</code></td>
     </tr>
   </tbody>
 </table>
@@ -1085,32 +1005,32 @@ accessible format that can be used as-is by expert and layman alike.
 
 </thead>
 <tbody>
-    <tr>
+    <tr data-processor="ocrd-fileformat-transform">
       <td>ocrd-fileformat-transform</td>
       <td><code><pre>
-        {"from-to": "alto2.0 alto3.0"} 
-        # or {from-to: "alto2.0 alto3.1"}
-        # or {from-to: "alto2.0 hocr"}
-        # or {from-to: "alto2.1 alto3.0"}
-        # or {from-to: "alto2.1 alto3.1"}
-        # or {from-to: "alto2.1 hocr"}
-        # or {from-to: "alto page"}
-        # or {from-to: "alto text"}
-        # or {from-to: "gcv hocr"}
-        # or {from-to: "hocr alto2.0"}
-        # or {from-to: "hocr alto2.1"}
-        # or {from-to: "hocr text"}
-        # or {from-to: "page alto"}
-        # or {from-to: "page hocr"}
-        # or {from-to: "page text"}
+        {"from-to": "alto2.0 alto3.0"}
+        # or {"from-to": "alto2.0 alto3.1"}
+        # or {"from-to": "alto2.0 hocr"}
+        # or {"from-to": "alto2.1 alto3.0"}
+        # or {"from-to": "alto2.1 alto3.1"}
+        # or {"from-to": "alto2.1 hocr"}
+        # or {"from-to": "alto page"}
+        # or {"from-to": "alto text"}
+        # or {"from-to": "gcv hocr"}
+        # or {"from-to": "hocr alto2.0"}
+        # or {"from-to": "hocr alto2.1"}
+        # or {"from-to": "hocr text"}
+        # or {"from-to": "page alto"}
+        # or {"from-to": "page hocr"}
+        # or {"from-to": "page text"}
       </pre></code>
       </td>
       <td>as the values consist of two words, when using `-P` they have to be enclosed in quotation marks; e.g. -P from-to "alto2.0 alto3.0"<br/>
-	  if you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
-	  </td>
+    if you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
+    </td>
       <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
-    <tr>
+    <tr data-processor="ocrd-pagetopdf">
       <td>ocrd-pagetopdf</td>
       <td><code><pre>
       {
@@ -1128,7 +1048,6 @@ accessible format that can be used as-is by expert and layman alike.
       <td>&nbsp;</td>
       <td><code>ocrd-pagetopdf -I OCR-D-OCR -O OCR-D-PDF -P textequiv_level word</code></td>
     </tr>
-
 </tbody>
 </table>
 
@@ -1136,7 +1055,7 @@ accessible format that can be used as-is by expert and layman alike.
 After you have successfully processed your images, the results should be saved and archived. OLA-HD is
 a longterm archive system which works as a mixture between an archive system and a repository. For further
 details on OLA-HD see the extensive [concept paper](https://github.com/subugoe/OLA-HD-IMPL/blob/master/docs/OLA-HD_Konzept.pdf).
-You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-HD meets your needs and requirements. 
+You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-HD meets your needs and requirements.
 
 <table class="processor-table">
   <thead>
@@ -1144,11 +1063,11 @@ You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-H
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-olahd-client">
       <td>ocrd-olahd-client</td>
       <td>{
   "endpoint": "http://141.5.98.232/api",
@@ -1156,18 +1075,18 @@ You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-H
   "password": "*"
 }</td>
       <td>the parameters should be written to a json file:<br/>
-	  echo '{  "endpoint": "http://141.5.98.232/api",
+    echo '{  "endpoint": "http://141.5.98.232/api",
   "username": "X",
   "password": "*"}' > olahd.json
-	  </td>
-	  <td><code>ocrd-olahd-client -I OCR-D-OCR -p olahd.json</code></td>
+    </td>
+    <td><code>ocrd-olahd-client -I OCR-D-OCR -p olahd.json</code></td>
     </tr>
   </tbody>
 </table>
 
 ### Step 21: Dummy Processing
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
-copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model. 
+copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.
 
 #### Available processors
 
@@ -1177,15 +1096,15 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
       <th>Processor</th>
       <th>Parameter</th>
       <th>Remarks</th>
-	  <th>Call</th>
+    <th>Call</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-processor="ocrd-dummy">
       <td>ocrd-dummy</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-	  <td><code>ocrd-dummy -I OCR-D-FILEGRP -O OCR-D-DUMMY</code></td>
+    <td><code>ocrd-dummy -I OCR-D-FILEGRP -O OCR-D-DUMMY</code></td>
     </tr>
   </tbody>
 </table>
@@ -1197,10 +1116,10 @@ selected pages of some prints from the 17th and 18th century.
 
 The results vary quite a lot from page to page. In most cases, segmentation is a problem.
 
-These recommendations may also work well for other prints of those centuries. 
+These recommendations may also work well for other prints of those centuries.
 
 Note that for our test pages, not all steps described above werde needed to obtain the best results.
-Depending on your particular images, you might want to include those processors again for better results. 
+Depending on your particular images, you might want to include those processors again for better results.
 
 
 ## Best results for selected pages
@@ -1222,7 +1141,7 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>ocrd-olena-binarize</td>
       <td>{"impl": "sauvola"}</td>
     </tr>
-	<tr>
+  <tr>
       <td>2</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
@@ -1247,8 +1166,8 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>ocrd-tesserocr-segment-region</td>
       <td></td>
     </tr>
-    <tr>  
-	  <td>7a</td>
+    <tr>
+    <td>7a</td>
       <td>ocrd-segment-repair</td>
       <td>{"plausibilize": true}</td>
     </tr>
@@ -1267,8 +1186,8 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>ocrd-cis-ocropy-segment</td>
       <td>{"level-of-operation":"region"}</td>
     </tr>
-    <tr>  
-	  <td>11a</td>
+    <tr>
+    <td>11a</td>
       <td>ocrd-segment-repair</td>
       <td>{"sanitize": true}</td>
     </tr>
@@ -1282,7 +1201,7 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>ocrd-calamari-recognize</td>
       <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
     </tr>
-  </tbody> 
+  </tbody>
 </table>
 
 ### Example with ocrd-process
@@ -1304,7 +1223,7 @@ ocrd process \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
-**Note:** 
+**Note:**
 (1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I MAX`
 (2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your local path to the model on your hard drive
@@ -1332,7 +1251,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-olena-binarize</td>
       <td>{"impl": "sauvola"}</td>
     </tr>
-	<tr>
+  <tr>
       <td>2</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
@@ -1357,8 +1276,8 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-tesserocr-segment-region</td>
       <td></td>
     </tr>
-    <tr>  
-	  <td>7a</td>
+    <tr>
+    <td>7a</td>
       <td>ocrd-segment-repair</td>
       <td>{"plausibilize": true}</td>
     </tr>
@@ -1377,8 +1296,8 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-tesserocr-segment-line</td>
       <td></td>
     </tr>
-    <tr>  
-	  <td>11a</td>
+    <tr>
+    <td>11a</td>
       <td>ocrd-segment-repair</td>
       <td>{"sanitize": true}</td>
     </tr>
@@ -1392,7 +1311,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-calamari-recognize</td>
       <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
     </tr>
-  </tbody> 
+  </tbody>
 </table>
 
 ### Example with ocrd-process
@@ -1414,12 +1333,14 @@ ocrd process \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
-**Note:** 
+**Note:**
 (1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
-(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your local path to the model on your hard drive 
+(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your local path to the model on your hard drive
 as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
 ```sh
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
 ```
 All the other lines can just be copied and pasted.
+
+<script src="/js/workflows.js"></script>
