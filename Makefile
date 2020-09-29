@@ -102,6 +102,12 @@ $(SRCDIR)/_data/ocrd-repo.json: $(KWALITEE_CONFIG)
 	mkdir -p $(dir $@)
 	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" json > "$@"
 
+.PHONY: ocrd-all-tool
+ocrd-all-tool: $(SRCDIR)/_data/ocrd-all-tool.json
+$(SRCDIR)/js/ocrd-all-tool.json: $(KWALITEE_CONFIG)
+	mkdir -p $(dir $@)
+	ocrd-kwalitee -c "$(KWALITEE_CONFIG)" ocrd-tool > "$@"
+
 # TODO Build module information
 build-modules: ocrd-kwalitee.json
 	@echo NIH
