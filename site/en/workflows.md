@@ -533,7 +533,7 @@ your image twice on page level, and have no large images, you can probably skip 
   <tbody>
     <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
-      <td><p><code>-P level-of-operation region</code></td>
+      <td><code>-P level-of-operation region</code></td>
       <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
