@@ -173,6 +173,21 @@ group.
 
 ### How to configure logging?
 
+### How to stop tensorflow logging spam
+
+> [@bertsky](https://github.com/OCR-D/core/pull/599)
+>
+> Another thing that needs to be added to tame TF is
+> `os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'` – before the tensorflow module
+> gets imported.
+
+To achieve the same, run this before executing a TF-based processor in the
+shell (or even add it to your `$HOME/.bashrc` to set this permanently):
+
+```sh
+export TF_CPP_MIN_LOG_LEVEL=3
+```
+
 ## OCR-D module project software
 
 ### Where can I find official OCR-D module project software?

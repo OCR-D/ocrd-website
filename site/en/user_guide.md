@@ -179,14 +179,14 @@ FILEGRP="YOUR-FILEGRP-NAME"
 EXT=".tif"  # the actual extension of the image files
 MEDIATYPE='image/tiff'  # the actual media type of the image files
 ## using local ocrd CLI
-for i in /path/to/your/picture/folder/in/workspace/*$ext; do
-  base= `basename ${i} $ext`;
-  ocrd workspace add -G $FILEGRP -i ${FILE_GRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
+for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
+  base= `basename ${i} $EXT`;
+  ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ## alternatively using docker
-for i in /path/to/your/picture/folder/in/workspace/*$ext; do
-  base= `basename ${i} $ext`;
-  docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G $FILEGRP -i ${FILE_GRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
+for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
+  base= `basename ${i} $EXT`;
+  docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ```
 
@@ -201,7 +201,7 @@ for i in OCR-D-IMG/*.tif; do base=`basename ${i} .tif`;docker run --rm -u $(id -
 ```
 
 The log information should inform you about every image which was added to the `mets.xml`.
-In the end, your METS file should look like this [example METS](example_mets.md). You are now ready to start processing your images with OCR-D.
+In the end, your METS file should look like this [example METS](example_mets). You are now ready to start processing your images with OCR-D.
 
 Alternatively, `ocrd-import` from [workflow-configuration](#workflow-configuration) is a shell script which does all of the above (and can also convert arbitrary image formats) automatically. For usage options, see:
 

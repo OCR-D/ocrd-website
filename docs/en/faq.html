@@ -310,6 +310,7 @@
           <li><a href="#how-can-i-specify-parameters-on-the-command-line">How can I specify parameters on the command line?</a></li>
           <li><a href="#how-do-i-specify-multiple-inputoutput-file-groups">How do I specify multiple input/output file groups?</a></li>
           <li><a href="#how-to-configure-logging">How to configure logging?</a></li>
+          <li><a href="#how-to-stop-tensorflow-logging-spam">How to stop tensorflow logging spam</a></li>
         </ul>
       </li>
       <li><a href="#ocr-d-module-project-software">OCR-D module project software</a>
@@ -526,6 +527,22 @@ the names with a comma (<code class="highlighter-rouge">,</code>).</p>
 group.</p>
 
 <h3 id="how-to-configure-logging">How to configure logging?</h3>
+
+<h3 id="how-to-stop-tensorflow-logging-spam">How to stop tensorflow logging spam</h3>
+
+<blockquote>
+  <p><a href="https://github.com/OCR-D/core/pull/599">@bertsky</a></p>
+
+  <p>Another thing that needs to be added to tame TF is
+<code class="highlighter-rouge">os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'</code> – before the tensorflow module
+gets imported.</p>
+</blockquote>
+
+<p>To achieve the same, run this before executing a TF-based processor in the
+shell (or even add it to your <code class="highlighter-rouge">$HOME/.bashrc</code> to set this permanently):</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TF_CPP_MIN_LOG_LEVEL</span><span class="o">=</span>3
+</code></pre></div></div>
 
 <h2 id="ocr-d-module-project-software">OCR-D module project software</h2>
 

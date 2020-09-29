@@ -143,3 +143,16 @@ LMU München – CIS
 ### Robert Strötgen
 
 TU Braunschweig
+
+## Kooperationspartner
+
+Das Projekt hat mit mehreren Unternehmen, Non-Profit-Organisationen und verwandten Projekten Absichtserklärungen (Letters of Intent)
+unterzeichnet, die hauptsächlich darauf abzielen, sich über Schnittstellen für und aktuelle Entwicklungen in der Massenvolltextdigitalisierung
+auszutauschen. Darüber hinaus sind diese Kooperationen Teil der Disseminationsstrategie von OCR-D, die im weiteren Verlauf des Projekts
+und mit der Entwicklung der OCR-D-Software zu einem einsatzfähigen, stabilisierten Produkt zunehmend an Bedeutung gewinnen wird.
+
+* [Content Conversion Specialists (CCS)](https://content-conversion.com/de/) 
+* [Kitodo. Key to digital objects e.V.](https://www.kitodo.org/)
+* [OCR4all](https://www.uni-wuerzburg.de/zpd/ocr4all), [GitHub](https://github.com/OCR4all)
+* [semantics Kommunikationsmanagement GmbH](https://www.semantics.de/)
+* [Zeutschel GmbH](https://www.zeutschel.de/de/)
