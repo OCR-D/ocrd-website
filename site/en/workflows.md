@@ -1056,6 +1056,9 @@ After you have successfully processed your images, the results should be saved a
 a longterm archive system which works as a mixture between an archive system and a repository. For further
 details on OLA-HD see the extensive [concept paper](https://github.com/subugoe/OLA-HD-IMPL/blob/master/docs/OLA-HD_Konzept.pdf).
 You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-HD meets your needs and requirements.
+To use the prototype, specify http://141.5.98.232/api as the endpoint parameter in your call.
+
+#### Available processors
 
 <table class="processor-table">
   <thead>
@@ -1070,12 +1073,12 @@ You can also check out the [prototype](http://141.5.98.232/) to make sure, OLA-H
     <tr data-processor="ocrd-olahd-client">
       <td>ocrd-olahd-client</td>
       <td>{
-  "endpoint": "http://141.5.98.232/api",
+  "endpoint": "URL of your OLA-HD instance",
   "username": "X",
   "password": "*"
 }</td>
       <td>the parameters should be written to a json file:<br/>
-    echo '{  "endpoint": "http://141.5.98.232/api",
+    echo '{  "endpoint": "URL of your OLA-HD instance",
   "username": "X",
   "password": "*"}' > olahd.json
     </td>
