@@ -1329,6 +1329,6 @@ ocrd process \
 (1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
 (2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
-set to point to the directory where the used models are stored.
+set to point to the directory where the used models are stored if they are not in the default location.
 
 <script src="/js/workflows.js"></script>
