@@ -10,7 +10,7 @@ toc: true
 # Workflows
 There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
 
-![](/assets/Funktionsmodell.png)
+![](https://ocr-d.de/assets/Funktionsmodell.png)
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
@@ -104,10 +104,10 @@ can be especially useful for images which have not been enhanced.
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/Original.png"><img src="/assets/workflow/Original.png"/></a>
+        <a href="https://ocr-d.de/assets/workflow/Original.png"><img src="https://ocr-d.de/assets/workflow/Original.png"/></a>
       </td>
       <td>
-        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"/></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"/></a>
       </td>
     </tr>
   </tbody>
@@ -176,10 +176,10 @@ footer, color scale etc.). Otherwise you might run into severe segmentation prob
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/denoised.png"><img src="/assets/workflow/denoised.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/denoised.png"><img src="https://ocr-d.de/assets/workflow/denoised.png" alt=""></a>
       </td>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -268,10 +268,10 @@ This may not be necessary for all prints, and depends heavily on the selected bi
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="/assets/workflow/OCR-D-IMG-CROP-ALTERNATE_0009.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-BIN_0001-BIN_sauvola.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-CROP-ALTERNATE_0009.png" alt=""></a>
       </td>
       <td>
-        <a href="/assets/workflow/denoise.PNG"><img src="/assets/workflow/OCR-D-IMG-DENOISE-ALTERNATE_0009.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/denoise.PNG"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DENOISE-ALTERNATE_0009.png" alt=""></a>
         </td>
     </tr>
   </tbody>
@@ -320,10 +320,10 @@ The input images have to be binarized for this module to work.
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-DESPECK_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESPECK_0001.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESPECK_0001.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESPECK_0001.png" alt=""></a>
       </td>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001.png" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -378,10 +378,10 @@ if they are curved. The input image has to be binarized for the module to work.
   <tbody>
     <tr>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png"><img src="/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-TO-DEWARP_0005.png" alt=""></a>
       </td>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARPEP_0005.png" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -442,10 +442,10 @@ need to segment into lines in an extra step.
   <tbody>
     <tr>
       <td>
-        <a href="/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-CROP_0001.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-CROP_0001.png" alt=""></a>
       </td>
       <td>
-        <a href="/assets/workflow/seg-page.PNG"><img src="/assets/workflow/seg-page.PNG" alt=""></a>
+        <a href="https://ocr-d.de/assets/workflow/seg-page.PNG"><img src="https://ocr-d.de/assets/workflow/seg-page.PNG" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -573,10 +573,10 @@ In this processing step, text region images are taken as input and their skew is
   <tbody>
     <tr>
       <td>
-      <a href="/assets/workflow/seg-page.PNG"><img src="/assets/workflow/seg-page.PNG" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/seg-page.PNG"><img src="https://ocr-d.de/assets/workflow/seg-page.PNG" alt=""></a>
       </td>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -667,10 +667,10 @@ need to segment into lines in an extra step.
   <tbody>
     <tr>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt=""></a>
       </td>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
       </td>
     </tr>
   </tbody>
@@ -749,10 +749,10 @@ In this processing step, the text line images get vertically aligned if they are
   <tbody>
     <tr>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
       </td>
       <td>
-      <a href="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt=""></a>
       </td>
     </tr>
   </tbody>
