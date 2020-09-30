@@ -633,7 +633,7 @@ This basic text-nontext segmentation ensures that for each text region there is 
     </tr>
   </thead>
   <tbody>
-    <tr>
+  <tr data-processor="ocrd-cis-ocropy-clip">>
       <td>ocrd-cis-ocropy-clip</td>
       <td><code>-P level-of-operation region</code></td>
       <td>&nbsp;</td>
