@@ -1141,8 +1141,8 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
   <tbody>
     <tr>
       <td>1</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "sauvola"}</td>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
     </tr>
   <tr>
       <td>2</td>
@@ -1151,48 +1151,43 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
     </tr>
     <tr>
       <td>3</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "kim"}</td>
+      <td>ocrd-skimage-binarize</td>
+      <td>-P method li</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>ocrd-cis-ocropy-denoise</td>
-      <td>{"level-of-operation":"page"}</td>
+      <td>ocrd-skimage-denoise</td>
+      <td>P level-of-operation page</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>ocrd-cis-ocropy-deskew</td>
-      <td>{"level-of-operation":"page"}</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>-P level-of-operation page</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>ocrd-tesserocr-segment-region</td>
-      <td></td>
-    </tr>
-    <tr>
-    <td>7a</td>
-      <td>ocrd-segment-repair</td>
-      <td>{"plausibilize": true}</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>-P level-of-operation page</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>ocrd-cis-ocropy-deskew</td>
-      <td>{"level-of-operation":"region"}</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td></td>
     </tr>
     <tr>
       <td>10</td>
       <td>ocrd-cis-ocropy-clip</td>
-      <td>{"level-of-operation":"region"}</td>
+      <td></td>
     </tr>
     <tr>
       <td>11</td>
       <td>ocrd-cis-ocropy-segment</td>
-      <td>{"level-of-operation":"region"}</td>
+      <td>-P level-of-operation region</td>
     </tr>
     <tr>
-    <td>11a</td>
-      <td>ocrd-segment-repair</td>
-      <td>{"sanitize": true}</td>
+    <td>12</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>-P level-of-operation line</td>
     </tr>
     <tr>
       <td>13</td>
@@ -1202,7 +1197,7 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
     <tr>
       <td>14</td>
       <td>ocrd-calamari-recognize</td>
-      <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
+      <td>-P checkpoint /path/to/models/\*.ckpt.json</td>
     </tr>
   </tbody>
 </table>
@@ -1211,18 +1206,17 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
 
 ```sh
 ocrd process \
-  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola" \
+  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl kim" \
-  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
-  "cis-ocropy-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P level-of-operation page" \
-  "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
-  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
-  "cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -P level-of-operation region" \
-  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE -P level-of-operation region" \
-  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -P sanitize true" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
+  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
+  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
+  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
+  "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-CLIP-LINE -P level-of-operation line" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-CLIP-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
@@ -1251,8 +1245,8 @@ If your computer is not that powerful you may try this workflow. It works fine f
   <tbody>
     <tr>
       <td>1</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "sauvola"}</td>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
     </tr>
   <tr>
       <td>2</td>
@@ -1261,18 +1255,18 @@ If your computer is not that powerful you may try this workflow. It works fine f
     </tr>
     <tr>
       <td>3</td>
-      <td>ocrd-olena-binarize</td>
-      <td>{"impl": "kim"}</td>
+      <td>ocrd-skimage-binarize</td>
+      <td>-P method li</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>ocrd-cis-ocropy-denoise</td>
-      <td>{"level-of-operation":"page"}</td>
+      <td>ocrd-skimage-denoise</td>
+      <td>-P level-of-operation page</td>
     </tr>
     <tr>
       <td>5</td>
       <td>ocrd-tesserocr-deskew</td>
-      <td>{"operation_level":"page"}</td>
+      <td>-P level-of-operation page</td>
     </tr>
     <tr>
       <td>7</td>
@@ -1282,17 +1276,17 @@ If your computer is not that powerful you may try this workflow. It works fine f
     <tr>
     <td>7a</td>
       <td>ocrd-segment-repair</td>
-      <td>{"plausibilize": true}</td>
+      <td>-P plausibilize true</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>ocrd-cis-ocropy-deskew</td>
-      <td>{"level-of-operation":"region"}</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td></td>
     </tr>
     <tr>
       <td>10</td>
       <td>ocrd-cis-ocropy-clip</td>
-      <td>{"level-of-operation":"region"}</td>
+      <td></td>
     </tr>
     <tr>
       <td>11</td>
@@ -1300,10 +1294,6 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
     <tr>
-    <td>11a</td>
-      <td>ocrd-segment-repair</td>
-      <td>{"sanitize": true}</td>
-    </tr>
     <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
@@ -1311,8 +1301,8 @@ If your computer is not that powerful you may try this workflow. It works fine f
     </tr>
     <tr>
       <td>14</td>
-      <td>ocrd-calamari-recognize</td>
-      <td>{"checkpoint":"/path/to/models/\*.ckpt.json"}</td>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
     </tr>
   </tbody>
 </table>
@@ -1321,29 +1311,24 @@ If your computer is not that powerful you may try this workflow. It works fine f
 
 ```sh
 ocrd process \
-  "olena-binarize -I OCR-D-IMG -O OCR-D-BIN -P impl sauvola" \
+  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "olena-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P impl kim" \
-  "cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
+  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
   "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
-  "cis-ocropy-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW -P level-of-operation region" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP -P level-of-operation region" \
+  "tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
   "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "segment-repair -I OCR-D-SEG-LINE -O OCR-D-SEG-REPAIR-LINE -P sanitize true" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-REPAIR-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"
 ```
 
 **Note:**
 (1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
-(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify your local path to the model on your hard drive
-as parameter value! The last line of the `ocrd-process` call above could e.g. look like this:
-```sh
-  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
-```
-All the other lines can just be copied and pasted.
+(2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
+set to point to the directory where the used models are stored.
 
 <script src="/js/workflows.js"></script>
