@@ -171,3 +171,10 @@ spec:
 			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
 	done
+
+site/en/workflows.md: site/en/workflows.src.md $(wildcard repo/ocrd-website.wiki/Workflow-Guide-*.md)
+	SHLOG_TERM=info shinclude -c xml site/en/workflows.src.md > $@
+	@echo "!!!"
+	@echo "!!! Manually edit site/en/workflows.md before comitting!"
+	@echo "!!!"
+
