@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4"></link>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/bulma.css"></link>
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css"></link>
+  <link rel="stylesheet" href="/assets/syntax-highlight.css"></link>
+  <link rel="stylesheet" href="/assets/ocrd.css"></link>
+</head>
+<body><nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/phase3">OCR-D Phase III</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/about">The OCR-D-project</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/contact">Get in touch!</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/blog">Blog</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/module-projects">Module Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/data">Data</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/initial-tests">Initial tests</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/user_survey">User Survey</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/imprint">Imprint</a>
+            
+
+          
+
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Developers</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/dev-best-practice">OCR-D development best practices</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec">Specifications</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">Users</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/setup">Setup Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_guide">User Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/workflows">Workflows</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/models">Models</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+      
+      
+        <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+      
+
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+          
+      </span>
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#workflows">Workflows</a>
+    <ul>
+      <li><a href="#image-optimization-page-level">Image Optimization (Page Level)</a>
+        <ul>
+          <li><a href="#step-0-image-enhancement-page-level-optional">Step 0: Image Enhancement (Page Level, optional)</a></li>
+          <li><a href="#step-1-binarization-page-level">Step 1: Binarization (Page Level)</a></li>
+          <li><a href="#step-2-cropping-page-level">Step 2: Cropping (Page Level)</a></li>
+          <li><a href="#step-3-binarization-page-level">Step 3: Binarization (Page Level)</a>
+            <ul>
+              <li><a href="#available-processors">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-4-denoising-page-level">Step 4: Denoising (Page Level)</a></li>
+          <li><a href="#step-5-deskewing-page-level">Step 5: Deskewing (Page Level)</a></li>
+          <li><a href="#step-6-dewarping-page-level">Step 6: Dewarping (Page Level)</a></li>
+        </ul>
+      </li>
+      <li><a href="#layout-analysis">Layout Analysis</a>
+        <ul>
+          <li><a href="#step-7-region-segmentation">Step 7: Region segmentation</a></li>
+        </ul>
+      </li>
+      <li><a href="#image-optimization-region-level">Image Optimization (Region Level)</a>
+        <ul>
+          <li><a href="#step-8--binarization-region-level">Step 8:  Binarization (Region Level)</a>
+            <ul>
+              <li><a href="#available-processors-1">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-9--deskewing-region-level">Step 9:  Deskewing (Region Level)</a>
+            <ul>
+              <li><a href="#available-processors-2">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-10--clipping-region-level">Step 10:  Clipping (Region Level)</a></li>
+          <li><a href="#step-11-line-segmentation">Step 11: Line segmentation</a></li>
+          <li><a href="#step-12-resegmentation-line-level">Step 12: Resegmentation (Line Level)</a></li>
+          <li><a href="#step-13-dewarping-line-level">Step 13: Dewarping (Line Level)</a>
+            <ul>
+              <li><a href="#available-processors-3">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#text-recognition">Text Recognition</a>
+        <ul>
+          <li><a href="#step-14-text-recognition">Step 14: Text recognition</a></li>
+        </ul>
+      </li>
+      <li><a href="#post-correction-optional">Post Correction (Optional)</a>
+        <ul>
+          <li><a href="#step-15-text-alignment">Step 15: Text alignment</a></li>
+          <li><a href="#step-16-post-correction">Step 16: Post-correction</a></li>
+        </ul>
+      </li>
+      <li><a href="#evaluation-optional">Evaluation (Optional)</a>
+        <ul>
+          <li><a href="#step-17-ocr-evaluation">Step 17: OCR Evaluation</a></li>
+        </ul>
+      </li>
+      <li><a href="#generic-data-management-optional">Generic Data Management (Optional)</a>
+        <ul>
+          <li><a href="#step-18-adaptation-of-coordinates">Step 18: Adaptation of Coordinates</a></li>
+          <li><a href="#step-19-format-conversion">Step 19: Format Conversion</a></li>
+          <li><a href="#step-20-archiving">Step 20: Archiving</a></li>
+          <li><a href="#step-21-dummy-processing">Step 21: Dummy Processing</a>
+            <ul>
+              <li><a href="#available-processors-4">Available processors</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#recommendations">Recommendations</a>
+    <ul>
+      <li><a href="#best-results-for-selected-pages">Best results for selected pages</a>
+        <ul>
+          <li><a href="#example-with-ocrd-process">Example with ocrd-process</a></li>
+        </ul>
+      </li>
+      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a></li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="workflows">Workflows</h1>
+<p>There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:</p>
+
+<p><img src="https://ocr-d.de/assets/Funktionsmodell.png" alt="" /></p>
+
+<p>The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
+steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
+This guide provides an overview of the available OCR-D processors and their required parameters. For more complex workflows and recommendations
+see the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D-Website-Wiki</a>. Feel free to add your own experiences and recommendations in the Wiki!
+We will regularly amend this guide with valuable contributions from the Wiki.</p>
+
+<p><strong>Note:</strong> In order to be able to run the workflows described in this guide, you need to have prepared your images in an <a href="https://ocr-d.de/en/user_guide#preparing-a-workspace">OCR-D-workspace</a>.
+We expect that you are familiar with the <a href="https://ocr-d.de/en/user_guide">OCR-D-user guide</a> which explains all preparatory steps, syntax and different
+solutions for executing whole workflows.</p>
+
+<h2 id="image-optimization-page-level">Image Optimization (Page Level)</h2>
+<p>At first, the image should be prepared for OCR.</p>
+
+<h3 id="step-0-image-enhancement-page-level-optional">Step 0: Image Enhancement (Page Level, optional)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md -->
+
+<h3 id="step-1-binarization-page-level">Step 1: Binarization (Page Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-binarization.md -->
+
+<h3 id="step-2-cropping-page-level">Step 2: Cropping (Page Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-cropping.md -->
+
+<h3 id="step-3-binarization-page-level">Step 3: Binarization (Page Level)</h3>
+
+<p>For better results, the cropped images can be binarized again at this point or later on (on region level).</p>
+
+<h4 id="available-processors">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remark</th>
+      <th>Call</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-olena-binarize">
+      <td>ocrd-olena-binarize</td>
+      <td></td>
+      <td>Recommended</td>
+      <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+  <tr data-processor="ocrd-skimage-binarize">
+      <td>ocrd-skimage-binarize</td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+  <tr data-processor="ocrd-cis-ocropy-binarize">
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-4-denoising-page-level">Step 4: Denoising (Page Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-denoising.md -->
+
+<h3 id="step-5-deskewing-page-level">Step 5: Deskewing (Page Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-deskewing.md -->
+
+<h3 id="step-6-dewarping-page-level">Step 6: Dewarping (Page Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-dewarping.md -->
+
+<h2 id="layout-analysis">Layout Analysis</h2>
+
+<p>By now the image should be well prepared for segmentation.</p>
+
+<h3 id="step-7-region-segmentation">Step 7: Region segmentation</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-region-segmentation.md -->
+
+<h2 id="image-optimization-region-level">Image Optimization (Region Level)</h2>
+
+<p>In the following steps, the text regions should be optimized for OCR.</p>
+
+<h3 id="step-8--binarization-region-level">Step 8:  Binarization (Region Level)</h3>
+
+<p>In this processing step, a scanned colored /gray scale document image is taken as input and a black
+and white binarized image is produced. This step should separate the background from the foreground.</p>
+
+<p>The binarization should be at least executed once (on page or region level). If you already binarized
+your image twice on page level, and have no large images, you can probably skip this step.</p>
+
+<h4 id="available-processors-1">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-skimage-binarize">
+      <td>ocrd-skimage-binarize</td>
+      <td><code>-P level-of-operation region</code></td>
+      <td></td>
+      <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
+    </tr>
+    <tr data-processor="ocrd-preprocess-image">
+      <td>ocrd-preprocess-image</td>
+      <td>
+        <code>-P level-of-operation region</code><br />
+        <code>-P "output_feature_added" binarized</code><br />
+        <code>-P command "scribo-cli sauvola-ms-split '@INFILE' '@OUTFILE' --enable-negate-output"</code>
+      </td>
+      <td>&nbsp;</td>
+      <td><code>
+    ocrd-preprocess-image -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region -P output_feature_added binarized -P command "scribo-cli sauvola-ms-split @INFILE @OUTFILE --enable-negate-output"
+      </code></td>
+    </tr>
+    <tr data-processor="ocrd-cis-ocropy-binarize">
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td><code>-P level-of-operation region</code><br /><code>-P "noise_maxsize": float</code></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-9--deskewing-region-level">Step 9:  Deskewing (Region Level)</h3>
+
+<p>In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.</p>
+
+<table class="before-after">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      <a href="https://ocr-d.de/assets/workflow/seg-page.PNG"><img src="https://ocr-d.de/assets/workflow/seg-page.PNG" alt="" /></a>
+      </td>
+      <td>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DESKEW_0001_region0002.png" alt="" /></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="available-processors-2">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-cis-ocropy-deskew">
+      <td>ocrd-cis-ocropy-deskew</td>
+      <td><code>-P level-of-operation region</code></td>
+      <td></td>
+      <td><code>ocrd-cis-ocropy-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG -P level-of-operation region</code></td>
+    </tr>
+    <tr data-processor="ocrd-tesserocr-deskew">
+      <td>ocrd-tesserocr-deskew</td>
+      <td></td>
+      <td>Fast, also performs a decent orientation correction</td>
+      <td><code>ocrd-tesserocr-deskew -I OCR-D-BIN-REG -O OCR-D-DESKEW-REG</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="step-10--clipping-region-level">Step 10:  Clipping (Region Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md -->
+
+<h3 id="step-11-line-segmentation">Step 11: Line segmentation</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-line-segmentation.md -->
+
+<h3 id="step-12-resegmentation-line-level">Step 12: Resegmentation (Line Level)</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md -->
+
+<h3 id="step-13-dewarping-line-level">Step 13: Dewarping (Line Level)</h3>
+
+<p>In this processing step, the text line images get vertically aligned if they are curved.</p>
+
+<table class="">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt="" /></a>
+      </td>
+      <td>
+      <a href="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png"><img src="https://ocr-d.de/assets/workflow/OCR-D-IMG-DEWARP_0001_region0002_region0002_line0005.png" alt="" /></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="available-processors-3">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-cis-ocropy-dewarp">
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-cis-ocropy-dewarp -I OCR-D-CLIP-LINE -O OCR-D-DEWARP-LINE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="text-recognition">Text Recognition</h2>
+
+<h3 id="step-14-text-recognition">Step 14: Text recognition</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-text-recognition.md -->
+
+<h2 id="post-correction-optional">Post Correction (Optional)</h2>
+
+<h3 id="step-15-text-alignment">Step 15: Text alignment</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md -->
+
+<h3 id="step-16-post-correction">Step 16: Post-correction</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-post-correction.md -->
+
+<h2 id="evaluation-optional">Evaluation (Optional)</h2>
+
+<p>If Ground Truth data is available, the OCR can be evaluated.</p>
+
+<h3 id="step-17-ocr-evaluation">Step 17: OCR Evaluation</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md -->
+
+<h2 id="generic-data-management-optional">Generic Data Management (Optional)</h2>
+
+<p>OCR-D produces PAGE XML files which contain the recognized text as well as detailed
+information on the structure of the processed pages, the coordinates of the recognized
+elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)</p>
+
+<h3 id="step-18-adaptation-of-coordinates">Step 18: Adaptation of Coordinates</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md -->
+
+<h3 id="step-19-format-conversion">Step 19: Format Conversion</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md -->
+
+<h3 id="step-20-archiving">Step 20: Archiving</h3>
+
+<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md -->
+
+<h3 id="step-21-dummy-processing">Step 21: Dummy Processing</h3>
+
+<p>Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
+copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.</p>
+
+<h4 id="available-processors-4">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-dummy">
+      <td>ocrd-dummy</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    <td><code>ocrd-dummy -I OCR-D-FILEGRP -O OCR-D-DUMMY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="recommendations">Recommendations</h1>
+
+<p>All processors, with the exception of those for post-correction, were tested on
+selected pages of some prints from the 17th and 18th century.</p>
+
+<p>The results vary quite a lot from page to page. In most cases, segmentation is a problem.</p>
+
+<p>These recommendations may also work well for other prints of those centuries.</p>
+
+<p>Note that for our test pages, not all steps described above werde needed to obtain the best results.
+Depending on your particular images, you might want to include those processors again for better results.</p>
+
+<h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
+
+<p>The following workflow has produced best results for ‘simple’ pages (e.g. <a href="https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif">this
+page</a>)  (CER ~1%).</p>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+    </tr>
+  <tr>
+      <td>2</td>
+      <td>ocrd-anybaseocr-crop</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ocrd-skimage-binarize</td>
+      <td>-P method li</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ocrd-skimage-denoise</td>
+      <td>P level-of-operation page</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>-P level-of-operation page</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>-P level-of-operation page</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>-P level-of-operation region</td>
+    </tr>
+    <tr>
+    <td>12</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>-P level-of-operation line</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>ocrd-calamari-recognize</td>
+      <td>-P checkpoint /path/to/models/\*.ckpt.json</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="example-with-ocrd-process">Example with ocrd-process</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
+  <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
+  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
+  <span class="s2">"skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li"</span> <span class="se">\</span>
+  <span class="s2">"skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -P level-of-operation page"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-CLIP-LINE -P level-of-operation line"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-CLIP-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
+</code></pre></div></div>
+
+<p><strong>Note:</strong>
+(1) This workflow expects your images to be stored in a folder called <code class="highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
+you need to adjust <code class="highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="highlighter-rouge">-I MAX</code>
+(2) For the last processor in this workflow, <code class="highlighter-rouge">ocrd-calamari-recognize</code>, you need to specify your local path to the model on your hard drive
+as parameter value! The last line of the <code class="highlighter-rouge">ocrd-process</code> call above could e.g. look like this:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
+</code></pre></div></div>
+<p>All the other lines can just be copied and pasted.</p>
+
+<h2 id="good-results-for-slower-processors">Good results for slower processors</h2>
+
+<p>If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.</p>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-cis-ocropy-binarize</td>
+      <td></td>
+    </tr>
+  <tr>
+      <td>2</td>
+      <td>ocrd-anybaseocr-crop</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ocrd-skimage-binarize</td>
+      <td>-P method li</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ocrd-skimage-denoise</td>
+      <td>-P level-of-operation page</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td>-P level-of-operation page</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>ocrd-tesserocr-segment-region</td>
+      <td></td>
+    </tr>
+    <tr>
+    <td>7a</td>
+      <td>ocrd-segment-repair</td>
+      <td>-P plausibilize true</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>ocrd-tesserocr-deskew</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>ocrd-tesserocr-segment-line</td>
+      <td></td>
+    </tr>
+    <tr>
+    <tr>
+      <td>13</td>
+      <td>ocrd-cis-ocropy-dewarp</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
+    </tr>
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+### Example with ocrd-process
+
+```sh
+ocrd process \
+  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
+  "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
+  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
+  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
+  "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
+  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
+  "tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW" \
+  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
+  "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"
+```
+
+**Note:**
+(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
+(2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
+set to point to the directory where the used models are stored if they are not in the default location.
+
+<script src="/js/workflows.js"></script>
+</tr></tbody></table>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+      <a href="https://github.com/OCR-D">GitHub</a>
+      |
+      <a href="https://gitter.im/OCR-D/Lobby">gitter</a>
+      |
+      <a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
+      |
+      <a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+      |
+      <a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+      |
+      <a href="/sitemap.xml">sitemap.xml</a>
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>
