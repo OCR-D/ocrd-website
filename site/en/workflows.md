@@ -1294,7 +1294,6 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
     <tr>
-    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
