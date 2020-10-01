@@ -430,7 +430,11 @@
           <li><a href="#example-with-ocrd-process">Example with ocrd-process</a></li>
         </ul>
       </li>
-      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a></li>
+      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a>
+        <ul>
+          <li><a href="#example-with-ocrd-process-1">Example with ocrd-process</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -1708,7 +1712,6 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
       <td></td>
     </tr>
     <tr>
-    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1718,35 +1721,34 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
       <td>ocrd-tesserocr-recognize</td>
       <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
     </tr>
-  &lt;/tbody&gt;
-&lt;/table&gt;
+  </tbody>
+</table>
 
-### Example with ocrd-process
+<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
 
-```sh
-ocrd process \
-  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
-  "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
-  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
-  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
-  "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
-  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
-  "tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
-  "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"
-```
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
+  <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
+  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
+  <span class="s2">"skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li"</span> <span class="se">\</span>
+  <span class="s2">"skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG"</span> <span class="se">\</span>
+  <span class="s2">"segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"</span>
+</code></pre></div></div>
 
-**Note:**
-(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
-you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
-(2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
-set to point to the directory where the used models are stored if they are not in the default location.
+<p><strong>Note:</strong>
+(1) This workflow expects your images to be stored in a folder called <code class="highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
+you need to adjust <code class="highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="highlighter-rouge">-I my_images</code>
+(2) For the last processor in this workflow, <code class="highlighter-rouge">ocrd-tesserocr-recognize</code>, the environment variable TESSDATA_PREFIX has to be
+set to point to the directory where the used models are stored if they are not in the default location.</p>
 
 <script src="/js/workflows.js"></script>
-</tr></tbody></table>
+
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
