@@ -193,24 +193,9 @@ Controlled term:
 - `SEG-LINE` (`USE`)
 - `layout/segmentation/line` (step)
 
-### MP
-
-Module Project, a software project producing one or more tools. Tools can
-comprise multiple methods/activities that are called [*processors*](#processor)
-for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
-second phase of OCR-D (2018-2020).
-
 ### OCR
 
 Map pixel areas to [glyphs](#glyph) and [words](#words).
-
-### Processor
-
-A processor is a method provided by a tool that implements the [OCR-D
-CLI](https://ocr-d.de/en/spec/cli) and implements one or more
-[activities](#activities).
-
-→ [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
 
 ### Word segmentation
 
@@ -303,3 +288,70 @@ From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelin
 ### Quality assurance
 
 Providing measures, algorithms and software to estimate the quality of the [individual processes](#activities) within the OCR-D domain.
+
+## Component architecture
+
+### (OCR-D-)Application
+
+Application composed of various servers that can execute processors; can be a desktop computer, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
+
+### OCR-D Web-API
+
+As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed as network components, depending on the use case.
+
+### (OCR-D-)Service
+
+Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/...
+
+### (OCR-D-)Server
+
+Concrete implementation of a subset of OCR-D services.
+
+### (OCR-D-)Controller
+
+OCR-D Server (implementing at least *discovery*, *workspace* and *workflow* services) executing workflows (a single workflow or multiple workflows simultaneously), distributing tasks to configured processing servers, managing workspace data management. Should also manage load balancing.
+
+### (OCR-D-)Processing-Server
+
+OCR-D server (implementing at least *discovery* and *processing* services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.
+
+### (OCR-D-)Backend
+
+Software component of a server concerned with network operations; e.g. Python library with request handlers, implementing service discovery and network-capable workspace data management.
+
+### (OCR-D-)Workflow-Runtime-Library
+
+Model-specific (?) software component of a server or processor; e.g. Python API in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (OcrdPage, OcrdMets, Workspace, Resolver, Processor, ProcessorTask, Workflow, WorkflowTask...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be realized.
+
+### (OCR-D-)Workflow-Engine
+
+Central software component of the controller, executing workflows, including control structures (linear/parallel/incremental).
+
+### Processor
+
+A processor is a method provided by a tool that implements the [OCR-D
+CLI](https://ocr-d.de/en/spec/cli) and implements one or more
+[activities](#activities).
+
+→ [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
+
+
+### Evaluator
+
+CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes oder Prozessors qualitativ bewertet und relativ zu einem gegebenen Schwellwert vollständigen oder partiellen Erfolg signalisiert
+
+### Modul
+
+Sofware package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
+
+Modules can comprise multiple methods/activities that are called [*processors*](#processor)
+for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
+second phase of OCR-D (2018-2020).
+
+### Messaging
+
+Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.
+
+### (OCR-D-)Workflow
+
+Configuration of activities of processors/evaluators and their parameterization depending on success.
