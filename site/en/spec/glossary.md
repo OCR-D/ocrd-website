@@ -321,7 +321,7 @@ Software component of a server concerned with network operations; e.g. Python li
 
 ### (OCR-D) Workflow Runtime Library
 
-Model-specific (?) software component of a server or processor; e.g. Python API in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (OcrdPage, OcrdMets, Workspace, Resolver, Processor, ProcessorTask, Workflow, WorkflowTask...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be realized.
+Software component of a server or processor concerned with OCR systems modelling; e.g. Python library in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (`OcrdPage`, `OcrdMets`, `Workspace`, `Resolver`, `Processor`, `ProcessorTask`, `Workflow`, `WorkflowTask` ...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be implemented.
 
 ### (OCR-D) Workflow Engine
 
