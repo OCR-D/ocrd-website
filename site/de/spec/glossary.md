@@ -343,7 +343,7 @@ Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivi
 
 ### Messaging
 
-Benachrichtigungs-Service auf Basis von Publish/Subscribe-Architektur (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
+Benachrichtigungssystem auf Basis von Publish/Subscribe-Architekturen (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
 
 ### (OCR-D-)Workflow
 
