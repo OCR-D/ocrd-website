@@ -339,11 +339,11 @@ CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes
 
 ### Modul
 
-Module sind Software-Pakete/-Repositorien, die einee mehrere Methoden/Aktivitäten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](evaluator) enthalten.
+Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivitäten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](#evaluator) enthalten.
 
 ### Messaging
 
-Benachrichtigungs-Service auf Basis von Publish/Subscribe-Architektur (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
+Benachrichtigungssystem auf Basis von Publish/Subscribe-Architekturen (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
 
 ### OCR-D-Workflow
 
