@@ -338,7 +338,7 @@ CLI](https://ocr-d.de/en/spec/cli) and implements one or more
 
 ### Evaluator
 
-CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes oder Prozessors qualitativ bewertet und relativ zu einem gegebenen Schwellwert vollständigen oder partiellen Erfolg signalisiert
+Command line tool that evaluates the quality of the results of a specifc workflow step or processor. By quantifying the quality as a metric, it can signal success, failure or partial success by comparing the metric against a threshold value.
 
 ### Modul
 
