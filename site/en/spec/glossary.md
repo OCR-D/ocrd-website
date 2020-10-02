@@ -323,7 +323,7 @@ Software component of a server concerned with network operations; e.g. Python li
 
 Model-specific (?) software component of a server or processor; e.g. Python API in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (OcrdPage, OcrdMets, Workspace, Resolver, Processor, ProcessorTask, Workflow, WorkflowTask...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be realized.
 
-### (OCR-D-)Workflow-Engine
+### (OCR-D) Workflow Engine
 
 Central software component of the controller, executing workflows, including control structures (linear/parallel/incremental).
 
