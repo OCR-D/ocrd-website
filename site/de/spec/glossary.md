@@ -327,14 +327,11 @@ modellspezifische Software-Komponente von einem Server oder Prozessor; z.B. Pyth
 
 zentrale Software-Komponente im Controller, die Workflows einschließlich Kontrollstrukturen (linear/parallel/inkrementell) abarbeitet
 
-### Processor
+### Prozessor
 
-A processor is a method provided by a tool that implements the [OCR-D
-CLI](https://ocr-d.de/en/spec/cli) and implements one or more
-[activities](#activities).
+Ein Prozessor ist eine Methode, die von einem Werkzeug bereitgestellt wird, dass die [OCR-D CLI](https://ocr-d.de/en/spec/cli) implementiert und eine oder mehrere [OCR-bezogene Aktivitäten](#activities) umsetzt.
 
 → [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
-
 
 ### Evaluator
 
@@ -342,11 +339,7 @@ CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes
 
 ### Modul
 
-Software-Paket/Repository das einen oder mehrere Prozessoren/Evaluatoren bereitstellt; evtl. auch auf andere Funktionalität (Training, Formatkonvertierung, GT-Erstellung, Visualisierung…) ausdehnen. 
-
-Modules can comprise multiple methods/activities that are called [*processors*](#processor)
-for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
-second phase of OCR-D (2018-2020).
+Module sind Software-Pakete/-Repositorien, die einee mehrere Methoden/Aktivitäten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](evaluator) enthalten.
 
 ### Messaging
 
