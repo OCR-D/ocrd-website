@@ -340,7 +340,7 @@ CLI](https://ocr-d.de/en/spec/cli) for run-time data processing, and yields one 
 
 Command line tool that evaluates the quality of the results of a specifc workflow step or processor. By quantifying the quality as a metric, it can signal success, failure or partial success by comparing the metric against a threshold value.
 
-### Modul
+### Module
 
 Sofware package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
 
