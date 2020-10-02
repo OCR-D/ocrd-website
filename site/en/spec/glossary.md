@@ -305,7 +305,7 @@ Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow
 
 ### (OCR-D) Server
 
-Concrete implementation of a subset of OCR-D services.
+Concrete implementation of a subset of OCR-D services, or the network host providing it.
 
 ### (OCR-D-)Controller
 
