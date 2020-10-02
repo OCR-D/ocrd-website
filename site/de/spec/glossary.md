@@ -339,7 +339,7 @@ CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes
 
 ### Modul
 
-Module sind Software-Pakete/-Repositorien, die einee mehrere Methoden/Aktivit채ten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](evaluator) enthalten.
+Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivit채ten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](#evaluator) enthalten.
 
 ### Messaging
 
@@ -348,4 +348,3 @@ Benachrichtigungs-Service auf Basis von Publish/Subscribe-Architektur (o.채.) f�
 ### (OCR-D-)Workflow
 
 Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abh채ngigkeit ihres Erfolges; evtl. ohne auf konkrete Auspr채gung (m.H. formaler Sprache) einzugehen
-
