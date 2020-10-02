@@ -325,7 +325,7 @@ Software component of a server or processor concerned with OCR systems modelling
 
 ### (OCR-D) Workflow Engine
 
-Central software component of the controller, executing workflows, including control structures (linear/parallel/incremental).
+Central software component of the controller, executing workflows, including control structures (in a linear/parallel/incremental way). Also needed in single-host CLI deployments (where it can be based on inter-process communication and file system I/O alone), like `ocrd process`.
 
 ### Processor
 
