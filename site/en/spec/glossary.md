@@ -311,7 +311,7 @@ Concrete implementation of a subset of OCR-D services, or the network host provi
 
 OCR-D Server (implementing at least *discovery*, *workspace* and *workflow* services) executing workflows (a single workflow or multiple workflows simultaneously), distributing tasks to configured processing servers, managing workspace data management. Should also manage load balancing.
 
-### (OCR-D-)Processing-Server
+### (OCR-D) Processing Server
 
 OCR-D server (implementing at least *discovery* and *processing* services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.
 
