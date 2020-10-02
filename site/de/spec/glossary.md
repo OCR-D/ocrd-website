@@ -325,7 +325,7 @@ modellspezifische Software-Komponente von einem Server oder Prozessor; z.B. Pyth
 
 ### (OCR-D-)Workflow-Engine
 
-zentrale Software-Komponente im Controller, die Workflows einschließlich Kontrollstrukturen (linear/parallel/inkrementell) abarbeitet
+zentrale Software-Komponente im Controller, die Workflows einschließlich Kontrollstrukturen (linear/parallel/inkrementell) abarbeitet; auch notwendig auf Einzelplatz-Installationen mit Kommandozeilenschnittstellen (wo es auf Basis von Interprozesskommunikation und Dateisystem-E/A realisiert werden kann), etwa `ocrd process`
 
 ### Prozessor
 
@@ -348,5 +348,4 @@ Benachrichtigungs-Service auf Basis von Publish/Subscribe-Architektur (o.ä.) f�
 ### (OCR-D-)Workflow
 
 Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abhängigkeit ihres Erfolges; evtl. ohne auf konkrete Ausprägung (m.H. formaler Sprache) einzugehen
-
 
