@@ -303,7 +303,7 @@ As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR
 
 Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/...
 
-### (OCR-D-)Server
+### (OCR-D) Server
 
 Concrete implementation of a subset of OCR-D services.
 
