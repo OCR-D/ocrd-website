@@ -345,6 +345,8 @@ Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivi
 
 Benachrichtigungssystem auf Basis von Publish/Subscribe-Architekturen (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
 
-### (OCR-D-)Workflow
+### OCR-D-Workflow
 
-Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abhängigkeit ihres Erfolges; evtl. ohne auf konkrete Ausprägung (m.H. formaler Sprache) einzugehen
+Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abhängigkeit ihres Erfolges. Implementiert als [OCR-D-Workflow-Runtime-Library](#ocr-d-workflow-runtime-library) und serialisierbar in einem noch zu spezifizierenden Format (Stand 2020/10).
+
+Der Begriff *Workflow* wird in anderen Kontexten weiter gefasst, kann bspw. auch manuelle Intervention durch den Benutzer beinhalten. Im Gegensatz zu dieser Terminologie in Workflow-Engines wie Taverna oder Digitalisierungsframeworks wie Kitodo, meint OCR-D-Workflow einen vollautomatischen Prozess.
