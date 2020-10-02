@@ -315,7 +315,7 @@ OCR-D Server (implementing at least *discovery*, *workspace* and *workflow* serv
 
 OCR-D server (implementing at least *discovery* and *processing* services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.
 
-### (OCR-D-)Backend
+### (OCR-D) Backend
 
 Software component of a server concerned with network operations; e.g. Python library with request handlers, implementing service discovery and network-capable workspace data management.
 
