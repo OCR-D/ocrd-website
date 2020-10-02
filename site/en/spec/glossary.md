@@ -352,6 +352,8 @@ second phase of OCR-D (2018-2020).
 
 Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.
 
-### (OCR-D) Workflow
+### OCR-D Workflow
 
-Combination of [activities](#activities) via concrete [processors](#processor) and [evaluators](#evaluator) and their parameterization configured as a sequence or lattice, depending on their success or failure.
+Combination of [activities](#activities) via concrete [processors](#processor) and [evaluators](#evaluator) and their parameterization configured as a sequence or lattice, depending on their success or failure. Implemented in the [OCR-D Workflow Runtime Library](#ocr-d-workflow-runtime-library) and serializable in a yet-to-specifcy format (as of 2020/10).
+
+The term *Workflow* is understood to encompass more features in other contexts, such as manual intervention by the user. In contrast to the terminology in workflow engines like Taverna or digitization frameworks like Kitodo, an OCR-D workflow is a fully automatic process.
