@@ -293,7 +293,7 @@ Providing measures, algorithms and software to estimate the quality of the [indi
 
 ### (OCR-D) Application
 
-Application composed of various servers that can execute processors; can be a desktop computer, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
+Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
 
 ### OCR-D Web-API
 
