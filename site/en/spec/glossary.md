@@ -352,6 +352,6 @@ second phase of OCR-D (2018-2020).
 
 Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.
 
-### (OCR-D-)Workflow
+### (OCR-D) Workflow
 
 Configuration of activities of processors/evaluators and their parameterization depending on success.
