@@ -354,4 +354,4 @@ Messaging service on the basis of Publish/Subscribe architecture (or similar) to
 
 ### (OCR-D) Workflow
 
-Configuration of activities of processors/evaluators and their parameterization depending on success.
+Combination of [activities](#activities) via concrete [processors](#processor) and [evaluators](#evaluator) and their parameterization configured as a sequence or lattice, depending on their success or failure.
