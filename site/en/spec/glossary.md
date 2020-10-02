@@ -299,7 +299,7 @@ Application composed of various servers that can execute processors; can be a de
 
 As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed across network components, depending on the use case.
 
-### (OCR-D-)Service
+### (OCR-D) Service
 
 Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/...
 
