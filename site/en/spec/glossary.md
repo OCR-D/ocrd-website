@@ -291,13 +291,13 @@ Providing measures, algorithms and software to estimate the quality of the [indi
 
 ## Component architecture
 
-### (OCR-D-)Application
+### (OCR-D) Application
 
-Application composed of various servers that can execute processors; can be a desktop computer, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
+Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
 
-### OCR-D Web-API
+### OCR-D Web API
 
-As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed as network components, depending on the use case.
+As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed across network components, depending on the use case.
 
 ### (OCR-D-)Service
 
@@ -329,8 +329,8 @@ Central software component of the controller, executing workflows, including con
 
 ### Processor
 
-A processor is a method provided by a tool that implements the [OCR-D
-CLI](https://ocr-d.de/en/spec/cli) and implements one or more
+A processor is a method provided by a tool that implements the uniform [OCR-D
+CLI](https://ocr-d.de/en/spec/cli) for run-time data processing, and yields one or more
 [activities](#activities).
 
 → [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
@@ -340,7 +340,7 @@ CLI](https://ocr-d.de/en/spec/cli) and implements one or more
 
 An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an [activity's](#activities) annotation (i.e. a [processor's](#processor) output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.
 
-### Modul
+### Module
 
 Sofware package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
 
