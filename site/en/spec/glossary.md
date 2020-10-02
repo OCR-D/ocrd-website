@@ -295,7 +295,7 @@ Providing measures, algorithms and software to estimate the quality of the [indi
 
 Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
 
-### OCR-D Web-API
+### OCR-D Web API
 
 As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed as network components, depending on the use case.
 
