@@ -338,7 +338,7 @@ CLI](https://ocr-d.de/en/spec/cli) and implements one or more
 
 ### Evaluator
 
-Command line tool that evaluates the quality of the results of a specifc workflow step or processor. By quantifying the quality as a metric, it can signal success, failure or partial success by comparing the metric against a threshold value.
+An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an [activity's](#activities) annotation (i.e. a [processor's](#processor) output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.
 
 ### Modul
 
