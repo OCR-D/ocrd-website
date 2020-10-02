@@ -291,7 +291,7 @@ Providing measures, algorithms and software to estimate the quality of the [indi
 
 ## Component architecture
 
-### (OCR-D-)Application
+### (OCR-D) Application
 
 Application composed of various servers that can execute processors; can be a desktop computer, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
 
