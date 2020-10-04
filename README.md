@@ -56,7 +56,7 @@ Run `make help` to see a list of commands.
     JEKYLL           Which jekyll binary to use. Default 'jekyll'
     DSTDIR           Where to build site. Default '/data/monorepo/ocrd-website/docs'
     SRCDIR           Where site is stored. Default '/data/monorepo/ocrd-website/site'
-    GTDIR            Repositories mit dne DITA Quelltexten. Default: /data/monorepo/ocrd-website/repo/gt-guidelines
+    GTDIR            Repositories mit den DITA Quelltexten. Default: /data/monorepo/ocrd-website/repo/gt-guidelines
     JEKYLL_HOST      host to serve from. Default: 10.46.3.57
     KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /data/monorepo/ocrd-website/kwalitee.yml
     LANGS            Languages to build. Default: 'de en'
