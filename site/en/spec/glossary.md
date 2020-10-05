@@ -342,7 +342,7 @@ An evaluator is a tool that implements the uniform OCR-D CLI for run-time qualit
 
 ### Module
 
-Sofware package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
+Software package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
 
 Modules can comprise multiple methods/activities that are called [*processors*](#processor)
 for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
