@@ -119,7 +119,7 @@ Fraunhofer IAIS
 
 SLUB Dresden
 
-### Günther Mühlberger
+### Günter Mühlberger
 
 University of Innsbruck
 
