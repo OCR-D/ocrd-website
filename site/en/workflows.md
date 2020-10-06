@@ -26,6 +26,8 @@ solutions for executing whole workflows.
 At first, the image should be prepared for OCR.
 
 ### Step 0: Image Enhancement (Page Level, optional)
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md|sed '$d' -->
 Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
 the raw image is taken and enhanced by e.g. grayscale conversion, brightness normalization, noise filtering, etc.
 
@@ -63,20 +65,14 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
     </tr>
     <tr data-processor="ocrd-skimage-normalize">
       <td>ocrd-skimage-normalize</td>
-      <td>
-    </td>
-      <td>
-    </td>
-      <td><code>
-    ocrd-skimage-normalize -I OCR-D-IMG -O OCR-D-NORM
-    </code></td>
+      <td></td>
+      <td></td>
+      <td><code>ocrd-skimage-normalize -I OCR-D-IMG -O OCR-D-NORM</code></td>
     </tr>
   <tr data-processor="ocrd-skimage-denoise-raw">
       <td>ocrd-skimage-denoise-raw</td>
-      <td>
-    </td>
-      <td>
-    </td>
+      <td></td>
+      <td></td>
       <td><code>
     ocrd-skimage-denoise-raw -I OCR-D-IMG -O OCR-D-DENOISE
     </code></td>
@@ -84,8 +80,11 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 1: Binarization (Page Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-binarization.md|sed '$d' -->
 All the images should be binarized right at the beginning of your workflow.
 Many of the following processors require binarized images. Some implementations
 (for deskewing, segmentation or recognition) may produce better results using
@@ -157,9 +156,11 @@ can be especially useful for images which have not been enhanced.
   </tbody>
 </table>
 
+<!-- END-EVAL -->
 
 ### Step 2: Cropping (Page Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-cropping.md|sed '$d' -->
 In this processing step, a document image is taken as input and the page
 is cropped to the content area only (i.e. without noise at the margins or facing pages) by marking the coordinates of the page frame.
 We strongly recommend to execute this step if your images are not cropped already (i.e. only show the page of a book without a ruler,
@@ -212,6 +213,8 @@ footer, color scale etc.). Otherwise you might run into severe segmentation prob
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 3: Binarization (Page Level)
 
 For better results, the cropped images can be binarized again at this point or later on (on region level).
@@ -253,6 +256,7 @@ For better results, the cropped images can be binarized again at this point or l
 
 ### Step 4: Denoising (Page Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-denoising.md|sed '$d' -->
 In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image.
 
 This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
@@ -304,8 +308,11 @@ This may not be necessary for all prints, and depends heavily on the selected bi
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 5: Deskewing (Page Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-deskewing.md|sed '$d' -->
 In this processing step, a document image is taken as input and the skew of
 that page is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 The input images have to be binarized for this module to work.
@@ -362,8 +369,11 @@ The input images have to be binarized for this module to work.
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 6: Dewarping (Page Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-dewarping.md|sed '$d' -->
 In this processing step, a document image is taken as input and the text lines are straightened or stretched
 if they are curved. The input image has to be binarized for the module to work.
 
@@ -413,12 +423,15 @@ if they are curved. The input image has to be binarized for the module to work.
   </tbody>
 </table>
 
+<!-- END-EVAL -->
 
 ## Layout Analysis
 
 By now the image should be well prepared for segmentation.
 
 ### Step 7: Region segmentation
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-region-segmentation.md|sed '$d' -->
 
 In this processing step, an (optimized) document image is taken as an input and the
 image is segmented into the various regions, including columns.
@@ -505,6 +518,8 @@ need to segment into lines in an extra step.
     </tr>
   </tbody>
 </table>
+
+<!-- END-EVAL -->
 
 ## Image Optimization (Region Level)
 
@@ -611,6 +626,7 @@ In this processing step, text region images are taken as input and their skew is
 
 ### Step 10:  Clipping (Region Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
 In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
 text regions of a page can be removed. A connected component analysis is run on every text region,
 as well as its overlapping neighbours. Now for each conflicting binary object,
@@ -642,8 +658,11 @@ This basic text-nontext segmentation ensures that for each text region there is 
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 11: Line segmentation
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-line-segmentation.md|sed '$d' -->
 In this processing step, text regions are segmented into text lines.
 A line detection algorithm is run on every text region of every PAGE in the
 input file group, and a TextLine element with the resulting polygon
@@ -703,11 +722,14 @@ need to segment into lines in an extra step.
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 12: Resegmentation (Line Level)
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md|sed '$d' -->
 In this processing step the segmented lines can be corrected.
 
-TODO: add images
+<!-- TODO: add images -->
 
 #### Available processors
 <table class="processor-table">
@@ -734,6 +756,8 @@ TODO: add images
     </tr>
   </tbody>
 </table>
+
+<!-- END-EVAL -->
 
 ### Step 13: Dewarping (Line Level)
 
@@ -783,6 +807,7 @@ In this processing step, the text line images get vertically aligned if they are
 
 ### Step 14: Text recognition
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-recognition.md|sed '$d' -->
 This processor recognizes text in segmented lines.
 
 An overview on the existing model repositories and short descriptions on the most important models can be found [here](https://ocr-d.de/en/models).
@@ -804,7 +829,7 @@ An overview on the existing model repositories and short descriptions on the mos
       <td><code>-P model Fraktur</code><br/>
         <code>model "GT4HistOCR_50000000.997_191951</code>
       </td>
-      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/">here</a><br/>/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata)</td>
+      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/">here</a><br/>(GT4HistOCR_50000000.997_191951.traineddata),<br/>a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
       <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
     </tr>
     <tr data-processor="ocrd-calamari-recognize">
@@ -821,18 +846,30 @@ An overview on the existing model repositories and short descriptions on the mos
 
 
 **Note:** For `ocrd-tesserocr` the environment variable `TESSDATA_PREFIX` has
-to be set to point to the directory where the used models are stored. (The
-directory should at least contain the following models: `deu.traineddata`,
-`eng.taineddata`, `osd.traineddata`)
+to be set to point to the directory where the used models are stored unless
+the default directory (normally $VIRTUAL_ENV/share/tessdata) is used.
+The directory should at least contain the following models:
+`deu.traineddata`, `eng.traineddata`, `osd.traineddata`.
+
+**Note:** Faster models for `tesserocr-recognize` are available from
+https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/.
+A good and currently the fastest model is
+[Fraktur-fast](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/Fraktur-fast.traineddata).
+UB Mannheim provides many more [models online](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/)
+which were trained on different GT data sets, for example from
+[Austrian Newspapers](https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/ONB/tessdata_fast/).
 
 
 **Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of
 `ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`).
 
+<!-- END-EVAL -->
+
 ## Post Correction (Optional)
 
 ### Step 15: Text alignment
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md|sed '$d' -->
 In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned
 into one annotation with `TextEquiv` alternatives.
 
@@ -862,8 +899,11 @@ The previous recognition step must be run on glyph or at least on word level.
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 16: Post-correction
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-post-correction.md|sed '$d' -->
 In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries,
 morphology and orthography).
 
@@ -907,12 +947,15 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ## Evaluation (Optional)
 
 If Ground Truth data is available, the OCR can be evaluated.
 
 ### Step 17: OCR Evaluation
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d' -->
 In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.
 
 #### Available processors
@@ -950,6 +993,8 @@ In this processing step, the text output of the OCR or post-correction can be ev
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ## Generic Data Management (Optional)
 
 OCR-D produces PAGE XML files which contain the recognized text as well as detailed
@@ -958,6 +1003,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md|sed '$d' -->
 All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to work.
 
 For example, if you have a page-level dewarping step, it is currently impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are re-calculated accordingly as well.
@@ -985,8 +1031,11 @@ Another use case is exporting PAGE-XML for tools that cannot apply cropping or d
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 19: Format Conversion
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d' -->
 In this processing step the produced PAGE XML files can be converted to ALTO,
 PDF, hOCR or text files. Note that ALTO and hOCR can also be converted into
 different formats whereas the PDF version of PAGE XML OCR results is a widely
@@ -1051,7 +1100,11 @@ accessible format that can be used as-is by expert and layman alike.
 </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 20: Archiving
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d' -->
 After you have successfully processed your images, the results should be saved and archived. OLA-HD is
 a longterm archive system which works as a mixture between an archive system and a repository. For further
 details on OLA-HD see the extensive [concept paper](https://github.com/subugoe/OLA-HD-IMPL/blob/master/docs/OLA-HD_Konzept.pdf).
@@ -1087,7 +1140,10 @@ To use the prototype, specify http://141.5.98.232/api as the endpoint parameter 
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 ### Step 21: Dummy Processing
+
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.
 
