@@ -42,6 +42,7 @@ help:
 	@echo "    build-site        build the site"
 	@echo "    core-docs         Build sphinx documentation for core"
 	@echo "    spec              Build the spec documents TODO translate"
+	@echo "    workflows         Rebuild the workflow document from wiki fragments"
 	@echo ""
 	@echo "  Variables"
 	@echo ""
@@ -171,6 +172,11 @@ spec:
 			> $(SRCDIR)/$$lang/spec/$$basename; \
 		done; \
 	done
+
+.PHONY: workflows
+
+# Rebuild the workflow document from wiki fragments
+workflows: site/en/workflows.md
 
 site/en/workflows.md: site/en/workflows.src.md $(wildcard repo/ocrd-website.wiki/Workflow-Guide-*.md)
 	SHLOG_TERM=info shinclude -c xml site/en/workflows.src.md > $@
