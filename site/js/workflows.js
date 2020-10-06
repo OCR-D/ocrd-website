@@ -44,9 +44,11 @@ fetch('/js/ocrd-all-tool.json').then(resp => resp.json()).then(json => {
         `
       const secondRow = trProcessor.querySelector('.parameter-row')
       secondRow.style.display = 'none'
-      trProcessor.querySelector('td table tr td').style.color = 'blue'
-      trProcessor.querySelector('td table tr td').style.textDecoration = 'underline'
-      trProcessor.querySelector('td table tr td').addEventListener('click', function() {
+      const tdProcessor = trProcessor.querySelector('td table tr td')
+      tdProcessor.title = `See all parameters for ${tdProcessor.innerText}`
+      tdProcessor.style.color = 'blue'
+      tdProcessor.style.textDecoration = 'underline'
+      tdProcessor.addEventListener('click', function() {
         if (secondRow.style.display == 'none') {
           secondRow.style.display = 'revert'
         } else {
