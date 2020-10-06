@@ -27,15 +27,15 @@ At first, the image should be prepared for OCR.
 
 ### Step 0: Image Enhancement (Page Level, optional)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md|sed '$d'-->
 
 ### Step 1: Binarization (Page Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-binarization.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-binarization.md|sed '$d'-->
 
 ### Step 2: Cropping (Page Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-cropping.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-cropping.md|sed '$d'-->
 
 ### Step 3: Binarization (Page Level)
 
@@ -78,15 +78,15 @@ For better results, the cropped images can be binarized again at this point or l
 
 ### Step 4: Denoising (Page Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-denoising.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-denoising.md|sed '$d'-->
 
 ### Step 5: Deskewing (Page Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-deskewing.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-deskewing.md|sed '$d'-->
 
 ### Step 6: Dewarping (Page Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-dewarping.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-dewarping.md|sed '$d'-->
 
 ## Layout Analysis
 
@@ -94,7 +94,7 @@ By now the image should be well prepared for segmentation.
 
 ### Step 7: Region segmentation
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-region-segmentation.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-region-segmentation.md|sed '$d'-->
 
 ## Image Optimization (Region Level)
 
@@ -201,15 +201,15 @@ In this processing step, text region images are taken as input and their skew is
 
 ### Step 10:  Clipping (Region Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d'-->
 
 ### Step 11: Line segmentation
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-line-segmentation.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-line-segmentation.md|sed '$d'-->
 
 ### Step 12: Resegmentation (Line Level)
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md|sed '$d'-->
 
 ### Step 13: Dewarping (Line Level)
 
@@ -259,17 +259,17 @@ In this processing step, the text line images get vertically aligned if they are
 
 ### Step 14: Text recognition
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-text-recognition.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-recognition.md|sed '$d'-->
 
 ## Post Correction (Optional)
 
 ### Step 15: Text alignment
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md|sed '$d'-->
 
 ### Step 16: Post-correction
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-post-correction.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-post-correction.md|sed '$d'-->
 
 ## Evaluation (Optional)
 
@@ -277,7 +277,7 @@ If Ground Truth data is available, the OCR can be evaluated.
 
 ### Step 17: OCR Evaluation
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d'-->
 
 ## Generic Data Management (Optional)
 
@@ -287,15 +287,15 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md|sed '$d'-->
 
 ### Step 19: Format Conversion
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d'-->
 
 ### Step 20: Archiving
 
-<!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d'-->
 
 ### Step 21: Dummy Processing
 
