@@ -2,6 +2,7 @@
 layout: page
 lang: en
 lang-ref: developer-guide
+title: OCR-D Developer Guide
 ---
 # OCR-D Developer Guide
 

@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: data
 toc: true
+title: OCR-D data
 ---
 
 # Data
