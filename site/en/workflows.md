@@ -129,7 +129,7 @@ can be especially useful for images which have not been enhanced.
     <tr data-processor="ocrd-olena-binarize">
       <td>ocrd-olena-binarize
       </td>
-      <td>
+      <td><code>-P k 0.10</code>
       </td>
       <td>Recommended</td>
       <td class="processor-call">
@@ -139,13 +139,13 @@ can be especially useful for images which have not been enhanced.
     <tr data-processor="ocrd-cis-ocropy-binarize">
         <td>ocrd-cis-ocropy-binarize</td>
         <td><code>-P threshold 0.1</code></td>
-        <td></td>
+        <td>Fast</td>
         <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
       </tr>
     <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
-      <td></td>
-      <td></td>
+      <td><code>-P k 0.10</code></td>
+      <td>Slow</td>
       <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
     <tr data-processor="ocrd-anybaseocr-binarize">
@@ -201,14 +201,14 @@ footer, color scale etc.). Otherwise you might run into severe segmentation prob
   <tbody>
     <tr data-processor="ocrd-anybaseocr-crop">
       <td>ocrd-anybaseocr-crop</td>
-      <td>&nbsp;</td>
+      <td></td>
       <td>The input image has to be binarized and <br>should be deskewed for the module to work.</td>
       <td><code>ocrd-anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
     </tr>
     <tr data-processor="ocrd-tesserocr-crop">
       <td>ocrd-tesserocr-crop</td>
-      <td>&nbsp;</td>
       <td></td>
+      <td>Cannot cope well with facing pages (textual noise is detected as text).</td>
       <td><code>ocrd-tesserocr-crop -I OCR-D-BIN -O OCR-D-CROP</code></td>
     </tr>
   </tbody>
@@ -258,7 +258,7 @@ For better results, the cropped images can be binarized again at this point or l
 ### Step 4: Denoising (Page Level)
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-denoising.md|sed '$d' -->
-In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image.
+In this processing step, artifacts like little specks (both in foreground or background) are removed from the binarized image. (Not to be confused with raw denoising in step 0.)
 
 This may not be necessary for all prints, and depends heavily on the selected binarization algorithm.
 
@@ -296,14 +296,14 @@ This may not be necessary for all prints, and depends heavily on the selected bi
   <tbody>
     <tr data-processor="ocrd-cis-ocropy-denoise">
       <td>ocrd-cis-ocropy-denoise</td>
-      <td></td>
+      <td><code>-P noise_maxsize 3.0</code></td>
       <td></td>
       <td><code>ocrd-cis-ocropy-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
     <tr data-processor="ocrd-skimage-denoise">
       <td>ocrd-skimage-denoise</td>
-      <td></td>
-      <td></td>
+      <td><code>-P maxsize 3.0</code></td>
+      <td>Slow</td>
       <td><code>ocrd-skimage-denoise -I OCR-D-BIN2 -O OCR-D-DENOISE</code></td>
     </tr>
   </tbody>
@@ -480,20 +480,21 @@ need to segment into lines in an extra step.
   <tbody>
     <tr data-processor="ocrd-tesserocr-segment-region">
       <td>ocrd-tesserocr-segment-region</td>
-      <td></td>
+      <td><code>-P find_tables false</code></td>
       <td>Recommended</td>
       <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
     </tr>
     <tr data-processor="ocrd-segment-repair">
       <td>ocrd-segment-repair</td>
       <td><code>-P plausibilize true</code></td>
-      <td>Only to be used after `ocrd-tesserocr-segment-region`</td>
+      <td>Only to be used after <code>ocrd-tesserocr-segment-region</code></td>
       <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
     </tr>
     <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
       <td><code>-P model /path/to/model</code></td>
-      <td>Models can be found [here](https://qurator-data.de/sbb_textline_detector/); you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!</td>
+      <td>Models can be found <a href="https://qurator-data.de/sbb_textline_detector/">here</a>; <br/>
+      For <code>model</code> you need to <b>pass the local path on your hard drive</b> as parameter value.</td>
       <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
     <tr data-processor="ocrd-cis-ocropy-segment">
@@ -504,11 +505,10 @@ need to segment into lines in an extra step.
     </tr>
     <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
-      <td><code>-P block_segmentation_model /path/to/mrcnn</code><br/>
-  <code>block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code>
+      <td><code>-P block_segmentation_model /path/to/mrcnn</code> -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models"; you need to **pass your local path to the model on your hard drive**
-    as parameter value for this processor to work!>site</a></td>
+      <td>For available models take a look at <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">this site</a>; 
+      you need to <b>pass the local path on your hard drive</b> as parameter value.</td>
       <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
     <tr data-processor="ocrd-pc-segmentation">
@@ -629,12 +629,14 @@ In this processing step, text region images are taken as input and their skew is
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
 In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
-text regions of a page can be removed. A connected component analysis is run on every text region,
+text regions of a page (or text lines or a text region) can be removed. A connected component analysis is run on every segment,
 as well as its overlapping neighbours. Now for each conflicting binary object,
 a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
 be clipped to the background.
 
-This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (Cleaning via coordinates would be impossible in many common cases.)
+This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (On the region level, cleaning via coordinates would be impossible in many common cases.) On the line level, this can be seen as an alternative to _resegmentation_.
+
+Note: Clipping must be applied **before** any processor that produces derived images for the same hierarchy level (region/line). Annotations on the next higher level (page/region) are fine of course.
 
 <!-- TODO: add images -->
 
@@ -827,18 +829,17 @@ An overview on the existing model repositories and short descriptions on the mos
   <tbody>
     <tr data-processor="ocrd-tesserocr-recognize">
       <td>ocrd-tesserocr-recognize</td>
-      <td><code>-P model Fraktur</code><br/>
-        <code>model "GT4HistOCR_50000000.997_191951</code>
+      <td><code>-P model GT4HistOCR_50000000.997_191951</code>
       </td>
-      <td>Recommended <br/> Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/">here</a><br/>(GT4HistOCR_50000000.997_191951.traineddata),<br/>a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
-      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur</code></td>
+      <td>Recommended <br/>Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a><br/>a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
+      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur+Latin</code></td>
     </tr>
     <tr data-processor="ocrd-calamari-recognize">
       <td>ocrd-calamari-recognize</td>
       <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>; you need
-    to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
+        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>;
+        <br/>For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
       </td>
       <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
     </tr>
@@ -925,23 +926,26 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
   <tbody>
     <tr data-processor="ocrd-cor-asv-ann-process">
       <td>ocrd-cor-asv-ann-process</td>
-      <td><code>{"textequiv_level":"word","model_file":"/path/to/model/model.h5"}</code></td>
-      <td>Models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a>; you need to **pass your local path to the model on your hard drive**
-    as parameter value for this processor to work!</td>
+      <td><code>-P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
+      <td>Pre-trained models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a>;
+      <br/>For <code>model_file</code> you need to <b>pass the local path on your hard drive</b>
+      as parameter value.
+     (Relative paths are resolved from the workspace directory or the environment variable <code>CORASVANN_DATA</code>.)
+     There is no default <code>model_file</code>.</td>
       <td><code>ocrd-cor-asv-ann-process -I OCR-D-OCR -O OCR-D-PROCESS -P textequiv_level word -P model_file /path/to/model/model.h5</code></td>
     </tr>
     <tr data-processor="ocrd-cis-postcorrect">
       <td>ocrd-cis-postcorrect</td>
-      <td><code>
-      {"profilerPath": "/path/to/profiler.bash","profilerConfig": str,"nOCR": int,"model": "/path/to/model/model.zip"}
-      </code></td>
+      <td><code>-P profilerPath /path/to/profiler.bash -P profilerConfig ignored -P nOCR 2 -P model /path/to/model/model.zip</code></td>
         <td>
-      The various parameters should be specified in a JSON file. If you don't want to use a profiler, you can set the value for "profilerConfig" to
-      "ignored". In this case, your profiler.bash should look like this:
-      `#!/bin/bash
-      cat > /dev/null
-      echo '{}'`
-      you need to **pass your local path to the model on your hard drive** as parameter value for this processor to work!
+      The <code>profilerConfig</code> parameters can be specified in a JSON file. If you do not want to use a profiler, you can set the value for <code>profilerConfig</code> to <code>ignored</code>.
+      In this case, your <code>profiler.bash</code> should look like this:<pre><code>
+#!/bin/bash
+cat > /dev/null
+echo '{}'
+</code></pre>
+      For <code>model</code> you need to <b>pass the local path on your hard drive</b> as parameter value.
+      There is no default <code>model</code>.
       </td>
       <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
     </tr>
@@ -973,22 +977,18 @@ In this processing step, the text output of the OCR or post-correction can be ev
   <tbody>
     <tr data-processor="ocrd-dinglehopper">
       <td>ocrd-dinglehopper</td>
-      <td>&nbsp;</td>
-      <td>First input group should point to the ground truth.</td>
+      <td></td>
+      <td>For page-wise visual comparison (2 file groups). First input group should point to the ground truth.</td>
       <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
     <tr data-processor="ocrd-cor-asv-ann-evaluate">
       <td>ocrd-cor-asv-ann-evaluate</td>
       <td>
-      <p>
-      <code>
-      {"metric": "Levenshtein" (default), "NFC", "NFKC", "historic-latin"}
-      </code>
-      <code>
-      {"confusion": integer}
-      </code>
-      </p></td>
-      <td>First input group should point to the ground truth. There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add `2> eval.txt` at the end of your command</td>
+      <code>-P metric historic-latin</code>
+      <code>-P confusion 20</code>
+      </td>
+      <td>For document-wide aggregation (N file groups). First input group should point to the ground truth. 
+      <br/>There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add <code>2> eval.txt</code> at the end of your command (or use <code>ocrd-make</code>).</td>
       <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
     </tr>
   </tbody>
@@ -1057,47 +1057,93 @@ accessible format that can be used as-is by expert and layman alike.
 <tbody>
     <tr data-processor="ocrd-fileformat-transform">
       <td>ocrd-fileformat-transform</td>
-      <td><code><pre>
-        {"from-to": "alto2.0 alto3.0"}
-        # or {"from-to": "alto2.0 alto3.1"}
-        # or {"from-to": "alto2.0 hocr"}
-        # or {"from-to": "alto2.1 alto3.0"}
-        # or {"from-to": "alto2.1 alto3.1"}
-        # or {"from-to": "alto2.1 hocr"}
-        # or {"from-to": "alto page"}
-        # or {"from-to": "alto text"}
-        # or {"from-to": "gcv hocr"}
-        # or {"from-to": "hocr alto2.0"}
-        # or {"from-to": "hocr alto2.1"}
-        # or {"from-to": "hocr text"}
-        # or {"from-to": "page alto"}
-        # or {"from-to": "page hocr"}
-        # or {"from-to": "page text"}
-      </pre></code>
+      <td><pre><code>-P from-to "alto2.0 alto3.0"
+      # or "alto2.0 alto3.1"
+      # or "alto2.0 hocr"
+      # or "alto2.1 alto3.0"
+      # or "alto2.1 alto3.1"
+      # or "alto2.1 hocr"
+      # or "alto page"
+      # or "alto text"
+      # or "gcv hocr"
+      # or "hocr alto2.0"
+      # or "hocr alto2.1"
+      # or "hocr text"
+      # or "page alto"
+      # or "page hocr"
+      # or "page text"
+      </code></pre>
       </td>
-      <td>as the values consist of two words, when using `-P` they have to be enclosed in quotation marks; e.g. -P from-to "alto2.0 alto3.0"<br/>
-    if you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
+      <td>As the value consists of two words, when using <code>-P</code> form it has to be enclosed in quotation marks.<br/>
+      If you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
     </td>
       <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
     </tr>
     <tr data-processor="ocrd-pagetopdf">
       <td>ocrd-pagetopdf</td>
-      <td><code><pre>
-      {
-        # fix (invalid) negative coordinates
-        "negative2zero": true,
-        # create a single "fat" PDF
-        "multipage": "name_of_pdf",
-        # render text on this level
-        "textequiv_level": "word",
-        # draw polygon outlines in the PDF
-        "outlines": "line"
-      }
-      </pre></code>
+      <td><pre><code>{
+  # font file name to use for rendering text
+  "font": "AletheiaSans.ttf",
+  # fix (invalid) negative coordinates
+  "negative2zero": true,
+  # concatenate to multi-page PDF (empty for none)
+  "multipage": "name_of_pdf",
+  # multi-page PDF page labels
+  "pagelabel": "pageId",
+  # render text on this hierarchy level
+  "textequiv_level": "word",
+  # draw polygon outlines in the PDF (empty for none)
+  "outlines": "line"
+}</code></pre>
       </td>
-      <td>&nbsp;</td>
+      <td></td>
       <td><code>ocrd-pagetopdf -I OCR-D-OCR -O OCR-D-PDF -P textequiv_level word</code></td>
     </tr>
+    <tr data-processor="ocrd-export-larex">
+      <td>ocrd-export-larex</td>
+      <td></td>
+      <td>Create a file group with PAGE alongside image files (differing only in file name suffix) to accommodate <a href="https://github.com/OCR4all/LAREX">LAREX'</a> <i>bookpath</i> directory assumptions.</td>
+      <td><code>ocrd-export-larex -I OCR-D-OCR -O OCR-D-LAREX</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-extract-pages">
+      <td>ocrd-segment-extract-pages</td>
+      <td><code>-P mimetype image/png -P transparency true</code></td>
+      <td>Get page images (cropped and deskewed as annotated; raw and binarized) and mask images (color-coded for regions) along with JSON files for region annotations (custom and <a href="https://cocodataset.org/#format-data">COCO</a> format).</td>
+      <td><code>ocrd-segment-extract-pages -I OCR-D-SEG-REGION -O OCR-D-IMG-PAGE,OCR-D-IMG-PAGE-BIN,OCR-D-IMG-PAGE-MASK</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-extract-regions">
+      <td>ocrd-segment-extract-regions</td>
+      <td><code>-P mimetype image/png -P transparency true</code></td>
+      <td>Get region images (cropped, masked and deskewed as annotated) along with JSON files for region annotations (custom format).</td>
+      <td><code>ocrd-segment-extract-regions -I OCR-D-SEG-REGION -O OCR-D-IMG-REGION</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-extract-lines">
+      <td>ocrd-segment-extract-lines</td>
+      <td><code>-P mimetype image/png -P transparency true</code></td>
+      <td>Get text line images (cropped, masked and deskewed as annotated) along with JSON files for line annotations (custom format).</td>
+      <td><code>ocrd-segment-extract-lines -I OCR-D-SEG-LINE -O OCR-D-IMG-LINE</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-from-masks">
+      <td>ocrd-segment-from-masks</td>
+      <td><pre><code>-P colordict '{
+  "#969696": "TableRegion", 
+  "#00FF00": "TextRegion:page-number", 
+  "#FFFF00": "TextRegion:heading", 
+  "#00FFFF": "GraphicRegion:logo", 
+  "#0000FF": "TextRegion:subject", 
+  "#FF0000": "TextRegion:catch-word", 
+  "#FF00FF": "TextRegion:footnote", 
+  "#646464": "TextRegion:paragraph" }'</code></pre></td>
+      <td>Import mask images as region segmentation. If <code>colordict</code> is empty, defaults to PageViewer color scheme (also written by <code>ocrd-segment-extract-pages</code>).</td>
+      <td><code>ocrd-segment-from-masks -I OCR-D-SEG-PAGE,OCR-D-IMG-PAGE-MASK -O OCR-D-SEG-REGION</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-from-coco">
+      <td>ocrd-segment-from-coco</td>
+      <td></td>
+      <td>Import <a href="https://cocodataset.org/#format-data">COCO</a> format region segmentation (also written by <code>ocrd-segment-extract-pages</code>).</td>
+      <td><code>ocrd-segment-from-coco -I OCR-D-SEG-PAGE,OCR-D-SEG-COCO -O OCR-D-SEG-REGION</code></td>
+    </tr>
+
 </tbody>
 </table>
 
