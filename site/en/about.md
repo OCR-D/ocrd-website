@@ -19,7 +19,7 @@ This is where the DFG-funded project OCR-D comes in. Its main goal is the concep
 
 For this purpose, a coordination project was formed by the Berlin-Brandenburg Academy of Sciences and Humanities, the Herzog-August Library Wolfenbüttel, the Berlin State Library and the Karlsruhe Institute of Technology. In the first project phase, the project identified development needs, which are currently being addressed by a total of eight OCR-D module projects in the second project phase.
 
-![](/assets/Funktionsmodell.png)
+![](/assets/Funktionsmodell.svg)
 
 Full-text recognition is understood as a complex process that includes several preprocessing and postprocessing steps in addition
 to the actual text recognition (see Fig. 1). First, a digital image is prepared for text recognition in preprocessing by binarization, cropping,
