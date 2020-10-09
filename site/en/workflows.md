@@ -730,7 +730,9 @@ need to segment into lines in an extra step.
 ### Step 12: Resegmentation (Line Level)
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md|sed '$d' -->
-In this processing step the segmented lines can be corrected.
+In this processing step the segmented text lines can be corrected in order to reduce their overlap. 
+
+This can be done either via coordinates (polygonalizing the bounding boxes tightly around the glyphs) – which is what `ocrd-cis-ocropy-resegment` offers – or via derived images (clipping pixels that do not belong to a text line to the background color) – which is what `ocrd-cis-ocropy-clip` (on the `line` level) offers. The former is usually more accurate, but not always possible (for example, when neighbors intersect heavily, creating non-contiguous contours). The latter is only possible if no preceding workflow step has already annotated derived images (`AlternativeImage` references) on the line level (see also [region-level clipping](../Workflow-Guide-clipping)).
 
 <!-- TODO: add images -->
 
@@ -748,13 +750,13 @@ In this processing step the segmented lines can be corrected.
     <tr data-processor="ocrd-cis-ocropy-clip">
       <td>ocrd-cis-ocropy-clip</td>
       <td><code>-P level-of-operation line</code></td>
-      <td>&nbsp;</td>
+      <td></td>
       <td><code>ocrd-cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-CLIP-LINE -P level-of-operation line</code></td>
     </tr>
     <tr data-processor="ocrd-cis-ocropy-resegment">
       <td>ocrd-cis-ocropy-resegment</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td></td>
+      <td></td>
       <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
     </tr>
   </tbody>
