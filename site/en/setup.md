@@ -160,15 +160,6 @@ cd ocrd_all
 You should now be in a directory called `ocrd_all`.
 
 
-Now the submodules can be downloaded:
-
-```sh
-git pull
-```
-
-This will download all submodules currently contained in `ocrd_all`.
-
-
 It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
 
 ```sh
