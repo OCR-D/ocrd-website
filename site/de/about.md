@@ -17,7 +17,7 @@ Hier setzt das DFG-geförderte Projekt OCR-D an, dessen Hauptziel die konzeption
 
 Dazu wurde ein Koordinationsprojekt aus der Berlin-Brandenburgischen Akademie der Wissenschaften, der Herzog-August Bibliothek Wolfenbüttel, der Staatsbibliothek zu Berlin sowie dem Karlsruher Institut für Technologie gebildet. Dieses identifizierte in der ersten Projektphase Entwicklungsbedarfe, die in der derzeitigen zweiten Projektphase von insgesamt acht OCR-D-Modulprojekten bearbeitet werden.
 
-![](/assets/Funktionsmodell.png)
+![](/assets/Funktionsmodell.svg)
 
 Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung
 mehrere vor- und nachgelagerte Schritte mit einschließt (vgl. Abb. 1). Zunächst wird ein Bilddigitalisat im Preprocessing
