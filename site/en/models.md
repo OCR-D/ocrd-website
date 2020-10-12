@@ -74,7 +74,7 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -p '{"model": "scri
 
 ## Ocropy / ocrd_cis
 
-An Ocropy model is simply the neural network serialized as with Python's pickle
+An Ocropy model is simply the neural network serialized with Python's pickle
 mechanism and is generally distributed in a gzipped form, with a `.pyrnn.gz`
 extension.
 
