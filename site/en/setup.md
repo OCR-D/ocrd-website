@@ -160,15 +160,6 @@ cd ocrd_all
 You should now be in a directory called `ocrd_all`.
 
 
-Now the submodules can be downloaded:
-
-```sh
-git pull
-```
-
-This will download all submodules currently contained in `ocrd_all`.
-
-
 It is easiest to install all the possible system requirements by calling `make deps-ubuntu` as root:
 
 ```sh
@@ -204,9 +195,11 @@ Running `make` will also take care of cloning and updating all required submodul
 
 Especially running `make all` will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.
 
-Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of [OCR-D/core](https://github.com/OCR-D/core)
+Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of [OCR-D/core](https://github.com/OCR-D/core).
+Activate the virtual Python environment before running any OCR-D command.
 
 ```sh
+source venv/bin/activate
 ocrd --version
 ocrd, version 2.13.2 # your version should be 2.13.2 or later
 ``` 
