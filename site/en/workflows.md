@@ -11,7 +11,7 @@ toc: true
 # Workflows
 There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
 
-![](https://ocr-d.de/assets/Funktionsmodell.png)
+![](https://ocr-d.de/assets/Funktionsmodell.svg)
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
@@ -574,7 +574,45 @@ your image twice on page level, and have no large images, you can probably skip 
   </tbody>
 </table>
 
-### Step 9:  Deskewing (Region Level)
+### Step 9:  Clipping (Region Level)
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
+In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
+text regions of a page (or text lines or a text region) can be removed. A connected component analysis is run on every segment,
+as well as its overlapping neighbours. Now for each conflicting binary object,
+a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
+be clipped to the background.
+
+This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (On the region level, cleaning via coordinates would be impossible in many common cases.) On the line level, this can be seen as an alternative to _resegmentation_.
+
+Note: Clipping must be applied **before** any processor that produces derived images for the same hierarchy level (region/line). Annotations on the next higher level (page/region) are fine of course.
+
+<!-- TODO: add images -->
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr data-processor="ocrd-cis-ocropy-clip">>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td><code>-P level-of-operation region</code></td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+### Step 10:  Deskewing (Region Level)
 
 In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
@@ -624,44 +662,6 @@ In this processing step, text region images are taken as input and their skew is
     </tr>
   </tbody>
 </table>
-
-### Step 10:  Clipping (Region Level)
-
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
-In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
-text regions of a page (or text lines or a text region) can be removed. A connected component analysis is run on every segment,
-as well as its overlapping neighbours. Now for each conflicting binary object,
-a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
-be clipped to the background.
-
-This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (On the region level, cleaning via coordinates would be impossible in many common cases.) On the line level, this can be seen as an alternative to _resegmentation_.
-
-Note: Clipping must be applied **before** any processor that produces derived images for the same hierarchy level (region/line). Annotations on the next higher level (page/region) are fine of course.
-
-<!-- TODO: add images -->
-
-#### Available processors
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Processor</th>
-      <th>Parameter</th>
-      <th>Remarks</th>
-    <th>Call</th>
-    </tr>
-  </thead>
-  <tbody>
-  <tr data-processor="ocrd-cis-ocropy-clip">>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td><code>-P level-of-operation region</code></td>
-      <td>&nbsp;</td>
-      <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- END-EVAL -->
 
 ### Step 11: Line segmentation
 
@@ -1219,6 +1219,7 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
 
 # Recommendations
 
+<!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
 All processors, with the exception of those for post-correction, were tested on
 selected pages of some prints from the 17th and 18th century.
 
@@ -1434,5 +1435,7 @@ ocrd process \
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
 (2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
 set to point to the directory where the used models are stored if they are not in the default location.
+
+<!-- END-INCLUDE -->
 
 <script src="/js/workflows.js"></script>
