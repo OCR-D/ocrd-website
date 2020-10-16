@@ -287,7 +287,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd_models.ocrd_mets module &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -393,9 +393,16 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="ocrd_models.ocrd_mets.OcrdMets.find_all_files">
+<code class="sig-name descname">find_all_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_models/ocrd_mets.html#OcrdMets.find_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_models.ocrd_mets.OcrdMets.find_all_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like find_files but return a list of all results.</p>
+<p>Equivalent to <code class="docutils literal notranslate"><span class="pre">list(self.find_files(...))</span></code></p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ocrd_models.ocrd_mets.OcrdMets.find_files">
 <code class="sig-name descname">find_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ID</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fileGrp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pageId</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mimetype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">local_only</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_models/ocrd_mets.html#OcrdMets.find_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_models.ocrd_mets.OcrdMets.find_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search <code class="docutils literal notranslate"><span class="pre">mets:file</span></code> in this METS document.</p>
+<dd><p>Search <code class="docutils literal notranslate"><span class="pre">mets:file</span></code> in this METS document and yield results.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">ID</span></code>, <code class="docutils literal notranslate"><span class="pre">fileGrp</span></code>, <code class="docutils literal notranslate"><span class="pre">url</span></code> and <code class="docutils literal notranslate"><span class="pre">mimetype</span></code> parameters can be
 either a literal string or a regular expression if the string starts
 with <code class="docutils literal notranslate"><span class="pre">//</span></code> (double slash). If it is a regex, the leading <code class="docutils literal notranslate"><span class="pre">//</span></code> is removed
@@ -444,13 +451,14 @@ a literal string, comparison is done with string equality.</p>
 
 <dl class="py method">
 <dt id="ocrd_models.ocrd_mets.OcrdMets.remove_file_group">
-<code class="sig-name descname">remove_file_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">USE</span></em>, <em class="sig-param"><span class="n">recursive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_models/ocrd_mets.html#OcrdMets.remove_file_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_models.ocrd_mets.OcrdMets.remove_file_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove_file_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">USE</span></em>, <em class="sig-param"><span class="n">recursive</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_models/ocrd_mets.html#OcrdMets.remove_file_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd_models.ocrd_mets.OcrdMets.remove_file_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a fileGrp (fixed <code class="docutils literal notranslate"><span class="pre">USE</span></code>) or fileGrps (regex <code class="docutils literal notranslate"><span class="pre">USE</span></code>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>USE</strong> (<em>string</em>) – USE attribute of the fileGrp to delete. Can be a regex if prefixed with //</p></li>
 <li><p><strong>recursive</strong> (<em>boolean</em>) – Whether to recursively delete all files in the group</p></li>
+<li><p><strong>force</strong> (<em>boolean</em>) – Do not raise an exception if file group doesn’t exist</p></li>
 </ul>
 </dd>
 </dl>
@@ -541,7 +549,7 @@ a literal string, comparison is done with string equality.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>
