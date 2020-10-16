@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd.decorators &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -50,39 +50,18 @@ lang: en
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">is_local_filename</span><span class="p">,</span>
     <span class="n">get_local_filename</span><span class="p">,</span>
-    <span class="n">setOverrideLogLevel</span><span class="p">,</span>
-    <span class="n">parse_json_string_or_file</span><span class="p">,</span>
     <span class="n">set_json_key_value_overrides</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">.resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
-<span class="kn">from</span> <span class="nn">.processor.base</span> <span class="kn">import</span> <span class="n">run_processor</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">initLogging</span>
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">WorkspaceValidator</span>
 
-<span class="k">def</span> <span class="nf">_set_root_logger_version</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
-    <span class="n">setOverrideLogLevel</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">value</span>
+<span class="kn">from</span> <span class="nn">..resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">..processor.base</span> <span class="kn">import</span> <span class="n">run_processor</span>
 
-<span class="n">loglevel_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="s1">&#39;--log-level&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log level&quot;</span><span class="p">,</span>
-                               <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;OFF&#39;</span><span class="p">,</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">,</span> <span class="s1">&#39;WARN&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;TRACE&#39;</span><span class="p">]),</span>
-                               <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">_set_root_logger_version</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">_handle_param_option</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">parse_json_string_or_file</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-
-<span class="n">parameter_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--parameter&#39;</span><span class="p">,</span>
-                                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Parameters, either JSON string or path to JSON file&quot;</span><span class="p">,</span>
-                                <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">],</span>
-                                <span class="n">callback</span><span class="o">=</span><span class="n">_handle_param_option</span><span class="p">)</span>
-
-<span class="n">parameter_override_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-P&#39;</span><span class="p">,</span> <span class="s1">&#39;--parameter-override&#39;</span><span class="p">,</span>
-                                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Parameter override&quot;</span><span class="p">,</span>
-                                <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">)</span>
-                                <span class="c1"># callback=lambda ctx, param, kv: {kv[0]: kv[1]})</span>
+<span class="kn">from</span> <span class="nn">.loglevel_option</span> <span class="kn">import</span> <span class="n">ocrd_loglevel</span>
+<span class="kn">from</span> <span class="nn">.parameter_option</span> <span class="kn">import</span> <span class="n">parameter_option</span><span class="p">,</span> <span class="n">parameter_override_option</span>
+<span class="kn">from</span> <span class="nn">.ocrd_cli_options</span> <span class="kn">import</span> <span class="n">ocrd_cli_options</span>
 
 <div class="viewcode-block" id="ocrd_cli_wrap_processor"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_cli_wrap_processor">[docs]</a><span class="k">def</span> <span class="nf">ocrd_cli_wrap_processor</span><span class="p">(</span>
     <span class="n">processorClass</span><span class="p">,</span>
@@ -95,15 +74,15 @@ lang: en
     <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dump_json</span> <span class="ow">or</span> <span class="n">help</span> <span class="ow">or</span> <span class="n">version</span><span class="p">:</span>
-        <span class="n">setOverrideLogLevel</span><span class="p">(</span><span class="s1">&#39;OFF&#39;</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="n">dump_json</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span> <span class="n">show_version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">initLogging</span><span class="p">()</span>
         <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_cli_wrap_processor&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mets</span> <span class="ow">or</span> <span class="p">(</span><span class="n">is_local_filename</span><span class="p">(</span><span class="n">mets</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isfile</span><span class="p">(</span><span class="n">get_local_filename</span><span class="p">(</span><span class="n">mets</span><span class="p">))):</span>
-            <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># LOG.info(&#39;kwargs=%s&#39; % kwargs)</span>
         <span class="c1"># Merge parameter overrides and parameters</span>
         <span class="k">if</span> <span class="s1">&#39;parameter_override&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -144,47 +123,6 @@ lang: en
         <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid input/output file grps:</span><span class="se">\n\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
         <span class="n">run_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ocrd_loglevel"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_loglevel">[docs]</a><span class="k">def</span> <span class="nf">ocrd_loglevel</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add an option &#39;--log-level&#39; to set the log level.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">loglevel_option</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">f</span></div>
-
-<div class="viewcode-block" id="ocrd_cli_options"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_cli_options">[docs]</a><span class="k">def</span> <span class="nf">ocrd_cli_options</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Implement MP CLI.</span>
-
-<span class="sd">    Usage::</span>
-
-<span class="sd">        import ocrd_click_cli from ocrd.utils</span>
-
-<span class="sd">        @click.command()</span>
-<span class="sd">        @ocrd_click_cli</span>
-<span class="sd">        def cli(mets_url):</span>
-<span class="sd">            print(mets_url)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;METS to process&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mets.xml&quot;</span><span class="p">),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--working-dir&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Working Directory&quot;</span><span class="p">),</span>
-        <span class="c1"># TODO OCR-D/core#274</span>
-        <span class="c1"># click.option(&#39;-I&#39;, &#39;--input-file-grp&#39;, help=&#39;File group(s) used as input. **required**&#39;),</span>
-        <span class="c1"># click.option(&#39;-O&#39;, &#39;--output-file-grp&#39;, help=&#39;File group(s) used as output. **required**&#39;),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-I&#39;</span><span class="p">,</span> <span class="s1">&#39;--input-file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File group(s) used as input.&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;INPUT&#39;</span><span class="p">),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-file-grp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File group(s) used as output.&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;OUTPUT&#39;</span><span class="p">),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;--page-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID(s) of the pages to process&quot;</span><span class="p">),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--overwrite&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite the output file group or a page range (--page-id)&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">parameter_option</span><span class="p">,</span>
-        <span class="n">parameter_override_option</span><span class="p">,</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-J&#39;</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump tool description as JSON and exit&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">loglevel_option</span><span class="p">,</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-V&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show version&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;This help message&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-    <span class="p">]</span>
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-        <span class="n">param</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">f</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -223,7 +161,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

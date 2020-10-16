@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd_utils.image &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -303,10 +303,14 @@ lang: en
         <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">image</span><span class="o">.</span><span class="n">putalpha</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;background&#39;</span><span class="p">:</span>
-        <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">median</span>
-        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RGBA&#39;</span><span class="p">,</span> <span class="s1">&#39;LA&#39;</span><span class="p">]:</span>
-            <span class="n">background</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># fully transparent</span>
-        <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span>
+            <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RGBA&#39;</span><span class="p">,</span> <span class="s1">&#39;LA&#39;</span><span class="p">]:</span>
+                <span class="n">background</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># fully transparent</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">background</span> <span class="o">=</span> <span class="n">fill</span>
     <span class="n">new_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span>
@@ -487,7 +491,11 @@ lang: en
                     <span class="nb">str</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cropping image to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">box</span><span class="p">))</span>
     <span class="n">xywh</span> <span class="o">=</span> <span class="n">xywh_from_bbox</span><span class="p">(</span><span class="o">*</span><span class="n">box</span><span class="p">)</span>
-    <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">new_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="p">(</span><span class="n">xywh</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span> <span class="n">xywh</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]),</span>
                           <span class="n">background</span><span class="p">)</span> <span class="c1"># or &#39;white&#39;</span>
     <span class="n">new_image</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">xywh</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="o">-</span><span class="n">xywh</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]))</span>
@@ -515,7 +523,11 @@ lang: en
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">polygon_mask</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">polygon</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;background&#39;</span><span class="p">:</span>
-        <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">background</span> <span class="o">=</span> <span class="n">fill</span>
     <span class="n">new_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
@@ -658,7 +670,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

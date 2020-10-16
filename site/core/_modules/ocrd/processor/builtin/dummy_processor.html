@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd.processor.builtin.dummy_processor &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -50,17 +50,18 @@ lang: en
 
 <span class="kn">from</span> <span class="nn">ocrd</span> <span class="kn">import</span> <span class="n">Processor</span>
 <span class="kn">from</span> <span class="nn">ocrd.decorators</span> <span class="kn">import</span> <span class="n">ocrd_cli_options</span><span class="p">,</span> <span class="n">ocrd_cli_wrap_processor</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">to_xml</span>
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">assert_file_grp_cardinality</span><span class="p">,</span>
     <span class="n">make_file_id</span><span class="p">,</span>
     <span class="n">MIME_TO_EXT</span><span class="p">,</span>
+    <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
     <span class="n">parse_json_string_with_comments</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="kn">import</span> <span class="n">page_from_file</span>
 
 <span class="n">OCRD_TOOL</span> <span class="o">=</span> <span class="n">parse_json_string_with_comments</span><span class="p">(</span><span class="n">resource_string</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;dummy/ocrd-tool.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
-
-<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.dummy&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DummyProcessor"><a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor">[docs]</a><span class="k">class</span> <span class="nc">DummyProcessor</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -68,6 +69,7 @@ lang: en
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DummyProcessor.process"><a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.dummy&#39;</span><span class="p">)</span>
         <span class="n">assert_file_grp_cardinality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">assert_file_grp_cardinality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files</span><span class="p">:</span>
@@ -75,16 +77,45 @@ lang: en
             <span class="n">file_id</span> <span class="o">=</span> <span class="n">make_file_id</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">)</span>
             <span class="n">ext</span> <span class="o">=</span> <span class="n">MIME_TO_EXT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">local_filename</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">file_id</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+            <span class="n">pcgts</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> # </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
+                <span class="c1"># Source file is PAGE-XML: Write out in-memory PcGtsType</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
                     <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
                     <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
                     <span class="n">pageId</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
                     <span class="n">mimetype</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
                     <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span>
-                    <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span></div>
+                    <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Source file is not PAGE-XML: Copy byte-by-byte</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
+                        <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
+                        <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
+                        <span class="n">pageId</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
+                        <span class="n">mimetype</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
+                        <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/&#39;</span><span class="p">):</span>
+                    <span class="c1"># write out the PAGE-XML representation for this image</span>
+                    <span class="n">page_file_id</span> <span class="o">=</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;_PAGE&#39;</span>
+                    <span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">page_file_id</span><span class="p">)</span>
+                    <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">set_imageFilename</span><span class="p">(</span><span class="n">local_filename</span><span class="p">)</span>
+                    <span class="n">page_filename</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Add PAGE-XML </span><span class="si">%s</span><span class="s2"> generated for </span><span class="si">%s</span><span class="s2"> at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">page_file_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">page_filename</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
+                        <span class="n">ID</span><span class="o">=</span><span class="n">page_file_id</span><span class="p">,</span>
+                        <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
+                        <span class="n">pageId</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
+                        <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+                        <span class="n">local_filename</span><span class="o">=</span><span class="n">page_filename</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ocrd_tool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OCRD_TOOL</span>
@@ -133,7 +164,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

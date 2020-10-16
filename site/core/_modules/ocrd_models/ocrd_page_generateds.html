@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd_models.ocrd_page_generateds &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -46,8 +46,8 @@ lang: en
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="c1">#</span>
-<span class="c1"># Generated Mon Jun  8 13:37:37 2020 by generateDS.py version 2.35.20.</span>
-<span class="c1"># Python 3.6.9 (default, Apr 18 2020, 01:56:04)  [GCC 8.4.0]</span>
+<span class="c1"># Generated Mon Sep 21 14:00:49 2020 by generateDS.py version 2.35.20.</span>
+<span class="c1"># Python 3.6.9 (default, Jul 17 2020, 12:50:27)  [GCC 8.4.0]</span>
 <span class="c1">#</span>
 <span class="c1"># Command line options:</span>
 <span class="c1">#   (&#39;-f&#39;, &#39;&#39;)</span>
@@ -57,10 +57,10 @@ lang: en
 <span class="c1">#   (&#39;--user-methods&#39;, &#39;ocrd_models/ocrd_page_user_methods.py&#39;)</span>
 <span class="c1">#</span>
 <span class="c1"># Command line arguments:</span>
-<span class="c1">#   ocrd_validators/ocrd_validators/xsd/page.xsd</span>
+<span class="c1">#   ocrd_validators/ocrd_validators/page.xsd</span>
 <span class="c1">#</span>
 <span class="c1"># Command line:</span>
-<span class="c1">#   /home/kba/env/py3-disht/bin/generateDS -f --root-element=&quot;PcGts&quot; -o &quot;ocrd_models/ocrd_models/ocrd_page_generateds.py&quot; --disable-generatedssuper-lookup --user-methods=&quot;ocrd_models/ocrd_page_user_methods.py&quot; ocrd_validators/ocrd_validators/xsd/page.xsd</span>
+<span class="c1">#   /home/kba/build/github.com/OCR-D/monorepo/ocrd_all/venv/bin/generateDS -f --root-element=&quot;PcGts&quot; -o &quot;ocrd_models/ocrd_models/ocrd_page_generateds.py&quot; --disable-generatedssuper-lookup --user-methods=&quot;ocrd_models/ocrd_page_user_methods.py&quot; ocrd_validators/ocrd_validators/page.xsd</span>
 <span class="c1">#</span>
 <span class="c1"># Current working directory (os.getcwd()):</span>
 <span class="c1">#   core</span>
@@ -1251,7 +1251,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Page</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Page&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 <div class="viewcode-block" id="PcGtsType.get_AllAlternativeImagePaths"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PcGtsType.get_AllAlternativeImagePaths">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllAlternativeImagePaths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">glyph</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get all the pc:AlternativeImage/@filename paths referenced in the PAGE-XML document.</span>
@@ -1297,7 +1305,14 @@ lang: en
             <span class="k">if</span> <span class="n">glyph</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">+=</span> <span class="n">doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//page:Glyph/page:AlternativeImage/@filename&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">NAMESPACES</span><span class="p">)</span>
     
-        <span class="k">return</span> <span class="n">ret</span></div></div>
+        <span class="k">return</span> <span class="n">ret</span></div>
+<div class="viewcode-block" id="PcGtsType.prune_ReadingOrder"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PcGtsType.prune_ReadingOrder">[docs]</a>    <span class="k">def</span> <span class="nf">prune_ReadingOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove any empty ReadingOrder elements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">get_ReadingOrder</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ro</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_OrderedGroup</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_UnorderedGroup</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">set_ReadingOrder</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div></div>
 <span class="c1"># end class PcGtsType</span>
 
 
@@ -1511,7 +1526,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">MetadataItem</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;MetadataItem&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class MetadataType</span>
 
 
@@ -1681,7 +1704,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Labels&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class MetadataItemType</span>
 
 
@@ -1846,7 +1877,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Label&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class LabelsType</span>
 
 
@@ -1973,7 +2012,15 @@ lang: en
 <div class="viewcode-block" id="LabelType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LabelType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class LabelType</span>
 
 
@@ -2939,7 +2986,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">CustomRegion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;CustomRegion&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="c1"># pylint: disable=line-too-long,invalid-name,protected-access,missing-module-docstring</span>
     <span class="k">def</span> <span class="nf">_region_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;RegionType&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -3167,7 +3222,15 @@ lang: en
 <div class="viewcode-block" id="CoordsType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class CoordsType</span>
 
 
@@ -3605,7 +3668,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Labels&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TextLineType</span>
 
 
@@ -4011,7 +4082,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Labels&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class WordType</span>
 
 
@@ -4370,7 +4449,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Labels&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GlyphType</span>
 
 
@@ -4596,7 +4683,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Unicode</span> <span class="o">=</span> <span class="n">value_</span></div>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TextEquivType</span>
 
 
@@ -4704,7 +4799,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">GridPoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;GridPoints&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GridType</span>
 
 
@@ -4824,7 +4927,15 @@ lang: en
 <div class="viewcode-block" id="GridPointsType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GridPointsType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GridPointsType</span>
 
 
@@ -4929,7 +5040,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Coords&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class PrintSpaceType</span>
 
 
@@ -5077,7 +5196,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UnorderedGroup</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UnorderedGroup&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class ReadingOrderType</span>
 
 
@@ -5185,7 +5312,15 @@ lang: en
 <div class="viewcode-block" id="RegionRefIndexedType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionRefIndexedType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RegionRefIndexedType</span>
 
 
@@ -5521,7 +5656,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UnorderedGroupIndexed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UnorderedGroupIndexed&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="c1"># pylint: disable=invalid-name,missing-module-docstring,line-too-long</span>
 <div class="viewcode-block" id="OrderedGroupIndexedType.get_AllIndexed"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.OrderedGroupIndexedType.get_AllIndexed">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllIndexed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -5950,7 +6093,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UnorderedGroup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UnorderedGroup&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 <div class="viewcode-block" id="UnorderedGroupIndexedType.get_UnorderedGroupChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.UnorderedGroupIndexedType.get_UnorderedGroupChildren">[docs]</a>    <span class="k">def</span> <span class="nf">get_UnorderedGroupChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List all non-metadata children of an UnorderedGroup</span>
@@ -6049,7 +6200,15 @@ lang: en
 <div class="viewcode-block" id="RegionRefType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionRefType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RegionRefType</span>
 
 
@@ -6369,7 +6528,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UnorderedGroupIndexed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UnorderedGroupIndexed&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="c1"># pylint: disable=invalid-name,missing-module-docstring,line-too-long</span>
 <div class="viewcode-block" id="OrderedGroupType.get_AllIndexed"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.OrderedGroupType.get_AllIndexed">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllIndexed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -6782,7 +6949,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UnorderedGroup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UnorderedGroup&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 <div class="viewcode-block" id="UnorderedGroupType.get_UnorderedGroupChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.UnorderedGroupType.get_UnorderedGroupChildren">[docs]</a>    <span class="k">def</span> <span class="nf">get_UnorderedGroupChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List all non-metadata children of an UnorderedGroup</span>
@@ -6889,7 +7064,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Coords&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class BorderType</span>
 
 
@@ -6999,7 +7182,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Layer&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class LayersType</span>
 
 
@@ -7146,7 +7337,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">RegionRef</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;RegionRef&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class LayerType</span>
 
 
@@ -7282,7 +7481,15 @@ lang: en
 <div class="viewcode-block" id="BaselineType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.BaselineType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class BaselineType</span>
 
 
@@ -7392,7 +7599,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">Relation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Relation&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RelationsType</span>
 
 
@@ -7600,7 +7815,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">TargetRegionRef</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;TargetRegionRef&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RelationType</span>
 
 
@@ -8064,7 +8287,15 @@ lang: en
 <div class="viewcode-block" id="TextStyleType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextStyleType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TextStyleType</span>
 
 
@@ -8671,7 +8902,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">CustomRegion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;CustomRegion&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RegionType</span>
 
 
@@ -8809,7 +9048,15 @@ lang: en
 <div class="viewcode-block" id="AlternativeImageType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AlternativeImageType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class AlternativeImageType</span>
 
 
@@ -8968,7 +9215,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">GraphemeGroup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;GraphemeGroup&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GraphemesType</span>
 
 
@@ -9183,7 +9438,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">TextEquiv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;TextEquiv&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GraphemeBaseType</span>
 
 
@@ -9288,7 +9551,15 @@ lang: en
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Coords&#39;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GraphemeType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GraphemeType</span>
 
 
@@ -9375,7 +9646,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">NonPrintingCharType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class NonPrintingCharType</span>
 
 
@@ -9511,7 +9790,15 @@ lang: en
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;NonPrintingChar&#39;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GraphemeGroupType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GraphemeGroupType</span>
 
 
@@ -9619,7 +9906,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">UserAttribute</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_</span><span class="p">)</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;UserAttribute&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class UserDefinedType</span>
 
 
@@ -9754,7 +10049,15 @@ lang: en
 <div class="viewcode-block" id="UserAttributeType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.UserAttributeType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class UserAttributeType</span>
 
 
@@ -9911,7 +10214,15 @@ lang: en
 <div class="viewcode-block" id="TableCellRoleType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableCellRoleType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TableCellRoleType</span>
 
 
@@ -10009,7 +10320,15 @@ lang: en
             <span class="bp">self</span><span class="o">.</span><span class="n">TableCellRole</span> <span class="o">=</span> <span class="n">obj_</span>
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;TableCellRole&#39;</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class RolesType</span>
 
 
@@ -10111,7 +10430,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class CustomRegionType</span>
 
 
@@ -10195,7 +10522,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">UnknownRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class UnknownRegionType</span>
 
 
@@ -10281,11 +10616,19 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">NoiseRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class NoiseRegionType</span>
 
 
-<span class="k">class</span> <span class="nc">AdvertRegionType</span><span class="p">(</span><span class="n">RegionType</span><span class="p">):</span>
+<div class="viewcode-block" id="AdvertRegionType"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType">[docs]</a><span class="k">class</span> <span class="nc">AdvertRegionType</span><span class="p">(</span><span class="n">RegionType</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Regions containing advertisements.</span>
 <span class="sd">    The angle the rectangle encapsulating a region</span>
 <span class="sd">    has to be rotated in clockwise direction</span>
@@ -10311,7 +10654,7 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">orientation_nsprefix_</span> <span class="o">=</span> <span class="s2">&quot;pc&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bgColour_nsprefix_</span> <span class="o">=</span> <span class="s2">&quot;pc&quot;</span>
-    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="o">*</span><span class="n">args_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">):</span>
+<div class="viewcode-block" id="AdvertRegionType.factory"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.factory">[docs]</a>    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="o">*</span><span class="n">args_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">CurrentSubclassModule_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">subclass</span> <span class="o">=</span> <span class="n">getSubclassFromModule_</span><span class="p">(</span>
                 <span class="n">CurrentSubclassModule_</span><span class="p">,</span> <span class="n">AdvertRegionType</span><span class="p">)</span>
@@ -10320,21 +10663,21 @@ lang: en
         <span class="k">if</span> <span class="n">AdvertRegionType</span><span class="o">.</span><span class="n">subclass</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">AdvertRegionType</span><span class="o">.</span><span class="n">subclass</span><span class="p">(</span><span class="o">*</span><span class="n">args_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">AdvertRegionType</span><span class="p">(</span><span class="o">*</span><span class="n">args_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">AdvertRegionType</span><span class="p">(</span><span class="o">*</span><span class="n">args_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span></div>
     <span class="n">factory</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">factory</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">get_ns_prefix_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span>
-    <span class="k">def</span> <span class="nf">set_ns_prefix_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns_prefix</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span>
-    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span>
-    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
-    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span>
-    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span> <span class="o">=</span> <span class="n">bgColour</span>
-    <span class="k">def</span> <span class="nf">validate_ColourSimpleType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="AdvertRegionType.get_ns_prefix_"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.get_ns_prefix_">[docs]</a>    <span class="k">def</span> <span class="nf">get_ns_prefix_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span></div>
+<div class="viewcode-block" id="AdvertRegionType.set_ns_prefix_"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_ns_prefix_">[docs]</a>    <span class="k">def</span> <span class="nf">set_ns_prefix_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns_prefix</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
+<div class="viewcode-block" id="AdvertRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
+<div class="viewcode-block" id="AdvertRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+<div class="viewcode-block" id="AdvertRegionType.get_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.get_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span></div>
+<div class="viewcode-block" id="AdvertRegionType.set_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span> <span class="o">=</span> <span class="n">bgColour</span></div>
+<div class="viewcode-block" id="AdvertRegionType.validate_ColourSimpleType"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.validate_ColourSimpleType">[docs]</a>    <span class="k">def</span> <span class="nf">validate_ColourSimpleType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># Validate type pc:ColourSimpleType, a restriction on string.</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Validate_simpletypes_</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -10346,15 +10689,15 @@ lang: en
             <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">enumerations</span><span class="p">:</span>
                 <span class="n">lineno</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gds_get_node_lineno_</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Value &quot;</span><span class="si">%(value)s</span><span class="s1">&quot;</span><span class="si">%(lineno)s</span><span class="s1"> does not match xsd enumeration restriction on ColourSimpleType&#39;</span> <span class="o">%</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span> <span class="p">:</span> <span class="n">encode_str_2_3</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="s2">&quot;lineno&quot;</span><span class="p">:</span> <span class="n">lineno</span><span class="p">}</span> <span class="p">)</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">def</span> <span class="nf">hasContent_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span></div>
+<div class="viewcode-block" id="AdvertRegionType.hasContent_"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.hasContent_">[docs]</a>    <span class="k">def</span> <span class="nf">hasContent_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">hasContent_</span><span class="p">()</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+<div class="viewcode-block" id="AdvertRegionType.export"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">imported_ns_def_</span> <span class="o">=</span> <span class="n">GenerateDSNamespaceDefs_</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">imported_ns_def_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">namespacedef_</span> <span class="o">=</span> <span class="n">imported_ns_def_</span>
@@ -10376,18 +10719,18 @@ lang: en
             <span class="n">showIndent</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">pretty_print</span><span class="p">)</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/</span><span class="si">%s%s</span><span class="s1">&gt;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">namespaceprefix_</span><span class="p">,</span> <span class="n">name_</span><span class="p">,</span> <span class="n">eol_</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;/&gt;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">eol_</span><span class="p">,</span> <span class="p">))</span>
-    <span class="k">def</span> <span class="nf">exportAttributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">):</span>
+            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;/&gt;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">eol_</span><span class="p">,</span> <span class="p">))</span></div>
+<div class="viewcode-block" id="AdvertRegionType.exportAttributes"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.exportAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">exportAttributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">exportAttributes</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;orientation&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_processed</span><span class="p">:</span>
             <span class="n">already_processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">)</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; orientation=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">gds_format_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">,</span> <span class="n">input_name</span><span class="o">=</span><span class="s1">&#39;orientation&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;bgColour&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_processed</span><span class="p">:</span>
             <span class="n">already_processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;bgColour&#39;</span><span class="p">)</span>
-            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; bgColour=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gds_encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gds_format_string</span><span class="p">(</span><span class="n">quote_attrib</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span><span class="p">),</span> <span class="n">input_name</span><span class="o">=</span><span class="s1">&#39;bgColour&#39;</span><span class="p">)),</span> <span class="p">))</span>
-    <span class="k">def</span> <span class="nf">exportChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">exportChildren</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="p">,</span> <span class="n">name_</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="n">pretty_print</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; bgColour=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gds_encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gds_format_string</span><span class="p">(</span><span class="n">quote_attrib</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span><span class="p">),</span> <span class="n">input_name</span><span class="o">=</span><span class="s1">&#39;bgColour&#39;</span><span class="p">)),</span> <span class="p">))</span></div>
+<div class="viewcode-block" id="AdvertRegionType.exportChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.exportChildren">[docs]</a>    <span class="k">def</span> <span class="nf">exportChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;AdvertRegionType&#39;</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">exportChildren</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">namespaceprefix_</span><span class="p">,</span> <span class="n">namespacedef_</span><span class="p">,</span> <span class="n">name_</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="n">pretty_print</span><span class="p">)</span></div>
+<div class="viewcode-block" id="AdvertRegionType.build"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span> <span class="o">=</span> <span class="n">gds_collector_</span>
         <span class="k">if</span> <span class="n">SaveElementTreeNode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gds_elementtree_node_</span> <span class="o">=</span> <span class="n">node</span>
@@ -10397,8 +10740,8 @@ lang: en
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="p">:</span>
             <span class="n">nodeName_</span> <span class="o">=</span> <span class="n">Tag_pattern_</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="n">gds_collector_</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-    <span class="k">def</span> <span class="nf">buildAttributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+<div class="viewcode-block" id="AdvertRegionType.buildAttributes"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.buildAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">buildAttributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">find_attr_value_</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;orientation&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_processed</span><span class="p">:</span>
             <span class="n">already_processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">)</span>
@@ -10409,12 +10752,20 @@ lang: en
             <span class="n">already_processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;bgColour&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_ColourSimpleType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span><span class="p">)</span>    <span class="c1"># validate type ColourSimpleType</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildAttributes</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildAttributes</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">already_processed</span><span class="p">)</span></div>
+<div class="viewcode-block" id="AdvertRegionType.buildChildren"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.buildChildren">[docs]</a>    <span class="k">def</span> <span class="nf">buildChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="n">fromsubclass_</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AdvertRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">pass</span>
+        <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class AdvertRegionType</span>
 
 
@@ -10547,7 +10898,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">MusicRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class MusicRegionType</span>
 
 
@@ -10652,7 +11011,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">MapRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class MapRegionType</span>
 
 
@@ -10786,7 +11153,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">ChemRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class ChemRegionType</span>
 
 
@@ -10920,7 +11295,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">MathsRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class MathsRegionType</span>
 
 
@@ -11055,7 +11438,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">SeparatorRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class SeparatorRegionType</span>
 
 
@@ -11255,7 +11646,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">ChartRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class ChartRegionType</span>
 
 
@@ -11496,7 +11895,15 @@ lang: en
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;Grid&#39;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TableRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TableRegionType</span>
 
 
@@ -11667,7 +12074,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">GraphicRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class GraphicRegionType</span>
 
 
@@ -11838,7 +12253,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">LineDrawingRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class LineDrawingRegionType</span>
 
 
@@ -12022,7 +12445,15 @@ lang: en
         <span class="nb">super</span><span class="p">(</span><span class="n">ImageRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">pass</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class ImageRegionType</span>
 
 
@@ -12494,7 +12925,15 @@ lang: en
             <span class="n">obj_</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="o">=</span> <span class="s1">&#39;TextStyle&#39;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TextRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">buildChildren</span><span class="p">(</span><span class="n">child_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">nodeName_</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;imageFilename&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 <span class="c1"># end class TextRegionType</span>
 
 
@@ -12782,7 +13221,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

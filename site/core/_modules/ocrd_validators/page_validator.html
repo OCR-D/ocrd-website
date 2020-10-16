@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd_validators.page_validator &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -73,9 +73,8 @@ lang: en
     <span class="n">UnorderedGroupType</span><span class="p">,</span>
     <span class="n">UnorderedGroupIndexedType</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.report</span> <span class="kn">import</span> <span class="n">ValidationReport</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">ValidationReport</span>
 
-<span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator&#39;</span><span class="p">)</span>
 
 <span class="n">_HIERARCHY</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># page can contain different types of regions</span>
@@ -226,6 +225,7 @@ lang: en
 <span class="sd">    and an object ``rogroup`` with additional ReadingOrder element objects,</span>
 <span class="sd">    add all references to the dict, traversing the group recursively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">regionrefs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rogroup</span><span class="p">,</span> <span class="p">(</span><span class="n">OrderedGroupType</span><span class="p">,</span> <span class="n">OrderedGroupIndexedType</span><span class="p">)):</span>
         <span class="n">regionrefs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rogroup</span><span class="o">.</span><span class="n">get_RegionRefIndexed</span><span class="p">()</span> <span class="o">+</span>
                       <span class="n">rogroup</span><span class="o">.</span><span class="n">get_OrderedGroupIndexed</span><span class="p">()</span> <span class="o">+</span>
@@ -277,6 +277,7 @@ lang: en
 <span class="sd">    Check whether the text results on an element is consistent with its child element text results,</span>
 <span class="sd">    and whether the coordinates of an element are fully within its parent element coordinates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator.validate_consistency&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PcGtsType</span><span class="p">):</span>
         <span class="c1"># top-level (start recursion)</span>
         <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_pcGtsId</span><span class="p">()</span>
@@ -416,6 +417,7 @@ lang: en
 <span class="sd">    If there are no scores/indexes, use the first result.</span>
 <span class="sd">    If there are no results, return the empty string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator.get_text&#39;</span><span class="p">)</span>
     <span class="n">textEquivs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_TextEquiv</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">textEquivs</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No text results on </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -499,6 +501,7 @@ lang: en
 <span class="sd">        Returns:</span>
 <span class="sd">            report (:class:`ValidationReport`) Report on the validity</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.page_validator.validate&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ocrd_page</span><span class="p">:</span>
             <span class="n">page</span> <span class="o">=</span> <span class="n">ocrd_page</span>
             <span class="n">file_id</span> <span class="o">=</span> <span class="n">ocrd_page</span><span class="o">.</span><span class="n">get_pcGtsId</span><span class="p">()</span>
@@ -556,7 +559,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

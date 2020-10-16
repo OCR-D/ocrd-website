@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd_models.utils &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -47,8 +47,14 @@ lang: en
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
 
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;xmllint_format&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;handle_oai_response&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_oai_content&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extract_mets_from_oai_content&#39;</span>
 <span class="p">]</span>
 
 <div class="viewcode-block" id="xmllint_format"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.utils.html#ocrd_models.utils.xmllint_format">[docs]</a><span class="k">def</span> <span class="nf">xmllint_format</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
@@ -58,10 +64,56 @@ lang: en
 <span class="sd">    Arguments:</span>
 <span class="sd">        xml (string): Serialized XML</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_models.utils.xmllint_format&#39;</span><span class="p">)</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">XMLParser</span><span class="p">(</span><span class="n">resolve_entities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">strip_cdata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_blank_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">document</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#39;</span><span class="p">,</span>
                         <span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="handle_oai_response"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.utils.html#ocrd_models.utils.handle_oai_response">[docs]</a><span class="k">def</span> <span class="nf">handle_oai_response</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    In case of a valid OAI-Response, extract first METS-Entry-Data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_models.utils.handle_oai_response&#39;</span><span class="p">)</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;xml&#39;</span> <span class="ow">in</span> <span class="n">content_type</span> <span class="ow">or</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">content_type</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_oai_content</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">extract_mets_from_oai_content</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ET</span><span class="o">.</span><span class="n">LxmlError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;textual response but no xml: </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="is_oai_content"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.utils.html#ocrd_models.utils.is_oai_content">[docs]</a><span class="k">def</span> <span class="nf">is_oai_content</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return True if data is an OAI-PMH request/response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_models.utils.is_oai_content&#39;</span><span class="p">)</span>
+    <span class="n">xml_root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">root_tag</span> <span class="o">=</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">tag</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;response data root.tag: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">root_tag</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">root_tag</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;OAI-PMH&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="extract_mets_from_oai_content"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.utils.html#ocrd_models.utils.extract_mets_from_oai_content">[docs]</a><span class="k">def</span> <span class="nf">extract_mets_from_oai_content</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract METS from an OAI-PMH GetRecord response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xml_root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;mets&#39;</span> <span class="ow">in</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="n">mets_root_el</span> <span class="o">=</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//{</span><span class="si">%s</span><span class="s1">}mets&#39;</span> <span class="o">%</span> <span class="n">NS</span><span class="p">[</span><span class="s1">&#39;mets&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">mets_root_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">new_tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="n">mets_root_el</span><span class="p">)</span>
+        <span class="n">xml_formatted</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">new_tree</span><span class="p">,</span>
+                                <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+        <span class="n">formatted_content</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">preamble</span><span class="p">,</span> <span class="n">xml_formatted</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formatted_content</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing mets-section in </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">data</span><span class="p">)</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -100,7 +152,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

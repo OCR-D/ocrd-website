@@ -9,7 +9,7 @@ lang: en
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ocrd.task_sequence &#8212; ocrd  documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -46,12 +46,13 @@ lang: en
 <span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">split</span> <span class="k">as</span> <span class="n">shlex_split</span>
 <span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span> <span class="c1"># pylint: disable=import-error,no-name-in-module</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">parse_json_string_or_file</span><span class="p">,</span> <span class="n">set_json_key_value_overrides</span>
+<span class="c1"># from collections import Counter</span>
 <span class="kn">from</span> <span class="nn">ocrd.processor.base</span> <span class="kn">import</span> <span class="n">run_cli</span>
 <span class="kn">from</span> <span class="nn">ocrd.resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
-<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">WorkspaceValidator</span><span class="p">,</span> <span class="n">ValidationReport</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">WorkspaceValidator</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">ValidationReport</span>
 
 <div class="viewcode-block" id="ProcessorTask"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask">[docs]</a><span class="k">class</span> <span class="nc">ProcessorTask</span><span class="p">():</span>
 
@@ -174,7 +175,7 @@ lang: en
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
         <span class="c1"># execute cli</span>
-        <span class="n">returncode</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
+        <span class="n">returncode</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
             <span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
             <span class="n">mets</span><span class="p">,</span>
             <span class="n">resolver</span><span class="p">,</span>
@@ -189,7 +190,7 @@ lang: en
 
         <span class="c1"># check return code</span>
         <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> exited with non-zero return value </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> exited with non-zero return value </span><span class="si">%s</span><span class="s2">. STDOUT:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDERR:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
@@ -199,7 +200,7 @@ lang: en
         <span class="c1"># check output file groups are in mets</span>
         <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group not in mets: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group not in mets: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDOUT:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDERR:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -238,7 +239,7 @@ lang: en
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Kay Wuerzner, Konstantin Baierer.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>
