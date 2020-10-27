@@ -336,9 +336,11 @@
 <dt id="ocrd.processor.base.Processor">
 <em class="property">class </em><code class="sig-prename descclassname">ocrd.processor.base.</code><code class="sig-name descname">Processor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace</span></em>, <em class="sig-param"><span class="n">ocrd_tool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file_grp</span><span class="o">=</span><span class="default_value">'INPUT'</span></em>, <em class="sig-param"><span class="n">output_file_grp</span><span class="o">=</span><span class="default_value">'OUTPUT'</span></em>, <em class="sig-param"><span class="n">page_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_help</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_version</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dump_json</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A processor runs an algorithm based on the workspace, the mets.xml in the
-workspace (and the input files defined therein) as well as optional
-parameter.</p>
+<p>A processor is an OCR-D compliant command-line-interface for executing
+a single workflow step on the workspace (represented by local METS). It
+reads input files for all or requested physical pages of the input fileGrp(s),
+and writes output files for them into the output fileGrp(s). It may take
+a number of optional or mandatory parameters.</p>
 <dl class="py method">
 <dt id="ocrd.processor.base.Processor.add_metadata">
 <code class="sig-name descname">add_metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pcgts</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.add_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.add_metadata" title="Permalink to this definition">¶</a></dt>
@@ -381,6 +383,26 @@ files for that page)</p></li>
 <dt id="ocrd.processor.base.Processor.verify">
 <code class="sig-name descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.verify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Verify that the input fulfills the processor’s requirements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ocrd.processor.base.Processor.zip_input_files">
+<code class="sig-name descname">zip_input_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">require_first</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">mimetype</span><span class="o">=</span><span class="default_value">'application/vnd.prima.page+xml'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.zip_input_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.zip_input_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List tuples of input files (for multiple input file groups).</p>
+<p>Processors that expect/need multiple input file groups,
+cannot use <code class="docutils literal notranslate"><span class="pre">input_files</span></code>. They must align (zip) input files
+across pages. This includes the case where not all pages
+are equally present in all file groups.</p>
+<p>This function does not make much sense for non-PAGE fileGrps,
+so it uses a fixed MIME type filter for PAGE-XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>require_first</strong> (<em>bool</em>) – If true, then skip a page entirely</p></li>
+<li><p><strong>it is not available in the first input fileGrp.</strong> (<em>whenever</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
