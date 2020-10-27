@@ -185,6 +185,15 @@ lang: en
         <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_overrideLogLevel</span><span class="p">:</span>
+        <span class="c1"># for existing loggers that won&#39;t have getLogger do this</span>
+        <span class="c1"># (because they were instantiated through logging.getLogger</span>
+        <span class="c1">#  instead of ours, or come from logging.config.fileConfig),</span>
+        <span class="c1"># unset log levels so the global override can apply:</span>
+        <span class="k">for</span> <span class="n">loggerName</span> <span class="ow">in</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="p">[</span><span class="n">loggerName</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">PlaceHolder</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">_overrideLogLevel</span><span class="p">)</span>
 
     <span class="n">_initialized_flag</span> <span class="o">=</span> <span class="kc">True</span></div>

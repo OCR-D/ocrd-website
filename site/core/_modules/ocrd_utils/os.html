@@ -52,10 +52,10 @@ lang: en
     <span class="s1">&#39;atomic_write&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">atomicwrites</span> <span class="kn">import</span> <span class="n">atomic_write</span> <span class="k">as</span> <span class="n">atomic_write_</span>
+<span class="kn">from</span> <span class="nn">atomicwrites</span> <span class="kn">import</span> <span class="n">atomic_write</span> <span class="k">as</span> <span class="n">atomic_write_</span><span class="p">,</span> <span class="n">AtomicWriter</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span><span class="p">,</span> <span class="n">chdir</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">chmod</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span><span class="p">,</span> <span class="n">chdir</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">fchmod</span><span class="p">,</span> <span class="n">umask</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">abspath</span> <span class="k">as</span> <span class="n">abspath_</span>
 
 <span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
@@ -99,15 +99,28 @@ lang: en
     <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">output_directory</span><span class="p">)</span>
     <span class="n">z</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
+
+
+<span class="c1"># ht @pabs3</span>
+<span class="c1"># https://github.com/untitaker/python-atomicwrites/issues/42</span>
+<span class="k">class</span> <span class="nc">AtomicWriterPerms</span><span class="p">(</span><span class="n">AtomicWriter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_fileobject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_fileobject</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="c1"># Creating a new file, emulate what os.open() does</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">umask</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">umask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="mo">0o664</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">mask</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="n">fchmod</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+
 <div class="viewcode-block" id="atomic_write"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.atomic_write">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span> <span class="nf">atomic_write</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mode</span> <span class="o">=</span>  <span class="mo">0o664</span>
-    <span class="k">with</span> <span class="n">atomic_write_</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">f</span>
-    <span class="n">chmod</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">atomic_write</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">atomic_write_</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">writer_cls</span><span class="o">=</span><span class="n">AtomicWriterPerms</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">f</span></div>
 </pre></div>
 
             <div class="clearer"></div>

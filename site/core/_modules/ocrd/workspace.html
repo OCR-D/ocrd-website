@@ -51,8 +51,9 @@ lang: en
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">deprecated.sphinx</span> <span class="kn">import</span> <span class="n">deprecated</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">OcrdMets</span><span class="p">,</span> <span class="n">OcrdExif</span><span class="p">,</span> <span class="n">OcrdFile</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">OcrdMets</span><span class="p">,</span> <span class="n">OcrdFile</span>
 <span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="kn">import</span> <span class="n">exif_from_filename</span>
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">atomic_write</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
@@ -296,7 +297,7 @@ lang: en
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving mets &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">:</span>
             <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
-        <span class="k">with</span> <span class="n">atomic_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">atomic_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">to_xml</span><span class="p">(</span><span class="n">xmllint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Workspace.resolve_image_exif"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.resolve_image_exif">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_image_exif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_url</span><span class="p">):</span>
@@ -311,8 +312,7 @@ lang: en
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">image_url</span><span class="p">),</span> <span class="n">OcrdFile</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">image_url</span><span class="p">))</span>
         <span class="n">image_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">local_filename</span>
-        <span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">pil_img</span><span class="p">:</span>
-            <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">OcrdExif</span><span class="p">(</span><span class="n">pil_img</span><span class="p">)</span>
+        <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">exif_from_filename</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ocrd_exif</span></div>
 
 <div class="viewcode-block" id="Workspace.resolve_image_as_pil"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.resolve_image_as_pil">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Use workspace.image_from_page and workspace.image_from_segment&quot;</span><span class="p">)</span>
@@ -338,9 +338,45 @@ lang: en
             <span class="n">pil_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span>
             <span class="n">pil_image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># alloc and give up the FD</span>
 
+        <span class="c1"># Pillow does not properly support higher color depths</span>
+        <span class="c1"># (e.g. 16-bit or 32-bit or floating point grayscale),</span>
+        <span class="c1"># clipping its dynamic range to the lower 8-bit in</span>
+        <span class="c1"># many operations (including paste, putalpha, ImageStat...),</span>
+        <span class="c1"># even including conversion.</span>
+        <span class="c1"># Cf. Pillow#3011 Pillow#3159 Pillow#3838 (still open in 8.0)</span>
+        <span class="c1"># So to be on the safe side, we must re-quantize these</span>
+        <span class="c1"># to 8-bit via numpy (conversion to/from which fortunately</span>
+        <span class="c1"># seems to work reliably):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pil_image</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="n">pil_image</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)):</span>
+            <span class="n">arr_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pil_image</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+                <span class="c1"># signed integer is *not* trustworthy in this context</span>
+                <span class="c1"># (usually a mistake in the array interface)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Casting image &quot;</span><span class="si">%s</span><span class="s1">&quot; from signed to unsigned&#39;</span><span class="p">,</span> <span class="n">image_url</span><span class="p">)</span>
+                <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;u&#39;</span> <span class="o">+</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span>
+                <span class="c1"># integer needs to be scaled linearly to 8 bit</span>
+                <span class="c1"># of course, an image might actually have some lower range</span>
+                <span class="c1"># (e.g. 10-bit in I;16 or 20-bit in I or 4-bit in L),</span>
+                <span class="c1"># but that would be guessing anyway, so here don&#39;t</span>
+                <span class="c1"># make assumptions on _scale_, just reduce _precision_</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reducing image &quot;</span><span class="si">%s</span><span class="s1">&quot; from depth </span><span class="si">%d</span><span class="s1"> bit to 8 bit&#39;</span><span class="p">,</span>
+                          <span class="n">image_url</span><span class="p">,</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+                <span class="n">arr_image</span> <span class="o">=</span> <span class="n">arr_image</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">arr_image</span> <span class="o">=</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+                <span class="c1"># float needs to be scaled from [0,1.0] to [0,255]</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reducing image &quot;</span><span class="si">%s</span><span class="s1">&quot; from floating point to 8 bit&#39;</span><span class="p">,</span>
+                          <span class="n">image_url</span><span class="p">)</span>
+                <span class="n">arr_image</span> <span class="o">*=</span> <span class="mi">255</span>
+                <span class="n">arr_image</span> <span class="o">=</span> <span class="n">arr_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">pil_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr_image</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">coords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pil_image</span>
 
+        <span class="c1"># FIXME: remove or replace this by (image_from_polygon+) crop_image ...</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Converting PIL to OpenCV: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">image_url</span><span class="p">)</span>
         <span class="n">color_conversion</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span> <span class="k">if</span> <span class="n">pil_image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span> <span class="k">else</span>  <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span>
         <span class="n">pil_as_np_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pil_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">pil_image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pil_image</span><span class="p">)</span>
@@ -424,8 +460,8 @@ lang: en
 <span class="sd">           ``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace.image_from_page&#39;</span><span class="p">)</span>
+        <span class="n">page_image_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">imageFilename</span><span class="p">)</span>
         <span class="n">page_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_image_as_pil</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">imageFilename</span><span class="p">)</span>
-        <span class="n">page_image_info</span> <span class="o">=</span> <span class="n">OcrdExif</span><span class="p">(</span><span class="n">page_image</span><span class="p">)</span>
         <span class="n">page_coords</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="c1"># use identity as initial affine coordinate transform:</span>
         <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -460,6 +496,10 @@ lang: en
                 <span class="c1"># and among multiple satisfactory images we want the most recent:</span>
                 <span class="k">for</span> <span class="n">alternative_image</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">alternative_images</span><span class="p">):</span>
                     <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
+                                    <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
+                        <span class="n">features</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                     <span class="k">if</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
                             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">)</span> <span class="ow">and</span>
                         <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
@@ -470,6 +510,10 @@ lang: en
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">alternative_image</span> <span class="o">=</span> <span class="n">alternative_images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
+                                <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">if</span> <span class="n">alternative_image</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using AlternativeImage </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) for page &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                           <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
@@ -797,6 +841,10 @@ lang: en
                 <span class="c1"># and among multiple satisfactory images we want the most recent:</span>
                 <span class="k">for</span> <span class="n">alternative_image</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">alternative_images</span><span class="p">):</span>
                     <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for segment &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
+                                    <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                        <span class="n">features</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                     <span class="k">if</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
                             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">)</span> <span class="ow">and</span>
                         <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
@@ -807,6 +855,10 @@ lang: en
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">alternative_image</span> <span class="o">=</span> <span class="n">alternative_images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for segment &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
+                                <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">if</span> <span class="n">alternative_image</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using AlternativeImage </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) for segment &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                           <span class="n">alternative_images</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">alternative_image</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>

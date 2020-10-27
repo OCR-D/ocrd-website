@@ -50,7 +50,7 @@ lang: en
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span><span class="p">,</span> <span class="n">MIMETYPE_PAGE</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span><span class="p">,</span> <span class="n">MIMETYPE_PAGE</span><span class="p">,</span> <span class="n">getLogger</span>
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span>
 <span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">MetadataItemType</span><span class="p">,</span> <span class="n">LabelType</span><span class="p">,</span> <span class="n">LabelsType</span>
 
@@ -59,9 +59,11 @@ lang: en
 
 <div class="viewcode-block" id="Processor"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor">[docs]</a><span class="k">class</span> <span class="nc">Processor</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A processor runs an algorithm based on the workspace, the mets.xml in the</span>
-<span class="sd">    workspace (and the input files defined therein) as well as optional</span>
-<span class="sd">    parameter.</span>
+<span class="sd">    A processor is an OCR-D compliant command-line-interface for executing</span>
+<span class="sd">    a single workflow step on the workspace (represented by local METS). It</span>
+<span class="sd">    reads input files for all or requested physical pages of the input fileGrp(s),</span>
+<span class="sd">    and writes output files for them into the output fileGrp(s). It may take </span>
+<span class="sd">    a number of optional or mandatory parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -166,7 +168,51 @@ lang: en
                 <span class="s2">&quot;for page &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span>
                 <span class="p">))</span>
-        <span class="k">return</span> <span class="n">ret</span></div>
+        <span class="k">return</span> <span class="n">ret</span>
+
+<div class="viewcode-block" id="Processor.zip_input_files"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.zip_input_files">[docs]</a>    <span class="k">def</span> <span class="nf">zip_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">require_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List tuples of input files (for multiple input file groups).</span>
+
+<span class="sd">        Processors that expect/need multiple input file groups,</span>
+<span class="sd">        cannot use ``input_files``. They must align (zip) input files</span>
+<span class="sd">        across pages. This includes the case where not all pages</span>
+<span class="sd">        are equally present in all file groups.</span>
+
+<span class="sd">        This function does not make much sense for non-PAGE fileGrps,</span>
+<span class="sd">        so it uses a fixed MIME type filter for PAGE-XML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">             require_first (bool): If true, then skip a page entirely</span>
+<span class="sd">             whenever it is not available in the first input fileGrp.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.base&#39;</span><span class="p">)</span>
+        <span class="n">ifgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="c1"># Iterating over all files repeatedly may seem inefficient at first sight,</span>
+        <span class="c1"># but the unnecessary OcrdFile instantiations for posterior fileGrp filtering</span>
+        <span class="c1"># can actually be much more costly than traversing the ltree.</span>
+        <span class="c1"># This might depend on the number of pages vs number of fileGrps.</span>
+
+        <span class="n">pages</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ifg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ifgs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">(</span>
+                    <span class="n">pageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">ifg</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;adding page </span><span class="si">%s</span><span class="s2"> to input file group </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">)</span>
+                <span class="n">ift</span> <span class="o">=</span> <span class="n">pages</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ifgs</span><span class="p">))</span>
+                <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
+        <span class="n">ifts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">page</span><span class="p">,</span> <span class="n">ifiles</span> <span class="ow">in</span> <span class="n">pages</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ifg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ifgs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ifiles</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="c1"># other fallback options?</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;found no page </span><span class="si">%s</span><span class="s1"> in file group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                              <span class="n">page</span><span class="p">,</span> <span class="n">ifg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ifiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">require_first</span><span class="p">:</span>
+                <span class="n">ifts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ifiles</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ifts</span></div></div>
 </pre></div>
 
             <div class="clearer"></div>
