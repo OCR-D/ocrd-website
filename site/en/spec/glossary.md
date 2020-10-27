@@ -329,9 +329,7 @@ Central software component of the controller, executing workflows, including con
 
 ### Processor
 
-A processor is a method provided by a tool that implements the uniform [OCR-D
-CLI](https://ocr-d.de/en/spec/cli) for run-time data processing, and yields one or more
-[activities](#activities).
+A processor is a tool that implements the uniform [OCR-D command-line-interface](https://ocr-d.de/en/spec/cli) for run-time data processing. That is, it executes a single [workflow step](#activities), or a combination of multiple workflow steps, on the [workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace) (represented by local [METS](https://ocr-d.de/en/spec/mets)), reading input files for all or requested physical pages of the input fileGrp(s), and writing output files for them into the output fileGrp(s). It may take a number of optional or mandatory [parameters](https://ocr-d.de/en/spec/ocrd_tool).
 
 → [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
 
