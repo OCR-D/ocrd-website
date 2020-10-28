@@ -203,6 +203,10 @@ Controlled term:
 - `SEG-LINE` (`USE`)
 - `layout/segmentation/line` (step)
 
+### Line recognition
+
+See [OCR](#ocr).
+
 ### OCR
 
 Map pixel areas to [glyphs](#glyph) and [words](#words).
@@ -255,6 +259,10 @@ data repository must be available locally.
 Contains all trained (OCR) models for text recognition. The model repository
 has to be available at least locally. Ideally, a publicly available model repository will
 be developed.
+
+### Workspace
+
+A workspace is a transient repository for some document. It holds all physical data files required for run-time OCR-D processing, and may reference more data files in remote locations. Minimally a local filesystem copy of the [METS](https://ocr-d.de/en/spec/mets) file.
 
 ## Workflow modules
 
