@@ -256,10 +256,10 @@ Contains all trained (OCR) models for text recognition. The model repository
 has to be available at least locally. Ideally, a publicly available model repository will
 be developed.
 
-## OCR-D modules
+## Workflow modules
 
 The [OCR-D project](https://ocr-d.de) divided the various elements of an OCR
-workflow into six modules.
+workflow into six abstract modules.
 
 ### Image preprocessing
 
@@ -326,18 +326,18 @@ Software component of a server or processor concerned with OCR systems modelling
 
 Central software component of the controller, executing workflows, including control structures (in a linear/parallel/incremental way). Also needed in single-host CLI deployments (where it can be based on inter-process communication and file system I/O alone), like `ocrd process`.
 
-### Processor
+### (OCR-D) Processor
 
 A processor is a tool that implements the uniform [OCR-D command-line-interface](https://ocr-d.de/en/spec/cli) for run-time data processing. That is, it executes a single [workflow step](#activities), or a combination of multiple workflow steps, on the [workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace) (represented by local [METS](https://ocr-d.de/en/spec/mets)), reading input files for all or requested physical pages of the input fileGrp(s), and writing output files for them into the output fileGrp(s). It may take a number of optional or mandatory [parameters](https://ocr-d.de/en/spec/ocrd_tool).
 
 → [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
 
 
-### Evaluator
+### (OCR-D) Evaluator
 
 An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an [activity's](#activities) annotation (i.e. a [processor's](#processor) output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.
 
-### Module
+### (OCR-D) Module
 
 Software package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
 
