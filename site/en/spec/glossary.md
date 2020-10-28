@@ -58,7 +58,7 @@ See [Glyph](#glyph)
 
 ### TextLine
 
-A TextLine is a [region](#region) of text without line break.
+A text line is a single row of [words](#word) within a text [region](#region). (Depending on the region's or page's orientation, and the script's writing direction, it can be horizontal or vertical.)
 
 ### Print space
 
@@ -72,7 +72,7 @@ From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelin
 
 ### Word
 
-A word is a sequence of [glyphs](#glyph) not containing any word-bounding whitespace.
+A word is a sequence of [glyphs](#glyph) within a [line](#textline) which does not contain any word-bounding whitespace. (That is, it includes punctuation and is synonym to _token_ in NLP.)
 
 ## Data
 
