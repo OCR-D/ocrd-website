@@ -60,6 +60,16 @@ See [Glyph](#glyph)
 
 A TextLine is a [region](#region) of text without line break.
 
+### Print space
+
+From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
+
+> Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
+>
+> It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
+>
+> It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.
+
 ### Word
 
 A word is a sequence of [glyphs](#glyph) not containing any word-bounding whitespace.
@@ -273,17 +283,6 @@ the prediction of text and layout recognition engines.
 Storing results of OCR and OLR indefinitely, taking into account versioning,
 multiple runs, provenance/parametrization and providing access to these saved
 snapshots in a granular fashion.
-
-### Print space
-
-From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
-
-> Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
->
-> It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
->
-> It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.
-
 
 ### Quality assurance
 
