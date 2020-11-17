@@ -11,7 +11,7 @@ toc: true
 # Workflows
 There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
 
-![](https://ocr-d.de/assets/Funktionsmodell.svg)
+![](https://ocr-d.de/assets/Funktionsmodell.png)
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
@@ -60,6 +60,12 @@ For better results, the cropped images can be binarized again at this point or l
       <td></td>
       <td>Recommended</td>
       <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+  <tr data-processor="ocrd-sbb-binarize">
+      <td>ocrd-sbb-binarize</td>
+      <td><code>-P model</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
     </tr>
   <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
@@ -128,7 +134,13 @@ your image twice on page level, and have no large images, you can probably skip 
       <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
-    <tr data-processor="ocrd-preprocess-image">
+    <tr data-processor="ocrd-sbb-binarize">
+      <td>ocrd-sbb-binarize</td>
+      <td><code>-P model -P operation_level region</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model -P operation-level region</code></td>
+    </tr>
+	<tr data-processor="ocrd-preprocess-image">
       <td>ocrd-preprocess-image</td>
       <td>
         <code>-P level-of-operation region</code><br/>

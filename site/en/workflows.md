@@ -1237,6 +1237,7 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
 
 # Recommendations
 
+<!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
 In order to facilitate the usage of OCR-D and the configuration of workflows, we provide two workflows
 which can be used as a start for your OCR-D-tests. They were determined by testing the processors listed
 above on selected pages of some prints from the 17th and 18th century.
@@ -1400,7 +1401,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-tesserocr-segment-line</td>
       <td></td>
     </tr>
-	<tr>
+    <tr>
       <td>12</td>
       <td>ocrd-cis-ocropy-clip</td>
       <td>-P level-of-operation line</td>
@@ -1442,5 +1443,7 @@ ocrd process \
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
 (2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
 set to point to the directory where the used models are stored if they are not in the default location.
+
+<!-- END-INCLUDE -->
 
 <script src="/js/workflows.js"></script>
