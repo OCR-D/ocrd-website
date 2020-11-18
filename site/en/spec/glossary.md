@@ -68,7 +68,7 @@ From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelin
 >
 > It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
 >
-> It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.
+> It does not contain pagenumber (if not part of running title), marginalia, signature mark, preview words.
 
 ### Word
 
