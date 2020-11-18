@@ -66,7 +66,7 @@ From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelin
 
 > Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
 >
-> It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
+> It contains all living elements (except marginalia) like body type, footnotes, headings, running titles.
 >
 > It does not contain pagenumber (if not part of running title), marginalia, signature mark, preview words.
 
