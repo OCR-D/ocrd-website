@@ -1276,16 +1276,16 @@ need to segment into lines in an extra step.</p>
   <tbody>
     <tr data-processor="ocrd-tesserocr-recognize">
       <td>ocrd-tesserocr-recognize</td>
-      <td><code>-P model GT4HistOCR_50000000.997_191951</code>
+      <td><code>-P model GT4HistOCR_50000000</code>
       </td>
-      <td>Recommended <br />Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a><br />a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
-      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur+Latin</code></td>
+      <td>Recommended <br />Models can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best">here</a><br />a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
+      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model GT4HistOCR_50000000</code></td>
     </tr>
     <tr data-processor="ocrd-calamari-recognize">
       <td>ocrd-calamari-recognize</td>
       <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        Recommended<br />Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>;
+        Recommended<br />Model can be found <a href="https://qurator-data.de/calamari-models/GT4HistOCR/">here</a>;
         <br />For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
       </td>
       <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
@@ -1301,8 +1301,6 @@ The directory should at least contain the following models:
 
 <p><strong>Note:</strong> Faster models for <code class="highlighter-rouge">tesserocr-recognize</code> are available from
 https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/.
-A good and currently the fastest model is
-<a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/Fraktur-fast.traineddata">Fraktur-fast</a>.
 UB Mannheim provides many more <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/">models online</a>
 which were trained on different GT data sets, for example from
 <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/ONB/tessdata_fast/">Austrian Newspapers</a>.</p>
@@ -1660,6 +1658,7 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
 
 <h1 id="recommendations">Recommendations</h1>
 
+<!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
 <p>In order to facilitate the usage of OCR-D and the configuration of workflows, we provide two workflows
 which can be used as a start for your OCR-D-tests. They were determined by testing the processors listed
 above on selected pages of some prints from the 17th and 18th century.</p>
@@ -1820,7 +1819,7 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
       <td>ocrd-tesserocr-segment-line</td>
       <td></td>
     </tr>
-	<tr>
+    <tr>
       <td>12</td>
       <td>ocrd-cis-ocropy-clip</td>
       <td>-P level-of-operation line</td>
@@ -1833,7 +1832,7 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
     <tr>
       <td>14</td>
       <td>ocrd-tesserocr-recognize</td>
-      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
+      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000</td>
     </tr>
   </tbody>
 </table>
@@ -1853,7 +1852,7 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
   <span class="s2">"tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -P level-of-operation line"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"</span>
+  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000}"</span>
 </code></pre></div></div>
 
 <p><strong>Note:</strong>
@@ -1861,6 +1860,8 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
 you need to adjust <code class="highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="highlighter-rouge">-I my_images</code>
 (2) For the last processor in this workflow, <code class="highlighter-rouge">ocrd-tesserocr-recognize</code>, the environment variable TESSDATA_PREFIX has to be
 set to point to the directory where the used models are stored if they are not in the default location.</p>
+
+<!-- END-INCLUDE -->
 
 <script src="/js/workflows.js"></script>
 
