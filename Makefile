@@ -134,6 +134,11 @@ build-site:
 		-s '$(SRCDIR)' -d '$(DSTDIR)'
 
 deploy:
+	cp -r docs/* repo/ocr-d.github.io
+	cd repo/ocr-d.github.io; \
+		git add .; \
+		git commit -m "Update `date`" ;\
+		git push;
 	git add .
 	git commit -m "Update `date`"
 	git push
