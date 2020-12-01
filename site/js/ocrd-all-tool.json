@@ -173,11 +173,6 @@
                 "format": "float",
                 "type": "number"
             },
-            "force": {
-                "default": true,
-                "description": "overwrite existing files",
-                "type": "boolean"
-            },
             "maxRularArea": {
                 "default": 0.3,
                 "description": "Consider maximum rular area",
@@ -196,13 +191,11 @@
                 "format": "float",
                 "type": "number"
             },
-            "operation_level": {
-                "default": "page",
-                "description": "PAGE XML hierarchy level to operate on",
-                "enum": [
-                    "page"
-                ],
-                "type": "string"
+            "padding": {
+                "default": 10,
+                "description": "extend resulting border by this many px in each direction",
+                "format": "integer",
+                "type": "number"
             },
             "positionBelow": {
                 "default": 0.75,
@@ -707,6 +700,7 @@
                 "description": "PAGE XML hierarchy level granularity to annotate images for",
                 "enum": [
                     "page",
+                    "table",
                     "region",
                     "line"
                 ],
@@ -855,6 +849,7 @@
                 "description": "PAGE XML hierarchy level granularity to annotate images for",
                 "enum": [
                     "page",
+                    "table",
                     "region"
                 ],
                 "type": "string"
@@ -896,7 +891,13 @@
             },
             "range": {
                 "default": 4.0,
-                "description": "maximum vertical disposition or maximum margin (will be multiplied by mean centerline deltas to yield pixels)",
+                "description": "maximum vertical disposition or maximum margin (will be multiplied by mean centerline deltas to yield pixels); also the mean vertical padding",
+                "format": "float",
+                "type": "number"
+            },
+            "smoothness": {
+                "default": 1.0,
+                "description": "kernel size (relative to image height) of horizontal blur applied to foreground to find the center line; the smaller the more dynamic (0.1 would be a better default)",
                 "format": "float",
                 "type": "number"
             }
@@ -1111,7 +1112,7 @@
         ],
         "parameters": {
             "model": {
-                "description": "load model or create new one (e.g. fraktur.pyrnn)",
+                "description": "load model or crate new one (e.g. fraktur.pyrnn)",
                 "type": "string"
             },
             "ntrain": {
@@ -1203,6 +1204,9 @@
             "OCR-D-OCR-CALA",
             "OCR-D-OCR-ANY",
             "OCR-D-COR-ASV"
+        ],
+        "output_file_grp": [
+            "OCR-D-EVAL-CER"
         ],
         "parameters": {
             "confusion": {
@@ -1387,6 +1391,15 @@
                 "default": true,
                 "description": "Enable/disable metrics and green/red",
                 "type": "boolean"
+            },
+            "textequiv_level": {
+                "default": "region",
+                "description": "PAGE XML hierarchy level to extract the text from",
+                "enum": [
+                    "region",
+                    "line"
+                ],
+                "type": "string"
             }
         },
         "steps": [
@@ -1728,7 +1741,7 @@
         "categories": [
             "Image preprocessing"
         ],
-        "description": "OLENA's binarization algos for OCR-D (on page-level)",
+        "description": "popular binarization algorithms implemented by Olena/SCRIBO, wrapped for OCR-D (on page level only)",
         "executable": "ocrd-olena-binarize",
         "input_file_grp": [
             "OCR-D-SEG-BLOCK",
@@ -1772,7 +1785,7 @@
             },
             "win-size": {
                 "default": 0,
-                "description": "The (odd) window size in pixels; when zero (default), set to DPI; for Otsu, does not apply",
+                "description": "The (odd) window size in pixels; when zero (default), set to DPI (or 301); for Otsu, does not apply",
                 "format": "integer",
                 "type": "number"
             }
@@ -2011,6 +2024,34 @@
             "layout/segmentation/glyph"
         ]
     },
+    "ocrd-sbb-binarize": {
+        "categories": [
+            "Image preprocessing"
+        ],
+        "description": "Pixelwise binarization with selectional auto-encoders in Keras",
+        "executable": "ocrd-sbb-binarize",
+        "input_file_grp": [],
+        "output_file_grp": [],
+        "parameters": {
+            "model": {
+                "description": "Directory containing HDF5 models. Can be an absolute path or a path relative to the current working directory or $SBB_BINARIZE_DATA environment variable (if set)",
+                "required": true,
+                "type": "string"
+            },
+            "operation_level": {
+                "default": "page",
+                "description": "PAGE XML hierarchy level to operate on",
+                "enum": [
+                    "page",
+                    "region"
+                ],
+                "type": "string"
+            }
+        },
+        "steps": [
+            "preprocessing/optimization/binarization"
+        ]
+    },
     "ocrd-sbb-textline-detector": {
         "categories": [
             "Layout analysis"
@@ -2216,7 +2257,7 @@
         "categories": [
             "Layout analysis"
         ],
-        "description": "Analyse and repair region segmentation",
+        "description": "Analyse and repair region segmentation; at least ensure validity and consistency of coordinates.",
         "executable": "ocrd-segment-repair",
         "input_file_grp": [
             "OCR-D-IMG",
@@ -2276,6 +2317,32 @@
             "transform_coordinates": {
                 "default": true,
                 "description": "re-calculate coordinates for all segments of the structural hierarchy to be consistent with the coordinate system of the chosen image again (vital after cropping, deskewing etc; disable only if input coordinates must be assumed to be inconsistent with the original)",
+                "type": "boolean"
+            }
+        },
+        "steps": [
+            "layout/analysis"
+        ]
+    },
+    "ocrd-segment-replace-page": {
+        "categories": [
+            "Image preprocessing"
+        ],
+        "description": "Replace everything below page level with another annotation, adjusting all coordinates",
+        "executable": "ocrd-segment-replace-page",
+        "input_file_grp": [
+            "OCR-D-SEG-LINE",
+            "OCR-D-GT-SEG-LINE",
+            "OCR-D-OCR"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-CROP",
+            "OCR-D-IMG-CROP"
+        ],
+        "parameters": {
+            "transform_coordinates": {
+                "default": true,
+                "description": "re-calculate coordinates for all segments of the structural hierarchy to be consistent with the coordinate system of the first input file group (vital after cropping, deskewing etc; disable only if input coordinates can be assumed to be consistent with the second input file group)",
                 "type": "boolean"
             }
         },
@@ -2452,7 +2519,7 @@
         "categories": [
             "Image preprocessing"
         ],
-        "description": "Equalize contrast/exposure of images with Scikit-image",
+        "description": "Equalize contrast/exposure of images with Scikit-image; stretches the color value/tone to the full dynamic range",
         "executable": "ocrd-skimage-normalize",
         "input_file_grp": [
             "OCR-D-IMG",
@@ -2467,6 +2534,12 @@
             "OCR-D-SEG-LINE-NRM"
         ],
         "parameters": {
+            "black-point": {
+                "default": 1.0,
+                "description": "black point point in percent of luminance/value/tone histogram; up to ``black-point`` darkest pixels will be clipped to black when stretching",
+                "format": "float",
+                "type": "number"
+            },
             "dpi": {
                 "default": 0,
                 "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when zero",
@@ -2487,12 +2560,18 @@
             },
             "method": {
                 "default": "stretch",
-                "description": "contrast-enhancing transformation to use",
+                "description": "contrast-enhancing transformation to use after clipping; ``stretch`` uses ``skimage.exposure.rescale_intensity`` (globally linearly stretching to full dynamic range) and ``adapthist`` uses ``skimage.exposure.equalize_adapthist`` (applying over tiles with context from 1/8th of the image's width)",
                 "enum": [
                     "stretch",
                     "adapthist"
                 ],
                 "type": "string"
+            },
+            "white-point": {
+                "default": 7.0,
+                "description": "white point in percent of luminance/value/tone histogram; up to ``white-point`` brightest pixels will be clipped to white when stretching",
+                "format": "float",
+                "type": "number"
             }
         },
         "steps": [
