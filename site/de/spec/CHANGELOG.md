@@ -14,6 +14,18 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.10.0] - 2020-12-02
+
+Changed:
+
+  * Revise glossary, mostly by @bertsky
+
+## [3.9.1] - 2020-10-12
+
+Changed:
+
+  * processor parameter values can be arrays, #174
+
 ## [3.9.0] - 2020-07-21
 
 Changed:
@@ -366,6 +378,8 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.10.0]: ../../compare/v3.10.0...v3.9.1
+[3.9.1]: ../../compare/v3.9.1...v3.9.0
 [3.9.0]: ../../compare/v3.9.0...v3.8.0
 [3.8.0]: ../../compare/v3.8.0...v3.7.0
 [3.7.0]: ../../compare/v3.7.0...v3.6.0
