@@ -340,12 +340,12 @@
               <li><a href="#available-processors-8">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-9--deskewing-region-level">Step 9:  Deskewing (Region Level)</a>
+          <li><a href="#step-9--clipping-region-level">Step 9:  Clipping (Region Level)</a>
             <ul>
               <li><a href="#available-processors-9">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-10--clipping-region-level">Step 10:  Clipping (Region Level)</a>
+          <li><a href="#step-10--deskewing-region-level">Step 10:  Deskewing (Region Level)</a>
             <ul>
               <li><a href="#available-processors-10">Available processors</a></li>
             </ul>
@@ -449,7 +449,7 @@
         <h1 id="workflows">Workflows</h1>
 <p>There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:</p>
 
-<p><img src="https://ocr-d.de/assets/Funktionsmodell.png" alt="" /></p>
+<p><img src="https://ocr-d.de/assets/Funktionsmodell.svg" alt="" /></p>
 
 <p>The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
@@ -579,13 +579,7 @@ can be especially useful for images which have not been enhanced.</p>
         <td>Fast</td>
         <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
       </tr>
-    <tr data-processor="ocrd-sbb-binarize">
-      <td>ocrd-sbb-binarize</td>
-      <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
-      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
-    </tr>
-	<tr data-processor="ocrd-skimage-binarize">
+    <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
       <td><code>-P k 0.10</code></td>
       <td>Slow</td>
@@ -679,12 +673,6 @@ footer, color scale etc.). Otherwise you might run into severe segmentation prob
       <td></td>
       <td>Recommended</td>
       <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
-    </tr>
-  <tr data-processor="ocrd-sbb-binarize">
-      <td>ocrd-sbb-binarize</td>
-      <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
-      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
     </tr>
   <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
@@ -994,13 +982,7 @@ your image twice on page level, and have no large images, you can probably skip 
       <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
-    <tr data-processor="ocrd-sbb-binarize">
-      <td>ocrd-sbb-binarize</td>
-      <td><code>-P model -P operation_level region</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
-      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model -P operation-level region</code></td>
-    </tr>
-	<tr data-processor="ocrd-preprocess-image">
+    <tr data-processor="ocrd-preprocess-image">
       <td>ocrd-preprocess-image</td>
       <td>
         <code>-P level-of-operation region</code><br />
@@ -1021,7 +1003,45 @@ your image twice on page level, and have no large images, you can probably skip 
   </tbody>
 </table>
 
-<h3 id="step-9--deskewing-region-level">Step 9:  Deskewing (Region Level)</h3>
+<h3 id="step-9--clipping-region-level">Step 9:  Clipping (Region Level)</h3>
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
+<p>In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
+text regions of a page (or text lines or a text region) can be removed. A connected component analysis is run on every segment,
+as well as its overlapping neighbours. Now for each conflicting binary object,
+a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
+be clipped to the background.</p>
+
+<p>This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (On the region level, cleaning via coordinates would be impossible in many common cases.) On the line level, this can be seen as an alternative to <em>resegmentation</em>.</p>
+
+<p>Note: Clipping must be applied <strong>before</strong> any processor that produces derived images for the same hierarchy level (region/line). Annotations on the next higher level (page/region) are fine of course.</p>
+
+<!-- TODO: add images -->
+
+<h4 id="available-processors-9">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr data-processor="ocrd-cis-ocropy-clip">&gt;
+      <td>ocrd-cis-ocropy-clip</td>
+      <td><code>-P level-of-operation region</code></td>
+      <td>&nbsp;</td>
+      <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+<h3 id="step-10--deskewing-region-level">Step 10:  Deskewing (Region Level)</h3>
 
 <p>In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.</p>
 
@@ -1044,7 +1064,7 @@ your image twice on page level, and have no large images, you can probably skip 
   </tbody>
 </table>
 
-<h4 id="available-processors-9">Available processors</h4>
+<h4 id="available-processors-10">Available processors</h4>
 
 <table class="processor-table">
   <thead>
@@ -1070,44 +1090,6 @@ your image twice on page level, and have no large images, you can probably skip 
     </tr>
   </tbody>
 </table>
-
-<h3 id="step-10--clipping-region-level">Step 10:  Clipping (Region Level)</h3>
-
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d' -->
-<p>In this processing step, intrusions of neighbouring non-text (e.g. separator) or text segments (e.g. ascenders/descenders) into
-text regions of a page (or text lines or a text region) can be removed. A connected component analysis is run on every segment,
-as well as its overlapping neighbours. Now for each conflicting binary object,
-a rule based on majority and proper containment determines whether it belongs to the neighbour, and can therefore
-be clipped to the background.</p>
-
-<p>This basic text-nontext segmentation ensures that for each text region there is a clean image without interference from separators and neighbouring texts. (On the region level, cleaning via coordinates would be impossible in many common cases.) On the line level, this can be seen as an alternative to <em>resegmentation</em>.</p>
-
-<p>Note: Clipping must be applied <strong>before</strong> any processor that produces derived images for the same hierarchy level (region/line). Annotations on the next higher level (page/region) are fine of course.</p>
-
-<!-- TODO: add images -->
-
-<h4 id="available-processors-10">Available processors</h4>
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Processor</th>
-      <th>Parameter</th>
-      <th>Remarks</th>
-    <th>Call</th>
-    </tr>
-  </thead>
-  <tbody>
-  <tr data-processor="ocrd-cis-ocropy-clip">&gt;
-      <td>ocrd-cis-ocropy-clip</td>
-      <td><code>-P level-of-operation region</code></td>
-      <td>&nbsp;</td>
-      <td><code>ocrd-cis-ocropy-clip -I OCR-D-DESKEW-REG -O OCR-D-CLIP-REG -P level-of-operation region</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- END-EVAL -->
 
 <h3 id="step-11-line-segmentation">Step 11: Line segmentation</h3>
 
@@ -1277,16 +1259,16 @@ need to segment into lines in an extra step.</p>
   <tbody>
     <tr data-processor="ocrd-tesserocr-recognize">
       <td>ocrd-tesserocr-recognize</td>
-      <td><code>-P model GT4HistOCR_50000000</code>
+      <td><code>-P model GT4HistOCR_50000000.997_191951</code>
       </td>
-      <td>Recommended <br />Models can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best">here</a><br />a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
-      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model GT4HistOCR_50000000</code></td>
+      <td>Recommended <br />Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a><br />a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
+      <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur+Latin</code></td>
     </tr>
     <tr data-processor="ocrd-calamari-recognize">
       <td>ocrd-calamari-recognize</td>
       <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        Recommended<br />Model can be found <a href="https://qurator-data.de/calamari-models/GT4HistOCR/">here</a>;
+        Recommended<br />Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>;
         <br />For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
       </td>
       <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
@@ -1302,6 +1284,8 @@ The directory should at least contain the following models:
 
 <p><strong>Note:</strong> Faster models for <code class="highlighter-rouge">tesserocr-recognize</code> are available from
 https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/.
+A good and currently the fastest model is
+<a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/Fraktur-fast.traineddata">Fraktur-fast</a>.
 UB Mannheim provides many more <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/">models online</a>
 which were trained on different GT data sets, for example from
 <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/ONB/tessdata_fast/">Austrian Newspapers</a>.</p>
@@ -1660,17 +1644,15 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
 <h1 id="recommendations">Recommendations</h1>
 
 <!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
-<p>In order to facilitate the usage of OCR-D and the configuration of workflows, we provide two workflows
-which can be used as a start for your OCR-D-tests. They were determined by testing the processors listed
-above on selected pages of some prints from the 17th and 18th century.</p>
+<p>All processors, with the exception of those for post-correction, were tested on
+selected pages of some prints from the 17th and 18th century.</p>
 
 <p>The results vary quite a lot from page to page. In most cases, segmentation is a problem.</p>
 
+<p>These recommendations may also work well for other prints of those centuries.</p>
+
 <p>Note that for our test pages, not all steps described above werde needed to obtain the best results.
 Depending on your particular images, you might want to include those processors again for better results.</p>
-
-<p>We are currently working on regression tests with the help of which we will be able to provide more profound
-workflows soon, which will replace those interm solutions.</p>
 
 <h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
 
@@ -1722,6 +1704,21 @@ page</a>)  (CER ~1%).</p>
       <td></td>
     </tr>
     <tr>
+      <td>10</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>ocrd-cis-ocropy-segment</td>
+      <td>-P level-of-operation region</td>
+    </tr>
+    <tr>
+    <td>12</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>-P level-of-operation line</td>
+    </tr>
+    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1744,7 +1741,10 @@ page</a>)  (CER ~1%).</p>
   <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -P level-of-operation page"</span> <span class="se">\</span>
   <span class="s2">"tesserocr-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-CLIP-LINE -P level-of-operation line"</span> <span class="se">\</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-CLIP-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
   <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
 </code></pre></div></div>
 
@@ -1821,11 +1821,6 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
       <td></td>
     </tr>
     <tr>
-      <td>12</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td>-P level-of-operation line</td>
-    </tr>
-    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1833,7 +1828,7 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
     <tr>
       <td>14</td>
       <td>ocrd-tesserocr-recognize</td>
-      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000</td>
+      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
     </tr>
   </tbody>
 </table>
@@ -1851,9 +1846,8 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
   <span class="s2">"tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW"</span> <span class="se">\</span>
   <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP"</span> <span class="se">\</span>
   <span class="s2">"tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -P level-of-operation line"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000}"</span>
+  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
+  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"</span>
 </code></pre></div></div>
 
 <p><strong>Note:</strong>

@@ -432,6 +432,7 @@ override reflects the order in which they are defined in the <code class="highli
                       <span class="pi">-</span> <span class="s">number</span>
                       <span class="pi">-</span> <span class="s">boolean</span>
                       <span class="pi">-</span> <span class="s">object</span>
+                      <span class="pi">-</span> <span class="s">array</span>
                   <span class="na">format</span><span class="pi">:</span>
                     <span class="na">description</span><span class="pi">:</span> <span class="s">Subtype, such as `float` for type `number` or `uri` for type `string`.</span>
                   <span class="na">description</span><span class="pi">:</span>
@@ -498,7 +499,7 @@ override reflects the order in which they are defined in the <code class="highli
 <p>This is from the <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr project</a>:</p>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.8.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.10.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"git_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/OCR-D/ocrd_tesserocr"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"dockerhub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd/tesserocr"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -508,10 +509,10 @@ override reflects the order in which they are defined in the <code class="highli
       </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Detect script, orientation and skew angle for pages or regions"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-DESKEW-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-DESKEW-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"preprocessing/optimization/deskewing"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -519,7 +520,7 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"operation_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
@@ -535,65 +536,182 @@ override reflects the order in which they are defined in the <code class="highli
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"ocrd-tesserocr-recognize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-recognize"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-fontshape"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-fontshape"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Text recognition and optimization"</span><span class="p">],</span><span class="w">
-      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Recognize text in lines with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons)"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Recognize font shapes (family/monospace/bold/italic) and size in segmented words with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons), annotating TextStyle"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-GLYPH"</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-OCR-TESS"</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR-STYLE"</span><span class="w">
       </span><span class="p">],</span><span class="w">
-      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"recognition/text-recognition"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"recognition/font-identification"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Number of background-filled pixels to add around the word image (i.e. the annotated AlternativeImage if it exists or the higher-level image cropped to the bounding box and masked by the polygon otherwise) on each side before recognition."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"osd"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tessdata model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or osd); must be an old (pre-LSTM) model"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-recognize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-recognize"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Text recognition and optimization"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment and/or recognize text with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons) on any level of the PAGE hierarchy."</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-TABLE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-TABLE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-GLYPH"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR-TESS"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"layout/segmentation/region"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"layout/segmentation/line"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"recognition/text-recognition"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Extend detected region/cell/line/word rectangles by this many (true) pixels, or extend existing region/line/word images (i.e. the annotated AlternativeImage if it exists or the higher-level image cropped to the bounding box and masked by the polygon otherwise) by this many (background/white) pixels on each side before recognition."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"segmentation_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cell"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w"> </span><span class="s2">"glyph"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Highest PAGE XML hierarchy level to remove existing annotation from and detect segments for (before iterating downwards); if ``none``, does not attempt any new segmentation; if ``cell``, starts at table regions, detecting text regions (cells). Ineffective when lower than ``textequiv_level``."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"textequiv_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w"> </span><span class="s2">"glyph"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cell"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w"> </span><span class="s2">"glyph"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">],</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lowest PAGE XML hierarchy level to add the TextEquiv results to; when below `region`, implicitly adds segmentation below the line level, but requires existing line segmentation"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lowest PAGE XML hierarchy level to re-use or detect segments for and add the TextEquiv results to (before projecting upwards); if ``none``, adds segmentation down to the glyph level, but does not attempt recognition at all; if ``cell``, stops short before text lines, adding text of text regions inside tables (cells) or on page level only."</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nl">"overwrite_words"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"overwrite_segments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TextLine level (regardless of textequiv_level)."</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"If ``segmentation_level`` is not none, but an element already contains segments, remove them and segment again. Otherwise use the existing segments of that element."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"If ``textequiv_level`` is not none, but a segment already contains TextEquivs, remove them and replace with recognised text. Otherwise add new text as alternative. (Only the first entry is projected upwards.)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"block_polygons"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, annotate polygon coordinates instead of bounding box rectangles."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"find_tables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, recognise tables as table regions (Tesseract's ``textord_tabfind_find_tables=1``)."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, use 'sparse text' page segmentation mode (finding as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"raw_lines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Do not attempt additional segmentation (baseline+xheight+ascenders/descenders prediction) when using line images (i.e. when textequiv_level&lt;region). Can increase accuracy for certain workflows. Disable when line segments/images may contain components of more than 1 line, or larger gaps/white-spaces."</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting lines, do not attempt additional segmentation (baseline+xheight+ascenders/descenders prediction) on line images. Can increase accuracy for certain workflows. Disable when line segments/images may contain components of more than 1 line, or larger gaps/white-spaces."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"char_whitelist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enumeration of character hypotheses (from the model) to allow exclusively; overruled by blacklist if set."</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to allow exclusively; overruled by blacklist if set."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"char_blacklist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enumeration of character hypotheses (from the model) to suppress; overruled by unblacklist if set."</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to suppress; overruled by unblacklist if set."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"char_unblacklist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Enumeration of character hypotheses (from the model) to allow inclusively."</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to allow inclusively."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tessdata model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or Fraktur)"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The tessdata text recognition model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or Fraktur)."</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
-     </span><span class="nl">"ocrd-tesserocr-segment-region"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="nl">"ocrd-tesserocr-segment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment page into regions and lines with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-PAGE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"layout/segmentation/line"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"extend detected region rectangles by this many (true) pixels"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"block_polygons"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"annotate polygon coordinates instead of bounding box rectangles"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"find_tables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recognise tables as table regions (textord_tabfind_find_tables)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="nl">"ocrd-tesserocr-segment-region"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment-region"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment page into regions with Tesseract"</span><span class="p">,</span><span class="w">
@@ -603,7 +721,7 @@ override reflects the order in which they are defined in the <code class="highli
         </span><span class="s2">"OCR-D-GT-SEG-PAGE"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -611,12 +729,12 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"overwrite_regions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"remove existing layout and text annotation below the Page level"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the Page level (otherwise skip page; no incremental annotation yet)."</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
@@ -633,6 +751,11 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recognise tables as table regions (textord_tabfind_find_tables)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
@@ -641,11 +764,11 @@ override reflects the order in which they are defined in the <code class="highli
       </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment table regions into cell text regions with Tesseract"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-GT-SEG-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -653,12 +776,12 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nl">"overwrite_regions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"overwrite_cells"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"remove existing layout and text annotation below the region level"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TableRegion level (otherwise skip table; no incremental annotation yet)."</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
      </span><span class="p">},</span><span class="w">
@@ -667,8 +790,8 @@ override reflects the order in which they are defined in the <code class="highli
       </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
       </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment regions into lines with Tesseract"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-GT-SEG-REGION"</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-BLOCK"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
@@ -679,12 +802,12 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"overwrite_lines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"remove existing layout and text annotation below the TextRegion level"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TextRegion level (otherwise skip region; no incremental annotation yet)."</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
@@ -705,12 +828,12 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"overwrite_words"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"remove existing layout and text annotation below the TextLine level"</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TextLine level (otherwise skip line; no incremental annotation yet)."</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
@@ -730,7 +853,7 @@ override reflects the order in which they are defined in the <code class="highli
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
           </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
           </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
@@ -746,11 +869,11 @@ override reflects the order in which they are defined in the <code class="highli
       </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Binarize regions or lines with Tesseract's global Otsu"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="s2">"OCR-D-BIN-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-BIN-BLOCK"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"OCR-D-BIN-LINE"</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"preprocessing/optimization/binarization"</span><span class="p">],</span><span class="w">
@@ -765,7 +888,6 @@ override reflects the order in which they are defined in the <code class="highli
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-
 </span></code></pre></div></div>
 
       </main>
