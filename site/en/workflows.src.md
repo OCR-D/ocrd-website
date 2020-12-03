@@ -161,7 +161,11 @@ your image twice on page level, and have no large images, you can probably skip 
   </tbody>
 </table>
 
-### Step 9:  Deskewing (Region Level)
+### Step 9:  Clipping (Region Level)
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d'-->
+
+### Step 10:  Deskewing (Region Level)
 
 In this processing step, text region images are taken as input and their skew is corrected by annotating the detected angle (-45° .. 45°) and rotating the image. Optionally, also the orientation is corrected by annotating the detected angle (multiples of 90°) and transposing the image.
 
@@ -211,10 +215,6 @@ In this processing step, text region images are taken as input and their skew is
     </tr>
   </tbody>
 </table>
-
-### Step 10:  Clipping (Region Level)
-
-<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-clipping.md|sed '$d'-->
 
 ### Step 11: Line segmentation
 
