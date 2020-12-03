@@ -11,7 +11,7 @@ toc: true
 # Workflows
 There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
 
-![](https://ocr-d.de/assets/Funktionsmodell.svg)
+![](https://ocr-d.de/assets/Funktionsmodell.png)
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.
@@ -142,7 +142,13 @@ can be especially useful for images which have not been enhanced.
         <td>Fast</td>
         <td><code>ocrd-cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
       </tr>
-    <tr data-processor="ocrd-skimage-binarize">
+    <tr data-processor="ocrd-sbb-binarize">
+      <td>ocrd-sbb-binarize</td>
+      <td><code>-P model</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
+    </tr>
+	<tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
       <td><code>-P k 0.10</code></td>
       <td>Slow</td>
@@ -238,6 +244,12 @@ For better results, the cropped images can be binarized again at this point or l
       <td></td>
       <td>Recommended</td>
       <td><code>ocrd-olena-binarize -I OCR-D-CROP -O OCR-D-BIN2</code></td>
+    </tr>
+  <tr data-processor="ocrd-sbb-binarize">
+      <td>ocrd-sbb-binarize</td>
+      <td><code>-P model</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
     </tr>
   <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
@@ -433,17 +445,23 @@ By now the image should be well prepared for segmentation.
 ### Step 7: Region segmentation
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-region-segmentation.md|sed '$d' -->
-
 In this processing step, an (optimized) document image is taken as an input and the
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding boxes instead of polygon coordinates,
-then you should post-process via `ocrd-segment-repair` with `plausibilize=True` to obtain better results without large overlaps.
+**Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding
+boxes instead of polygon coordinates, then you should post-process via
+`ocrd-segment-repair` with `plausibilize=True` to obtain better results without
+large overlaps. Alternatively, consider using the all-in-one [`ocrd-tesserocr-recognize`](#step-x-multistep)
+processor that can do region segmentation, line segmentation and text recognition
+in one step and can query tesseract for the generally more precise polygon region outlines
+instead of more coarse bounding boxes.
 
-**Note:** The `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` processors do not only segment the page, but also the text lines within
-the detected text regions in one step. Therefore with those (and only with those!) processors you don't
-need to segment into lines in an extra step.
+**Note:** The `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
+`ocrd-cis-ocropy-segment` processors do [not only segment the page, but
+also](#step-x-multistep) the text lines within the detected text regions in one
+step. Therefore with those (and only with those!) processors you don't need to
+segment into lines in an extra step.
 
 
 <table class="before-after">
@@ -553,7 +571,13 @@ your image twice on page level, and have no large images, you can probably skip 
       <td></td>
       <td><code>ocrd-skimage-binarize -I OCR-D-SEG-REG -O OCR-D-BIN-REG -P level-of-operation region</code></td>
     </tr>
-    <tr data-processor="ocrd-preprocess-image">
+    <tr data-processor="ocrd-sbb-binarize">
+      <td>ocrd-sbb-binarize</td>
+      <td><code>-P model -P operation_level region</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model -P operation-level region</code></td>
+    </tr>
+	<tr data-processor="ocrd-preprocess-image">
       <td>ocrd-preprocess-image</td>
       <td>
         <code>-P level-of-operation region</code><br/>
@@ -671,9 +695,12 @@ A line detection algorithm is run on every text region of every PAGE in the
 input file group, and a TextLine element with the resulting polygon
 outline is added to the annotation of the output PAGE.
 
+**Note:** If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
+
 **Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates,
-then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level).
-If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
+then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). Alternatively,
+you can use the [`ocrd-tesserocr-recognize` all-in-one processor](#step-x-multistep) that can do line segmentation, region segmentation
+and recognition in one step.
 
 **Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
@@ -1217,19 +1244,138 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
   </tbody>
 </table>
 
+### Step X: Multi-step
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-multistep.md|sed '$d' -->
+The procecssors in this group do more than one step in an OCR-D workflow. This
+allows these processors to optimize the data flow, e.g. reusing more precise
+internal data structures, instead of relying on the serialization of results by
+a previous step. The downside of these processors is that they are less
+interoperable with the granular processors, removing a certain amount of
+control from the user and making the implementations more complex.
+
+**Note:** All the `ocrd-tesserocr-segment*` processors internally delegate to
+`ocrd-tesserocr-recognize`, so you can replace calls to these task-specific
+processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
+
+<table>
+  <thead><tr><th>processor call</th><th><code>ocrd-tesserocr-recognize</code> parameters</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-segment-region -P overwrite_regions true -P crop_polygons</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level region -P overwrite_segments true -P block_polygons</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-table -P overwrite_cells true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level cell -P overwrite_segments true</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-line -P overwrite_lines true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level line -P overwrite_segments true</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-word -P overwrite_words true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level word -P overwrite_segments true</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+### Step X: Font annotation
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font.md|sed '$d' -->
+These processors can determine the font family (e.g. Antiqua, Fraktur,
+Schwabacher) or font style (e.g. *italic*, **bold**).
+
+**Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or segment on-demand. It can detect the following font styles:
+  * `fontSize`
+  * `fontFamily`
+  * `bold`
+  * `italic`
+  * `underlined`
+  * `monospace`
+  * `serif`
+
+**Note:** `ocrd-typegroups-classifier` can only annotate font families on page level but can detect a wider variety of fonts, including the confidence value (separated by colon). Supported `fontFamily` values:
+  * `Antiqua`
+  * `Bastarda`
+  * `Fraktur`
+  * `Gotico`-Antiqua
+  * `Greek`
+  * `Hebrew`
+  * `Italic`
+  * `Rotunda`
+  * `Schwabacher`
+  * `Textura`
+  * `other_font`
+  * `not_a_font`
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-tesserocr-fontshape">
+      <td>ocrd-tesserocr-fontshape</td>
+      <td><code>-P model osd -P padding 2</code></td>
+      <td></td>
+      <td><code>ocrd-tesserocr-fontshape -I SEG-WORD -O SEG-WORD-FONT</code></td>
+    </tr>
+    <tr data-processor="ocrd-typegroups-classifier">
+      <td>ocrd-typegroups-classifier</td>
+      <td><code>-P network /path/to/densenet121.tgc</code></td>
+      <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
+    </tr>
+  </tbody>
+
+<!-- END-EVAL -->
+
 # Recommendations
 
 <!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
-All processors, with the exception of those for post-correction, were tested on
-selected pages of some prints from the 17th and 18th century.
+In order to facilitate the usage of OCR-D and the configuration of workflows, we provide two workflows
+which can be used as a start for your OCR-D-tests. They were determined by testing the processors listed
+above on selected pages of some prints from the 17th and 18th century.
 
 The results vary quite a lot from page to page. In most cases, segmentation is a problem.
-
-These recommendations may also work well for other prints of those centuries.
 
 Note that for our test pages, not all steps described above werde needed to obtain the best results.
 Depending on your particular images, you might want to include those processors again for better results.
 
+We are currently working on regression tests with the help of which we will be able to provide more profound
+workflows soon, which will replace those interm solutions. 
+
+## Minimal workflow
+
+Since `ocrd-tesserocr-recognize` can do all line segmentation, region
+segmentation, table detection and even binarization (Otsu), just like the
+upstream `tesseract` command line tool, it's a good single-step workflow to get
+a baseline result to compare to granular workflows.
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Processor</th>
+      <th>Parameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>ocrd-tesserocr-recognize</td>
+      <td>-P segmentation_level line -P textequiv_level word -P find_tables true -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Best results for selected pages
 
@@ -1281,21 +1427,6 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td></td>
     </tr>
     <tr>
-      <td>10</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>11</td>
-      <td>ocrd-cis-ocropy-segment</td>
-      <td>-P level-of-operation region</td>
-    </tr>
-    <tr>
-    <td>12</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td>-P level-of-operation line</td>
-    </tr>
-    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1319,10 +1450,7 @@ ocrd process \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
-  "cis-ocropy-segment -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-CLIP-LINE -P level-of-operation line" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-CLIP-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE-RESEG-DEWARP" \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
@@ -1400,6 +1528,11 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
     <tr>
+      <td>12</td>
+      <td>ocrd-cis-ocropy-clip</td>
+      <td>-P level-of-operation line</td>
+    </tr>
+    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1407,7 +1540,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
     <tr>
       <td>14</td>
       <td>ocrd-tesserocr-recognize</td>
-      <td>-P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951</td>
+      <td>-P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951</td>
     </tr>
   </tbody>
 </table>
@@ -1426,8 +1559,9 @@ ocrd process \
   "tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW" \
   "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
   "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_words true -P model GT4HistOCR_50000000.997_191951}"
+  "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -P level-of-operation line" \
+  "cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951}"
 ```
 
 **Note:**

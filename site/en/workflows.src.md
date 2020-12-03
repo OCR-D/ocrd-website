@@ -336,6 +336,14 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
   </tbody>
 </table>
 
+### Step X: Multi-step
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-multistep.md|sed '$d'-->
+
+### Step X: Font annotation
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font.md|sed '$d'-->
+
 # Recommendations
 
 <!-- HERE-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md-->
