@@ -1311,6 +1311,8 @@ Schwabacher) or font style (e.g. *italic*, **bold**).
   * `other_font`
   * `not_a_font`
 
+**Note:** `ocrd-typegroups-classifier` only works on *non-binarized* RGB images.
+
 #### Available processors
 
 <table class="processor-table">
@@ -1333,6 +1335,7 @@ Schwabacher) or font style (e.g. *italic*, **bold**).
       <td>ocrd-typegroups-classifier</td>
       <td><code>-P network /path/to/densenet121.tgc</code></td>
       <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
+      <td><code>ocrd-typegroups-classifier -I MAX -O MAX-FONTS</code></td>
     </tr>
   </tbody>
 
