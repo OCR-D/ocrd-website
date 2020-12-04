@@ -1354,8 +1354,8 @@ workflows soon, which will replace those interim solutions.
 
 ## Minimal workflow
 
-Since `ocrd-tesserocr-recognize` can do all line segmentation, region
-segmentation, table detection and even binarization (Otsu), just like the
+Since `ocrd-tesserocr-recognize` can do all binarization (Otsu), region
+segmentation, table recognition, line segmentation and text recognition at once, just like the
 upstream `tesseract` command line tool, it's a good single-step workflow to get
 a baseline result to compare to granular workflows.
 
