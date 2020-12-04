@@ -1293,6 +1293,7 @@ Schwabacher) or font style (e.g. *italic*, **bold**).
   * `monospace`
   * `serif`
 
+**Note:** `ocrd-tesserocr-fontshape` needs the old, pre-LSTM models to work at all. You can use the pre-installed `osd` (which is purely rule-based), but there might be better alternatives for your language and script. You can still get the old models from Tesseract's Github repo at the [last revision](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d) before the [LSTM models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d22328b5846765eaad) replaced them, usually under the same name. (Thus, `deu.traineddata` used to be a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still only available as rule-based model and was complemented by the new LSTM models `frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the models that was replaced completely, then you should at least rename the old one (e.g. to `deu3.traineddata`).
 **Note:** `ocrd-typegroups-classifier` can only annotate font families on page level but can detect a wider variety of fonts, including the confidence value (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
   * `Bastarda`
