@@ -695,9 +695,8 @@ outline is added to the annotation of the output PAGE.
 **Note:** If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
 
 **Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates,
-then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). Alternatively,
-you can use the [`ocrd-tesserocr-recognize` all-in-one processor](#step-x-multistep) that can do line segmentation, region segmentation
-and recognition in one step.
+then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
+_Alternatively_, consider using the all-in-one capabilities of [`ocrd-tesserocr-recognize`](#step-x-multistep), which can do line segmentation and text recognition in one step by querying Tesseract's internal iterator (accessing the more precise polygon outlines instead of just coarse bounding boxes with lots of hard-to-recover overlap).
 
 **Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
