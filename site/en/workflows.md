@@ -452,7 +452,12 @@ Segments are also classified, either coarse (text, separator, image, table, ...)
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding
 boxes instead of polygon coordinates, then you should post-process via
 `ocrd-segment-repair` with `plausibilize=True` to obtain better results without
-large overlaps. _Alternatively_, consider using the all-in-one capabilities of [`ocrd-tesserocr-segment` and `ocrd-tesserocr-recognize`](#step-x-multistep), which can do region segmentation and line segmentation (and optionally also text recognition) in one step by querying Tesseract's internal iterator (accessing the more precise polygon outlines instead of just coarse bounding boxes with lots of hard-to-recover overlap).
+large overlaps. _Alternatively_, consider using the all-in-one capabilities of
+[`ocrd-tesserocr-segment` and `ocrd-tesserocr-recognize`](#step-x-multistep),
+which can do region segmentation and line segmentation (and optionally also
+text recognition) in one step by querying Tesseract's internal iterator
+(accessing the more precise polygon outlines instead of just coarse bounding
+boxes with lots of hard-to-recover overlap).
 
 **Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do [not only segment the page, but
@@ -694,9 +699,14 @@ outline is added to the annotation of the output PAGE.
 
 **Note:** If you use `ocrd-cis-ocropy-segment`, you can directly go on with [Step 13](#step-13-dewarping-on-line-level).
 
-**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding boxes instead of polygon coordinates,
-then you should post-process with the processors described in [Step 12](#step-12-resegmentation-line-level). 
-_Alternatively_, consider using the all-in-one capabilities of [`ocrd-tesserocr-recognize`](#step-x-multistep), which can do line segmentation and text recognition in one step by querying Tesseract's internal iterator (accessing the more precise polygon outlines instead of just coarse bounding boxes with lots of hard-to-recover overlap).
+**Note:** If you use `ocrd-tesserocr-segment-line`, which uses only bounding
+boxes instead of polygon coordinates, then you should post-process with the
+processors described in [Step 12](#step-12-resegmentation-line-level).
+_Alternatively_, consider using the all-in-one capabilities of
+[`ocrd-tesserocr-recognize`](#step-x-multistep), which can do line segmentation
+and text recognition in one step by querying Tesseract's internal iterator
+(accessing the more precise polygon outlines instead of just coarse bounding
+boxes with lots of hard-to-recover overlap).
 
 **Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
@@ -1293,7 +1303,20 @@ Schwabacher) or font style (e.g. *italic*, **bold**).
   * `monospace`
   * `serif`
 
-**Note:** `ocrd-tesserocr-fontshape` needs the old, pre-LSTM models to work at all. You can use the pre-installed `osd` (which is purely rule-based), but there might be better alternatives for your language and script. You can still get the old models from Tesseract's Github repo at the [last revision](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d) before the [LSTM models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d22328b5846765eaad) replaced them, usually under the same name. (Thus, `deu.traineddata` used to be a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still only available as rule-based model and was complemented by the new LSTM models `frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the models that was replaced completely, then you should at least rename the old one (e.g. to `deu3.traineddata`).
+**Note:** `ocrd-tesserocr-fontshape` needs the old, pre-LSTM models to work at
+all. You can use the pre-installed `osd` (which is purely rule-based), but
+there might be better alternatives for your language and script. You can still
+get the old models from Tesseract's Github repo at the [last
+revision](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)
+before the [LSTM
+models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d22328b5846765eaad)
+replaced them, usually under the same name. (Thus, `deu.traineddata` used to be
+a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still
+only available as rule-based model and was complemented by the new LSTM models
+`frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the
+models that was replaced completely, then you should at least rename the old
+one (e.g. to `deu3.traineddata`).
+
 **Note:** `ocrd-typegroups-classifier` can only annotate font families on page level but can detect a wider variety of fonts, including the confidence value (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
   * `Bastarda`
@@ -1355,7 +1378,7 @@ workflows soon, which will replace those interim solutions.
 
 ## Minimal workflow
 
-Since `ocrd-tesserocr-recognize` can do all binarization (Otsu), region
+Since `ocrd-tesserocr-recognize` can do binarization (Otsu), region
 segmentation, table recognition, line segmentation and text recognition at once, just like the
 upstream `tesseract` command line tool, it's a good single-step workflow to get
 a baseline result to compare to granular workflows.
