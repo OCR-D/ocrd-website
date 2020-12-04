@@ -1350,7 +1350,7 @@ Note that for our test pages, not all steps described above werde needed to obta
 Depending on your particular images, you might want to include those processors again for better results.
 
 We are currently working on regression tests with the help of which we will be able to provide more profound
-workflows soon, which will replace those interm solutions. 
+workflows soon, which will replace those interim solutions. 
 
 ## Minimal workflow
 
