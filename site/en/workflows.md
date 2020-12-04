@@ -1335,7 +1335,7 @@ Schwabacher) or font style (e.g. *italic*, **bold**).
       <td>ocrd-typegroups-classifier</td>
       <td><code>-P network /path/to/densenet121.tgc</code></td>
       <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
-      <td><code>ocrd-typegroups-classifier -I MAX -O MAX-FONTS</code></td>
+      <td><code>ocrd-typegroups-classifier -I OCR-D-IMG -O OCR-D-IMG-FONTS</code></td>
     </tr>
   </tbody>
 
@@ -1362,6 +1362,11 @@ Since `ocrd-tesserocr-recognize` can do all line segmentation, region
 segmentation, table detection and even binarization (Otsu), just like the
 upstream `tesseract` command line tool, it's a good single-step workflow to get
 a baseline result to compare to granular workflows.
+
+**Note:** Be aware that you will most likely obtain significantly better
+results by configuring a more granular workflow like e.g. the
+[workflows](#best-results-for-selected-pages)
+[below](#good-results-for-slower-processors).
 
 <table class="processor-table">
   <thead>
