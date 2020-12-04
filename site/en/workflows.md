@@ -454,7 +454,7 @@ boxes instead of polygon coordinates, then you should post-process via
 `ocrd-segment-repair` with `plausibilize=True` to obtain better results without
 large overlaps. _Alternatively_, consider using the all-in-one capabilities of [`ocrd-tesserocr-segment` and `ocrd-tesserocr-recognize`](#step-x-multistep), which can do region segmentation and line segmentation (and optionally also text recognition) in one step by querying Tesseract's internal iterator (accessing the more precise polygon outlines instead of just coarse bounding boxes with lots of hard-to-recover overlap).
 
-**Note:** The `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
+**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do [not only segment the page, but
 also](#step-x-multistep) the text lines within the detected text regions in one
 step. Therefore with those (and only with those!) processors you don't need to
