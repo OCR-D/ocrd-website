@@ -26,9 +26,13 @@ solutions for executing whole workflows.
 ## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
 
-### Step 0: Image Enhancement (Page Level, optional)
+### Step 0.1: Image Enhancement (Page Level, optional)
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md|sed '$d'-->
+
+### Step 0.2: Font detection
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-detection.md|sed '$d'-->
 
 ### Step 1: Binarization (Page Level)
 
@@ -274,6 +278,10 @@ In this processing step, the text line images get vertically aligned if they are
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-recognition.md|sed '$d'-->
 
+### Step 14.1: Font style annotation
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-style-annotation.md|sed '$d'-->
+
 ## Post Correction (Optional)
 
 ### Step 15: Text alignment
@@ -335,14 +343,6 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
     </tr>
   </tbody>
 </table>
-
-### Step X: Multi-step
-
-<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-multistep.md|sed '$d'-->
-
-### Step X: Font annotation
-
-<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font.md|sed '$d'-->
 
 # Recommendations
 

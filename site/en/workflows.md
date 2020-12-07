@@ -26,7 +26,7 @@ solutions for executing whole workflows.
 ## Image Optimization (Page Level)
 At first, the image should be prepared for OCR.
 
-### Step 0: Image Enhancement (Page Level, optional)
+### Step 0.1: Image Enhancement (Page Level, optional)
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-preprocessing.md|sed '$d' -->
 Optionally, you can start off your workflow by enhancing your images, which can be vital for the following binarization. In this processing step,
@@ -77,6 +77,58 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
       <td><code>
     ocrd-skimage-denoise-raw -I OCR-D-IMG -O OCR-D-DENOISE
     </code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+### Step 0.2: Font detection
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-detection.md|sed '$d' -->
+These processors can determine the font family (e.g. Antiqua, Fraktur,
+Schwabacher) to help select the right models for text detection.
+
+**Note:** `ocrd-typegroups-classifier` can only annotate font families on page
+level but can detect a wider variety of fonts, including the confidence value
+(separated by colon). Supported `fontFamily` values:
+  * `Antiqua`
+  * `Bastarda`
+  * `Fraktur`
+  * `Gotico`-Antiqua
+  * `Greek`
+  * `Hebrew`
+  * `Italic`
+  * `Rotunda`
+  * `Schwabacher`
+  * `Textura`
+  * `other_font`
+  * `not_a_font`
+
+**Note:** `ocrd-typegroups-classifier` only works on *non-binarized* RGB images.
+
+**Note:** `ocrd-typegroups-classifier` comes with a non-OCR-D CLI that allows
+for the generation of "heatmaps" on the page to visualize which regions of the page
+are classified as using a certain font with a certain confidence, see the
+[project's README for usage instructions](https://github.com/seuretm/ocrd_typegroups_classifier).
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-typegroups-classifier">
+      <td>ocrd-typegroups-classifier</td>
+      <td><code>-P network /path/to/densenet121.tgc</code></td>
+      <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
+      <td><code>ocrd-typegroups-classifier -I OCR-D-IMG -O OCR-D-IMG-FONTS</code></td>
     </tr>
   </tbody>
 </table>
@@ -453,17 +505,54 @@ Segments are also classified, either coarse (text, separator, image, table, ...)
 boxes instead of polygon coordinates, then you should post-process via
 `ocrd-segment-repair` with `plausibilize=True` to obtain better results without
 large overlaps. _Alternatively_, consider using the all-in-one capabilities of
-[`ocrd-tesserocr-segment` and `ocrd-tesserocr-recognize`](#step-x-multistep),
-which can do region segmentation and line segmentation (and optionally also
-text recognition) in one step by querying Tesseract's internal iterator
-(accessing the more precise polygon outlines instead of just coarse bounding
-boxes with lots of hard-to-recover overlap).
+`ocrd-tesserocr-segment` and `ocrd-tesserocr-recognize`, which can do region
+segmentation and line segmentation (and optionally also text recognition) in
+one step by querying Tesseract's internal iterator (accessing the more precise
+polygon outlines instead of just coarse bounding boxes with lots of
+hard-to-recover overlap).
 
 **Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
-`ocrd-cis-ocropy-segment` processors do [not only segment the page, but
-also](#step-x-multistep) the text lines within the detected text regions in one
+`ocrd-cis-ocropy-segment` processors do not only segment the page, but
+also the text lines within the detected text regions in one
 step. Therefore with those (and only with those!) processors you don't need to
-segment into lines in an extra step.
+segment into lines in an extra step and can continue with [step 13 - line-level dewarping](#step-13-dewarping-line-level).
+
+**Note:** All the `ocrd-tesserocr-segment*` processors internally delegate to
+`ocrd-tesserocr-recognize`, so you can replace calls to these task-specific
+processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
+
+<table>
+  <thead><tr><th>processor call</th><th><code>ocrd-tesserocr-recognize</code> parameters</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>ocrd-tesserocr-segment-region -P overwrite_regions true -P find_tables false</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level region -P overwrite_segments true -P find_tables false</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-table -P overwrite_cells true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level cell -P overwrite_segments true</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-line -P overwrite_lines true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level line -P overwrite_segments true</td>
+    </tr>
+    <tr>
+      <td>ocrd-tesserocr-segment-word -P overwrite_words true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level word -P overwrite_segments true</td>
+    </tr>
+  </tbody>
+</table>
+
+**Note:** The three parameters `segmentation_level`, `textequiv_level` and
+`model` define the behavior of `ocrd-tesserocr-segment`:
+
+* `segmentation_level` determines the *highest level* to segment.
+* `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level, i.e. glyphs.
+* `model` determines the model to use for text recognition.
+
+To segment existing regions into lines (and only lines): `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
+
+To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
 
 
 <table class="before-after">
@@ -498,17 +587,11 @@ segment into lines in an extra step.
     </tr>
   </thead>
   <tbody>
-    <tr data-processor="ocrd-tesserocr-segment-region">
-      <td>ocrd-tesserocr-segment-region</td>
-      <td><code>-P find_tables false</code></td>
-      <td>Recommended</td>
-      <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
-    </tr>
-    <tr data-processor="ocrd-segment-repair">
-      <td>ocrd-segment-repair</td>
-      <td><code>-P plausibilize true</code></td>
-      <td>Only to be used after <code>ocrd-tesserocr-segment-region</code></td>
-      <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
+    <tr data-processor="ocrd-tesserocr-segment">
+      <td>ocrd-tesserocr-segment</td>
+      <td><code>-P find_tables false -P shrink_polygon true -P segmentation_level region -P textequiv_level none</code></td>
+      <td>Recommended. Will reuse internal tesseract iterators to produce a complete segmentation with tight polygons instead of bounding boxes where possible</td>
+      <td><code>ocrd-tesserocr-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG</code></td>
     </tr>
     <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
@@ -522,6 +605,18 @@ segment into lines in an extra step.
       <td><code>-P level-of-operation page</code></td>
       <td></td>
     <td><code>ocrd-cis-ocropy-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P level-of-operation page</code></td>
+    </tr>
+    <tr data-processor="ocrd-tesserocr-segment-region">
+      <td>ocrd-tesserocr-segment-region</td>
+      <td><code>-P find_tables false</code></td>
+      <td>Recommended</td>
+      <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-repair">
+      <td>ocrd-segment-repair</td>
+      <td><code>-P plausibilize true</code></td>
+      <td>Only to be used after <code>ocrd-tesserocr-segment-region</code></td>
+      <td><code>ocrd-segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true</code></td>
     </tr>
     <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
@@ -703,7 +798,7 @@ outline is added to the annotation of the output PAGE.
 boxes instead of polygon coordinates, then you should post-process with the
 processors described in [Step 12](#step-12-resegmentation-line-level).
 _Alternatively_, consider using the all-in-one capabilities of
-[`ocrd-tesserocr-recognize`](#step-x-multistep), which can do line segmentation
+[`ocrd-tesserocr-recognize`](#step-7-region-segmentation), which can do line segmentation
 and text recognition in one step by querying Tesseract's internal iterator
 (accessing the more precise polygon outlines instead of just coarse bounding
 boxes with lots of hard-to-recover overlap).
@@ -899,6 +994,60 @@ which were trained on different GT data sets, for example from
 
 **Note:** If you want to go on with the optional post correction, you should also set the `textequiv_level` to `glyph` or in the case of
 `ocrd-calamari-recognize` at least `word` (which is already the default for `ocrd-tesserocr-recognize`).
+
+<!-- END-EVAL -->
+
+### Step 14.1: Font style annotation
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-style-annotation.md|sed '$d' -->
+These processors can determine the font style (e.g. *italic*, **bold**,
+<ins>underlined</ins>) and font family text recognition results.
+
+**Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or
+segment on-demand. It can detect the following font styles:
+  * `fontSize`
+  * `fontFamily`
+  * `bold`
+  * `italic`
+  * `underlined`
+  * `monospace`
+  * `serif`
+
+**Note:** `ocrd-tesserocr-fontshape` needs the old, pre-LSTM models to work at
+all. You can use the pre-installed `osd` (which is purely rule-based), but
+there might be better alternatives for your language and script. You can still
+get the old models from Tesseract's Github repo at the [last
+revision](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)
+before the [LSTM
+models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d22328b5846765eaad)
+replaced them, usually under the same name. (Thus, `deu.traineddata` used to be
+a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still
+only available as rule-based model and was complemented by the new LSTM models
+`frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the
+models that was replaced completely, then you should at least rename the old
+one (e.g. to `deu3.traineddata`).
+
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-tesserocr-fontshape">
+      <td>ocrd-tesserocr-fontshape</td>
+      <td><code>-P model osd -P padding 2</code></td>
+      <td>Download other pre-LSTM models [from GitHub](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)</td>
+      <td><code>ocrd-tesserocr-fontshape -I SEG-WORD -O SEG-WORD-FONT</code></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- END-EVAL -->
 
@@ -1250,117 +1399,6 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
   </tbody>
 </table>
 
-### Step X: Multi-step
-
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-multistep.md|sed '$d' -->
-The procecssors in this group do more than one step in an OCR-D workflow. This
-allows these processors to optimize the data flow, e.g. reusing more precise
-internal data structures, instead of relying on the serialization of results by
-a previous step. The downside of these processors is that they are less
-interoperable with the granular processors, removing a certain amount of
-control from the user and making the implementations more complex.
-
-**Note:** All the `ocrd-tesserocr-segment*` processors internally delegate to
-`ocrd-tesserocr-recognize`, so you can replace calls to these task-specific
-processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
-
-<table>
-  <thead><tr><th>processor call</th><th><code>ocrd-tesserocr-recognize</code> parameters</th></tr></thead>
-  <tbody>
-    <tr>
-      <td>ocrd-tesserocr-segment-region -P overwrite_regions true -P find_tables false</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level region -P overwrite_segments true -P find_tables false</td>
-    </tr>
-    <tr>
-      <td>ocrd-tesserocr-segment-table -P overwrite_cells true</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level cell -P overwrite_segments true</td>
-    </tr>
-    <tr>
-      <td>ocrd-tesserocr-segment-line -P overwrite_lines true</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level line -P overwrite_segments true</td>
-    </tr>
-    <tr>
-      <td>ocrd-tesserocr-segment-word -P overwrite_words true</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level word -P overwrite_segments true</td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- END-EVAL -->
-
-### Step X: Font annotation
-
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font.md|sed '$d' -->
-These processors can determine the font family (e.g. Antiqua, Fraktur,
-Schwabacher) or font style (e.g. *italic*, **bold**).
-
-**Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or segment on-demand. It can detect the following font styles:
-  * `fontSize`
-  * `fontFamily`
-  * `bold`
-  * `italic`
-  * `underlined`
-  * `monospace`
-  * `serif`
-
-**Note:** `ocrd-tesserocr-fontshape` needs the old, pre-LSTM models to work at
-all. You can use the pre-installed `osd` (which is purely rule-based), but
-there might be better alternatives for your language and script. You can still
-get the old models from Tesseract's Github repo at the [last
-revision](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)
-before the [LSTM
-models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d22328b5846765eaad)
-replaced them, usually under the same name. (Thus, `deu.traineddata` used to be
-a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still
-only available as rule-based model and was complemented by the new LSTM models
-`frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the
-models that was replaced completely, then you should at least rename the old
-one (e.g. to `deu3.traineddata`).
-
-**Note:** `ocrd-typegroups-classifier` can only annotate font families on page level but can detect a wider variety of fonts, including the confidence value (separated by colon). Supported `fontFamily` values:
-  * `Antiqua`
-  * `Bastarda`
-  * `Fraktur`
-  * `Gotico`-Antiqua
-  * `Greek`
-  * `Hebrew`
-  * `Italic`
-  * `Rotunda`
-  * `Schwabacher`
-  * `Textura`
-  * `other_font`
-  * `not_a_font`
-
-**Note:** `ocrd-typegroups-classifier` only works on *non-binarized* RGB images.
-
-#### Available processors
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Processor</th>
-      <th>Parameter</th>
-      <th>Remarks</th>
-    <th>Call</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr data-processor="ocrd-tesserocr-fontshape">
-      <td>ocrd-tesserocr-fontshape</td>
-      <td><code>-P model osd -P padding 2</code></td>
-      <td>Download other pre-LSTM models [from GitHub](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)</td>
-      <td><code>ocrd-tesserocr-fontshape -I SEG-WORD -O SEG-WORD-FONT</code></td>
-    </tr>
-    <tr data-processor="ocrd-typegroups-classifier">
-      <td>ocrd-typegroups-classifier</td>
-      <td><code>-P network /path/to/densenet121.tgc</code></td>
-      <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
-      <td><code>ocrd-typegroups-classifier -I OCR-D-IMG -O OCR-D-IMG-FONTS</code></td>
-    </tr>
-  </tbody>
-
-<!-- END-EVAL -->
-
 # Recommendations
 
 <!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
@@ -1476,9 +1514,8 @@ ocrd process \
   "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
   "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
-  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG -P level-of-operation page" \
-  "tesserocr-deskew -I OCR-D-SEG-REG -O OCR-D-SEG-REG-DESKEW" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P level-of-operation page" \
+  "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-LINE-RESEG-DEWARP" \
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json"
 ```
 
@@ -1510,7 +1547,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
     </tr>
-  <tr>
+    <tr>
       <td>2</td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
@@ -1532,34 +1569,10 @@ If your computer is not that powerful you may try this workflow. It works fine f
     </tr>
     <tr>
       <td>7</td>
-      <td>ocrd-tesserocr-segment-region</td>
+      <td>ocrd-tesserocr-segment</td>
       <td></td>
     </tr>
     <tr>
-    <td>7a</td>
-      <td>ocrd-segment-repair</td>
-      <td>-P plausibilize true</td>
-    </tr>
-    <tr>
-      <td>9</td>
-      <td>ocrd-tesserocr-deskew</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>11</td>
-      <td>ocrd-tesserocr-segment-line</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>12</td>
-      <td>ocrd-cis-ocropy-clip</td>
-      <td>-P level-of-operation line</td>
-    </tr>
     <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
@@ -1582,14 +1595,9 @@ ocrd process \
   "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
   "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
-  "tesserocr-segment-region -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG-REG" \
-  "segment-repair -I OCR-D-SEG-REG -O OCR-D-SEG-REPAIR -P plausibilize true" \
-  "tesserocr-deskew -I OCR-D-SEG-REPAIR -O OCR-D-SEG-REG-DESKEW" \
-  "cis-ocropy-clip -I OCR-D-SEG-REG-DESKEW -O OCR-D-SEG-REG-DESKEW-CLIP" \
-  "tesserocr-segment-line -I OCR-D-SEG-REG-DESKEW-CLIP -O OCR-D-SEG-LINE" \
-  "cis-ocropy-clip -I OCR-D-SEG-LINE -O OCR-D-SEG-LINE-CLIP -P level-of-operation line" \
-  "cis-ocropy-dewarp -I OCR-D-SEG-LINE-CLIP -O OCR-D-SEG-LINE-RESEG-DEWARP" \
-  "tesserocr-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951}"
+  "tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG" \
+  "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951}"
 ```
 
 **Note:**
