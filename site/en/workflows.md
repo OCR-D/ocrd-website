@@ -552,8 +552,9 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
 
 Examples:
 - To segment existing regions into lines (and only lines) only: `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
+- To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
 
-To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
+For detailed descriptions of behaviour and options, see [Readme file](https://github.com/OCR-D/ocrd_tesserocr/blob/master/README.md) and `ocrd-tesserocr-recognize/segment/segment-region/segment-table/segment-line/segment-word -h` help.
 
 
 <table class="before-after">
