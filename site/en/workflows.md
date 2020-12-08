@@ -1572,7 +1572,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
     <tr>
       <td>7</td>
       <td>ocrd-tesserocr-segment</td>
-      <td></td>
+      <td>-P shrink_polygons true</td>
     </tr>
     <tr>
     <tr>
