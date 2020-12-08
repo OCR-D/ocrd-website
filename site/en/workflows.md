@@ -803,7 +803,7 @@ _Alternatively_, consider using the all-in-one capabilities of
 [`ocrd-tesserocr-recognize`](#step-7-region-segmentation), which can do line segmentation
 and text recognition in one step by querying Tesseract's internal iterator
 (accessing the more precise polygon outlines instead of just coarse bounding
-boxes with lots of hard-to-recover overlap).
+boxes with lots of hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True` (accessing that same iterator to calculate convex hull polygons).
 
 **Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
