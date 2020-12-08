@@ -1005,7 +1005,7 @@ which were trained on different GT data sets, for example from
 This processor can determine the font style (e.g. *italic*, **bold**,
 <ins>underlined</ins>) and font family text recognition results.
 
-**Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or
+`ocrd-tesserocr-fontshape` can either use existing segmentation or
 segment on-demand. It can detect the following font styles:
   * `fontSize`
   * `fontFamily`
