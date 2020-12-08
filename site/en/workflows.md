@@ -546,7 +546,7 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
 **Note:** The three parameters `segmentation_level`, `textequiv_level` and
 `model` define the behavior of `ocrd-tesserocr-segment`:
 
-* `segmentation_level` determines the *highest level* to segment.
+* `segmentation_level` determines the *highest level* to segment. Use `"none"` to disable segmentation altogether, i.e. only recognize existing segments.
 * `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level, i.e. glyphs.
 * `model` determines the model to use for text recognition.
 
