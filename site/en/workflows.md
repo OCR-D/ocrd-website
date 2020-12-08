@@ -612,7 +612,7 @@ For detailed descriptions of behaviour and options, see [Readme file](https://gi
       <td>ocrd-tesserocr-segment-region</td>
       <td><code>-P find_tables false</code></td>
       <td>Recommended</td>
-      <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+      <td><code>ocrd-tesserocr-segment-region -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P find_tables false -P shrink_polygons true</code></td>
     </tr>
     <tr data-processor="ocrd-segment-repair">
       <td>ocrd-segment-repair</td>
