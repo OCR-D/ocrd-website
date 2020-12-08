@@ -591,7 +591,7 @@ For detailed descriptions of behaviour and options, see [Readme file](https://gi
   <tbody>
     <tr data-processor="ocrd-tesserocr-segment">
       <td>ocrd-tesserocr-segment</td>
-      <td><code>-P find_tables false -P shrink_polygon true -P segmentation_level region -P textequiv_level none</code></td>
+      <td><code>-P find_tables false -P shrink_polygons true</code></td>
       <td>Recommended. Will reuse internal tesseract iterators to produce a complete segmentation with tight polygons instead of bounding boxes where possible</td>
       <td><code>ocrd-tesserocr-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG</code></td>
     </tr>
