@@ -86,11 +86,11 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 ### Step 0.2: Font detection
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-detection.md|sed '$d' -->
-These processors can determine the font family (e.g. Antiqua, Fraktur,
+Optionally, this processor can determine the font family (e.g. Antiqua, Fraktur,
 Schwabacher) to help select the right models for text detection.
 
-**Note:** `ocrd-typegroups-classifier` can only annotate font families on page
-level but can detect a wider variety of fonts, including the confidence value
+`ocrd-typegroups-classifier` annotates font families on page
+level, including the confidence value
 (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
   * `Bastarda`
@@ -1006,10 +1006,10 @@ which were trained on different GT data sets, for example from
 ### Step 14.1: Font style annotation
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-style-annotation.md|sed '$d' -->
-These processors can determine the font style (e.g. *italic*, **bold**,
+This processor can determine the font style (e.g. *italic*, **bold**,
 <ins>underlined</ins>) and font family text recognition results.
 
-**Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or
+`ocrd-tesserocr-fontshape` can either use existing segmentation or
 segment on-demand. It can detect the following font styles:
   * `fontSize`
   * `fontFamily`
