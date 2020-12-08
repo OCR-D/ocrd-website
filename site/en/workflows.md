@@ -89,7 +89,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 These processors can determine the font family (e.g. Antiqua, Fraktur,
 Schwabacher) to help select the right models for text detection.
 
-**Note:** `ocrd-typegroups-classifier` can only annotate font families on page
+`ocrd-typegroups-classifier` annotates font families on page
 level but can detect a wider variety of fonts, including the confidence value
 (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
