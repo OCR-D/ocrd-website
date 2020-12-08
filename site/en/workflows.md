@@ -509,7 +509,7 @@ large overlaps. _Alternatively_, consider using the all-in-one capabilities of
 segmentation and line segmentation (and optionally also text recognition) in
 one step by querying Tesseract's internal iterator (accessing the more precise
 polygon outlines instead of just coarse bounding boxes with lots of
-hard-to-recover overlap).
+hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True` (accessing that same iterator to calculate convex hull polygons).
 
 **Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do not only segment the page, but
