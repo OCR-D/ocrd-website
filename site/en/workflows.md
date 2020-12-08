@@ -550,7 +550,8 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
 * `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level (`"glyph"`) and disable recognition altogether, i.e. only analyse layout.
 * `model` determines the model to use for text recognition. Use `""` or do not set at all to disable recognition, i.e. only analyse layout.
 
-To segment existing regions into lines (and only lines): `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
+Examples:
+- To segment existing regions into lines (and only lines) only: `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
 
 To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
 
