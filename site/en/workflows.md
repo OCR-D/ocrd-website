@@ -90,8 +90,7 @@ Optionally, this processor can determine the font family (e.g. Antiqua, Fraktur,
 Schwabacher) to help select the right models for text detection.
 
 `ocrd-typegroups-classifier` annotates font families on page
-level, including the confidence value
-(separated by colon). Supported `fontFamily` values:
+level, including the confidence value (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
   * `Bastarda`
   * `Fraktur`
@@ -105,7 +104,10 @@ level, including the confidence value
   * `other_font`
   * `not_a_font`
 
-**Note:** `ocrd-typegroups-classifier` only works on *non-binarized* RGB images.
+**Note:** `ocrd-typegroups-classifier` was trained on a very large and diverse
+dataset, with both geometric and color-space random augmentation (contrast,
+brightness, hue, even compression artifacts and 2 different binarization
+methods), so it works best on the raw, *non-binarized* RGB image.
 
 **Note:** `ocrd-typegroups-classifier` comes with a non-OCR-D CLI that allows
 for the generation of "heatmaps" on the page to visualize which regions of the page
@@ -501,6 +503,12 @@ In this processing step, an (optimized) document image is taken as an input and 
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
+**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
+`ocrd-cis-ocropy-segment` processors do not only segment the page, but
+also the text lines within the detected text regions in one
+step. Therefore with those (and only with those!) processors you don't need to
+segment into lines in an extra step and can continue with [step 13 - line-level dewarping](#step-13-dewarping-line-level).
+
 **Note:** If you use `ocrd-tesserocr-segment-region`, which uses only bounding
 boxes instead of polygon coordinates, then you should post-process via
 `ocrd-segment-repair` with `plausibilize=True` to obtain better results without
@@ -511,12 +519,6 @@ one step by querying Tesseract's internal iterator (accessing the more precise
 polygon outlines instead of just coarse bounding boxes with lots of
 hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True`
 (accessing that same iterator to calculate convex hull polygons).
-
-**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
-`ocrd-cis-ocropy-segment` processors do not only segment the page, but
-also the text lines within the detected text regions in one
-step. Therefore with those (and only with those!) processors you don't need to
-segment into lines in an extra step and can continue with [step 13 - line-level dewarping](#step-13-dewarping-line-level).
 
 **Note:** All the `ocrd-tesserocr-segment*` processors internally delegate to
 `ocrd-tesserocr-recognize`, so you can replace calls to these task-specific
