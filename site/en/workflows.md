@@ -1002,7 +1002,7 @@ which were trained on different GT data sets, for example from
 ### Step 14.1: Font style annotation
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-style-annotation.md|sed '$d' -->
-These processors can determine the font style (e.g. *italic*, **bold**,
+This processor can determine the font style (e.g. *italic*, **bold**,
 <ins>underlined</ins>) and font family text recognition results.
 
 **Note:** `ocrd-tesserocr-fontshape` can either use existing segmentation or
