@@ -526,7 +526,7 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
   <tbody>
     <tr>
       <td>ocrd-tesserocr-segment-region -P overwrite_regions true -P find_tables false</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level none -P segmentation_level region -P overwrite_segments true -P find_tables false</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level region -P segmentation_level region -P overwrite_segments true -P find_tables false</td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-segment-table -P overwrite_cells true</td>
