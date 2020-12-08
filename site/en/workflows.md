@@ -90,7 +90,7 @@ These processors can determine the font family (e.g. Antiqua, Fraktur,
 Schwabacher) to help select the right models for text detection.
 
 `ocrd-typegroups-classifier` annotates font families on page
-level but can detect a wider variety of fonts, including the confidence value
+level, including the confidence value
 (separated by colon). Supported `fontFamily` values:
   * `Antiqua`
   * `Bastarda`
