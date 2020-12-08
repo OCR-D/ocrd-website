@@ -509,7 +509,8 @@ large overlaps. _Alternatively_, consider using the all-in-one capabilities of
 segmentation and line segmentation (and optionally also text recognition) in
 one step by querying Tesseract's internal iterator (accessing the more precise
 polygon outlines instead of just coarse bounding boxes with lots of
-hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True` (accessing that same iterator to calculate convex hull polygons).
+hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True`
+(accessing that same iterator to calculate convex hull polygons).
 
 **Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do not only segment the page, but
@@ -547,14 +548,15 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
 `model` define the behavior of `ocrd-tesserocr-recognize`:
 
 * `segmentation_level` determines the *highest level* to segment. Use `"none"` to disable segmentation altogether, i.e. only recognize existing segments.
-* `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level (`"glyph"`) and disable recognition altogether, i.e. only analyse layout.
+* `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level (`"glyph"`) and disable recognition altogether, only analyse layout.
 * `model` determines the model to use for text recognition. Use `""` or do not set at all to disable recognition, i.e. only analyse layout.
 
 Examples:
-- To segment existing regions into lines (and only lines) only: `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
-- To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
+* To segment existing regions into lines (and only lines) only: `segmentation_level="line"`, `textequiv_level="line"`, `model=""`
+* To segment existing regions into lines (and only lines) and recognize text: `segmentation_level="line"`, `textequiv_level="line"`, `model="Fraktur"`
 
-For detailed descriptions of behaviour and options, see [Readme file](https://github.com/OCR-D/ocrd_tesserocr/blob/master/README.md) and `ocrd-tesserocr-recognize/segment/segment-region/segment-table/segment-line/segment-word -h` help.
+For detailed descriptions of behaviour and options, see [tesserocr's README](https://github.com/OCR-D/ocrd_tesserocr/blob/master/README.md) and
+`ocrd-tesserocr-recognize/segment/segment-region/segment-table/segment-line/segment-word --help` help.
 
 
 <table class="before-after">
@@ -803,7 +805,9 @@ _Alternatively_, consider using the all-in-one capabilities of
 [`ocrd-tesserocr-recognize`](#step-7-region-segmentation), which can do line segmentation
 and text recognition in one step by querying Tesseract's internal iterator
 (accessing the more precise polygon outlines instead of just coarse bounding
-boxes with lots of hard-to-recover overlap). _Alternatively_, run with `shrink_polygons=True` (accessing that same iterator to calculate convex hull polygons).
+boxes with lots of hard-to-recover overlap). _Alternatively_, run with
+`shrink_polygons=True` (accessing that same iterator to calculate convex hull
+polygons)
 
 **Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
@@ -1490,11 +1494,6 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
       <td>-P level-of-operation page</td>
     </tr>
     <tr>
-      <td>9</td>
-      <td>ocrd-tesserocr-deskew</td>
-      <td></td>
-    </tr>
-    <tr>
       <td>13</td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
@@ -1555,11 +1554,6 @@ If your computer is not that powerful you may try this workflow. It works fine f
       <td></td>
     </tr>
     <tr>
-      <td>3</td>
-      <td>ocrd-skimage-binarize</td>
-      <td>-P method li</td>
-    </tr>
-    <tr>
       <td>4</td>
       <td>ocrd-skimage-denoise</td>
       <td>-P level-of-operation page</td>
@@ -1594,7 +1588,6 @@ If your computer is not that powerful you may try this workflow. It works fine f
 ocrd process \
   "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
   "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P shrink_polygons true" \
