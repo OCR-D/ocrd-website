@@ -86,7 +86,7 @@ the raw image is taken and enhanced by e.g. grayscale conversion, brightness nor
 ### Step 0.2: Font detection
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-font-detection.md|sed '$d' -->
-These processors can determine the font family (e.g. Antiqua, Fraktur,
+Optionally, this processor can determine the font family (e.g. Antiqua, Fraktur,
 Schwabacher) to help select the right models for text detection.
 
 `ocrd-typegroups-classifier` annotates font families on page
