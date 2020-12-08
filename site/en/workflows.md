@@ -1464,42 +1464,42 @@ page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-973
   </thead>
   <tbody>
     <tr>
-      <td>1</td>
+      <td><a href="#step-1-binarization-page-level">1</a></td>
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
     </tr>
-  <tr>
-      <td>2</td>
+    <tr>
+      <td><a href="#step-2-cropping-page-level">2</a></td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
     <tr>
-      <td>3</td>
+      <td><a href="#step-3-binarization-page-level">3</a></td>
       <td>ocrd-skimage-binarize</td>
       <td>-P method li</td>
     </tr>
     <tr>
-      <td>4</td>
+      <td><a href="#step-4-denoising-page-level">4</a></td>
       <td>ocrd-skimage-denoise</td>
       <td>P level-of-operation page</td>
     </tr>
     <tr>
-      <td>5</td>
+      <td><a href="#step-5-deskewing-page-level">5</a></td>
       <td>ocrd-tesserocr-deskew</td>
       <td>-P level-of-operation page</td>
     </tr>
     <tr>
-      <td>7</td>
+      <td><a href="#step-7-region-segmentation">7</a></td>
       <td>ocrd-cis-ocropy-segment</td>
       <td>-P level-of-operation page</td>
     </tr>
     <tr>
-      <td>13</td>
+      <td><a href="#step-13-dewarping-line-level">13</a></td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
     </tr>
     <tr>
-      <td>14</td>
+      <td><a href="#step-14-text-recognition">14</a></td>
       <td>ocrd-calamari-recognize</td>
       <td>-P checkpoint /path/to/models/\*.ckpt.json</td>
     </tr>
@@ -1544,38 +1544,37 @@ If your computer is not that powerful you may try this workflow. It works fine f
   </thead>
   <tbody>
     <tr>
-      <td>1</td>
+      <td><a href="#step-1-binarization-page-level">1</a></td>
       <td>ocrd-cis-ocropy-binarize</td>
       <td></td>
     </tr>
     <tr>
-      <td>2</td>
+      <td><a href="#step-2-cropping-page-level">2</a></td>
       <td>ocrd-anybaseocr-crop</td>
       <td></td>
     </tr>
     <tr>
-      <td>4</td>
+      <td><a href="#step-3-binarization-page-level">3</a></td>
       <td>ocrd-skimage-denoise</td>
       <td>-P level-of-operation page</td>
     </tr>
     <tr>
-      <td>5</td>
+      <td><a href="#step-5-deskewing-page-level">5</a></td>
       <td>ocrd-tesserocr-deskew</td>
       <td>-P level-of-operation page</td>
     </tr>
     <tr>
-      <td>7</td>
+      <td><a href="#step-7-region-segmentation">7</a></td>
       <td>ocrd-tesserocr-segment</td>
       <td>-P shrink_polygons true</td>
     </tr>
     <tr>
-    <tr>
-      <td>13</td>
+      <td><a href="#step-13-dewarping-line-level">13</a></td>
       <td>ocrd-cis-ocropy-dewarp</td>
       <td></td>
     </tr>
     <tr>
-      <td>14</td>
+      <td><a href="#step-14-text-recognition">14</a></td>
       <td>ocrd-tesserocr-recognize</td>
       <td>-P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951</td>
     </tr>
