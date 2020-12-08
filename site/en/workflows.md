@@ -1046,7 +1046,7 @@ one (e.g. to `deu3.traineddata`).
       <td>ocrd-tesserocr-fontshape</td>
       <td><code>-P model osd -P padding 2</code></td>
       <td>Download other pre-LSTM models [from GitHub](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)</td>
-      <td><code>ocrd-tesserocr-fontshape -I SEG-WORD -O SEG-WORD-FONT</code></td>
+      <td><code>ocrd-tesserocr-fontshape -I OCR-D-OCR -O OCR-D-OCR-FONT</code></td>
     </tr>
   </tbody>
 </table>
