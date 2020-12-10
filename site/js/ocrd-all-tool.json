@@ -985,8 +985,17 @@
                 "format": "integer",
                 "type": "number"
             },
+            "level-of-operation": {
+                "default": "page",
+                "description": "PAGE XML hierarchy level granularity to segment lines in",
+                "enum": [
+                    "page",
+                    "region"
+                ],
+                "type": "string"
+            },
             "min_fraction": {
-                "default": 0.8,
+                "default": 0.75,
                 "description": "share of foreground pixels that must be retained by the largest label",
                 "format": "float",
                 "type": "number"
@@ -2689,7 +2698,7 @@
             "OCR-D-OCR"
         ],
         "output_file_grp": [
-            "OCR-D-OCR-FONTSTYLE"
+            "OCR-D-OCR-STYLE"
         ],
         "parameters": {
             "dpi": {
@@ -2738,7 +2747,7 @@
         "parameters": {
             "block_polygons": {
                 "default": false,
-                "description": "When detecting regions, annotate polygon coordinates instead of bounding box rectangles.",
+                "description": "When detecting regions, annotate polygon coordinates instead of bounding box rectangles by querying Tesseract accordingly.",
                 "type": "boolean"
             },
             "char_blacklist": {
@@ -2805,10 +2814,20 @@
                 ],
                 "type": "string"
             },
+            "shrink_polygons": {
+                "default": false,
+                "description": "When detecting any segments, annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols.",
+                "type": "boolean"
+            },
             "sparse_text": {
                 "default": false,
                 "description": "When detecting regions, use 'sparse text' page segmentation mode (finding as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space.",
                 "type": "boolean"
+            },
+            "tesseract_parameters": {
+                "default": {},
+                "description": "Dictionary of additional Tesseract runtime variables (cf. tesseract --print-parameters), string values.",
+                "type": "object"
             },
             "textequiv_level": {
                 "default": "word",
@@ -2867,6 +2886,11 @@
                 "format": "integer",
                 "type": "number"
             },
+            "shrink_polygons": {
+                "default": false,
+                "description": "annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols",
+                "type": "boolean"
+            },
             "sparse_text": {
                 "default": false,
                 "description": "use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space",
@@ -2901,6 +2925,17 @@
             "overwrite_lines": {
                 "default": true,
                 "description": "Remove existing layout and text annotation below the TextRegion level (otherwise skip region; no incremental annotation yet).",
+                "type": "boolean"
+            },
+            "padding": {
+                "default": 0,
+                "description": "extend detected line rectangles by this many (true) pixels",
+                "format": "integer",
+                "type": "number"
+            },
+            "shrink_polygons": {
+                "default": false,
+                "description": "annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols",
                 "type": "boolean"
             }
         },
@@ -2950,6 +2985,11 @@
                 "format": "integer",
                 "type": "number"
             },
+            "shrink_polygons": {
+                "default": false,
+                "description": "annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols",
+                "type": "boolean"
+            },
             "sparse_text": {
                 "default": false,
                 "description": "use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space",
@@ -2984,6 +3024,17 @@
                 "default": true,
                 "description": "Remove existing layout and text annotation below the TableRegion level (otherwise skip table; no incremental annotation yet).",
                 "type": "boolean"
+            },
+            "padding": {
+                "default": 0,
+                "description": "extend detected cell rectangles by this many (true) pixels",
+                "format": "integer",
+                "type": "number"
+            },
+            "shrink_polygons": {
+                "default": false,
+                "description": "annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols",
+                "type": "boolean"
             }
         },
         "steps": [
@@ -3014,6 +3065,17 @@
                 "default": true,
                 "description": "Remove existing layout and text annotation below the TextLine level (otherwise skip line; no incremental annotation yet).",
                 "type": "boolean"
+            },
+            "padding": {
+                "default": 0,
+                "description": "extend detected cell rectangles by this many (true) pixels",
+                "format": "integer",
+                "type": "number"
+            },
+            "shrink_polygons": {
+                "default": false,
+                "description": "annotate polygon coordinates instead of bounding box rectangles by projecting the convex hull of all symbols",
+                "type": "boolean"
             }
         },
         "steps": [
@@ -3028,6 +3090,9 @@
         "executable": "ocrd-typegroups-classifier",
         "input_file_grp": [
             "OCR-D-IMG"
+        ],
+        "output_file_grp": [
+            "OCR-D-IMG-FONTS"
         ],
         "parameters": {
             "network": {
