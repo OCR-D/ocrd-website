@@ -1451,6 +1451,13 @@ results by configuring a more granular workflow like e.g. the
   </tbody>
 </table>
 
+
+### Example with ocrd-process
+
+```sh
+ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
+```
+
 ## Best results for selected pages
 
 The following workflow has produced best results for 'simple' pages (e.g. [this
