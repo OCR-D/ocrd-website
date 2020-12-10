@@ -129,7 +129,7 @@ are classified as using a certain font with a certain confidence, see the
     <tr data-processor="ocrd-typegroups-classifier">
       <td>ocrd-typegroups-classifier</td>
       <td><code>-P network /path/to/densenet121.tgc</code></td>
-      <td>Download [`densenet121.tgc` from GitHub](https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc)</td>
+      <td>Download <a href="https://github.com/seuretm/ocrd_typegroups_classifier/raw/master/ocrd_typegroups_classifier/models/densenet121.tgc"><code>densenet121.tgc</code> from GitHub</a></td>
       <td><code>ocrd-typegroups-classifier -I OCR-D-IMG -O OCR-D-IMG-FONTS</code></td>
     </tr>
   </tbody>
@@ -1051,7 +1051,7 @@ one (e.g. to `deu3.traineddata`).
     <tr data-processor="ocrd-tesserocr-fontshape">
       <td>ocrd-tesserocr-fontshape</td>
       <td><code>-P model osd -P padding 2</code></td>
-      <td>Download other pre-LSTM models [from GitHub](https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d)</td>
+      <td>Download other pre-LSTM models <a href="https://github.com/tesseract-ocr/tessdata/commit/3cf1e2df1fe1d1da29295c9ef0983796c7958b7d">from GitHub</a></td>
       <td><code>ocrd-tesserocr-fontshape -I OCR-D-OCR -O OCR-D-OCR-FONT</code></td>
     </tr>
   </tbody>
