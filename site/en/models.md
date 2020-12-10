@@ -112,7 +112,9 @@ We recommend you download the following model, either by downloading and
 unpacking manually or by using `make install-models-calamari` if using
 `ocrd_all`:
 
-  * [@mike-gerber's GT4HistOCR model](https://qurator-data.de/calamari-models/GT4HistOCR/model.tar.xz)
+  * [@mike-gerber's GT4HistOCR model](https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz)
+
+The Calamari-OCR project also maintains a [repository of models](https://github.com/Calamari-OCR/calamari_models)
 
 To use a specific model with OCR-D's calamari wrapper
 [ocrd_calamari](https://github.com/OCR-D/ocrd_calamari) and more specifically,
