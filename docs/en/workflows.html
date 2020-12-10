@@ -437,15 +437,19 @@
   </li>
   <li><a href="#recommendations">Recommendations</a>
     <ul>
-      <li><a href="#minimal-workflow">Minimal workflow</a></li>
-      <li><a href="#best-results-for-selected-pages">Best results for selected pages</a>
+      <li><a href="#minimal-workflow">Minimal workflow</a>
         <ul>
           <li><a href="#example-with-ocrd-process">Example with ocrd-process</a></li>
         </ul>
       </li>
-      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a>
+      <li><a href="#best-results-for-selected-pages">Best results for selected pages</a>
         <ul>
           <li><a href="#example-with-ocrd-process-1">Example with ocrd-process</a></li>
+        </ul>
+      </li>
+      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a>
+        <ul>
+          <li><a href="#example-with-ocrd-process-2">Example with ocrd-process</a></li>
         </ul>
       </li>
     </ul>
@@ -1421,7 +1425,7 @@ need to segment into lines in an extra step.</p>
       <td>ocrd-calamari-recognize</td>
       <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        Recommended<br />Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>;
+        Recommended<br />Model can be found <a href="https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz">here</a>;
         <br />For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
       </td>
       <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
@@ -1893,6 +1897,11 @@ results by configuring a more granular workflow like e.g. the
   </tbody>
 </table>
 
+<h3 id="example-with-ocrd-process">Example with ocrd-process</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="s2">"tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"</span>
+</code></pre></div></div>
+
 <h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
 
 <p>The following workflow has produced best results for ‘simple’ pages (e.g. <a href="https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif">this
@@ -1950,7 +1959,7 @@ page</a>)  (CER ~1%).</p>
   </tbody>
 </table>
 
-<h3 id="example-with-ocrd-process">Example with ocrd-process</h3>
+<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
   <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
@@ -2023,7 +2032,7 @@ as parameter value! The last line of the <code class="highlighter-rouge">ocrd-pr
   </tbody>
 </table>
 
-<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
+<h3 id="example-with-ocrd-process-2">Example with ocrd-process</h3>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
   <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
