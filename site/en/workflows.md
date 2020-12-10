@@ -976,7 +976,7 @@ An overview on the existing model repositories and short descriptions on the mos
       <td>ocrd-calamari-recognize</td>
       <td><code>-P checkpoint "/path/to/models/*.ckpt.json"</code></td>
       <td>
-        Recommended<br/>Model can be found <a href="https://ocr-d-repo.scc.kit.edu/models/calamari/GT4HistOCR/model.tar.xz">here</a>;
+        Recommended<br/>Model can be found <a href="https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz">here</a>;
         <br/>For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
       </td>
       <td><code>ocrd-calamari-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P checkpoint /path/to/models/\*.ckpt.json</code></td>
