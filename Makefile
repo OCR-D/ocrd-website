@@ -71,7 +71,7 @@ jekyll:
 bootstrap:
 	git submodule sync
 	git submodule update --init
-	java --version || echo "apt install openjdk-jre"
+	java -version || echo "apt install openjdk-8-jre"
 	pip3 --version || echo "apt install python3-pip"
 	jekyll --version || echo "gem install jekyll"
 	cd repo/ocrd-kwalitee && pip install -e .
