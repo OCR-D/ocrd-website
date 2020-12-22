@@ -43,7 +43,7 @@ Minimum system requirements
 <details>
 <summary>- Python 3.5, 3.6 or 3.7</summary>
   
-  - OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least the end of 2020
+  - OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least Q1 2021
   - Python 3.6 and 3.7 are also tested and supported
   - We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q1 2021 the latest.
   
@@ -154,10 +154,10 @@ first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 You can spin up a docker container, mounting the current working directory like this:
 
 ```sh
-docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
+docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
 ```
 
-For instructions on how to process your own data, please see the [user guide](/en/user_guide.md). Make sure to also read [the notes on translating native command line
+For instructions on how to process your own data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line
 calls to docker calls above](/en/user_guide.md#translating-native-commands-to-docker-calls). Make sure the image
 name matches the executable. 
 
@@ -234,7 +234,7 @@ Running `make` will also take care of cloning and updating all required submodul
 Especially running `make all` will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.
 
 Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of [OCR-D/core](https://github.com/OCR-D/core).
-Activate the virtual Python environment, which was installed by the Makefile, before running any OCR-D command.
+Activate the virtual Python environment, which was created in the directory `venv`, before running any OCR-D command.
 
 ```sh
 source venv/bin/activate
@@ -256,7 +256,7 @@ If you haven't done it already, activate your venv:
 
 ```sh
 # Activate the venv
-source ~/venv/bin/activate
+source /path/to/ocrd_all/venv/bin/activate
 ```
 
 Let's segment the images in file group `OCR-D-IMG` from the zip file into regions (creating a
@@ -267,7 +267,7 @@ first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
 ```
 
-For instructions on how to process your own data, please see the [user guide](/en/user_guide.md).
+For instructions on how to process your own data, please see the [user guide](/en/user_guide).
 
 ### Updating the software
 
