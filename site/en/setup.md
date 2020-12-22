@@ -38,7 +38,7 @@ Minimum system requirements
 <summary>- Python 3.5, 3.6 or 3.7</summary>
   - OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least the end of 2020
   - Python 3.6 and 3.7 are also tested and supported
-  - We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q4 2020 or Q1 2021 the latest.
+  - We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q1 2021 the latest.
 </details>
 For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
 
@@ -47,22 +47,16 @@ free disk space. But you can use any operating system you want and do not have t
 
 ## Installation
 
-All [OCR-D modules](https://github.com/topics/ocr-d) follow the same
-[interface](https://ocr-d.github.io/cli) and common design patterns. So once
-you understand how to install and use one project, you know how to install and
-use all of them.
-
-There are four ways to install OCR-D modules:
+There are two ways to install OCR-D modules:
 
   1. [Using](#ocrd_all-via-docker) the [ocrd_all prebuilt Docker images `ocrd/all`](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
   2. [Using](#ocrd_all-natively) the [ocrd_all git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
-  3. [Installing](#individual-installation) modules individually, either via Docker or natively (not recommended)
-  4. [Using](#installation-of-ocrd_framework) the [ocrd_framework repository](https://github.com/VolkerHartmann/ocrd_framework) to install all modules, Taverna workflow and research data repository as a local Docker image
 
 We recommend using the prebuilt Docker images since this does not require any changes to
 the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
 
-We do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
+For developers it might be useful to [install the modules individually](#individual-installation), either via Docker or natively.
+Beware that for all other users and purposes we do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
 keep the software up-to-date and ensure that they are at usable and interoperable versions.
 
 ## ocrd_all
@@ -129,7 +123,34 @@ docker pull ocrd/all:maximum
 
 Replace `maximum` accordingly if you want the `minimum` or `medium` variant.
 
-(Also, if you want to keep the modules' git repos inside the Docker images – so you can keep making fast updates, without waiting for a new pre-built image but also without building an image yourself –, then add the suffix `-git` to the variant, e.g. `maximum-git`. This will behave like the native installation, only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) made in containers back to your local Docker image.)
+(Also, if you want to keep the modules' git repos inside the Docker images – so you can keep making 
+fast updates, without waiting for a new pre-built image but also without building an image yourself –, 
+then add the suffix `-git` to the variant, e.g. `maximum-git`. This will behave like the native installation, 
+only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) 
+made in containers back to your local Docker image.)
+
+### Testing the installation
+
+For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
+
+```sh
+wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
+unzip wundt_grundriss_1896.ocrd.zip
+cd data
+```
+
+Let's segment the images in file group `OCR-D-IMG` from the zip file into regions (creating a
+first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
+`OCR-D-SEG-BLOCK-DOCKER`)
+
+You can spin up a docker container, mounting the current working directory like this:
+
+```sh
+docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
+```
+
+Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
+
 
 ### Updating Docker image
 
@@ -203,13 +224,38 @@ Running `make` will also take care of cloning and updating all required submodul
 Especially running `make all` will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.
 
 Having installed `ocrd_all` successfully, `ocrd --version` should give you the current version of [OCR-D/core](https://github.com/OCR-D/core).
-Activate the virtual Python environment before running any OCR-D command.
+Activate the virtual Python environment, which was installed by the Makefile, before running any OCR-D command.
 
 ```sh
 source venv/bin/activate
 ocrd --version
 ocrd, version 2.13.2 # your version should be 2.13.2 or later
 ``` 
+
+### Testing the installation
+
+For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
+
+```sh
+wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
+unzip wundt_grundriss_1896.ocrd.zip
+cd data
+```
+
+If you haven't done it already, activate your venv:
+
+```sh
+# Activate the venv
+source ~/venv/bin/activate
+```
+
+Let's segment the images in file group `OCR-D-IMG` from the zip file into regions (creating a
+first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
+`OCR-D-SEG-BLOCK`):
+
+```sh
+ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
+```
 
 ### Updating the software
 
@@ -235,6 +281,11 @@ should give you its current version.
 
 
 ## Individual installation
+
+All [OCR-D modules](https://github.com/topics/ocr-d) follow the same
+[interface](https://ocr-d.github.io/cli) and common design patterns. So once
+you understand how to install and use one project, you know how to install and
+use all of them.
 
 With all variants of individual module installation, it will be up to you to
 keep the repositories up-to-date and installed. We therefore discourage
@@ -382,22 +433,6 @@ first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
 ```
 
-### Test Docker installation
-
-This section applies if you installed the software as docker container(s), either [via
-`ocrd_all`](#ocrd_all-via-docker) or [on a per-module basis](#individual-docker-container).
-
-Let's segment the images in file group `OCR-D-IMG` from the [zip file we just downloaded](#testing-the-installation) into regions (creating a
-first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
-`OCR-D-SEG-BLOCK-DOCKER`)
-
-You can spin up a docker container, mounting the current working directory like this:
-
-```sh
-docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
-```
-
-Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
 
 ## Installation of OCR-D Research Data Repository
 Optionally, you can also install the [OCR-D research data repository](https://github.com/OCR-D/repository_metastore/). It collects all versions of documents and (intermediate) results created
