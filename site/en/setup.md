@@ -129,7 +129,7 @@ then add the suffix `-git` to the variant, e.g. `maximum-git`. This will behave 
 only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) 
 made in containers back to your local Docker image.)
 
-### Testing the installation
+### Testing the Docker installation
 
 For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
 
@@ -149,7 +149,9 @@ You can spin up a docker container, mounting the current working directory like 
 docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
 ```
 
-Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as [explained above](#mini-medi-maxi)
+For instructions on how to process your own data, please see the [user guide](/en/user_guide.md). Make sure to also read [the notes on translating native command line
+calls to docker calls above](/en/user_guide.md#translating-native-commands-to-docker-calls). Make sure the image
+name matches the executable. 
 
 
 ### Updating Docker image
@@ -232,7 +234,7 @@ ocrd --version
 ocrd, version 2.13.2 # your version should be 2.13.2 or later
 ``` 
 
-### Testing the installation
+### Testing the native installation
 
 For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
 
@@ -256,6 +258,8 @@ first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 ```sh
 ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
 ```
+
+For instructions on how to process your own data, please see the [user guide](/en/user_guide.md).
 
 ### Updating the software
 
@@ -282,14 +286,15 @@ should give you its current version.
 
 ## Individual installation
 
+For developing purposes it might be useful to install modules individually, either with Docker or natively. 
+With all variants of individual module installation, it will be up to you to
+keep the repositories up-to-date and installed. We therefore discourage
+individual installation of modules and recommend using ocrd_all as outlined above..
+
 All [OCR-D modules](https://github.com/topics/ocr-d) follow the same
 [interface](https://ocr-d.github.io/cli) and common design patterns. So once
 you understand how to install and use one project, you know how to install and
 use all of them.
-
-With all variants of individual module installation, it will be up to you to
-keep the repositories up-to-date and installed. We therefore discourage
-individual installation of modules and recommend using ocrd_all as outlined above..
 
 ### Individual Docker container
 
@@ -307,13 +312,8 @@ docker pull ocrd/tesserocr  # Installs ocrd_tesserocr
 docker pull ocrd/olena  # Installs ocrd_olena
 ```
 
-To run the containers after successful installation, please see [the notes on translating native command line
-calls to docker calls above](/en/user_guide.md#translating-native-commands-to-docker-calls). Make sure the image
-name matches the executable. For example to run the same example in the dedicated `ocrd_tesserocr` container:
+Now you can [test your installation](#testing-the-docker-installation).
 
-```sh
-docker run -u $(id -u) -w /data -v $PWD:/data -- ocrd/tesserocr ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
-```
 
 ### Native installation
 
@@ -383,6 +383,9 @@ Many ocrd modules conventionally contain a Makefile with a `deps-ubuntu` target 
 sudo make deps-ubuntu
 ```
 
+Now you can [test your installation](#testing-the-native-installation).
+
+
 #### From git 
 
 This is the best option if you want to change the source code or install the latest, unpublished changes.
@@ -403,35 +406,7 @@ pip install -e .
 
 This way, you won't have to reinstall after making changes.
 
-## Testing the installation
-
-For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
-
-```sh
-wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
-unzip wundt_grundriss_1896.ocrd.zip
-cd data
-```
-
-### Test native installation
-
-This section applies if you installed the software natively, either [via
-`ocrd_all`](#ocrd_all-natively) or [on a per-module basis](#native-installation).
-
-First, activate your venv:
-
-```sh
-# Activate the venv
-source ~/venv/bin/activate
-```
-
-Let's segment the images in file group `OCR-D-IMG` from the [zip file we just downloaded](#testing-the-installation) into regions (creating a
-first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
-`OCR-D-SEG-BLOCK`):
-
-```sh
-ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-```
+Now you can [test your installation](#testing-the-native-installation).
 
 
 ## Installation of OCR-D Research Data Repository
