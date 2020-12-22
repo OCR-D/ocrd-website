@@ -13,7 +13,7 @@
 First some development pkgs:
 
 ```sh
-sudo apt install make git ruby-2.5 openjdk-jre python3-pip
+sudo apt install make git ruby-dev openjdk-8-jre python3-pip
 ```
 
 Then jekyll, in the repo:
