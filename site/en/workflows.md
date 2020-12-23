@@ -479,12 +479,11 @@ if they are curved. The input image has to be binarized for the module to work.
     <tr data-processor="ocrd-anybaseocr-dewarp">
       <td>ocrd-anybaseocr-dewarp</td>
       <td>
-        <code>-P pix2pixHD /path/to/pix2pixHD/</code><br/>
-        <code>-P model_name:/path/to/pix2pixHD/models</code>
+        <code>-P model_path:/path/to/pix2pixHD/models/latest_net_G</code>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is misleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
       <td>
-        <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -p '{\"pix2pixHD\":\"/path/to/pix2pixHD/\",\"model_name\":\"/path/to/pix2pixHD/models\"}'</code>
+        <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -P model_path /path/to/pix2pixHD/models/latest_net_G</code>
       </td>
     </tr>
   </tbody>
