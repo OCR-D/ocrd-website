@@ -22,13 +22,10 @@ Minimum system requirements
   
 </details>
 <details>
-<summary>- min. 100 GB free disk space for local installation</summary>
+<summary>- min. 20 GB free disk space for local installation (more recommended)</summary>
   
-  - ~10 GB for [`ocrd_all`](https://github.com/OCR-D/ocrd_all), including dependencies
-  - ~10 GB for various [pretrained models](https://ocr-d.de/en/models)
-  - ~10 GB for training and evaluation data for training, as well as trained (intermediate) models
-  - ~20 GB for data to process
-  - double the space requirements to be able to [isolate virtualenvs](https://github.com/OCR-D/ocrd_all/pull/118) and store backups of (intermediate) data
+  - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself 
+  you will need space for various [pretrained models](https://ocr-d.de/en/models), training and evaluation data for training, and data to process.
   
 </details>
 <details>
