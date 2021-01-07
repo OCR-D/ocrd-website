@@ -297,16 +297,18 @@
         <ul>
           <li><a href="#mini-medi-maxi">mini medi maxi</a></li>
           <li><a href="#fetch-docker-image">Fetch Docker image</a></li>
+          <li><a href="#testing-the-docker-installation">Testing the Docker installation</a></li>
           <li><a href="#updating-docker-image">Updating Docker image</a></li>
         </ul>
       </li>
       <li><a href="#ocrd_all-natively">ocrd_all natively</a>
         <ul>
           <li><a href="#installation-1">Installation</a></li>
+          <li><a href="#testing-the-native-installation">Testing the native installation</a></li>
           <li><a href="#updating-the-software">Updating the software</a></li>
         </ul>
       </li>
-      <li><a href="#individual-installation">Individual installation</a>
+      <li><a href="#individual-installation-experts-only">Individual installation (experts only)</a>
         <ul>
           <li><a href="#individual-docker-container">Individual Docker container</a></li>
           <li><a href="#native-installation">Native installation</a>
@@ -314,48 +316,6 @@
               <li><a href="#virtualenv">virtualenv</a></li>
               <li><a href="#from-pypi">From PyPI</a></li>
               <li><a href="#from-git">From git</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li><a href="#testing-the-installation">Testing the installation</a>
-        <ul>
-          <li><a href="#test-native-installation">Test native installation</a></li>
-          <li><a href="#test-docker-installation">Test Docker installation</a></li>
-        </ul>
-      </li>
-      <li><a href="#installation-of-ocr-d-research-data-repository">Installation of OCR-D Research Data Repository</a>
-        <ul>
-          <li><a href="#testing-the-installation-1">Testing the installation</a></li>
-        </ul>
-      </li>
-      <li><a href="#installation-of-taverna-workflow">Installation of Taverna Workflow</a>
-        <ul>
-          <li><a href="#why-using-taverna">Why using Taverna?</a></li>
-          <li><a href="#native-installation-1">Native installation</a>
-            <ul>
-              <li><a href="#testing-the-installation-2">Testing the installation</a></li>
-            </ul>
-          </li>
-          <li><a href="#docker-installation">Docker installation</a>
-            <ul>
-              <li><a href="#testing-the-installation-3">Testing the installation</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li><a href="#running-a-small-workflow-without-taverna">Running a small workflow without Taverna</a>
-        <ul>
-          <li><a href="#with-pypi-and-workflow-engine-from-core">With PyPI and workflow engine from core</a></li>
-        </ul>
-      </li>
-      <li><a href="#installation-of-ocrd_framework">Installation of ocrd_framework</a>
-        <ul>
-          <li><a href="#prepare-etchosts-for-accessing-files-in-repository-via-browser">Prepare ‘/etc/hosts’ for accessing files in repository via browser</a>
-            <ul>
-              <li><a href="#testing-the-installation-4">Testing the installation</a></li>
-              <li><a href="#check-results-in-browser">Check results in browser</a></li>
-              <li><a href="#configure-your-own-workflow">Configure your own workflow</a></li>
             </ul>
           </li>
         </ul>
@@ -378,39 +338,37 @@ to achieve the workflow best suited for OCRing your content.</p>
 <h2 id="system-requirements">System requirements</h2>
 
 <p>Minimum system requirements</p>
-<ul>
-  <li>8 GB RAM (more recommended)
-    <ul>
-      <li>The more RAM is available, the more concurrent processes can be run</li>
-      <li>Exceedingly large images (newspapers, folio-size books…) require a lot of RAM</li>
-    </ul>
-  </li>
-  <li>min. 100 GB free disk space for local installation
-    <ul>
-      <li>~10 GB for <a href="https://github.com/OCR-D/ocrd_all"><code class="highlighter-rouge">ocrd_all</code></a>, including dependencies</li>
-      <li>~10 GB for various <a href="https://ocr-d.de/en/models">pretrained models</a></li>
-      <li>~10 GB for training and evaluation data for training, as well as trained (intermediate) models</li>
-      <li>~20 GB for data to process</li>
-      <li>double the space requirements to be able to <a href="https://github.com/OCR-D/ocrd_all/pull/118">isolate virtualenvs</a> and store backups of (intermediate) data</li>
-    </ul>
-  </li>
-  <li>Operating system: Ubuntu 18.04
-    <ul>
-      <li>Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a></li>
-      <li>Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)</li>
-      <li>With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a></li>
-      <li>OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a></li>
-    </ul>
-  </li>
-  <li>Python 3.5, 3.6 or 3.7
-    <ul>
-      <li>OCR-D’s target Python version is currently Python 3.5 which we will continue to support until at least the end of 2020</li>
-      <li>Python 3.6 and 3.7 are also tested and supported</li>
-      <li>We currently <strong>cannot fully support Python 3.8</strong>, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q4 2020 or Q1 2021 the latest.</li>
-    </ul>
-  </li>
-</ul>
-
+<details>
+<summary>- 8 GB RAM (more recommended)</summary>
+  
+  - The more RAM is available, the more concurrent processes can be run
+  - Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
+  
+</details>
+<details>
+<summary>- min. 20 GB free disk space for local installation (more recommended)</summary>
+  
+  - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself 
+  you will need space for various [pretrained models](https://ocr-d.de/en/models), training and evaluation data for training, and data to process.
+  
+</details>
+<details>
+<summary>- Operating system: Ubuntu 18.04</summary>
+  
+  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and [will be supported for the foreseeable future](https://ubuntu.com/about/release-cycle)
+  - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)
+  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is [also possible to set up an Ubuntu 18.04 installation within Microsoft Windows](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows)
+  - OCR-D can be deployed on an [Apple MacOSX machine using Homebrew](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS)
+  
+</details>
+<details>
+<summary>- Python 3.5, 3.6 or 3.7</summary>
+  
+  - OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least Q1 2021
+  - Python 3.6 and 3.7 are also tested and supported
+  - We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q1 2021 the latest.
+  
+</details>
 <p>For installation on Windows 10 (WSL) and macOS see the setup guides in the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D-Wiki</a></p>
 
 <p>Alternatively, you can use <a href="https://hub.docker.com/u/ocrd">Docker</a>. This way, you will only have to meet the minimum requirements for 
@@ -418,24 +376,18 @@ free disk space. But you can use any operating system you want and do not have t
 
 <h2 id="installation">Installation</h2>
 
-<p>All <a href="https://github.com/topics/ocr-d">OCR-D modules</a> follow the same
-<a href="https://ocr-d.github.io/cli">interface</a> and common design patterns. So once
-you understand how to install and use one project, you know how to install and
-use all of them.</p>
-
-<p>There are four ways to install OCR-D modules:</p>
+<p>There are two ways to install OCR-D modules:</p>
 
 <ol>
   <li><a href="#ocrd_all-via-docker">Using</a> the <a href="https://hub.docker.com/r/ocrd/all">ocrd_all prebuilt Docker images <code class="highlighter-rouge">ocrd/all</code></a> to install a module collection (<strong>recommended</strong>)</li>
   <li><a href="#ocrd_all-natively">Using</a> the <a href="https://github.com/OCR-D/ocrd_all">ocrd_all git repository</a> to install selected modules natively</li>
-  <li><a href="#individual-installation">Installing</a> modules individually, either via Docker or natively (not recommended)</li>
-  <li><a href="#installation-of-ocrd_framework">Using</a> the <a href="https://github.com/VolkerHartmann/ocrd_framework">ocrd_framework repository</a> to install all modules, Taverna workflow and research data repository as a local Docker image</li>
 </ol>
 
 <p>We recommend using the prebuilt Docker images since this does not require any changes to
 the host system besides <a href="https://hub.docker.com/r/ocrd/all">installing Docker</a>.</p>
 
-<p>We do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
+<p>For developers it might be useful to <a href="#individual-installation">install the modules individually</a>, either via Docker or natively.
+Beware that for all other users and purposes we do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
 keep the software up-to-date and ensure that they are at usable and interoperable versions.</p>
 
 <h2 id="ocrd_all">ocrd_all</h2>
@@ -631,7 +583,33 @@ we encourage you to use the large but complete <code class="highlighter-rouge">m
 
 <p>Replace <code class="highlighter-rouge">maximum</code> accordingly if you want the <code class="highlighter-rouge">minimum</code> or <code class="highlighter-rouge">medium</code> variant.</p>
 
-<p>(Also, if you want to keep the modules’ git repos inside the Docker images – so you can keep making fast updates, without waiting for a new pre-built image but also without building an image yourself –, then add the suffix <code class="highlighter-rouge">-git</code> to the variant, e.g. <code class="highlighter-rouge">maximum-git</code>. This will behave like the native installation, only inside the container. Yes, you can also <a href="https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/">commit changes</a> made in containers back to your local Docker image.)</p>
+<p>(Also, if you want to keep the modules’ git repos inside the Docker images – so you can keep making 
+fast updates, without waiting for a new pre-built image but also without building an image yourself –, 
+then add the suffix <code class="highlighter-rouge">-git</code> to the variant, e.g. <code class="highlighter-rouge">maximum-git</code>. This will behave like the native installation, 
+only inside the container. Yes, you can also <a href="https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/">commit changes</a> 
+made in containers back to your local Docker image.)</p>
+
+<h3 id="testing-the-docker-installation">Testing the Docker installation</h3>
+
+<p>For example, let’s fetch a document from the <a href="https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/">OCR-D GT Repo</a>:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="s1">'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'</span>
+unzip wundt_grundriss_1896.ocrd.zip
+<span class="nb">cd </span>data
+</code></pre></div></div>
+
+<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the zip file into regions (creating a
+first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
+<code class="highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>)</p>
+
+<p>You can spin up a docker container, mounting the current working directory like this:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
+</code></pre></div></div>
+
+<p>For instructions on how to process your own data, please see the <a href="/en/user_guide">user guide</a>. Make sure to also read <a href="/en/user_guide.md#translating-native-commands-to-docker-calls">the notes on translating native command line
+calls to docker calls above</a>. Make sure the image
+name matches the executable.</p>
 
 <h3 id="updating-docker-image">Updating Docker image</h3>
 
@@ -700,12 +678,36 @@ make all <span class="nv">OCRD_MODULES</span><span class="o">=</span><span class
 <p>Especially running <code class="highlighter-rouge">make all</code> will take a while (between 30 and 60 minutes or more on slower machines). In the end, it should say that the last processor was installed successfully.</p>
 
 <p>Having installed <code class="highlighter-rouge">ocrd_all</code> successfully, <code class="highlighter-rouge">ocrd --version</code> should give you the current version of <a href="https://github.com/OCR-D/core">OCR-D/core</a>.
-Activate the virtual Python environment before running any OCR-D command.</p>
+Activate the virtual Python environment, which was created in the directory <code class="highlighter-rouge">venv</code>, before running any OCR-D command.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source </span>venv/bin/activate
 ocrd <span class="nt">--version</span>
 ocrd, version 2.13.2 <span class="c"># your version should be 2.13.2 or later</span>
 </code></pre></div></div>
+
+<h3 id="testing-the-native-installation">Testing the native installation</h3>
+
+<p>For example, let’s fetch a document from the <a href="https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/">OCR-D GT Repo</a>:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="s1">'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'</span>
+unzip wundt_grundriss_1896.ocrd.zip
+<span class="nb">cd </span>data
+</code></pre></div></div>
+
+<p>If you haven’t done it already, activate your venv:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Activate the venv</span>
+<span class="nb">source</span> /path/to/ocrd_all/venv/bin/activate
+</code></pre></div></div>
+
+<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the zip file into regions (creating a
+first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
+<code class="highlighter-rouge">OCR-D-SEG-BLOCK</code>):</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK
+</code></pre></div></div>
+
+<p>For instructions on how to process your own data, please see the <a href="/en/user_guide">user guide</a>.</p>
 
 <h3 id="updating-the-software">Updating the software</h3>
 
@@ -727,11 +729,17 @@ regularly update the repository and its submodules:</p>
 say that the last processor was installed successfully. <code class="highlighter-rouge">--version</code> for the processors which have been changed
 should give you its current version.</p>
 
-<h2 id="individual-installation">Individual installation</h2>
+<h2 id="individual-installation-experts-only">Individual installation (experts only)</h2>
 
-<p>With all variants of individual module installation, it will be up to you to
+<p>For developing purposes it might be useful to install modules individually, either with Docker or natively. 
+With all variants of individual module installation, it will be up to you to
 keep the repositories up-to-date and installed. We therefore discourage
 individual installation of modules and recommend using ocrd_all as outlined above..</p>
+
+<p>All <a href="https://github.com/topics/ocr-d">OCR-D modules</a> follow the same
+<a href="https://ocr-d.github.io/cli">interface</a> and common design patterns. So once
+you understand how to install and use one project, you know how to install and
+use all of them.</p>
 
 <h3 id="individual-docker-container">Individual Docker container</h3>
 
@@ -748,12 +756,7 @@ image for a module, replace the <code class="highlighter-rouge">ocrd_</code> pre
 docker pull ocrd/olena  <span class="c"># Installs ocrd_olena</span>
 </code></pre></div></div>
 
-<p>To run the containers after successful installation, please see <a href="/en/user_guide.md#translating-native-commands-to-docker-calls">the notes on translating native command line
-calls to docker calls above</a>. Make sure the image
-name matches the executable. For example to run the same example in the dedicated <code class="highlighter-rouge">ocrd_tesserocr</code> container:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/tesserocr ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
-</code></pre></div></div>
+<p>Now you can <a href="#testing-the-docker-installation">test your installation</a>.</p>
 
 <h3 id="native-installation">Native installation</h3>
 
@@ -824,6 +827,8 @@ pip3 <span class="nb">install </span>ocrd_tesserocr
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>make deps-ubuntu
 </code></pre></div></div>
 
+<p>Now you can <a href="#testing-the-native-installation">test your installation</a>.</p>
+
 <h4 id="from-git">From git</h4>
 
 <p>This is the best option if you want to change the source code or install the latest, unpublished changes.</p>
@@ -842,285 +847,7 @@ make <span class="nb">install</span>          <span class="c"># or pip3 install 
 
 <p>This way, you won’t have to reinstall after making changes.</p>
 
-<h2 id="testing-the-installation">Testing the installation</h2>
-
-<p>For example, let’s fetch a document from the <a href="https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/">OCR-D GT Repo</a>:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="s1">'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'</span>
-unzip wundt_grundriss_1896.ocrd.zip
-<span class="nb">cd </span>data
-</code></pre></div></div>
-
-<h3 id="test-native-installation">Test native installation</h3>
-
-<p>This section applies if you installed the software natively, either <a href="#ocrd_all-natively">via
-<code class="highlighter-rouge">ocrd_all</code></a> or <a href="#native-installation">on a per-module basis</a>.</p>
-
-<p>First, activate your venv:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Activate the venv</span>
-<span class="nb">source</span> ~/venv/bin/activate
-</code></pre></div></div>
-
-<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the <a href="#testing-the-installation">zip file we just downloaded</a> into regions (creating a
-first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
-<code class="highlighter-rouge">OCR-D-SEG-BLOCK</code>):</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK
-</code></pre></div></div>
-
-<h3 id="test-docker-installation">Test Docker installation</h3>
-
-<p>This section applies if you installed the software as docker container(s), either <a href="#ocrd_all-via-docker">via
-<code class="highlighter-rouge">ocrd_all</code></a> or <a href="#individual-docker-container">on a per-module basis</a>.</p>
-
-<p>Let’s segment the images in file group <code class="highlighter-rouge">OCR-D-IMG</code> from the <a href="#testing-the-installation">zip file we just downloaded</a> into regions (creating a
-first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
-<code class="highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>)</p>
-
-<p>You can spin up a docker container, mounting the current working directory like this:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-w</span> /data <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
-</code></pre></div></div>
-
-<p>Note that the CLI is exactly the same, the only difference is the prefix to instruct Docker, as <a href="#mini-medi-maxi">explained above</a></p>
-
-<h2 id="installation-of-ocr-d-research-data-repository">Installation of OCR-D Research Data Repository</h2>
-<p>Optionally, you can also install the <a href="https://github.com/OCR-D/repository_metastore/">OCR-D research data repository</a>. It collects all versions of documents and (intermediate) results created
-during the document analysis. It contains at least the end results of every processed document. During the ingest much metadata about the
-document will be extracted and made available for search/filter (e.g. identifier(s), title, classification(s), genre(s), semantic label(s),
-used processor(s), text).</p>
-
-<p>It’s highly recommended to install the research data repository via Docker. <a href="https://github.com/OCR-D/repository_metastore/blob/master/installDocker/installation.md">See link for further information</a></p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/OCR-D/repository_metastore
-<span class="nb">cd </span>repository_metastore/installDocker
-bash installRepo.sh ~/ocrd/repository
-<span class="nb">cd</span> ~/ocrd/repository/docker
-docker-compose up &amp;
-<span class="c"># To stop research data repository</span>
-docker-compose stop
-</code></pre></div></div>
-
-<h3 id="testing-the-installation-1">Testing the installation</h3>
-
-<p>The write access to the service is secured with a password, which is preset
-when you use the docker installation. There is an ‘ingest’ user for ingesting
-files. (Password: <code class="highlighter-rouge">ingest</code>)</p>
-
-<ol>
-  <li>Upload zipped BagIt container to metastore.
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-u</span> ingest:ingest <span class="nt">-v</span> <span class="nt">-F</span> <span class="s2">"file=@zippedBagItContainer"</span> http://localhost:8080/api/v1/metastore/bagit 
-</code></pre></div>    </div>
-  </li>
-  <li>List all BagIt containers.
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XGET</span> <span class="nt">-H</span> <span class="s2">"Accept:application/json"</span>  http://localhost:8080/api/v1/metastore/bagit 
-</code></pre></div>    </div>
-  </li>
-  <li>List all METS files.
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XGET</span> http://localhost:8080/api/v1/metastore/mets
-</code></pre></div>    </div>
-  </li>
-  <li>List all METS files with title ‘Der Herold’.
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XGET</span> <span class="nt">-H</span> <span class="s2">"Accept:application/json"</span> <span class="s2">"http://localhost:8080/api/v1/metastore/mets/title?title=Der%20Herold"</span>
-</code></pre></div>    </div>
-  </li>
-  <li>Download zipped BagIt container from metastore. (use one URL of the list printed above)
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XGET</span> http://localhost:8090/api/v1/dataresources/123..../data/zippedBagItContainer <span class="o">&gt;</span> bagDownload.zip
-</code></pre></div>    </div>
-    <p>You may also try this URL in a browser. (http://localhost:8080/api/v1/metastore/bagit)</p>
-  </li>
-</ol>
-
-<h2 id="installation-of-taverna-workflow">Installation of Taverna Workflow</h2>
-
-<h3 id="why-using-taverna">Why using Taverna?</h3>
-
-<p>Taverna creates a <code class="highlighter-rouge">metadata</code> subdirectory containing collected output of all
-processors: all intermediate METS files and a provenance file containing all
-provenance of the workflow including start/end time of processor/workflow, used
-input group(s), used parameters and created output group(s).</p>
-
-<p>There are two ways to install <code class="highlighter-rouge">taverna_workflow</code>:</p>
-<ol>
-  <li>native installation</li>
-  <li>Docker installation</li>
-</ol>
-
-<h3 id="native-installation-1">Native installation</h3>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/OCR-D/taverna_workflow.git
-<span class="nb">cd </span>taverna_workflow/
-bash installTaverna.sh ~/ocrd/taverna
-</code></pre></div></div>
-
-<h4 id="testing-the-installation-2">Testing the installation</h4>
-
-<p>To check if the installation works fine you can start a first test.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/ocrd/taverna
-bash startWorkflow.sh parameters_all.txt
-<span class="o">[</span>...]
-Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
-<span class="c"># The processed workspace should look like this:</span>
-<span class="nb">ls</span> <span class="nt">-1</span> workspace/example/data/
-metadata
-mets.xml
-OCR-D-GT-SEG-BLOCK
-OCR-D-GT-SEG-PAGE
-OCR-D-IMG
-OCR-D-IMG-BIN
-OCR-D-IMG-BIN-OCROPY
-OCR-D-OCR-CALAMARI_GT4HIST
-OCR-D-OCR-TESSEROCR-BOTH
-OCR-D-OCR-TESSEROCR-FRAKTUR
-OCR-D-OCR-TESSEROCR-GT4HISTOCR
-OCR-D-SEG-LINE
-OCR-D-SEG-REGION
-</code></pre></div></div>
-
-<p>Each sub folder starting with ‘OCR-D-OCR’ should now contain 4 files with the
-detected full text.</p>
-
-<h3 id="docker-installation">Docker installation</h3>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://raw.githubusercontent.com/OCR-D/taverna_workflow/master/Dockerfile
-docker build <span class="nt">-t</span> ocrd/taverna <span class="nb">.</span>
-<span class="nb">mkdir</span> ~/docker/ocrd/taverna
-<span class="nb">cd</span> ~/docker/ocrd/taverna
-docker run <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/data ocrd/taverna init
-</code></pre></div></div>
-
-<h4 id="testing-the-installation-3">Testing the installation</h4>
-
-<p>To check if the installation works fine you can start a first test.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/docker/ocrd/taverna
-docker run <span class="nt">--network</span><span class="o">=</span><span class="s2">"host"</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/data ocrd/taverna testWorkflow
-<span class="o">[</span>...]
-Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
-<span class="c"># The processed workspace should look like this:</span>
-<span class="nb">ls</span> <span class="nt">-1</span> workspace/example/data/
-metadata
-mets.xml
-OCR-D-GT-SEG-BLOCK
-OCR-D-GT-SEG-PAGE
-OCR-D-IMG
-OCR-D-IMG-BIN
-OCR-D-IMG-BIN-OCROPY
-OCR-D-OCR-CALAMARI_GT4HIST
-OCR-D-OCR-TESSEROCR-BOTH
-OCR-D-OCR-TESSEROCR-FRAKTUR
-OCR-D-OCR-TESSEROCR-GT4HISTOCR
-OCR-D-SEG-LINE
-OCR-D-SEG-REGION
-</code></pre></div></div>
-
-<p>Each sub folder starting with ‘OCR-D-OCR’ should now contain 4 files with the detected full text.</p>
-
-<h2 id="running-a-small-workflow-without-taverna">Running a small workflow without Taverna</h2>
-
-<h3 id="with-pypi-and-workflow-engine-from-core">With PyPI and workflow engine from core</h3>
-
-<p>The <a href="https://github.com/OCR-D/core">core package</a> will be installed with every
-OCR-D module package, but you can also install it manually:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 <span class="nb">install </span>ocrd
-</code></pre></div></div>
-
-<p>Its CLI <code class="highlighter-rouge">ocrd</code> contains a simple workflow engine, available with the <code class="highlighter-rouge">ocrd process</code> command, which allows you to chain multiple OCR-D processor calls into simple sequential workflows.</p>
-
-<p>For example, let’s combine the ocropy-based binarization of the
-<a href="https://github.com/cisocrgroup/ocrd_cis">ocrd_cis</a> module project with the segmentation and recognition
-in <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr</a>.</p>
-
-<p>First, install ocrd_cis, too:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install ocrd_cis</span>
-pip3 <span class="nb">install </span>ocrd_cis <span class="c"># with pip</span>
-</code></pre></div></div>
-
-<p>Next, install a suitable OCR model for Tesseract:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install OCR model into Tesseract datapath</span>
-<span class="nb">sudo </span>apt-get <span class="nb">install </span>tesseract-ocr-script-frak
-</code></pre></div></div>
-
-<p>Now we can define the workflow (as a list of processor calls in abbreviated
-form, and a number of parameter files where defaults are insufficient):</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create parameter files</span>
-<span class="nb">echo</span> <span class="s1">'{ "model": "Fraktur" }'</span> <span class="o">&gt;</span> param-tess-fraktur.json
-
-<span class="c"># Run workflow</span>
-ocrd process <span class="se">\</span>
-  <span class="s1">'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE'</span> <span class="se">\</span>
-  <span class="s1">'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK'</span> <span class="se">\</span>
-  <span class="s1">'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE'</span> <span class="se">\</span>
-  <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -p param-tess-fraktur.json'</span> 
-</code></pre></div></div>
-
-<h2 id="installation-of-ocrd_framework">Installation of ocrd_framework</h2>
-
-<p>To install the complete OCR-D framework Docker is highly recommended.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/VolkerHartmann/ocrd_framework/blob/master/install_OCR-D_framework.sh
-bash install_OCR-D_framework.sh ~/ocrd_framework
-</code></pre></div></div>
-
-<p>Now there exist several folders:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">repository</code> - Contains all files of repository and the databases</li>
-  <li><code class="highlighter-rouge">taverna</code> - Contains all files workspaces and configuration of workflows</li>
-</ul>
-
-<h3 id="prepare-etchosts-for-accessing-files-in-repository-via-browser">Prepare ‘/etc/hosts’ for accessing files in repository via browser</h3>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'127.0.0.1   kitdm20'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/hosts 
-</code></pre></div></div>
-
-<h4 id="testing-the-installation-4">Testing the installation</h4>
-
-<p>To check if the installation works fine you can start a first test.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start repo in a shell</span>
-<span class="nb">cd</span> ~/ocrd_framework/repository
-docker-compose up 
-</code></pre></div></div>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/ocrd_framework/taverna
-docker run <span class="nt">--network</span><span class="o">=</span><span class="s2">"host"</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/data ocrd/taverna testWorkflow
-<span class="o">[</span>...]
-Outputs will be saved to the directory: /.../Execute_OCR_D_workfl_output
-<span class="c"># The processed workspace should look like this:</span>
-<span class="nb">ls</span> <span class="nt">-1</span> workspace/example/data/
-metadata
-mets.xml
-OCR-D-GT-SEG-BLOCK
-OCR-D-GT-SEG-PAGE
-OCR-D-IMG
-OCR-D-IMG-BIN
-OCR-D-IMG-BIN-OCROPY
-OCR-D-OCR-CALAMARI_GT4HIST
-OCR-D-OCR-TESSEROCR-BOTH
-OCR-D-OCR-TESSEROCR-FRAKTUR
-OCR-D-OCR-TESSEROCR-GT4HISTOCR
-OCR-D-SEG-LINE
-OCR-D-SEG-REGION
-</code></pre></div></div>
-
-<p>Each sub folder starting with ‘OCR-D-OCR’ should now contain 4 files with the detected full text.</p>
-
-<h4 id="check-results-in-browser">Check results in browser</h4>
-
-<p>After the workflow all results are ingested to the research data repository.
-The repository is available at http://localhost:8080/api/v1/metastore/bagit</p>
-
-<h4 id="configure-your-own-workflow">Configure your own workflow</h4>
-
-<p>For defining your own workflow with taverna please refer to the
-<a href="https://github.com/OCR-D/taverna_workflow/blob/master/README.MD#configure-your-own-workflow">README</a></p>
+<p>Now you can <a href="#testing-the-native-installation">test your installation</a>.</p>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
