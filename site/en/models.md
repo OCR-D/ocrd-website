@@ -212,6 +212,12 @@ only be stored in a single location. If the default location (`virtualenv`) is
 not the place you want to use for tesseract models, consider [changing the default location
 in the OCR-D config file](#changing-the-default-resource-directory).
 
+**NOTE:** For reasons of effiency and to avoid duplicate models, all `ocrd-tesserocr-*` processors
+reuse the resource directory for `ocrd-tesserocr-recognize`.
+
+If the `TESSDATA_PREFIX` environemnt variable is set when any of the tesseract processors
+are called, it will be the location to look for resources instead of the default.
+
 OCR-D's Tesseract wrapper,
 [ocrd_tesserocr](https://github.com/OCR-D/ocrd_tesserocr) and more
 specifically, the `ocrd-tesserocr-recognize` processor, expects the name of the
