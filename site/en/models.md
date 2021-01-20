@@ -50,7 +50,7 @@ ocrd-cis-ocropy-recognize
   ocropy historical latin model by github.com/chreul
 ```
 
-As you can see, resources are grouped by the processor they are used by.
+As you can see, resources are grouped by the processors which make use of them.
 
 The word after the list symbol, e.g. `qurator-gt4hist-0.3`,
 `LatinHist.pyrnn.gz`, define the "name" of the resource, a shorthand you can
