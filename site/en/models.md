@@ -91,7 +91,7 @@ ocrd resmgr download ocrd-tesserocr-recognize '*'
 
 ## Installing unknown resources
 
-If you need to install a resource that OCR-D doesn't know of, than can be achieved with the `--any-url/-n` flag to `ocrd resmgr download`:
+If you need to install a resource which OCR-D doesn't know of, that can be achieved by passings its URL in combination with the `--any-url/-n` flag to `ocrd resmgr download`:
 
 To install a model for `ocrd-tesserocr-recognize` that is located at `https://my-server/mymodel.traineddata`.
 
