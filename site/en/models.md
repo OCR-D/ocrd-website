@@ -21,6 +21,7 @@ of known resources, such as models, dictionaries, configurations and other
 processor-specific data files. This means that OCR-D users should be able to
 concentrate on fine-tuning their OCR workflows and not bother with implementation
 details like "where do I get models from and where do I put them".
+In particular, users can reference file parameters by name now.
 
 All of the above mentioned functionality can be accessed using the `ocrd
 resmgr` command line tool.
