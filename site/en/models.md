@@ -53,7 +53,7 @@ ocrd-cis-ocropy-recognize
 As you can see, resources are grouped by the processors which make use of them.
 
 The word after the list symbol, e.g. `qurator-gt4hist-0.3`,
-`LatinHist.pyrnn.gz`, define the "name" of the resource, a shorthand you can
+`LatinHist.pyrnn.gz`, defines the _name_ of the resource, which is a shorthand you can
 use in parameters without having to specify the full URL (in brackets after the
 name).
 
