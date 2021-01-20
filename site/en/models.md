@@ -65,7 +65,7 @@ You can install resources with the `ocrd resmgr download` command. It expects
 the name of the processor as the first argument and either the name or URL of a
 resource as a second argument.
 
-Likewise, model distribution is not currently centralised within OCR-D though we
+Although model distribution is not currently centralised within OCR-D, we
 are working towards a central model repository.
 
 For example, to install the `LatinHist.pyrnn.gz` resource for `ocrd-cis-ocropy-recognize`:
