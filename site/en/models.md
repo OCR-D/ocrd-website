@@ -16,7 +16,7 @@ Since [v2.22.0](https://github.com/OCR-D/core/releases/v2.22.0), OCR-D/core
 comes with a framework for managing processor resources uniformly. This means
 that processors can delegate to OCR-D/core to resolve specific file resources by name,
 looking in well-defined places in the filesystem. This also includes downloading and caching
-file parameters passed as a URL. OCR-D/core also comes with a bundled database
+file parameters passed as a URL. Furthermore, OCR-D/core comes with a bundled database
 of known resources, such as OCR models, configurations and other
 processor-specific data. This means that OCR-D users should be able to
 concentrate on fine-tuning their OCR workflows and not bother with implementation
