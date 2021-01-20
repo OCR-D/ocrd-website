@@ -108,7 +108,7 @@ ocrd-tesserocr-recognize -P model mymodel
 
 ## List installed resources
 
-The `ocrd resmgr list-installed` command has the same output format as `ocrd resmgr list-available` but instead
+The `ocrd resmgr list-installed` command has the same output format as `ocrd resmgr list-available`. But instead
 of the database, it scans the filesystem locations [where data is searched](#where-is-the-data) for existing
 resources and lists URL and description if a database entry exists.
 
