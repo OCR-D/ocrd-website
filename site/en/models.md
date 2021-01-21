@@ -231,6 +231,31 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deut+frk'
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 ```
 
+# Models and docker
+
+We recommend a two-step process to make models available in Docker. First
+download all the models that you want to use on the host system. When running
+the docker container, mount that local directory into the container alongside
+the data you want to process.
+
+Download the models to `$HOME/.local/share/ocrd-resources`:
+
+```sh
+ocrd resmgr download --location data ocrd-tesserocr-recognize eng.traineddata
+ocrd resmgr download --location data ocrd-calamari-recognize default
+# ...
+```
+
+Run the `ocrd_all` Docker container:
+
+```sh
+docker run --user $(id -u) --workdir /data \
+  --volume $PWD:/data \
+  --volume $HOME/.local/cache/ocrd-resources:/ocrd-resources \
+  ocrd_all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
+```
+
+
 # Model training
 
 With the pretrained models mentioned above, good results can be obtained for many originals. Nevertheless, the
