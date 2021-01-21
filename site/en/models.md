@@ -14,13 +14,14 @@ path to a model (calamari).
 
 Since [v2.22.0](https://github.com/OCR-D/core/releases/v2.22.0), OCR-D/core
 comes with a framework for managing processor resources uniformly. This means
-that OCR-D/core will take care of lookin in well-defined places in the
-filesystem for resources for specific processors. It also knows how to cache
-file parameters passed as a URL. OCR-D/core also comes with a bundled database
-of known resources, such as OCR models, configurations and other
-processor-specific data. This means that OCR-D users should be able to
+that processors can delegate to OCR-D/core to resolve specific file resources by name,
+looking in well-defined places in the filesystem. This also includes downloading and caching
+file parameters passed as a URL. Furthermore, OCR-D/core comes with a bundled database
+of known resources, such as models, dictionaries, configurations and other
+processor-specific data files. This means that OCR-D users should be able to
 concentrate on fine-tuning their OCR workflows and not bother with implementation
 details like "where do I get models from and where do I put them".
+In particular, users can reference file parameters by name now.
 
 All of the above mentioned functionality can be accessed using the `ocrd
 resmgr` command line tool.
@@ -49,10 +50,10 @@ ocrd-cis-ocropy-recognize
   ocropy historical latin model by github.com/chreul
 ```
 
-As you can see, resources are grouped by the processor they are used by.
+As you can see, resources are grouped by the processors which make use of them.
 
 The word after the list symbol, e.g. `qurator-gt4hist-0.3`,
-`LatinHist.pyrnn.gz`, define the "name" of the resource, a shorthand you can
+`LatinHist.pyrnn.gz`, defines the _name_ of the resource, which is a shorthand you can
 use in parameters without having to specify the full URL (in brackets after the
 name).
 
@@ -64,7 +65,7 @@ You can install resources with the `ocrd resmgr download` command. It expects
 the name of the processor as the first argument and either the name or URL of a
 resource as a second argument.
 
-Likewise, model distribution is not currently centralised within OCR-D though we
+Although model distribution is not currently centralised within OCR-D, we
 are working towards a central model repository.
 
 For example, to install the `LatinHist.pyrnn.gz` resource for `ocrd-cis-ocropy-recognize`:
@@ -86,11 +87,11 @@ download *all* known resources for this processor. To download all tesseract mod
 ocrd resmgr download ocrd-tesserocr-recognize '*'
 ```
 
-(Note that `*` must be in quotes or escaped because of shell wildcard expansion)
+(Note that `*` must be in quotes or escaped to avoid wildcard expansion in the shell.)
 
 ## Installing unknown resources
 
-If you need to install a resource that OCR-D doesn't know of, than can be achieved with the `--any-url/-n` flag to `ocrd resmgr download`:
+If you need to install a resource which OCR-D doesn't know of, that can be achieved by passings its URL in combination with the `--any-url/-n` flag to `ocrd resmgr download`:
 
 To install a model for `ocrd-tesserocr-recognize` that is located at `https://my-server/mymodel.traineddata`.
 
@@ -107,7 +108,7 @@ ocrd-tesserocr-recognize -P model mymodel
 
 ## List installed resources
 
-The `ocrd resmgr list-installed` command has the same output format as `ocrd resmgr list-available` but instead
+The `ocrd resmgr list-installed` command has the same output format as `ocrd resmgr list-available`. But instead
 of the database, it scans the filesystem locations [where data is searched](#where-is-the-data) for existing
 resources and lists URL and description if a database entry exists.
 
