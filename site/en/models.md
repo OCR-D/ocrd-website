@@ -145,8 +145,8 @@ be `cwd`, `data` and `system` resp.
 ```sh
 # will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
 ocrd resmgr download --location cwd ocrd-anybaseocr-dewarp latest_net_G.pth
-# will download to $HOME.cache/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
-ocrd resmgr download --location cache ocrd-anybaseocr-dewarp latest_net_G.pth
+# will download to /usr/local/share/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
+ocrd resmgr download --location system ocrd-anybaseocr-dewarp latest_net_G.pth
 ```
 
 ## Changing the default resource directory
