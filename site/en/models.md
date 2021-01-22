@@ -159,10 +159,6 @@ However, there are use cases where the `config`/`data/`/`cache` or even the
 `cwd` option should be the default (or only) location to store resources and
 resolve file parameters.
 
-To change the default location, adapt the `$HOME/.config/ocrd/config.yml` file
-(it is created if it doesn't exist whenever you execute `ocrd resmgr`) which
-has a `resource_location` key that accepts the same range of values as the
-`ocrd resmgr --location` command line flag.
 
 
 ## Notes on specific processors
