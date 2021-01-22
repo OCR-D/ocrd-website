@@ -132,15 +132,15 @@ The lookup algorithm is [defined in our specifications](https://ocr-d.de/en/spec
 
 In order of preference, a resource `<name>` for a processor `ocrd-foo` is searched at:
 
-* `$VIRTUAL_ENV/share/ocrd-resources/ocrd-foo/<name>`
-* `$HOME/.config/ocrd-resources/ocrd-foo/<name>`
-* `$HOME/.local/share/ocrd-resources/ocrd-foo/<name>`
-* `$HOME/.cache/ocrd-resources/ocrd-foo/<name>`
 * `$PWD/ocrd-resources/ocrd-foo/<name>`
+* `$XDG_DATA_HOME/ocrd-resources/ocrd-foo/<name>`
+* `/usr/local/share/ocrd-resources/ocrd-foo/<name>`
 
-We recommend using the `$VIRTUAL_ENV` location, which is also the default. But
+(where `XDG_DATA_HOME` defaults to `$HOME/.local/share` if unset).
+
+We recommend using the `$XDG_DATA_HOME` location, which is also the default. But
 you can override the location to store data with the `--location` option, which can
-be `cwd`, `virtualenv`, `config`, `data` and `cache` resp.
+be `cwd`, `data` and `system` resp.
 
 ```sh
 # will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
