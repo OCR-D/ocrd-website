@@ -228,7 +228,7 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deut+frk'
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 ```
 
-# Models and docker
+# Models and Docker
 
 We recommend a two-step process to make models available in Docker. First
 download all the models that you want to use on the host system. When running
