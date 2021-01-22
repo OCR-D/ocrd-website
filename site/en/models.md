@@ -151,13 +151,13 @@ ocrd resmgr download --location system ocrd-anybaseocr-dewarp latest_net_G.pth
 
 ## Changing the default resource directory
 
-The `$VIRTUAL_ENV` default location is reasonable because we heavily advertise
-using virtual environments and is compatible with
-[ocrd_all](https://github.com/OCR-D/ocrd_all).
+The `$XDG_DATA_HOME` default location is reasonable because
+models are usually large files which should persist across different deployments,
+both native and containerized, both single-module and [ocrd_all](https://github.com/OCR-D/ocrd_all).
+Moreover, that variable can easily be overridden during installation.
 
-However, there are use cases where the `config`/`data/`/`cache` or even the
-`cwd` option should be the default (or only) location to store resources and
-resolve file parameters.
+However, there are use cases where `system` or even `cwd` should be
+used as location to store resources, hence the `--location` option.
 
 
 
