@@ -230,28 +230,30 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 
 # Models and Docker
 
-We recommend a two-step process to make models available in Docker. First
-download all the models that you want to use on the host system. When running
-the docker container, mount that local directory into the container alongside
-the data you want to process.
+We recommend keeping all downloaded resources in a persistent host directory,
+separate of the `ocrd/*` Docker container and data directory, and mounting that
+resource directory into a specific path in the container alongside the data directory.
+The host resource directory can be empty initially. Each time you run the Docker container,
+your processors will access the host directory to resolve resources, and you can download
+additional models into that location using `ocrd resmgr`.
 
-Download the models to `$HOME/.local/share/ocrd-resources`:
+The following will assume (without loss of generality) that your host-side data
+path is under `./data`, and the host-side resource path is under `./models`:
 
-```sh
-ocrd resmgr download --location data ocrd-tesserocr-recognize eng.traineddata
-ocrd resmgr download --location data ocrd-calamari-recognize default
-# ...
-```
+- To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
+        docker run --user $(id -u) \
+          --volume $PWD/models:/usr/local/share/ocrd-resources \
+        ocrd/all \
+        ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
+        ocrd resmgr download ocrd-calamari-recognize default\; \
+        ...
+- To run processors, as usual do:
+        docker run --user $(id -u) --workdir /data \
+          --volume $PWD/data:/data \
+          --volume $PWD/models:/usr/local/share/ocrd-resources \
+          ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
 
-Run the `ocrd_all` Docker container:
-
-```sh
-docker run --user $(id -u) --workdir /data \
-  --volume $PWD:/data \
-  --volume $HOME/.local/cache/ocrd-resources:/ocrd-resources \
-  ocrd_all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
-```
-
+This principle applies to all `ocrd/*` Docker images, e.g. you can replace `ocrd/all` above with `ocrd/tesserocr` as well.
 
 # Model training
 
