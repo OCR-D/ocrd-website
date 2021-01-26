@@ -166,7 +166,7 @@ used as location to store resources, hence the `--location` option.
 
 ## Downloading on-demand
 
-When you provide a value to a file parameter, such as ocrd_tesserocr's `model`
+When you provide a value to a file parameter, such as ocrd_calamari's `checkpoint_dir`
 parameter, the value will be resolved by OCR-D/core. If the resource is not
 found in the filesystem, OCR-D/core will try to find a matching resource in
 its list of bundled resources. If the parameter value matches the `name` of one
