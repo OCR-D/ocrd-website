@@ -87,7 +87,12 @@ download *all* known resources for this processor. To download all tesseract mod
 ocrd resmgr download ocrd-tesserocr-recognize '*'
 ```
 
-(Note that `*` must be in quotes or escaped to avoid wildcard expansion in the shell.)
+**NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
+to download *all* known resources for *all* installed processors:
+
+    ocrd resmgr download '*'
+
+(In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
 
 ## Installing unknown resources
 
