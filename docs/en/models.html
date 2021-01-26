@@ -294,6 +294,7 @@
       <li><a href="#user-database">User database</a></li>
       <li><a href="#where-is-the-data">Where is the data</a></li>
       <li><a href="#changing-the-default-resource-directory">Changing the default resource directory</a></li>
+      <li><a href="#downloading-on-demand">Downloading on-demand</a></li>
       <li><a href="#notes-on-specific-processors">Notes on specific processors</a></li>
       <li><a href="#ocropy--ocrd_cis">Ocropy / ocrd_cis</a></li>
       <li><a href="#calamari--ocrd_calamari">Calamari / ocrd_calamari</a></li>
@@ -394,7 +395,7 @@ download <em>all</em> known resources for this processor. To download all tesser
 <p><strong>NOTE:</strong> Equally, the special processor <code class="highlighter-rouge">*</code> can be used instead of a processor and a resource
 to download <em>all</em> known resources for <em>all</em> installed processors:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download '*'
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download <span class="s1">'*'</span>
 </code></pre></div></div>
 
 <p>(In either case, <code class="highlighter-rouge">*</code> must be in quotes or escaped to avoid wildcard expansion by the shell.)</p>
@@ -467,6 +468,14 @@ Moreover, that variable can easily be overridden during installation.</p>
 
 <p>However, there are use cases where <code class="highlighter-rouge">system</code> or even <code class="highlighter-rouge">cwd</code> should be
 used as location to store resources, hence the <code class="highlighter-rouge">--location</code> option.</p>
+
+<h2 id="downloading-on-demand">Downloading on-demand</h2>
+
+<p>When you provide a value to a file parameter, such as ocrd_calamari’s <code class="highlighter-rouge">checkpoint_dir</code>
+parameter, the value will be resolved by OCR-D/core. If the resource is not
+found in the filesystem, OCR-D/core will try to find a matching resource in
+its list of bundled resources. If the parameter value matches the <code class="highlighter-rouge">name</code> of one
+of those resources, it will be <strong>downloaded on-demand</strong>.</p>
 
 <h2 id="notes-on-specific-processors">Notes on specific processors</h2>
 
@@ -544,20 +553,23 @@ additional models into that location using <code class="highlighter-rouge">ocrd 
 <p>The following will assume (without loss of generality) that your host-side data
 path is under <code class="highlighter-rouge">./data</code>, and the host-side resource path is under <code class="highlighter-rouge">./models</code>:</p>
 
-<ul>
-  <li>To download models to <code class="highlighter-rouge">./models</code> in the host FS and <code class="highlighter-rouge">/usr/local/share/ocrd-resources</code> in Docker:
-      docker run –user $(id -u) \
-        –volume $PWD/models:/usr/local/share/ocrd-resources \
-      ocrd/all \
-      ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
-      ocrd resmgr download ocrd-calamari-recognize default\; \
-      …</li>
-  <li>To run processors, as usual do:
-      docker run –user $(id -u) –workdir /data \
-        –volume $PWD/data:/data \
-        –volume $PWD/models:/usr/local/share/ocrd-resources \
-        ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng</li>
-</ul>
+<p>To download models to <code class="highlighter-rouge">./models</code> in the host FS and <code class="highlighter-rouge">/usr/local/share/ocrd-resources</code> in Docker:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="se">\</span>
+  <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="se">\</span>
+ocrd/all <span class="se">\</span>
+ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata<span class="se">\;</span> <span class="se">\</span>
+ocrd resmgr download ocrd-calamari-recognize default<span class="se">\;</span> <span class="se">\</span>
+...
+</code></pre></div></div>
+
+<p>To run processors, as usual do:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="se">\</span>
+  <span class="nt">--volume</span> <span class="nv">$PWD</span>/data:/data <span class="se">\</span>
+  <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="se">\</span>
+  ocrd/all ocrd-tesserocr-recognize <span class="nt">-I</span> IN <span class="nt">-O</span> OUT <span class="nt">-P</span> model eng
+</code></pre></div></div>
 
 <p>This principle applies to all <code class="highlighter-rouge">ocrd/*</code> Docker images, e.g. you can replace <code class="highlighter-rouge">ocrd/all</code> above with <code class="highlighter-rouge">ocrd/tesserocr</code> as well.</p>
 
