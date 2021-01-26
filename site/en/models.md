@@ -90,7 +90,9 @@ ocrd resmgr download ocrd-tesserocr-recognize '*'
 **NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
 to download *all* known resources for *all* installed processors:
 
-    ocrd resmgr download '*'
+```sh
+ocrd resmgr download '*'
+```
 
 (In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
 
