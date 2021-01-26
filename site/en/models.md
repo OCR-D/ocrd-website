@@ -90,7 +90,9 @@ ocrd resmgr download ocrd-tesserocr-recognize '*'
 **NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
 to download *all* known resources for *all* installed processors:
 
-    ocrd resmgr download '*'
+```sh
+ocrd resmgr download '*'
+```
 
 (In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
 
@@ -164,7 +166,13 @@ Moreover, that variable can easily be overridden during installation.
 However, there are use cases where `system` or even `cwd` should be
 used as location to store resources, hence the `--location` option.
 
+## Downloading on-demand
 
+When you provide a value to a file parameter, such as ocrd_calamari's `checkpoint_dir`
+parameter, the value will be resolved by OCR-D/core. If the resource is not
+found in the filesystem, OCR-D/core will try to find a matching resource in
+its list of bundled resources. If the parameter value matches the `name` of one
+of those resources, it will be **downloaded on-demand**.
 
 ## Notes on specific processors
 
@@ -245,18 +253,25 @@ additional models into that location using `ocrd resmgr`.
 The following will assume (without loss of generality) that your host-side data
 path is under `./data`, and the host-side resource path is under `./models`:
 
-- To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
-        docker run --user $(id -u) \
-          --volume $PWD/models:/usr/local/share/ocrd-resources \
-        ocrd/all \
-        ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
-        ocrd resmgr download ocrd-calamari-recognize default\; \
-        ...
-- To run processors, as usual do:
-        docker run --user $(id -u) --workdir /data \
-          --volume $PWD/data:/data \
-          --volume $PWD/models:/usr/local/share/ocrd-resources \
-          ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
+To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
+
+```sh
+docker run --user $(id -u) \
+  --volume $PWD/models:/usr/local/share/ocrd-resources \
+ocrd/all \
+ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
+ocrd resmgr download ocrd-calamari-recognize default\; \
+...
+```
+
+To run processors, as usual do:
+
+```sh
+docker run --user $(id -u) --workdir /data \
+  --volume $PWD/data:/data \
+  --volume $PWD/models:/usr/local/share/ocrd-resources \
+  ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
+```
 
 This principle applies to all `ocrd/*` Docker images, e.g. you can replace `ocrd/all` above with `ocrd/tesserocr` as well.
 
