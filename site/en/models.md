@@ -166,14 +166,6 @@ Moreover, that variable can easily be overridden during installation.
 However, there are use cases where `system` or even `cwd` should be
 used as location to store resources, hence the `--location` option.
 
-## Downloading on-demand
-
-When you provide a value to a file parameter, such as ocrd_calamari's `checkpoint_dir`
-parameter, the value will be resolved by OCR-D/core. If the resource is not
-found in the filesystem, OCR-D/core will try to find a matching resource in
-its list of bundled resources. If the parameter value matches the `name` of one
-of those resources, it will be **downloaded on-demand**.
-
 ## Notes on specific processors
 
 ## Ocropy / ocrd_cis
@@ -187,8 +179,13 @@ To use a specific model with OCR-D's ocropus wrapper in
 `ocrd-cis-ocropy-recognize` processor, use the `model` parameter:
 
 ```sh
-# Model will be downloaded on-demand if it is not locally available yet
 ocrd-cis-ocropy-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-OCRO -P model fraktur-jze.pyrnn.gz
+```
+
+**NOTE:** Model must be downloade before with
+
+```sh
+ocrd resmgr download ocrd-cis-ocropy-recognize fraktur-jze.pyrnn.gz
 ```
 
 ## Calamari / ocrd_calamari
