@@ -332,42 +332,72 @@
             
   <div class="section" id="module-ocrd.processor.base">
 <span id="ocrd-processor-base-module"></span><h1>ocrd.processor.base module<a class="headerlink" href="#module-ocrd.processor.base" title="Permalink to this headline">¶</a></h1>
-<p>Processor base class and helper functions</p>
+<p>Processor base class and helper functions.</p>
 <dl class="py class">
 <dt id="ocrd.processor.base.Processor">
-<em class="property">class </em><code class="sig-prename descclassname">ocrd.processor.base.</code><code class="sig-name descname">Processor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace</span></em>, <em class="sig-param"><span class="n">ocrd_tool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file_grp</span><span class="o">=</span><span class="default_value">'INPUT'</span></em>, <em class="sig-param"><span class="n">output_file_grp</span><span class="o">=</span><span class="default_value">'OUTPUT'</span></em>, <em class="sig-param"><span class="n">page_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_help</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_version</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dump_json</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ocrd.processor.base.</code><code class="sig-name descname">Processor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace</span></em>, <em class="sig-param"><span class="n">ocrd_tool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file_grp</span><span class="o">=</span><span class="default_value">'INPUT'</span></em>, <em class="sig-param"><span class="n">output_file_grp</span><span class="o">=</span><span class="default_value">'OUTPUT'</span></em>, <em class="sig-param"><span class="n">page_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_resource</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">list_resources</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_help</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_version</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dump_json</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A processor is an OCR-D compliant command-line-interface for executing
-a single workflow step on the workspace (represented by local METS). It
-reads input files for all or requested physical pages of the input fileGrp(s),
+<p>A processor is a tool that implements the uniform OCR-D command-line interface
+for run-time data processing. That is, it executes a single workflow step,
+or a combination of workflow steps, on the workspace (represented by local METS).
+It reads input files for all or requested physical pages of the input fileGrp(s),
 and writes output files for them into the output fileGrp(s). It may take
 a number of optional or mandatory parameters.</p>
 <dl class="py method">
 <dt id="ocrd.processor.base.Processor.add_metadata">
 <code class="sig-name descname">add_metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pcgts</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.add_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.add_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds PAGE-XML MetadataItem describing the processing step</p>
+<dd><p>Add PAGE-XML <cite>MetadataItem</cite> describing the processing step and runtime parameters to <a class="reference internal" href="../ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PcGtsType" title="ocrd_models.ocrd_page.PcGtsType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd_models.ocrd_page.PcGtsType</span></code></a> <code class="docutils literal notranslate"><span class="pre">pcgts</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ocrd.processor.base.Processor.input_files">
 <em class="property">property </em><code class="sig-name descname">input_files</code><a class="headerlink" href="#ocrd.processor.base.Processor.input_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>List the input files.</p>
-<ul>
-<li><p>If there’s a PAGE-XML for the page, take it (and forget about all
-other files for that page)</p></li>
-<li><p>Else if there’s only one image, take it (and forget about all other
+<dd><p>List the input files (for single-valued <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file_grp</span></code>).</p>
+<p>For each physical page:
+- If there is a single PAGE-XML for the page, take it (and forget about all</p>
+<blockquote>
+<div><p>other files for that page)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Else if there is a single image file, take it (and forget about all other
 files for that page)</p></li>
-<li><p>Otherwise raise an error (complaining that only PAGE-XML warrants</p>
-<p>having multiple images for a single page)</p>
-</li>
+<li><p>Otherwise raise an error (complaining that only PAGE-XML warrants
+having multiple images for a single page)</p></li>
 </ul>
-<p>(<a class="reference external" href="https://github.com/cisocrgroup/ocrd_cis/pull/57#issuecomment-656336593">https://github.com/cisocrgroup/ocrd_cis/pull/57#issuecomment-656336593</a>)</p>
+<p>Algorithm &lt;<a class="reference external" href="https://github.com/cisocrgroup/ocrd_cis/pull/57#issuecomment-656336593">https://github.com/cisocrgroup/ocrd_cis/pull/57#issuecomment-656336593</a>&gt;_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of <a class="reference internal" href="../ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile" title="ocrd_models.ocrd_file.OcrdFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd_models.ocrd_file.OcrdFile</span></code></a> objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ocrd.processor.base.Processor.list_all_resources">
+<code class="sig-name descname">list_all_resources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.list_all_resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.list_all_resources" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all resources found in the filesystem</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ocrd.processor.base.Processor.process">
 <code class="sig-name descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process the workspace</p>
+<dd><p>Process the <code class="xref py py-attr docutils literal notranslate"><span class="pre">workspace</span></code>
+from the given :py:attr:<a href="#id1"><span class="problematic" id="id2">`</span></a>input_file_grp`s
+to the given :py:attr:<a href="#id3"><span class="problematic" id="id4">`</span></a>output_file_grp`s
+under the given :py:attr:<a href="#id5"><span class="problematic" id="id6">`</span></a>parameter`s.</p>
+<p>(This contains the main functionality and needs to be overridden by subclasses.)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ocrd.processor.base.Processor.resolve_resource">
+<code class="sig-name descname">resolve_resource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.resolve_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.resolve_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve a resource name to an absolute file path with the algorithm in
+<a class="reference external" href="https://ocr-d.de/en/spec/ocrd_tool#file-parameters">https://ocr-d.de/en/spec/ocrd_tool#file-parameters</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>string</em>) – resource value to resolve</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -388,20 +418,47 @@ files for that page)</p></li>
 
 <dl class="py method">
 <dt id="ocrd.processor.base.Processor.zip_input_files">
-<code class="sig-name descname">zip_input_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">require_first</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">mimetype</span><span class="o">=</span><span class="default_value">'application/vnd.prima.page+xml'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.zip_input_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.zip_input_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>List tuples of input files (for multiple input file groups).</p>
+<code class="sig-name descname">zip_input_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">require_first</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">mimetype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">on_error</span><span class="o">=</span><span class="default_value">'skip'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/base.html#Processor.zip_input_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.Processor.zip_input_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List tuples of input files (for multi-valued <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file_grp</span></code>).</p>
 <p>Processors that expect/need multiple input file groups,
-cannot use <code class="docutils literal notranslate"><span class="pre">input_files</span></code>. They must align (zip) input files
+cannot use <a class="reference internal" href="#ocrd.processor.base.Processor.input_files" title="ocrd.processor.base.Processor.input_files"><code class="xref py py-data docutils literal notranslate"><span class="pre">input_files</span></code></a>. They must align (zip) input files
 across pages. This includes the case where not all pages
-are equally present in all file groups.</p>
-<p>This function does not make much sense for non-PAGE fileGrps,
-so it uses a fixed MIME type filter for PAGE-XML.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>require_first</strong> (<em>bool</em>) – If true, then skip a page entirely</p></li>
-<li><p><strong>it is not available in the first input fileGrp.</strong> (<em>whenever</em>) – </p></li>
+are equally present in all file groups. It also requires
+making a consistent selection if there are multiple files
+per page.</p>
+<p>Following the OCR-D functional model, this function tries to
+find a single PAGE file per page, or fall back to a single
+image file per page. In either case, multiple matches per page
+are an error (see error handling below).
+This default behaviour can be changed by using a fixed MIME
+type filter via <code class="docutils literal notranslate"><span class="pre">mimetype</span></code>. But still, multiple matching
+files per page are an error.</p>
+<p>Single-page multiple-file errors are handled according to
+<code class="docutils literal notranslate"><span class="pre">on_error</span></code>:
+- if <cite>‘skip’</cite>, then the page for the respective fileGrp will be</p>
+<blockquote>
+<div><p>silently skipped (as if there was no match at all)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>if <cite>‘first’</cite>, then the first matching file for the page will be
+silently selected (as if the first was the only match)</p></li>
+<li><p>if <cite>‘last’</cite>, then the last matching file for the page will be
+silently selected (as if the last was the only match)</p></li>
+<li><p>if <cite>‘abort’</cite>, then an exception will be raised.</p></li>
 </ul>
+<p>Multiple matches for PAGE-XML will always raise an exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>require_first</strong> (<em>boolean</em>) – If true, then skip a page entirely
+whenever it is not available in the first input <cite>fileGrp</cite>.</p></li>
+<li><p><strong>mimetype</strong> (<em>string</em>) – If not <cite>None</cite>, filter by the specified MIME
+type (literal or regex prefixed by <cite>//</cite>). Otherwise prefer
+PAGE or image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of <a class="reference internal" href="../ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile" title="ocrd_models.ocrd_file.OcrdFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd_models.ocrd_file.OcrdFile</span></code></a> tuples.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -431,7 +488,7 @@ so it uses a fixed MIME type filter for PAGE-XML.</p>
 
 <dl class="py function">
 <dt id="ocrd.processor.base.run_processor">
-<code class="sig-prename descclassname">ocrd.processor.base.</code><code class="sig-name descname">run_processor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">processorClass</span></em>, <em class="sig-param"><span class="n">ocrd_tool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mets_url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resolver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">workspace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">page_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">log_level</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file_grp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_file_grp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter_override</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">working_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/helpers.html#run_processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.run_processor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ocrd.processor.base.</code><code class="sig-name descname">run_processor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">processorClass</span></em>, <em class="sig-param"><span class="n">ocrd_tool</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mets_url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resolver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">workspace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">page_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">log_level</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file_grp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_file_grp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_resource</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">list_resources</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameter_override</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">working_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/helpers.html#run_processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocrd.processor.base.run_processor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a workspace for mets_url and run processor through it</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
