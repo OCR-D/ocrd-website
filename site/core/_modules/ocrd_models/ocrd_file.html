@@ -54,7 +54,7 @@ lang: en
 
 <div class="viewcode-block" id="OcrdFile"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile">[docs]</a><span class="k">class</span> <span class="nc">OcrdFile</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a &lt;mets:file&gt;/&lt;mets:FLocat&gt;</span>
+<span class="sd">    Represents a single `mets:file/mets:FLocat` (METS file entry).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#  @staticmethod</span>
@@ -64,14 +64,15 @@ lang: en
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loctype</span><span class="o">=</span><span class="s1">&#39;OTHER&#39;</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            el (LxmlElement): etree Element of the mets:file this represents. Create new if not provided</span>
-<span class="sd">            mimetype (string): MIME type of the file</span>
-<span class="sd">            pageId (string): ID of the physical page</span>
-<span class="sd">            loctype (string): METS @LOCTYPE</span>
+<span class="sd">            el (LxmlElement): etree Element of the `mets:file` this represents. Create new if not provided</span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            mets (OcrdMets): Containing :py:class:`ocrd_models.ocrd_mets.OcrdMets`.</span>
+<span class="sd">            mimetype (string): `@MIMETYPE` of this `mets:file`</span>
+<span class="sd">            pageId (string): `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file`</span>
+<span class="sd">            loctype (string): `@LOCTYPE` of this `mets:file`</span>
 <span class="sd">            local_filename (string): Local filename</span>
-<span class="sd">            mets (OcrdMets): Containing OcrdMets</span>
-<span class="sd">            url (string): xlink:href of the file</span>
-<span class="sd">            ID (string): @ID of the mets:file</span>
+<span class="sd">            url (string): `@xlink:href` of this `mets:file`</span>
+<span class="sd">            ID (string): `@ID` of this `mets:file`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">el</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">TAG_METS_FILE</span><span class="p">)</span>
@@ -92,7 +93,7 @@ lang: en
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        String representation</span>
+<span class="sd">        String representation of this `mets:file`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#  props = &#39;\n\t&#39;.join([</span>
         <span class="c1">#      &#39; : &#39;.join([k, getattr(self, k) if getattr(self, k) else &#39;---&#39;])</span>
@@ -138,14 +139,14 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ``ID`` attribute.</span>
+<span class="sd">        Get the `@ID` of the `mets:file`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">)</span>
 
     <span class="nd">@ID</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">ID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the ``ID`` attribute.</span>
+<span class="sd">        Set the `@ID` of the `mets:file` to ``ID``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -154,7 +155,7 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pageId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ID of the physical page this file manifests.</span>
+<span class="sd">        Get the `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file` (physical page manifestation).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;OcrdFile </span><span class="si">%s</span><span class="s2"> has no member &#39;mets&#39; pointing to parent OcrdMets&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
@@ -163,7 +164,7 @@ lang: en
     <span class="nd">@pageId</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">pageId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pageId</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the ID of the physical page this file manifests.</span>
+<span class="sd">        Get the `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file` (physical page manifestation) to ``pageId``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">pageId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -175,7 +176,7 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">loctype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ``LOCTYPE``.</span>
+<span class="sd">        Get the `@LOCTYPE` of the `mets:file`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LOCTYPE&#39;</span><span class="p">)</span>
@@ -183,7 +184,7 @@ lang: en
     <span class="nd">@loctype</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">loctype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loctype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the ``LOCTYPE``.</span>
+<span class="sd">        Set the `@LOCTYPE` of the `mets:file` to ``loctype``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">loctype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -217,14 +218,14 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ``MIMETYPE``.</span>
+<span class="sd">        Get the `@MIMETYPE` of the `mets:file`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MIMETYPE&#39;</span><span class="p">)</span>
 
     <span class="nd">@mimetype</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the ``MIMETYPE``.</span>
+<span class="sd">        Set the `@MIMETYPE` of the `mets:file` to ``mimetype``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mimetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -233,7 +234,7 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fileGrp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The ``USE`` attribute of the containing ``mets:fileGrp``</span>
+<span class="sd">        The `@USE` of the containing `mets:fileGrp`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -243,7 +244,7 @@ lang: en
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ``xlink:href`` of this file.</span>
+<span class="sd">        Get the `@xlink:href` of this `mets:file`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">TAG_METS_FLOCAT</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -253,7 +254,7 @@ lang: en
     <span class="nd">@url</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the ``xlink:href`` of this file.</span>
+<span class="sd">        Set the `@xlink:href` of this `mets:file` to ``url``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>

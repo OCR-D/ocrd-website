@@ -45,7 +45,7 @@ lang: en
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Helper methods for running and documenting processors</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span><span class="p">,</span> <span class="n">process_time</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
@@ -78,6 +78,8 @@ lang: en
         <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>         <span class="c1"># TODO actually use this!</span>
         <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">parameter_override</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -109,12 +111,15 @@ lang: en
     <span class="n">otherrole</span> <span class="o">=</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">logProfile</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.process.profile&#39;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processor instance </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2"> doing </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">processor</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">otherrole</span><span class="p">)</span>
-    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">t0_wall</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">t0_cpu</span> <span class="o">=</span> <span class="n">process_time</span><span class="p">()</span>
     <span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
-    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
-    <span class="n">logProfile</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing processor &#39;</span><span class="si">%s</span><span class="s2">&#39; took </span><span class="si">%f</span><span class="s2">s [--input-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --output-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --parameter=&#39;</span><span class="si">%s</span><span class="s2">&#39;]&quot;</span> <span class="o">%</span> <span class="p">(</span>
+    <span class="n">t1_wall</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0_wall</span>
+    <span class="n">t1_cpu</span> <span class="o">=</span> <span class="n">process_time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0_cpu</span>
+    <span class="n">logProfile</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing processor &#39;</span><span class="si">%s</span><span class="s2">&#39; took </span><span class="si">%f</span><span class="s2">s (wall) </span><span class="si">%f</span><span class="s2">s (CPU)( [--input-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --output-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --parameter=&#39;</span><span class="si">%s</span><span class="s2">&#39;]&quot;</span> <span class="o">%</span> <span class="p">(</span>
         <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
-        <span class="n">t1</span><span class="p">,</span>
+        <span class="n">t1_wall</span><span class="p">,</span>
+        <span class="n">t1_cpu</span><span class="p">,</span>
         <span class="n">input_file_grp</span> <span class="k">if</span> <span class="n">input_file_grp</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">output_file_grp</span> <span class="k">if</span> <span class="n">output_file_grp</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="k">if</span> <span class="n">parameter</span> <span class="k">else</span> <span class="p">{}</span>
@@ -162,8 +167,8 @@ lang: en
         <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--overwrite&#39;</span><span class="p">]</span>
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.helpers.run_cli&#39;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running subprocess &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span></div>
 
 <div class="viewcode-block" id="generate_processor_help"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.helpers.html#ocrd.processor.base.generate_processor_help">[docs]</a><span class="k">def</span> <span class="nf">generate_processor_help</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate a string describing the full CLI of this processor including params.</span>
@@ -224,6 +229,8 @@ lang: en
 <span class="s1">  -w, --working-dir PATH          Working directory of local workspace</span>
 <span class="s1">  -l, --log-level [OFF|ERROR|WARN|INFO|DEBUG|TRACE]</span>
 <span class="s1">                                  Log level</span>
+<span class="s1">  -C, --show-resource RESNAME     Dump the content of processor resource RESNAME</span>
+<span class="s1">  -L, --list-resources            List names of processor resources</span>
 <span class="s1">  -J, --dump-json                 Dump tool description as JSON and exit</span>
 <span class="s1">  -h, --help                      This help message</span>
 <span class="s1">  -V, --version                   Show version</span>

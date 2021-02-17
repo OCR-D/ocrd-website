@@ -80,7 +80,7 @@ lang: en
                 <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed parsing task description &#39;</span><span class="si">%s</span><span class="s2">&#39; with tokens remaining: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">argstr</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">ProcessorTask</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
@@ -175,7 +175,7 @@ lang: en
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
         <span class="c1"># execute cli</span>
-        <span class="n">returncode</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
+        <span class="n">returncode</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
             <span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
             <span class="n">mets</span><span class="p">,</span>
             <span class="n">resolver</span><span class="p">,</span>
@@ -190,7 +190,7 @@ lang: en
 
         <span class="c1"># check return code</span>
         <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> exited with non-zero return value </span><span class="si">%s</span><span class="s2">. STDOUT:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDERR:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> exited with non-zero return value </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
@@ -200,7 +200,7 @@ lang: en
         <span class="c1"># check output file groups are in mets</span>
         <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group not in mets: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDOUT:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">STDERR:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span></div>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group &#39;</span><span class="si">%s</span><span class="s2">&#39; not in METS (despite processor success)&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span></div>
 </pre></div>
 
             <div class="clearer"></div>

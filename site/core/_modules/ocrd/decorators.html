@@ -72,13 +72,22 @@ lang: en
     <span class="n">help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># pylint: disable=redefined-builtin</span>
     <span class="n">version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">list_resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
         <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dump_json</span> <span class="ow">or</span> <span class="n">help</span> <span class="ow">or</span> <span class="n">version</span><span class="p">:</span>
-        <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="n">dump_json</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span> <span class="n">show_version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump_json</span> <span class="ow">or</span> <span class="n">help</span> <span class="ow">or</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">show_resource</span> <span class="ow">or</span> <span class="n">list_resources</span><span class="p">:</span>
+        <span class="n">processorClass</span><span class="p">(</span>
+            <span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">dump_json</span><span class="o">=</span><span class="n">dump_json</span><span class="p">,</span>
+            <span class="n">show_help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span>
+            <span class="n">show_version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">show_resource</span><span class="o">=</span><span class="n">show_resource</span><span class="p">,</span>
+            <span class="n">list_resources</span><span class="o">=</span><span class="n">list_resources</span>
+        <span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">initLogging</span><span class="p">()</span>

@@ -46,13 +46,14 @@ lang: en
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="c1">#</span>
-<span class="c1"># Generated Mon Sep 21 14:00:49 2020 by generateDS.py version 2.35.20.</span>
-<span class="c1"># Python 3.6.9 (default, Jul 17 2020, 12:50:27)  [GCC 8.4.0]</span>
+<span class="c1"># Generated Wed Feb  3 11:36:26 2021 by generateDS.py version 2.35.20.</span>
+<span class="c1"># Python 3.6.9 (default, Oct  8 2020, 12:12:24)  [GCC 8.4.0]</span>
 <span class="c1">#</span>
 <span class="c1"># Command line options:</span>
 <span class="c1">#   (&#39;-f&#39;, &#39;&#39;)</span>
 <span class="c1">#   (&#39;--root-element&#39;, &#39;PcGts&#39;)</span>
 <span class="c1">#   (&#39;-o&#39;, &#39;ocrd_models/ocrd_models/ocrd_page_generateds.py&#39;)</span>
+<span class="c1">#   (&#39;--silence&#39;, &#39;&#39;)</span>
 <span class="c1">#   (&#39;--disable-generatedssuper-lookup&#39;, &#39;&#39;)</span>
 <span class="c1">#   (&#39;--user-methods&#39;, &#39;ocrd_models/ocrd_page_user_methods.py&#39;)</span>
 <span class="c1">#</span>
@@ -60,7 +61,7 @@ lang: en
 <span class="c1">#   ocrd_validators/ocrd_validators/page.xsd</span>
 <span class="c1">#</span>
 <span class="c1"># Command line:</span>
-<span class="c1">#   /home/kba/build/github.com/OCR-D/monorepo/ocrd_all/venv/bin/generateDS -f --root-element=&quot;PcGts&quot; -o &quot;ocrd_models/ocrd_models/ocrd_page_generateds.py&quot; --disable-generatedssuper-lookup --user-methods=&quot;ocrd_models/ocrd_page_user_methods.py&quot; ocrd_validators/ocrd_validators/page.xsd</span>
+<span class="c1">#   /home/kba/build/github.com/OCR-D/monorepo/ocrd_all/venv/bin/generateDS -f --root-element=&quot;PcGts&quot; -o &quot;ocrd_models/ocrd_models/ocrd_page_generateds.py&quot; --silence --disable-generatedssuper-lookup --user-methods=&quot;ocrd_models/ocrd_page_user_methods.py&quot; ocrd_validators/ocrd_validators/page.xsd</span>
 <span class="c1">#</span>
 <span class="c1"># Current working directory (os.getcwd()):</span>
 <span class="c1">#   core</span>
@@ -1311,8 +1312,19 @@ lang: en
 <span class="sd">        Remove any empty ReadingOrder elements</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">get_ReadingOrder</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ro</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_OrderedGroup</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_UnorderedGroup</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">set_ReadingOrder</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="n">ro</span><span class="p">:</span>
+            <span class="n">og</span> <span class="o">=</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_OrderedGroup</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">og</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">og</span><span class="o">.</span><span class="n">get_RegionRefIndexed</span><span class="p">()</span> <span class="ow">and</span>
+                       <span class="ow">not</span> <span class="n">og</span><span class="o">.</span><span class="n">get_OrderedGroupIndexed</span><span class="p">()</span> <span class="ow">and</span>
+                       <span class="ow">not</span> <span class="n">og</span><span class="o">.</span><span class="n">get_UnorderedGroupIndexed</span><span class="p">()):</span>
+                <span class="n">og</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">ug</span> <span class="o">=</span> <span class="n">ro</span><span class="o">.</span><span class="n">get_UnorderedGroup</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ug</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">ug</span><span class="o">.</span><span class="n">get_RegionRef</span><span class="p">()</span> <span class="ow">and</span>
+                       <span class="ow">not</span> <span class="n">ug</span><span class="o">.</span><span class="n">get_OrderedGroup</span><span class="p">()</span> <span class="ow">and</span>
+                       <span class="ow">not</span> <span class="n">ug</span><span class="o">.</span><span class="n">get_UnorderedGroup</span><span class="p">()):</span>
+                <span class="n">ug</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">og</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ug</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">set_ReadingOrder</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div></div>
 <span class="c1"># end class PcGtsType</span>
 
 
@@ -2267,8 +2279,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 <div class="viewcode-block" id="PageType.get_Border"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_Border">[docs]</a>    <span class="k">def</span> <span class="nf">get_Border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Border</span></div>
-<div class="viewcode-block" id="PageType.set_Border"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_Border">[docs]</a>    <span class="k">def</span> <span class="nf">set_Border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Border</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Border</span> <span class="o">=</span> <span class="n">Border</span></div>
+    <span class="k">def</span> <span class="nf">set_Border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Border</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Border</span> <span class="o">=</span> <span class="n">Border</span>
 <div class="viewcode-block" id="PageType.get_PrintSpace"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_PrintSpace">[docs]</a>    <span class="k">def</span> <span class="nf">get_PrintSpace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrintSpace</span></div>
 <div class="viewcode-block" id="PageType.set_PrintSpace"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_PrintSpace">[docs]</a>    <span class="k">def</span> <span class="nf">set_PrintSpace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PrintSpace</span><span class="p">):</span>
@@ -2483,8 +2495,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">custom</span> <span class="o">=</span> <span class="n">custom</span></div>
 <div class="viewcode-block" id="PageType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="PageType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="PageType.get_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_</span></div>
 <div class="viewcode-block" id="PageType.set_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
@@ -3079,7 +3091,109 @@ lang: en
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">in_reading_order</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">in_reading_order</span> <span class="o">+</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ret</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">in_reading_order</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">ret</span></div></div>
+        <span class="k">return</span> <span class="n">ret</span></div>
+<div class="viewcode-block" id="PageType.get_AllAlternativeImages"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_AllAlternativeImages">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllAlternativeImages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">glyph</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all the pc:AlternativeImage in a document</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">        page (boolean): Get pc:Page level images</span>
+<span class="sd">        region (boolean): Get images on pc:*Region level</span>
+<span class="sd">        line (boolean) Get images on pc:TextLine level</span>
+<span class="sd">        word (boolean) Get images on pc:Word level</span>
+<span class="sd">        glyph (boolean) Get images on pc:Glyph level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">page</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">this_region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AllRegions</span><span class="p">([</span><span class="s1">&#39;Text&#39;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">region</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">+=</span> <span class="n">this_region</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">this_line</span> <span class="ow">in</span> <span class="n">this_region</span><span class="o">.</span><span class="n">get_TextLine</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">+=</span> <span class="n">this_line</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">this_word</span> <span class="ow">in</span> <span class="n">this_line</span><span class="o">.</span><span class="n">get_Word</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">word</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">+=</span> <span class="n">this_word</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">this_glyph</span> <span class="ow">in</span> <span class="n">this_word</span><span class="o">.</span><span class="n">get_Glyph</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">glyph</span><span class="p">:</span>
+                            <span class="n">ret</span> <span class="o">+=</span> <span class="n">this_glyph</span><span class="o">.</span><span class="n">get_AlternativeImage</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+    
+<div class="viewcode-block" id="PageType.invalidate_AlternativeImage"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.invalidate_AlternativeImage">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_AlternativeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove derived images from this segment (due to changed coordinates).</span>
+<span class="sd">    </span>
+<span class="sd">        If ``feature_selector`` is not none, remove only images with</span>
+<span class="sd">        matching ``@comments``, e.g. ``feature_selector=cropped,deskewed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">removed_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">feature_selector</span><span class="p">:</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">existing_images</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
+                    <span class="n">removed_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="n">new_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">removed_images</span> <span class="o">=</span> <span class="n">existing_images</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">removed_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Removing AlternativeImage </span><span class="si">%s</span><span class="s1"> from &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="PageType.set_Border"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_Border">[docs]</a>    <span class="k">def</span> <span class="nf">set_Border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Border</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Border</span> <span class="o">=</span> <span class="n">Border</span></div>
+<div class="viewcode-block" id="PageType.get_AllTextLines"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.get_AllTextLines">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllTextLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_order</span><span class="o">=</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="n">respect_textline_order</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return all the TextLine in the document</span>
+<span class="sd">    </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            region_order (&quot;document&quot;|&quot;reading-order&quot;|&quot;reading-order-only&quot;) Whether to</span>
+<span class="sd">                return regions sorted by document order (``document``, default) or by</span>
+<span class="sd">                reading order with regions not in the reading order at the end of the</span>
+<span class="sd">                returned list (``reading-order``) or regions not in the reading order</span>
+<span class="sd">                omitted (``reading-order-only``)</span>
+<span class="sd">            respect_textline_order (boolean) Whether to respect textlineOrder attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO handle textLineOrder according to https://github.com/PRImA-Research-Lab/PAGE-XML/issues/26</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AllRegions</span><span class="p">([</span><span class="s1">&#39;Text&#39;</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="n">region_order</span><span class="p">):</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_TextLine</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">respect_textline_order</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">+=</span> <span class="n">lines</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_textLineOrder</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_textLineOrder</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;top-to-bottom&#39;</span>
+                <span class="n">ret</span> <span class="o">+=</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">lo</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;top-to-bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;left-to-right&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+    
+<div class="viewcode-block" id="PageType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PageType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class PageType</span>
 
 
@@ -3126,8 +3240,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="CoordsType.get_points"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.get_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span></div>
-<div class="viewcode-block" id="CoordsType.set_points"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.set_points">[docs]</a>    <span class="k">def</span> <span class="nf">set_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span></div>
+    <span class="k">def</span> <span class="nf">set_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
 <div class="viewcode-block" id="CoordsType.get_conf"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.get_conf">[docs]</a>    <span class="k">def</span> <span class="nf">get_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span></div>
 <div class="viewcode-block" id="CoordsType.set_conf"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.set_conf">[docs]</a>    <span class="k">def</span> <span class="nf">set_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">):</span>
@@ -3230,7 +3344,23 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="CoordsType.set_points"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.CoordsType.set_points">[docs]</a>    <span class="k">def</span> <span class="nf">set_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given string.</span>
+<span class="sd">        Moreover, invalidate the parent&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">):</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+                <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+                <span class="n">parent</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+                <span class="c1"># BorderType:</span>
+                <span class="n">parent</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span></div></div>
 <span class="c1"># end class CoordsType</span>
 
 
@@ -3347,8 +3477,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 <div class="viewcode-block" id="TextLineType.get_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.get_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span></div>
-<div class="viewcode-block" id="TextLineType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div>
+    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span>
 <div class="viewcode-block" id="TextLineType.get_Baseline"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.get_Baseline">[docs]</a>    <span class="k">def</span> <span class="nf">get_Baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Baseline</span></div>
 <div class="viewcode-block" id="TextLineType.set_Baseline"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.set_Baseline">[docs]</a>    <span class="k">def</span> <span class="nf">set_Baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Baseline</span><span class="p">):</span>
@@ -3676,7 +3806,52 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="TextLineType.invalidate_AlternativeImage"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.invalidate_AlternativeImage">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_AlternativeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove derived images from this segment (due to changed coordinates).</span>
+<span class="sd">    </span>
+<span class="sd">        If ``feature_selector`` is not none, remove only images with</span>
+<span class="sd">        matching ``@comments``, e.g. ``feature_selector=cropped,deskewed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">removed_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">feature_selector</span><span class="p">:</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">existing_images</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
+                    <span class="n">removed_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="n">new_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">removed_images</span> <span class="o">=</span> <span class="n">existing_images</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">removed_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Removing AlternativeImage </span><span class="si">%s</span><span class="s1"> from &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="TextLineType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextLineType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># BorderType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div></div>
 <span class="c1"># end class TextLineType</span>
 
 
@@ -3785,8 +3960,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 <div class="viewcode-block" id="WordType.get_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.get_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span></div>
-<div class="viewcode-block" id="WordType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div>
+    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span>
 <div class="viewcode-block" id="WordType.get_Glyph"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.get_Glyph">[docs]</a>    <span class="k">def</span> <span class="nf">get_Glyph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Glyph</span></div>
 <div class="viewcode-block" id="WordType.set_Glyph"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.set_Glyph">[docs]</a>    <span class="k">def</span> <span class="nf">set_Glyph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Glyph</span><span class="p">):</span>
@@ -4090,7 +4265,52 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="WordType.invalidate_AlternativeImage"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.invalidate_AlternativeImage">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_AlternativeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove derived images from this segment (due to changed coordinates).</span>
+<span class="sd">    </span>
+<span class="sd">        If ``feature_selector`` is not none, remove only images with</span>
+<span class="sd">        matching ``@comments``, e.g. ``feature_selector=cropped,deskewed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">removed_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">feature_selector</span><span class="p">:</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">existing_images</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
+                    <span class="n">removed_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="n">new_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">removed_images</span> <span class="o">=</span> <span class="n">existing_images</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">removed_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Removing AlternativeImage </span><span class="si">%s</span><span class="s1"> from &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="WordType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.WordType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># BorderType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div></div>
 <span class="c1"># end class WordType</span>
 
 
@@ -4188,8 +4408,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 <div class="viewcode-block" id="GlyphType.get_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.get_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span></div>
-<div class="viewcode-block" id="GlyphType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div>
+    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span>
 <div class="viewcode-block" id="GlyphType.get_Graphemes"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.get_Graphemes">[docs]</a>    <span class="k">def</span> <span class="nf">get_Graphemes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Graphemes</span></div>
 <div class="viewcode-block" id="GlyphType.set_Graphemes"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.set_Graphemes">[docs]</a>    <span class="k">def</span> <span class="nf">set_Graphemes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Graphemes</span><span class="p">):</span>
@@ -4457,7 +4677,52 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="GlyphType.invalidate_AlternativeImage"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.invalidate_AlternativeImage">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_AlternativeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove derived images from this segment (due to changed coordinates).</span>
+<span class="sd">    </span>
+<span class="sd">        If ``feature_selector`` is not none, remove only images with</span>
+<span class="sd">        matching ``@comments``, e.g. ``feature_selector=cropped,deskewed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">removed_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">feature_selector</span><span class="p">:</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">existing_images</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
+                    <span class="n">removed_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="n">new_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">removed_images</span> <span class="o">=</span> <span class="n">existing_images</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">removed_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Removing AlternativeImage </span><span class="si">%s</span><span class="s1"> from &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="GlyphType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GlyphType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># BorderType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div></div>
 <span class="c1"># end class GlyphType</span>
 
 
@@ -7002,8 +7267,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="BorderType.get_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.BorderType.get_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span></div>
-<div class="viewcode-block" id="BorderType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.BorderType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div>
+    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span>
 <div class="viewcode-block" id="BorderType.hasContent_"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.BorderType.hasContent_">[docs]</a>    <span class="k">def</span> <span class="nf">hasContent_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -7072,7 +7337,21 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="BorderType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.BorderType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># BorderType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div></div>
 <span class="c1"># end class BorderType</span>
 
 
@@ -8459,8 +8738,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 <div class="viewcode-block" id="RegionType.get_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.get_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span></div>
-<div class="viewcode-block" id="RegionType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div>
+    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span>
 <div class="viewcode-block" id="RegionType.get_UserDefined"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.get_UserDefined">[docs]</a>    <span class="k">def</span> <span class="nf">get_UserDefined</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">UserDefined</span></div>
 <div class="viewcode-block" id="RegionType.set_UserDefined"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.set_UserDefined">[docs]</a>    <span class="k">def</span> <span class="nf">set_UserDefined</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">UserDefined</span><span class="p">):</span>
@@ -8910,7 +9189,52 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="RegionType.invalidate_AlternativeImage"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.invalidate_AlternativeImage">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_AlternativeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove derived images from this segment (due to changed coordinates).</span>
+<span class="sd">    </span>
+<span class="sd">        If ``feature_selector`` is not none, remove only images with</span>
+<span class="sd">        matching ``@comments``, e.g. ``feature_selector=cropped,deskewed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">removed_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">feature_selector</span><span class="p">:</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">existing_images</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
+                    <span class="n">removed_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="n">new_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">removed_images</span> <span class="o">=</span> <span class="n">existing_images</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AlternativeImage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">pcGtsId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">removed_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gds_collector_</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;Removing AlternativeImage </span><span class="si">%s</span><span class="s1"> from &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="RegionType.set_Coords"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.RegionType.set_Coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_Coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set coordinate polygon by given object.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been cropped with a bbox</span>
+<span class="sd">         of the previous polygon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># RegionType, TextLineType, WordType, GlyphType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parent_object_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># BorderType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_object_</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Coords</span> <span class="o">=</span> <span class="n">Coords</span></div></div>
 <span class="c1"># end class RegionType</span>
 
 
@@ -10671,8 +10995,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="AdvertRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="AdvertRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="AdvertRegionType.get_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.get_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span></div>
 <div class="viewcode-block" id="AdvertRegionType.set_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
@@ -10765,7 +11089,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="AdvertRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.AdvertRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class AdvertRegionType</span>
 
 
@@ -10812,8 +11147,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="MusicRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MusicRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="MusicRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MusicRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="MusicRegionType.get_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MusicRegionType.get_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span></div>
 <div class="viewcode-block" id="MusicRegionType.set_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MusicRegionType.set_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
@@ -10906,7 +11241,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="MusicRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MusicRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class MusicRegionType</span>
 
 
@@ -10950,8 +11296,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="MapRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MapRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="MapRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MapRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="MapRegionType.hasContent_"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MapRegionType.hasContent_">[docs]</a>    <span class="k">def</span> <span class="nf">hasContent_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">MapRegionType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">hasContent_</span><span class="p">()</span>
@@ -11019,7 +11365,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="MapRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MapRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class MapRegionType</span>
 
 
@@ -11067,8 +11424,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="ChemRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChemRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="ChemRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChemRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="ChemRegionType.get_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChemRegionType.get_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span></div>
 <div class="viewcode-block" id="ChemRegionType.set_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChemRegionType.set_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
@@ -11161,7 +11518,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="ChemRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChemRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class ChemRegionType</span>
 
 
@@ -11209,8 +11577,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="MathsRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MathsRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="MathsRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MathsRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="MathsRegionType.get_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MathsRegionType.get_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgColour</span></div>
 <div class="viewcode-block" id="MathsRegionType.set_bgColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MathsRegionType.set_bgColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_bgColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bgColour</span><span class="p">):</span>
@@ -11303,7 +11671,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="MathsRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.MathsRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class MathsRegionType</span>
 
 
@@ -11352,8 +11731,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="SeparatorRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.SeparatorRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="SeparatorRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.SeparatorRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="SeparatorRegionType.get_colour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.SeparatorRegionType.get_colour">[docs]</a>    <span class="k">def</span> <span class="nf">get_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour</span></div>
 <div class="viewcode-block" id="SeparatorRegionType.set_colour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.SeparatorRegionType.set_colour">[docs]</a>    <span class="k">def</span> <span class="nf">set_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
@@ -11446,7 +11825,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="SeparatorRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.SeparatorRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class SeparatorRegionType</span>
 
 
@@ -11508,8 +11898,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="ChartRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChartRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="ChartRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChartRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="ChartRegionType.get_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChartRegionType.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_</span></div>
 <div class="viewcode-block" id="ChartRegionType.set_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChartRegionType.set_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
@@ -11654,7 +12044,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="ChartRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ChartRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class ChartRegionType</span>
 
 
@@ -11731,8 +12132,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">Grid</span> <span class="o">=</span> <span class="n">Grid</span></div>
 <div class="viewcode-block" id="TableRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="TableRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="TableRegionType.get_rows"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableRegionType.get_rows">[docs]</a>    <span class="k">def</span> <span class="nf">get_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span></div>
 <div class="viewcode-block" id="TableRegionType.set_rows"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableRegionType.set_rows">[docs]</a>    <span class="k">def</span> <span class="nf">set_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
@@ -11903,7 +12304,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="TableRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TableRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class TableRegionType</span>
 
 
@@ -11961,8 +12373,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="GraphicRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GraphicRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="GraphicRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GraphicRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="GraphicRegionType.get_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GraphicRegionType.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_</span></div>
 <div class="viewcode-block" id="GraphicRegionType.set_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GraphicRegionType.set_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
@@ -12082,7 +12494,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="GraphicRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.GraphicRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class GraphicRegionType</span>
 
 
@@ -12139,8 +12562,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="LineDrawingRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LineDrawingRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="LineDrawingRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LineDrawingRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="LineDrawingRegionType.get_penColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LineDrawingRegionType.get_penColour">[docs]</a>    <span class="k">def</span> <span class="nf">get_penColour</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">penColour</span></div>
 <div class="viewcode-block" id="LineDrawingRegionType.set_penColour"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LineDrawingRegionType.set_penColour">[docs]</a>    <span class="k">def</span> <span class="nf">set_penColour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penColour</span><span class="p">):</span>
@@ -12261,7 +12684,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="LineDrawingRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.LineDrawingRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class LineDrawingRegionType</span>
 
 
@@ -12318,8 +12752,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">ns_prefix_</span> <span class="o">=</span> <span class="n">ns_prefix</span></div>
 <div class="viewcode-block" id="ImageRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ImageRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="ImageRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ImageRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="ImageRegionType.get_colourDepth"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ImageRegionType.get_colourDepth">[docs]</a>    <span class="k">def</span> <span class="nf">get_colourDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colourDepth</span></div>
 <div class="viewcode-block" id="ImageRegionType.set_colourDepth"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ImageRegionType.set_colourDepth">[docs]</a>    <span class="k">def</span> <span class="nf">set_colourDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colourDepth</span><span class="p">):</span>
@@ -12453,7 +12887,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="ImageRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.ImageRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class ImageRegionType</span>
 
 
@@ -12596,8 +13041,8 @@ lang: en
         <span class="bp">self</span><span class="o">.</span><span class="n">TextStyle</span> <span class="o">=</span> <span class="n">TextStyle</span></div>
 <div class="viewcode-block" id="TextRegionType.get_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextRegionType.get_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">get_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span></div>
-<div class="viewcode-block" id="TextRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 <div class="viewcode-block" id="TextRegionType.get_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextRegionType.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_</span></div>
 <div class="viewcode-block" id="TextRegionType.set_type"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextRegionType.set_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
@@ -12933,7 +13378,18 @@ lang: en
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot hash </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<div class="viewcode-block" id="TextRegionType.set_orientation"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.TextRegionType.set_orientation">[docs]</a>    <span class="k">def</span> <span class="nf">set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set deskewing angle to given number.</span>
+<span class="sd">        Moreover, invalidate self&#39;s AlternativeImages</span>
+<span class="sd">        (because they will have been rotated and enlarged</span>
+<span class="sd">         with the angle of the previous value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;invalidate_AlternativeImage&#39;</span><span class="p">):</span>
+            <span class="c1"># PageType, RegionType:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_AlternativeImage</span><span class="p">(</span><span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;deskewed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div></div>
 <span class="c1"># end class TextRegionType</span>
 
 
@@ -12993,12 +13449,12 @@ lang: en
     <span class="k">if</span> <span class="ow">not</span> <span class="n">SaveElementTreeNode</span><span class="p">:</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">rootNode</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">silence</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">rootObj</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="n">rootTag</span><span class="p">,</span>
-            <span class="n">namespacedef_</span><span class="o">=</span><span class="n">namespacedefs</span><span class="p">,</span>
-            <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">##     if not silence:</span>
+<span class="c1">##         sys.stdout.write(&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;\n&#39;)</span>
+<span class="c1">##         rootObj.export(</span>
+<span class="c1">##             sys.stdout, 0, name_=rootTag,</span>
+<span class="c1">##             namespacedef_=namespacedefs,</span>
+<span class="c1">##             pretty_print=True)</span>
     <span class="k">if</span> <span class="n">print_warnings</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gds_collector</span><span class="o">.</span><span class="n">get_messages</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
@@ -13030,12 +13486,12 @@ lang: en
     <span class="k">if</span> <span class="ow">not</span> <span class="n">SaveElementTreeNode</span><span class="p">:</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">rootNode</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">silence</span><span class="p">:</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">etree_</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span>
-            <span class="n">rootElement</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1">##     if not silence:</span>
+<span class="c1">##         content = etree_.tostring(</span>
+<span class="c1">##             rootElement, pretty_print=True,</span>
+<span class="c1">##             xml_declaration=True, encoding=&quot;utf-8&quot;)</span>
+<span class="c1">##         sys.stdout.write(str(content))</span>
+<span class="c1">##         sys.stdout.write(&#39;\n&#39;)</span>
     <span class="k">if</span> <span class="n">print_warnings</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gds_collector</span><span class="o">.</span><span class="n">get_messages</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
@@ -13066,11 +13522,11 @@ lang: en
     <span class="n">rootObj</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">rootNode</span><span class="p">,</span> <span class="n">gds_collector_</span><span class="o">=</span><span class="n">gds_collector</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">SaveElementTreeNode</span><span class="p">:</span>
         <span class="n">rootNode</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">silence</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">rootObj</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="n">rootTag</span><span class="p">,</span>
-            <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;xmlns:pc=&quot;http://schema.primaresearch.org/PAGE/gts/pagecontent/2019-07-15&quot;&#39;</span><span class="p">)</span>
+<span class="c1">##     if not silence:</span>
+<span class="c1">##         sys.stdout.write(&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;\n&#39;)</span>
+<span class="c1">##         rootObj.export(</span>
+<span class="c1">##             sys.stdout, 0, name_=rootTag,</span>
+<span class="c1">##             namespacedef_=&#39;xmlns:pc=&quot;http://schema.primaresearch.org/PAGE/gts/pagecontent/2019-07-15&quot;&#39;)</span>
     <span class="k">if</span> <span class="n">print_warnings</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gds_collector</span><span class="o">.</span><span class="n">get_messages</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
@@ -13096,12 +13552,12 @@ lang: en
     <span class="k">if</span> <span class="ow">not</span> <span class="n">SaveElementTreeNode</span><span class="p">:</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">rootNode</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">silence</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#from ocrd_page_generateds import *</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;import ocrd_page_generateds as model_</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;rootObj = model_.rootClass(</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">rootObj</span><span class="o">.</span><span class="n">exportLiteral</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="o">=</span><span class="n">rootTag</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1">##     if not silence:</span>
+<span class="c1">##         sys.stdout.write(&#39;#from ocrd_page_generateds import *\n\n&#39;)</span>
+<span class="c1">##         sys.stdout.write(&#39;import ocrd_page_generateds as model_\n\n&#39;)</span>
+<span class="c1">##         sys.stdout.write(&#39;rootObj = model_.rootClass(\n&#39;)</span>
+<span class="c1">##         rootObj.exportLiteral(sys.stdout, 0, name_=rootTag)</span>
+<span class="c1">##         sys.stdout.write(&#39;)\n&#39;)</span>
     <span class="k">if</span> <span class="n">print_warnings</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gds_collector</span><span class="o">.</span><span class="n">get_messages</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
