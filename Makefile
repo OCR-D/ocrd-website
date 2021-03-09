@@ -135,13 +135,16 @@ build-site:
 
 deploy:
 	cp -r docs/* repo/ocr-d.github.io
+	git add .
+	git commit -m "Update `date`" ;\
+	git push
 	cd repo/ocr-d.github.io; \
 		git add .; \
 		git commit -m "Update `date`" ;\
 		git push;
-	git add .
-	git commit -m "Update `date`"
-	git push
+#	git add .
+#	git commit -m "Update `date`"
+#	git push
 
 # Build sphinx documentation for core
 core-docs:
