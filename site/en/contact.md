@@ -140,6 +140,6 @@ as the project continues and the OCR-D-software is developing into an operable, 
 
 * [Content Conversion Specialists (CCS)](https://content-conversion.com/) 
 * [Kitodo. Key to digital objects e.V.](https://www.kitodo.org/en/)
-* [OCR4all](https://www.uni-wuerzburg.de/en/zpd/ocr4all/), [GitHub](https://github.com/OCR4all)
+* [OCR4all](http://ocr4all.de/), [GitHub](https://github.com/OCR4all)
 * [semantics Kommunikationsmanagement GmbH](https://www.semantics.de/)
 * [Zeutschel GmbH](https://www.zeutschel.de/en/)

@@ -153,6 +153,6 @@ und mit der Entwicklung der OCR-D-Software zu einem einsatzfähigen, stabilisier
 
 * [Content Conversion Specialists (CCS)](https://content-conversion.com/de/) 
 * [Kitodo. Key to digital objects e.V.](https://www.kitodo.org/)
-* [OCR4all](https://www.uni-wuerzburg.de/zpd/ocr4all), [GitHub](https://github.com/OCR4all)
+* [OCR4all](http://ocr4all.de/), [GitHub](https://github.com/OCR4all)
 * [semantics Kommunikationsmanagement GmbH](https://www.semantics.de/)
 * [Zeutschel GmbH](https://www.zeutschel.de/de/)
