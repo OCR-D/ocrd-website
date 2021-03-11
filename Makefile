@@ -139,6 +139,9 @@ deploy:
 	git commit -m "Update `date`" ;\
 	git push
 	cd repo/ocr-d.github.io; \
+		git clean -df; \
+		git checkout master; \
+		git pull ; \
 		git add .; \
 		git commit -m "Update `date`" ;\
 		git push;
