@@ -13,26 +13,30 @@
 First some development pkgs:
 
 ```sh
-sudo apt install make git ruby-dev openjdk-8-jre python3-pip
+sudo apt install make git ruby-dev ruby-bundler openjdk-8-jre python3-pip
 ```
+
+NOTE: The `openjdk-8-jre` dependency is only required for [building the GT guidelines](#rebuild-gt-guidelines).
 
 Then jekyll, in the repo:
 
 ```sh
-bundle install
+make jekyll
 ```
+
+This will install jekyll into `./vendor/bundle`.
 
 ### Submodules
 
 The OCR-D site requires quite a few sub repositories conveniently laid out in
 the `./repo` dir:
 
-* [`gt-guidelines`](`gt-guidelines`): The DITA based guidelines on how Ground
-  Truth is to be transcribed into the PAGE XML format. 
-* [`ocrd_all`](`ocrd_all`)
-* [`ocrd-kwalitee`](`ocrd-kwalitee`)
-* [`slides`](`slides`)
-* [`spec`](`spec`)
+* [`gt-guidelines`](repo/gt-guidelines): The DITA based guidelines on how Ground Truth is to be transcribed into the PAGE XML format. 
+* [`ocrd_all`](repo/ocrd_all)
+* [`ocrd-kwalitee`](repo/ocrd-kwalitee)
+* [`slides`](repo/slides)
+* [`spec`](repo/spec)
+* [`shinlcude`](repo/shinclude)
 
 ## `make help`
 Run `make help` to see a list of commands.
@@ -41,6 +45,9 @@ Run `make help` to see a list of commands.
 
   Targets
 
+    deps-ubuntu       ubuntu deps
+    jekyll            Install jekyll dependencies
+    shinclude         Install shinclude
     bootstrap         Set up the repos, site and tools
     gt                Build gt-guidelines. This takes a few minutes. Be patient.
     build-modules     TODO Build module information
@@ -49,16 +56,17 @@ Run `make help` to see a list of commands.
     build-site        build the site
     core-docs         Build sphinx documentation for core
     spec              Build the spec documents TODO translate
+    workflows         Rebuild the workflow document from wiki fragments
 
   Variables
 
-    REPODIR          Directory containing this Makefile. Don't change it. Default '/data/monorepo/ocrd-website'
+    REPODIR          Directory containing this Makefile. Don't change it. Default '/home/kba/build/github.com/OCR-D/monorepo/ocrd-website'
     JEKYLL           Which jekyll binary to use. Default 'jekyll'
-    DSTDIR           Where to build site. Default '/data/monorepo/ocrd-website/docs'
-    SRCDIR           Where site is stored. Default '/data/monorepo/ocrd-website/site'
-    GTDIR            Repositories mit den DITA Quelltexten. Default: /data/monorepo/ocrd-website/repo/gt-guidelines
+    DSTDIR           Where to build site. Default '/home/kba/build/github.com/OCR-D/monorepo/ocrd-website/docs'
+    SRCDIR           Where site is stored. Default '/home/kba/build/github.com/OCR-D/monorepo/ocrd-website/site'
+    GTDIR            Repositories mit dne DITA Quelltexten. Default: /home/kba/build/github.com/OCR-D/monorepo/ocrd-website/repo/gt-guidelines
     JEKYLL_HOST      host to serve from. Default: 10.46.3.57
-    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /data/monorepo/ocrd-website/kwalitee.yml
+    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /home/kba/build/github.com/OCR-D/monorepo/ocrd-website/kwalitee.yml
     LANGS            Languages to build. Default: 'de en'
     LANGS_DST        Guideline langs to build. Default: 
 
@@ -66,7 +74,7 @@ Run `make help` to see a list of commands.
 
 Activate any virtualenvs before running `make`.
 
-To ensure a complete setup for Debian/Ubuntu based Linuxes: `make bootstrap`
+To ensure a complete setup for Debian/Ubuntu based Linuxes: `make bootstrap`. This will test whether all the tools are installed and offer remediation if not.
 
 ## Directory structure
 
@@ -156,12 +164,23 @@ git commit -m 'website updated'
 - Open Zotero Desktop
 - Import collection from file
 - Delete all "Presentation" (for "articles", delete everything else for "presentations")
-* Sort reverse by date
+- Sort reverse by date
 - Select all
 - Right click -> export bibliography
 - Use `OCRD_infoclio.ch` style
-- export as html
-- open exported html, crop to just the `<body>` contents
-- `s,>/slides,>https://ocr-d.de/slides,`
-* `s,doi.org//,ocr-d.de/,`
-- paste into site/en/publications.md / site/de/publications.md
+- Export as html, save as `pub.html`
+- Edit `pub.html`, crop to just the `<body>` contents
+- Replace some minor inconsistencies in Zotero's HTML output:
+  - `sed -i 's,>/slides,>https://ocr-d.de/slides,' pub.html`
+  - `sed -i 's,doi.org//,ocr-d.de/,' pub.html`
+- paste `pub.html` into `site/en/publications.md` or `site/de/publications.md`
+
+## Updating workflows
+
+The [workflows](https://ocr-d.de/en/workflows) page is built from pages on inidividual steps in the [OCR-D wiki](https://github.com/OCR-D/ocrd-website.wiki).
+
+To automate this, you need to have [shinclude](https://github.com/kba/shinclude) installed with `make shinclude`.
+
+Make sure that `repo/ocrd-website.wiki` is up-to-date: `cd repo/ocrd-website.wiki; git pull origin master`.
+
+`make workflows` will generate `site/en/workflows.md` from the wiki fragments. Inspect it for consistency before merging.

@@ -34,6 +34,7 @@ help:
 	@echo ""
 	@echo "    deps-ubuntu       ubuntu deps"
 	@echo "    jekyll            Install jekyll dependencies"
+	@echo "    shinclude         Install shinclude"
 	@echo "    bootstrap         Set up the repos, site and tools"
 	@echo "    gt                Build gt-guidelines. This takes a few minutes. Be patient."
 	@echo "    build-modules     TODO Build module information"
@@ -67,13 +68,20 @@ deps-ubuntu:
 jekyll:
 	bundle install --path vendor/bundle
 
+# Install shinclude
+shinclude:
+	cd repo/shinclude; \
+		make install PREFIX=$(HOME)/.local
+
 # Set up the repos, site and tools
 bootstrap:
 	git submodule sync
 	git submodule update --init
-	java -version || echo "apt install openjdk-8-jre"
-	pip3 --version || echo "apt install python3-pip"
-	jekyll --version || echo "gem install jekyll"
+	bundle --version || "bundle is not available, try 'make deps-ubuntu'"
+	java -version || echo "java not available, needed for the GT guidelines. try 'sudo apt install openjdk-8-jre'"
+	pip3 --version || echo "pip3 not available, needed for kwalitee. try 'sudo apt install python3-pip' or activating a venv"
+	jekyll --version || echo "jekyll not available, try 'make jekyll'"
+	shinclude --help || echo "shinclude ist not available, try 'make shinclude'"
 	cd repo/ocrd-kwalitee && pip install -e .
 	cd $(GTDIR) && make deps
 
