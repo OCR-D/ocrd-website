@@ -482,7 +482,7 @@ if they are curved. The input image has to be binarized for the module to work.
         <code>-P pix2pixHD /path/to/pix2pixHD/</code><br/>
         <code>-P model_name:/path/to/pix2pixHD/models</code>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> <br> Parameter <code>model_name</code> is misleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> or use the [OCR-D resource manager](https://ocr-d.de/en/models) <br> Parameter <code>model_name</code> is misleading. Given directory has to contain a file named ‘latest_net_G.pth’ <br> <strong>GPU required!</strong></td>
       <td>
         <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE -p '{\"pix2pixHD\":\"/path/to/pix2pixHD/\",\"model_name\":\"/path/to/pix2pixHD/models\"}'</code>
       </td>
@@ -1196,12 +1196,14 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md|sed '$d' -->
-All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to work.
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaptation-of-coordinates.md|sed '$d' -->
+All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to function properly.
 
-For example, if you have a page-level dewarping step, it is currently impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped image before proceeding with the workflow. If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are re-calculated accordingly as well.
+For example, if you have a page-level dewarping step, it is currently impossible to correctly relate to the original image's coordinates for any segments annotated after that, because there is no descriptive annotation of the underlying coordinate transform in PAGE-XML. Therefore, it is better to _replace the original image_ of the output PAGE-XML by the dewarped image before proceeding with the workflow. (If the dewarped image has also been cropped or deskewed, then of course all existing coordinates are re-calculated accordingly as well.)
 
 Another use case is exporting PAGE-XML for tools that cannot apply cropping or deskewing, like [LAREX](https://github.com/OCR4all/LAREX) or Transkribus.
+
+Conversely, you might want to align two PAGE-XML files for the same page that have different original image references, projecting all segments below the page level from the one to the other (transforming all coordinates according to the page-level annotation, or keeping them unchanged).
 
 #### Available processors
 
@@ -1219,7 +1221,13 @@ Another use case is exporting PAGE-XML for tools that cannot apply cropping or d
       <td>ocrd-segment-replace-original</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-    <td><code>ocrd-segment-replace-original -I OCR-D-SEG-LINE -O OCR-D-SUBST</code></td>
+    <td><code>ocrd-segment-replace-original -I OCR-D-CROP-DESK -O OCR-D-CROP-DESK-SUBST</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-replace-page">
+      <td>ocrd-segment-replace-page</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    <td><code>ocrd-segment-replace-page -I OCR-D-CROP-DESK,OCR-D-CROP-DESK-SUBST-SEG -O OCR-D-CROP-DESK-SEG -P transform_coordinates true</code></td>
     </tr>
   </tbody>
 </table>
@@ -1312,8 +1320,20 @@ accessible format that can be used as-is by expert and layman alike.
     <tr data-processor="ocrd-segment-extract-lines">
       <td>ocrd-segment-extract-lines</td>
       <td><code>-P mimetype image/png -P transparency true</code></td>
-      <td>Get text line images (cropped, masked and deskewed as annotated) along with JSON files for line annotations (custom format).</td>
+      <td>Get text line images (cropped, masked and deskewed as annotated) along with text files (Ocropus convention) and JSON files for line annotations (custom format).</td>
       <td><code>ocrd-segment-extract-lines -I OCR-D-SEG-LINE -O OCR-D-IMG-LINE</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-extract-words">
+      <td>ocrd-segment-extract-words</td>
+      <td><code>-P mimetype image/png -P transparency true</code></td>
+      <td>Get word images (cropped, masked and deskewed as annotated) along with text files (Ocropus convention) and JSON files for word annotations (custom format).</td>
+      <td><code>ocrd-segment-extract-words -I OCR-D-SEG-WORD -O OCR-D-IMG-WORD</code></td>
+    </tr>
+    <tr data-processor="ocrd-segment-extract-glyphs">
+      <td>ocrd-segment-extract-glyphs</td>
+      <td><code>-P mimetype image/png -P transparency true</code></td>
+      <td>Get glyph images (cropped, masked and deskewed as annotated) along with text files (Ocropus convention) and JSON files for glyph annotations (custom format).</td>
+      <td><code>ocrd-segment-extract-glyph -I OCR-D-SEG-GLYPH -O OCR-D-IMG-GLYPH</code></td>
     </tr>
     <tr data-processor="ocrd-segment-from-masks">
       <td>ocrd-segment-from-masks</td>
