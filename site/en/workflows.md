@@ -94,7 +94,7 @@ level, including the confidence value (separated by colon). Supported `fontFamil
   * `Antiqua`
   * `Bastarda`
   * `Fraktur`
-  * `Gotico`-Antiqua
+  * `Gotico-Antiqua`
   * `Greek`
   * `Hebrew`
   * `Italic`
