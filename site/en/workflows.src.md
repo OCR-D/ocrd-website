@@ -308,7 +308,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 18: Adaptation of Coordinates
 
-<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaption-of-coordinates.md|sed '$d'-->
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaptation-of-coordinates.md|sed '$d'-->
 
 ### Step 19: Format Conversion
 
