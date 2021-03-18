@@ -28,6 +28,11 @@ Examples:
   * `ocrd-kraken-binarize`
   * `ocrd-tesserocr-recognize`
 
+## No parameters
+
+If **no arguments** are passed to a processor, it must show the [`--help`
+message](#-h---help) message and exit with return code `1`.
+
 ## Mandatory parameters
 
 ### `-I, --input-file-grp GRP`
@@ -121,9 +126,6 @@ will be parsed as the boolean value `true`, not the string `"true"`).
 ### `-m, --mets METS_IN`
 
 Input [METS](mets) URL. Default: `mets.xml`
-
-If `METS_IN` is a file path but the file is not readable, processors must
-show the [`--help` message](#-h---help) message and exit with return code `1`.
 
 ### `-w, --working-dir DIR`
 

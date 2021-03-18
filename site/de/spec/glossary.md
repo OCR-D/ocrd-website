@@ -292,79 +292,73 @@ Storing results of OCR and OLR indefinitely, taking into account versioning,
 multiple runs, provenance/parametrization and providing access to these saved
 snapshots in a granular fashion.
 
-### Print space
-
-From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
-
-> Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
->
-> It contains all living elements (except marginals) like body type, footnotes, headings, running titles.
->
-> It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.
-
-
 ### Quality assurance
 
 Providing measures, algorithms and software to estimate the quality of the [individual processes](#activities) within the OCR-D domain.
 
 ## Component architecture
 
-### (OCR-D-)Applikation
+### (OCR-D) Application
 
-Gesamtsystem bestehend aus verschiedenen Servern auf denen Prozessoren ausgeführt werden können; kann ein Einzelplatzrechner sein, oder ein verteiltes System aus einem Controller und mehreren Processing-Servern oder ein HPC-Cluster
+Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
 
-### (OCR-D-)Web-API
+### OCR-D Web API
 
-Wie in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173) skizziert einheitlich definierte und aufeinander bezogene Services, die sich real (je nach IP-Szenario) auf verschiedene Netzwerk-Komponenten verteilen können
+As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed across network components, depending on the use case.
 
-### (OCR-D-)Service
+### (OCR-D) Service
 
-Funktionsgruppe aus der Web-API; discovery/workspace/processing/workflow/...
+Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/...
 
-### (OCR-D-)Server
+### (OCR-D) Server
 
-konkreter Webserver für eine Teilmenge an Services
+Concrete implementation of a subset of OCR-D services, or the network host providing it.
 
-### (OCR-D-)Controller
+### (OCR-D) Controller
 
-Server (mind. discovery+workspace+workflow), der Workflows abarbeitet (1 oder mehrere gleichzeitig) und dazu an verschiedene ihm bekannte Processing-Server verteilt und natürlich jeweils die Workspaces bereitstellt/zurückholt; hier gehört auch Lastverteilung hin
+OCR-D Server (implementing at least *discovery*, *workspace* and *workflow* services) executing workflows (a single workflow or multiple workflows simultaneously), distributing tasks to configured processing servers, managing workspace data management. Should also manage load balancing.
 
-### (OCR-D-)Processing-Server
+### (OCR-D) Processing Server
 
-Server (mind. discovery+processing), der einen oder mehrere (lokal installierte) Prozessoren oder Evaluatoren ausführt (aber nur 1 gleichzeitig) und natürlich jeweils die Workspaces abholt/ergänzt; hierher gehört die Abwägung zwischen mehreren OPS auf einem (multiskalaren) Rechner oder 1 OPS mit seitenparalleler Prozessierung, sowie GPU-spezifische OPS (nur mit CUDA-Prozessoren) o.ä. Installationen
+OCR-D server (implementing at least *discovery* and *processing* services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.
 
-### (OCR-D-)Backend
+### (OCR-D) Backend
 
-netzwerkspezifische Software-Komponente von einem Server; z.B. Python-Bibliothek mit Request Handler, mit Implementierung von Service-Discovery und einer netzwerkfähigen Workspace-Verwaltung
+Software component of a server concerned with network operations; e.g. Python library with request handlers, implementing service discovery and network-capable workspace data management.
 
-### (OCR-D-)Workflow-Runtime-Library
+### (OCR-D) Workflow Runtime Library
 
-modellspezifische Software-Komponente von einem Server oder Prozessor; z.B. Python-API in core mit Klassen für alle wesentlichen funktionalen Teile (OcrdPage, OcrdMets, Workspace, Resolver, Processor, ProcessorTask, Workflow, WorkflowTask) einschließlich Mechanismen zur Signalisierung und Ablaufsteuerung von Workflows, mit denen sich die einzelnen Komponenten (vom Prozessor bis zum Controller) realisieren lassen
+Software component of a server or processor concerned with OCR systems modelling; e.g. Python library in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (`OcrdPage`, `OcrdMets`, `Workspace`, `Resolver`, `Processor`, `ProcessorTask`, `Workflow`, `WorkflowTask` ...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be implemented.
 
-### (OCR-D-)Workflow-Engine
+### (OCR-D) Workflow Engine
 
-zentrale Software-Komponente im Controller, die Workflows einschließlich Kontrollstrukturen (linear/parallel/inkrementell) abarbeitet; auch notwendig auf Einzelplatz-Installationen mit Kommandozeilenschnittstellen (wo es auf Basis von Interprozesskommunikation und Dateisystem-E/A realisiert werden kann), etwa `ocrd process`
+Central software component of the controller, executing workflows, including control structures (in a linear/parallel/incremental way). Also needed in single-host CLI deployments (where it can be based on inter-process communication and file system I/O alone), like `ocrd process`.
 
-### Prozessor
+### (OCR-D) Processor
 
-Ein Prozessor ist eine Methode, die von einem Werkzeug bereitgestellt wird, dass die [OCR-D CLI](https://ocr-d.de/en/spec/cli) implementiert und eine oder mehrere [OCR-bezogene Aktivitäten](#activities) umsetzt.
+A processor is a tool that implements the uniform [OCR-D command-line-interface](https://ocr-d.de/en/spec/cli) for run-time data processing. That is, it executes a single [workflow step](#activities), or a combination of multiple workflow steps, on the [workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace) (represented by local [METS](https://ocr-d.de/en/spec/mets)), reading input files for all or requested physical pages of the input fileGrp(s), and writing output files for them into the output fileGrp(s). It may take a number of optional or mandatory [parameters](https://ocr-d.de/en/spec/ocrd_tool).
 
 → [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
 
-### Evaluator
 
-CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes oder Prozessors qualitativ bewertet und relativ zu einem gegebenen Schwellwert vollständigen oder partiellen Erfolg signalisiert
+### (OCR-D) Evaluator
 
-### Modul
+An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an [activity's](#activities) annotation (i.e. a [processor's](#processor) output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.
 
-Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivitäten in Form von [*Prozessoren*](#prozessor), bzw. [*Evaluatoren*](#evaluator) enthalten.
+### (OCR-D) Module
+
+Software package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
+
+Modules can comprise multiple methods/activities that are called [*processors*](#processor)
+for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
+second phase of OCR-D (2018-2020).
 
 ### Messaging
 
-Benachrichtigungssystem auf Basis von Publish/Subscribe-Architekturen (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen
+Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.
 
-### OCR-D-Workflow
+### OCR-D Workflow
 
-Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abhängigkeit ihres Erfolges. Implementiert als [OCR-D-Workflow-Runtime-Library](#ocr-d-workflow-runtime-library) und serialisierbar in einem noch zu spezifizierenden Format (Stand 2020/10).
+Combination of [activities](#activities) via concrete [processors](#processor) and [evaluators](#evaluator) and their parameterization configured as a sequence or lattice, depending on their success or failure. Implemented in the [OCR-D Workflow Runtime Library](#ocr-d-workflow-runtime-library) and serializable in a yet-to-specifcy format (as of 2020/10).
 
-Der Begriff *Workflow* wird in anderen Kontexten weiter gefasst, kann bspw. auch manuelle Intervention durch den Benutzer beinhalten. Im Gegensatz zu dieser Terminologie in Workflow-Engines wie Taverna oder Digitalisierungsframeworks wie Kitodo, meint OCR-D-Workflow einen vollautomatischen Prozess.
+The term *Workflow* is understood to encompass more features in other contexts, such as manual intervention by the user. In contrast to the terminology in workflow engines like Taverna or digitization frameworks like Kitodo, an OCR-D workflow is a fully automatic process.

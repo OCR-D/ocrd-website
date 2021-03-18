@@ -352,26 +352,25 @@
           <li><a href="#text-recognition-and-optimization">Text recognition and optimization</a></li>
           <li><a href="#model-training">Model training</a></li>
           <li><a href="#long-term-preservation-and-persistence">Long-term preservation and persistence</a></li>
-          <li><a href="#print-space-1">Print space</a></li>
           <li><a href="#quality-assurance">Quality assurance</a></li>
         </ul>
       </li>
       <li><a href="#component-architecture">Component architecture</a>
         <ul>
-          <li><a href="#ocr-d-applikation">(OCR-D-)Applikation</a></li>
-          <li><a href="#ocr-d-web-api">(OCR-D-)Web-API</a></li>
-          <li><a href="#ocr-d-service">(OCR-D-)Service</a></li>
-          <li><a href="#ocr-d-server">(OCR-D-)Server</a></li>
-          <li><a href="#ocr-d-controller">(OCR-D-)Controller</a></li>
-          <li><a href="#ocr-d-processing-server">(OCR-D-)Processing-Server</a></li>
-          <li><a href="#ocr-d-backend">(OCR-D-)Backend</a></li>
-          <li><a href="#ocr-d-workflow-runtime-library">(OCR-D-)Workflow-Runtime-Library</a></li>
-          <li><a href="#ocr-d-workflow-engine">(OCR-D-)Workflow-Engine</a></li>
-          <li><a href="#prozessor">Prozessor</a></li>
-          <li><a href="#evaluator">Evaluator</a></li>
-          <li><a href="#modul">Modul</a></li>
+          <li><a href="#ocr-d-application">(OCR-D) Application</a></li>
+          <li><a href="#ocr-d-web-api">OCR-D Web API</a></li>
+          <li><a href="#ocr-d-service">(OCR-D) Service</a></li>
+          <li><a href="#ocr-d-server">(OCR-D) Server</a></li>
+          <li><a href="#ocr-d-controller">(OCR-D) Controller</a></li>
+          <li><a href="#ocr-d-processing-server">(OCR-D) Processing Server</a></li>
+          <li><a href="#ocr-d-backend">(OCR-D) Backend</a></li>
+          <li><a href="#ocr-d-workflow-runtime-library">(OCR-D) Workflow Runtime Library</a></li>
+          <li><a href="#ocr-d-workflow-engine">(OCR-D) Workflow Engine</a></li>
+          <li><a href="#ocr-d-processor">(OCR-D) Processor</a></li>
+          <li><a href="#ocr-d-evaluator">(OCR-D) Evaluator</a></li>
+          <li><a href="#ocr-d-module">(OCR-D) Module</a></li>
           <li><a href="#messaging">Messaging</a></li>
-          <li><a href="#ocr-d-workflow">OCR-D-Workflow</a></li>
+          <li><a href="#ocr-d-workflow">OCR-D Workflow</a></li>
         </ul>
       </li>
     </ul>
@@ -686,83 +685,75 @@ the prediction of text and layout recognition engines.</p>
 multiple runs, provenance/parametrization and providing access to these saved
 snapshots in a granular fashion.</p>
 
-<h3 id="print-space-1">Print space</h3>
-
-<p>From the <a href="https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html">PAGE-XML content schema documentation</a></p>
-
-<blockquote>
-  <p>Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).</p>
-
-  <p>It contains all living elements (except marginals) like body type, footnotes, headings, running titles.</p>
-
-  <p>It does not contain pagenumber (if not part of running title), marginals, signature mark, preview words.</p>
-</blockquote>
-
 <h3 id="quality-assurance">Quality assurance</h3>
 
 <p>Providing measures, algorithms and software to estimate the quality of the <a href="#activities">individual processes</a> within the OCR-D domain.</p>
 
 <h2 id="component-architecture">Component architecture</h2>
 
-<h3 id="ocr-d-applikation">(OCR-D-)Applikation</h3>
+<h3 id="ocr-d-application">(OCR-D) Application</h3>
 
-<p>Gesamtsystem bestehend aus verschiedenen Servern auf denen Prozessoren ausgeführt werden können; kann ein Einzelplatzrechner sein, oder ein verteiltes System aus einem Controller und mehreren Processing-Servern oder ein HPC-Cluster</p>
+<p>Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.</p>
 
-<h3 id="ocr-d-web-api">(OCR-D-)Web-API</h3>
+<h3 id="ocr-d-web-api">OCR-D Web API</h3>
 
-<p>Wie in <a href="https://github.com/OCR-D/spec/pull/173">OCR-D/spec#173</a> skizziert einheitlich definierte und aufeinander bezogene Services, die sich real (je nach IP-Szenario) auf verschiedene Netzwerk-Komponenten verteilen können</p>
+<p>As proposed in <a href="https://github.com/OCR-D/spec/pull/173">OCR-D/spec#173</a>, the OCR-D Web API defines uniform and interdependent services that can be distributed across network components, depending on the use case.</p>
 
-<h3 id="ocr-d-service">(OCR-D-)Service</h3>
+<h3 id="ocr-d-service">(OCR-D) Service</h3>
 
-<p>Funktionsgruppe aus der Web-API; discovery/workspace/processing/workflow/…</p>
+<p>Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/…</p>
 
-<h3 id="ocr-d-server">(OCR-D-)Server</h3>
+<h3 id="ocr-d-server">(OCR-D) Server</h3>
 
-<p>konkreter Webserver für eine Teilmenge an Services</p>
+<p>Concrete implementation of a subset of OCR-D services, or the network host providing it.</p>
 
-<h3 id="ocr-d-controller">(OCR-D-)Controller</h3>
+<h3 id="ocr-d-controller">(OCR-D) Controller</h3>
 
-<p>Server (mind. discovery+workspace+workflow), der Workflows abarbeitet (1 oder mehrere gleichzeitig) und dazu an verschiedene ihm bekannte Processing-Server verteilt und natürlich jeweils die Workspaces bereitstellt/zurückholt; hier gehört auch Lastverteilung hin</p>
+<p>OCR-D Server (implementing at least <em>discovery</em>, <em>workspace</em> and <em>workflow</em> services) executing workflows (a single workflow or multiple workflows simultaneously), distributing tasks to configured processing servers, managing workspace data management. Should also manage load balancing.</p>
 
-<h3 id="ocr-d-processing-server">(OCR-D-)Processing-Server</h3>
+<h3 id="ocr-d-processing-server">(OCR-D) Processing Server</h3>
 
-<p>Server (mind. discovery+processing), der einen oder mehrere (lokal installierte) Prozessoren oder Evaluatoren ausführt (aber nur 1 gleichzeitig) und natürlich jeweils die Workspaces abholt/ergänzt; hierher gehört die Abwägung zwischen mehreren OPS auf einem (multiskalaren) Rechner oder 1 OPS mit seitenparalleler Prozessierung, sowie GPU-spezifische OPS (nur mit CUDA-Prozessoren) o.ä. Installationen</p>
+<p>OCR-D server (implementing at least <em>discovery</em> and <em>processing</em> services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.</p>
 
-<h3 id="ocr-d-backend">(OCR-D-)Backend</h3>
+<h3 id="ocr-d-backend">(OCR-D) Backend</h3>
 
-<p>netzwerkspezifische Software-Komponente von einem Server; z.B. Python-Bibliothek mit Request Handler, mit Implementierung von Service-Discovery und einer netzwerkfähigen Workspace-Verwaltung</p>
+<p>Software component of a server concerned with network operations; e.g. Python library with request handlers, implementing service discovery and network-capable workspace data management.</p>
 
-<h3 id="ocr-d-workflow-runtime-library">(OCR-D-)Workflow-Runtime-Library</h3>
+<h3 id="ocr-d-workflow-runtime-library">(OCR-D) Workflow Runtime Library</h3>
 
-<p>modellspezifische Software-Komponente von einem Server oder Prozessor; z.B. Python-API in core mit Klassen für alle wesentlichen funktionalen Teile (OcrdPage, OcrdMets, Workspace, Resolver, Processor, ProcessorTask, Workflow, WorkflowTask) einschließlich Mechanismen zur Signalisierung und Ablaufsteuerung von Workflows, mit denen sich die einzelnen Komponenten (vom Prozessor bis zum Controller) realisieren lassen</p>
+<p>Software component of a server or processor concerned with OCR systems modelling; e.g. Python library in <a href="https://github.com/OCR-D/core">OCR-D/core</a> providing classes for all essential functional components (<code class="highlighter-rouge">OcrdPage</code>, <code class="highlighter-rouge">OcrdMets</code>, <code class="highlighter-rouge">Workspace</code>, <code class="highlighter-rouge">Resolver</code>, <code class="highlighter-rouge">Processor</code>, <code class="highlighter-rouge">ProcessorTask</code>, <code class="highlighter-rouge">Workflow</code>, <code class="highlighter-rouge">WorkflowTask</code> …), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be implemented.</p>
 
-<h3 id="ocr-d-workflow-engine">(OCR-D-)Workflow-Engine</h3>
+<h3 id="ocr-d-workflow-engine">(OCR-D) Workflow Engine</h3>
 
-<p>zentrale Software-Komponente im Controller, die Workflows einschließlich Kontrollstrukturen (linear/parallel/inkrementell) abarbeitet; auch notwendig auf Einzelplatz-Installationen mit Kommandozeilenschnittstellen (wo es auf Basis von Interprozesskommunikation und Dateisystem-E/A realisiert werden kann), etwa <code class="highlighter-rouge">ocrd process</code></p>
+<p>Central software component of the controller, executing workflows, including control structures (in a linear/parallel/incremental way). Also needed in single-host CLI deployments (where it can be based on inter-process communication and file system I/O alone), like <code class="highlighter-rouge">ocrd process</code>.</p>
 
-<h3 id="prozessor">Prozessor</h3>
+<h3 id="ocr-d-processor">(OCR-D) Processor</h3>
 
-<p>Ein Prozessor ist eine Methode, die von einem Werkzeug bereitgestellt wird, dass die <a href="https://ocr-d.de/en/spec/cli">OCR-D CLI</a> implementiert und eine oder mehrere <a href="#activities">OCR-bezogene Aktivitäten</a> umsetzt.</p>
+<p>A processor is a tool that implements the uniform <a href="https://ocr-d.de/en/spec/cli">OCR-D command-line-interface</a> for run-time data processing. That is, it executes a single <a href="#activities">workflow step</a>, or a combination of multiple workflow steps, on the <a href="https://ocr-d.de/en/user_guide#preparing-a-workspace">workspace</a> (represented by local <a href="https://ocr-d.de/en/spec/mets">METS</a>), reading input files for all or requested physical pages of the input fileGrp(s), and writing output files for them into the output fileGrp(s). It may take a number of optional or mandatory <a href="https://ocr-d.de/en/spec/ocrd_tool">parameters</a>.</p>
 
 <p>→ <a href="https://ocr-d.de/en/workflows">OCR-D Workflow Guide</a></p>
 
-<h3 id="evaluator">Evaluator</h3>
+<h3 id="ocr-d-evaluator">(OCR-D) Evaluator</h3>
 
-<p>CLI-Werkzeug welches die Ergebnis-Annotation eines bestimmten Workflow-Schrittes oder Prozessors qualitativ bewertet und relativ zu einem gegebenen Schwellwert vollständigen oder partiellen Erfolg signalisiert</p>
+<p>An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an <a href="#activities">activity’s</a> annotation (i.e. a <a href="#processor">processor’s</a> output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.</p>
 
-<h3 id="modul">Modul</h3>
+<h3 id="ocr-d-module">(OCR-D) Module</h3>
 
-<p>Module sind Software-Pakete/-Repositorien, die eine oder mehrere Methoden/Aktivitäten in Form von <a href="#prozessor"><em>Prozessoren</em></a>, bzw. <a href="#evaluator"><em>Evaluatoren</em></a> enthalten.</p>
+<p>Software package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)</p>
+
+<p>Modules can comprise multiple methods/activities that are called <a href="#processor"><em>processors</em></a>
+for OCR-D. There were <a href="https://ocr-d.de/en/module-projects">eight MP</a> in the
+second phase of OCR-D (2018-2020).</p>
 
 <h3 id="messaging">Messaging</h3>
 
-<p>Benachrichtigungssystem auf Basis von Publish/Subscribe-Architekturen (o.ä.) für die Koordination von Netzwerkkomponenten; hier u.a. für die Verteilung von Tasks und deren Lastverteilung, für Signalisierung von Prozessor-/Evaluator-Ergebnissen</p>
+<p>Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.</p>
 
-<h3 id="ocr-d-workflow">OCR-D-Workflow</h3>
+<h3 id="ocr-d-workflow">OCR-D Workflow</h3>
 
-<p>Konfiguration von Activities durch Prozessoren/Evaluatoren und deren Parameter in Abhängigkeit ihres Erfolges. Implementiert als <a href="#ocr-d-workflow-runtime-library">OCR-D-Workflow-Runtime-Library</a> und serialisierbar in einem noch zu spezifizierenden Format (Stand 2020/10).</p>
+<p>Combination of <a href="#activities">activities</a> via concrete <a href="#processor">processors</a> and <a href="#evaluator">evaluators</a> and their parameterization configured as a sequence or lattice, depending on their success or failure. Implemented in the <a href="#ocr-d-workflow-runtime-library">OCR-D Workflow Runtime Library</a> and serializable in a yet-to-specifcy format (as of 2020/10).</p>
 
-<p>Der Begriff <em>Workflow</em> wird in anderen Kontexten weiter gefasst, kann bspw. auch manuelle Intervention durch den Benutzer beinhalten. Im Gegensatz zu dieser Terminologie in Workflow-Engines wie Taverna oder Digitalisierungsframeworks wie Kitodo, meint OCR-D-Workflow einen vollautomatischen Prozess.</p>
+<p>The term <em>Workflow</em> is understood to encompass more features in other contexts, such as manual intervention by the user. In contrast to the terminology in workflow engines like Taverna or digitization frameworks like Kitodo, an OCR-D workflow is a fully automatic process.</p>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
