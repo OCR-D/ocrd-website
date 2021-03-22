@@ -83,7 +83,7 @@ If you already have a METS file as indicated above, you can create a workspace
 and load the pictures to be processed with the following command: 
 
 ```sh
-ocrd workspace clone -d /path/to/workspace URL_OF_METS
+ocrd workspace -d /path/to/workspace clone URL_OF_METS
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace clone -d /data URL_OF_METS
 ```
@@ -493,4 +493,9 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_
 ```
 
 
+### Usage of models`
 
+Several processors rely on models which have to be downloaded beforehand. An overview on the existing model repositories and short 
+descriptions on the most important models can be found [here](https://ocr-d.de/en/models).
+We strongly recommend to use the [OCR-D resource manager](https://ocr-d.de/en/models) to download the models, as this makes it 
+easier to both download and use them. 
