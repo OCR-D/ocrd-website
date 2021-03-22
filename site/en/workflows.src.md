@@ -142,8 +142,8 @@ your image twice on page level, and have no large images, you can probably skip 
     <tr data-processor="ocrd-sbb-binarize">
       <td>ocrd-sbb-binarize</td>
       <td><code>-P model -P operation_level region</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
-      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model -P operation_level region</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/) or with the [OCR-D resource manager](https://ocr-d.de/en/models)</td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model modelname -P operation_level region</code></td>
     </tr>
 	<tr data-processor="ocrd-preprocess-image">
       <td>ocrd-preprocess-image</td>

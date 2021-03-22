@@ -199,9 +199,9 @@ can be especially useful for images which have not been enhanced.
     <tr data-processor="ocrd-sbb-binarize">
       <td>ocrd-sbb-binarize</td>
       <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/) or via the [OCR-D resource manager](https://ocr-d.de/en/models)</td>
       <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model modelname</code></td>
-    </tr>
+ </tr>
 	<tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
       <td><code>-P k 0.10</code></td>
@@ -604,7 +604,7 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
       <td>ocrd-sbb-textline-detector</td>
       <td><code>-P model modelname</code></td>
       <td>Models can be found <a href="https://qurator-data.de/sbb_textline_detector/">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
-      If you didn't download the model with die `resource manager`, for <code>model</code> you need to <b>pass the local path on your hard drive</b> as parameter value.</td>
+      If you didn't download the model with die `resource manager`, for <code>model</code> you need to <strong>pass the local path on your hard drive</strong> as parameter value.</td>
       <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
     <tr data-processor="ocrd-cis-ocropy-segment">
@@ -627,11 +627,10 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
     </tr>
     <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
-      <td><code>-P block_segmentation_model mrcnn_name</code> -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code>
-      </td>
+      <td><code>-P block_segmentation_model mrcnn_name</code> -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
       <td>For available models take a look at <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">this site</a> ocr download them via [OCR-D resource manager](https://ocr-d.de/en/models); 
-      If you didn't use the `resource manager`, you need to <b>pass the local path on your hard drive</b> as parameter value.</td>
-      <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model /path/to/mrcnn -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
+      If you didn't use the `resource manager`, you need to <strong>pass the local path on your hard drive</strong> as parameter value.</td>
+      <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model mrcnn_name -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
     <tr data-processor="ocrd-pc-segmentation">
       <td>ocrd-pc-segmentation</td>
@@ -953,8 +952,9 @@ In this processing step, the text line images get vertically aligned if they are
 This processor recognizes text in segmented lines.
 
 An overview on the existing model repositories and short descriptions on the most important models can be found [here](https://ocr-d.de/en/models).
+
 We strongly recommend to use the [OCR-D resource manager](https://ocr-d.de/en/models) to download the models, as this way you don't have to specify
-the path to each model. 
+the path to each model.
 
 #### Available processors
 
@@ -978,9 +978,9 @@ the path to each model.
     <tr data-processor="ocrd-calamari-recognize">
       <td>ocrd-calamari-recognize</td>
       <td>
-	  if you downloaded your model with the [OCR-D resource manager](https://ocr-d.de/en/models), use<code>-P checkpoint_dir modelname</code><br/>
-	  else use <code>-P checkpoint "/path/to/models/*.ckpt.json"</code>
-	  </td>
+        if you downloaded your model with the [OCR-D resource manager](https://ocr-d.de/en/models), use<code>-P checkpoint_dir modelname</code><br/>
+        else use <code>-P checkpoint_dir /path/to/models</code>
+      </td>
       <td>
         Recommended<br/>Model can be found <a href="https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz">here</a>;
         <br/>For <code>checkpoint</code> you need to <b>pass the local path on your hard drive</b> as parameter value, and <b>keep the verbatim asterisk (<code>*</code>)</b>.
@@ -1559,7 +1559,7 @@ ocrd process \
 (1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
 you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I MAX`
 (2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify the model which is to be used. 
-If you didn't download it via the [OCR-D resource manager](https://ocr-d.de/en/models), you have to use the `checkpoint` parameter 
+If you didn't download it via the [OCR-D resource manager](https://ocr-d.de/en/models), you have to use the `checkpoint` parameter
 and pass your local path to the model on your hard drive as parameter value! In this case, the last line of the `ocrd-process` call above could e.g. look like this:
 ```sh
   "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
