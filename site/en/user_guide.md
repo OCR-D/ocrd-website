@@ -493,9 +493,9 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_
 ```
 
 
-### Usage of models`
+### Usage of models
 
-Several processors rely on models which have to be downloaded beforehand. An overview on the existing model repositories and short 
-descriptions on the most important models can be found [here](https://ocr-d.de/en/models).
-We strongly recommend to use the [OCR-D resource manager](https://ocr-d.de/en/models) to download the models, as this makes it 
-easier to both download and use them. 
+Several processors rely on models which have to be downloaded beforehand. An overview on the existing model repositories and short
+descriptions on the most important models can be found [in our models documentation](https://ocr-d.de/en/models).
+We strongly recommend to use the [OCR-D resource manager](https://ocr-d.de/en/models) to download the models, as this makes it
+easier to both download and use them.

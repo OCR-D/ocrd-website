@@ -68,8 +68,9 @@ For better results, the cropped images can be binarized again at this point or l
   <tr data-processor="ocrd-sbb-binarize">
       <td>ocrd-sbb-binarize</td>
       <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/)</td>
-      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model /path/to/model</code></td>
+      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/) or via the [OCR-D resource manager](https://ocr-d.de/en/models)</td>
+      <td></td>
+      <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model modelname</code></td>
     </tr>
   <tr data-processor="ocrd-skimage-binarize">
       <td>ocrd-skimage-binarize</td>
