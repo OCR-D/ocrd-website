@@ -77,7 +77,7 @@ if there is demand for it.
 
 ### Why does OCR-D need METS files? How can I process images without METS?
 
-The processes within OCR-D are designed around for the simple reason that it is
+The processes within OCR-D are designed around METS for the simple reason that it is
 such an ubiquitous and well-defined format used in libraries and archives
 around the world. By relying on a container format instead of just images,
 processors can make use of more information and can store detailed results in a
