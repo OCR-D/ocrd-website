@@ -503,7 +503,7 @@ In this processing step, an (optimized) document image is taken as an input and 
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-sbb-textline-detector` and
+**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-eynollah segment`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do not only segment the page, but
 also the text lines within the detected text regions in one
 step. Therefore with those (and only with those!) processors you don't need to
@@ -598,6 +598,13 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
       <td><code>-P find_tables false -P shrink_polygons true</code></td>
       <td>Recommended. Will reuse internal tesseract iterators to produce a complete segmentation with tight polygons instead of bounding boxes where possible</td>
       <td><code>ocrd-tesserocr-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG -P find_tables false -P shrink_polygons true</code></td>
+    </tr>
+	<tr data-processor="ocrd-eynollah-segment">
+      <td>ocrd-eynollah-segment</td>
+      <td><code>-P models</code></td>
+      <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
+      If you didn't download the model with the `resource manager`, for <code>model</code> you need to <strong>pass the local path on your hard drive</strong> as parameter value.</td>
+      <td><code>ocrd-eynollah-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG -P models default</code></td>
     </tr>
     <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
@@ -810,7 +817,7 @@ boxes with lots of hard-to-recover overlap). _Alternatively_, run with
 `shrink_polygons=True` (accessing that same iterator to calculate convex hull
 polygons)
 
-**Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
+**Note:** As described in [Step 7](#step-7-page-segmentation),`ocrd-eynollah-segment`, `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
 need to segment into lines in an extra step.
 
