@@ -1416,6 +1416,65 @@
             "recognition/text-recognition"
         ]
     },
+    "ocrd-eynollah-segment": {
+        "categories": [
+            "Layout analysis"
+        ],
+        "description": "Segment page into regions and lines and do reading order detection with eynollah",
+        "executable": "ocrd-eynollah-segment",
+        "input_file_grp": [
+            "OCR-D-IMG",
+            "OCR-D-SEG-PAGE",
+            "OCR-D-GT-SEG-PAGE"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-LINE"
+        ],
+        "parameters": {
+            "allow_enhancement": {
+                "default": true,
+                "description": "if the input image has less than 300 DPI, then upscale and enhance",
+                "type": "boolean"
+            },
+            "allow_scaling": {
+                "default": false,
+                "description": "check the resolution against the number of detected columns and if needed, scale the image up or down during layout detection (heuristic to improve quality and performance)",
+                "type": "boolean"
+            },
+            "curved_line": {
+                "default": false,
+                "description": "try to return contour of textlines instead of just rectangle bounding box. Needs more processing time",
+                "type": "boolean"
+            },
+            "dpi": {
+                "default": 0,
+                "description": "pixel density in dots per inch (overrides any meta-data in the images); ignored if <= 0 (with fall-back 230)",
+                "format": "float",
+                "type": "number"
+            },
+            "full_layout": {
+                "default": true,
+                "description": "Try to detect all element subtypes, including drop-caps and headings",
+                "type": "boolean"
+            },
+            "headers_off": {
+                "default": false,
+                "description": "ignore the special role of headings during reading order detection",
+                "type": "boolean"
+            },
+            "models": {
+                "cacheable": true,
+                "description": "Path to directory containing models to be used (See https://qurator-data.de/eynollah)",
+                "format": "file",
+                "required": true,
+                "type": "string"
+            }
+        },
+        "steps": [
+            "layout/segmentation/region",
+            "layout/segmentation/line"
+        ]
+    },
     "ocrd-fileformat-transform": {
         "categories": [
             "Image preprocessing"
@@ -1579,7 +1638,6 @@
         "parameters": {
             "level-of-operation": {
                 "default": "page",
-                "description": "level-of-operation",
                 "enum": [
                     "page",
                     "block",
@@ -1592,33 +1650,18 @@
             "preprocessing/optimization/binarization"
         ]
     },
-    "ocrd-kraken-recognize": {
+    "ocrd-kraken-ocr": {
         "categories": [
             "Text recognition and optimization"
         ],
         "description": "OCR with kraken",
-        "executable": "ocrd-kraken-recognize",
+        "executable": "ocrd-kraken-ocr",
         "parameters": {
-            "bidi_reordering": {
-                "default": true,
-                "description": "Reorder classes in the ocr_record according to  the Unicode bidirectional algorithm for correct display.",
-                "type": "boolean"
-            },
-            "device": {
-                "default": "cpu",
-                "description": "GPU ID or 'cpu' to run on CPU only",
+            "lines-json": {
+                "description": "URL to line segmentation in JSON",
+                "format": "url",
+                "required": "true",
                 "type": "string"
-            },
-            "model": {
-                "cacheable": true,
-                "default": "en_best.mlmodel",
-                "description": "Model to recognize with"
-            },
-            "pad": {
-                "default": 16,
-                "description": "Extra blank padding to the left and right of text line.",
-                "format": "integer",
-                "type": "number"
             }
         },
         "steps": [
@@ -1634,36 +1677,31 @@
         "parameters": {
             "black_colseps": {
                 "default": false,
-                "description": "Whether column separators are assumed to be vertical black lines or not",
                 "type": "boolean"
             },
-            "blla_model": {
-                "cacheable": true,
-                "default": "blla.mlmodel",
-                "description": "Model used for baseline detection. Use kraken-provided model if not give. Ignored if use_legacy.",
-                "type": "string"
-            },
-            "device": {
-                "default": "cpu",
-                "description": "GPU ID or 'cpu' to run on CPU only",
+            "level-of-operation": {
+                "default": "page",
+                "enum": [
+                    "page",
+                    "block",
+                    "line"
+                ],
                 "type": "string"
             },
             "maxcolseps": {
                 "default": 2,
-                "description": "Maximum number of column separators. Set to 0 for single-column text to avoid unnecessary computation.",
                 "format": "integer",
                 "type": "number"
             },
-            "remove_hlines": {
-                "default": true,
-                "description": "Remove horizontal colseps before segmentation",
-                "type": "boolean"
-            },
             "scale": {
                 "default": 0,
-                "description": "mean xheight size of glyphs (guessed if zero)",
                 "format": "float",
                 "type": "number"
+            },
+            "script_detect": {
+                "default": false,
+                "description": "Enable script detection on segmenter output",
+                "type": "boolean"
             },
             "text_direction": {
                 "default": "horizontal-lr",
@@ -1676,9 +1714,8 @@
                 ],
                 "type": "string"
             },
-            "use_legacy": {
+            "white_colseps": {
                 "default": false,
-                "description": "Use legacy box segmenter as opposed to neural net baseline segmenter",
                 "type": "boolean"
             }
         },
