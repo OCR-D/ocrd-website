@@ -1579,7 +1579,6 @@
         "parameters": {
             "level-of-operation": {
                 "default": "page",
-                "description": "level-of-operation",
                 "enum": [
                     "page",
                     "block",
@@ -1592,33 +1591,18 @@
             "preprocessing/optimization/binarization"
         ]
     },
-    "ocrd-kraken-recognize": {
+    "ocrd-kraken-ocr": {
         "categories": [
             "Text recognition and optimization"
         ],
         "description": "OCR with kraken",
-        "executable": "ocrd-kraken-recognize",
+        "executable": "ocrd-kraken-ocr",
         "parameters": {
-            "bidi_reordering": {
-                "default": true,
-                "description": "Reorder classes in the ocr_record according to  the Unicode bidirectional algorithm for correct display.",
-                "type": "boolean"
-            },
-            "device": {
-                "default": "cpu",
-                "description": "GPU ID or 'cpu' to run on CPU only",
+            "lines-json": {
+                "description": "URL to line segmentation in JSON",
+                "format": "url",
+                "required": "true",
                 "type": "string"
-            },
-            "model": {
-                "cacheable": true,
-                "default": "en_best.mlmodel",
-                "description": "Model to recognize with"
-            },
-            "pad": {
-                "default": 16,
-                "description": "Extra blank padding to the left and right of text line.",
-                "format": "integer",
-                "type": "number"
             }
         },
         "steps": [
@@ -1634,36 +1618,31 @@
         "parameters": {
             "black_colseps": {
                 "default": false,
-                "description": "Whether column separators are assumed to be vertical black lines or not",
                 "type": "boolean"
             },
-            "blla_model": {
-                "cacheable": true,
-                "default": "blla.mlmodel",
-                "description": "Model used for baseline detection. Use kraken-provided model if not give. Ignored if use_legacy.",
-                "type": "string"
-            },
-            "device": {
-                "default": "cpu",
-                "description": "GPU ID or 'cpu' to run on CPU only",
+            "level-of-operation": {
+                "default": "page",
+                "enum": [
+                    "page",
+                    "block",
+                    "line"
+                ],
                 "type": "string"
             },
             "maxcolseps": {
                 "default": 2,
-                "description": "Maximum number of column separators. Set to 0 for single-column text to avoid unnecessary computation.",
                 "format": "integer",
                 "type": "number"
             },
-            "remove_hlines": {
-                "default": true,
-                "description": "Remove horizontal colseps before segmentation",
-                "type": "boolean"
-            },
             "scale": {
                 "default": 0,
-                "description": "mean xheight size of glyphs (guessed if zero)",
                 "format": "float",
                 "type": "number"
+            },
+            "script_detect": {
+                "default": false,
+                "description": "Enable script detection on segmenter output",
+                "type": "boolean"
             },
             "text_direction": {
                 "default": "horizontal-lr",
@@ -1676,9 +1655,8 @@
                 ],
                 "type": "string"
             },
-            "use_legacy": {
+            "white_colseps": {
                 "default": false,
-                "description": "Use legacy box segmenter as opposed to neural net baseline segmenter",
                 "type": "boolean"
             }
         },
@@ -1909,7 +1887,7 @@
             "postprocessing/format-conversion"
         ]
     },
-    "ocrd-pixelclassifier-segmentation": {
+    "ocrd-pc-segmentation": {
         "categories": [
             "Layout analysis"
         ],
