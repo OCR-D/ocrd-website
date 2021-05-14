@@ -604,7 +604,7 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
       <td><code>-P models</code></td>
       <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
       If you didn't download the model with the `resource manager`, for <code>model</code> you need to <strong>pass the absolute path on your hard drive</strong> as parameter value.</td>
-      <td><code>ocrd-eynollah-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG -P models default</code></td>
+      <td><code>ocrd-eynollah-segment -I OCR-D-IMG -O OCR-D-SEG -P models default</code></td>
     </tr>
     <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
