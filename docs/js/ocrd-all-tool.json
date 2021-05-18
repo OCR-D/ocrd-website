@@ -1416,6 +1416,65 @@
             "recognition/text-recognition"
         ]
     },
+    "ocrd-eynollah-segment": {
+        "categories": [
+            "Layout analysis"
+        ],
+        "description": "Segment page into regions and lines and do reading order detection with eynollah",
+        "executable": "ocrd-eynollah-segment",
+        "input_file_grp": [
+            "OCR-D-IMG",
+            "OCR-D-SEG-PAGE",
+            "OCR-D-GT-SEG-PAGE"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-LINE"
+        ],
+        "parameters": {
+            "allow_enhancement": {
+                "default": true,
+                "description": "if the input image has less than 300 DPI, then upscale and enhance",
+                "type": "boolean"
+            },
+            "allow_scaling": {
+                "default": false,
+                "description": "check the resolution against the number of detected columns and if needed, scale the image up or down during layout detection (heuristic to improve quality and performance)",
+                "type": "boolean"
+            },
+            "curved_line": {
+                "default": false,
+                "description": "try to return contour of textlines instead of just rectangle bounding box. Needs more processing time",
+                "type": "boolean"
+            },
+            "dpi": {
+                "default": 0,
+                "description": "pixel density in dots per inch (overrides any meta-data in the images); ignored if <= 0 (with fall-back 230)",
+                "format": "float",
+                "type": "number"
+            },
+            "full_layout": {
+                "default": true,
+                "description": "Try to detect all element subtypes, including drop-caps and headings",
+                "type": "boolean"
+            },
+            "headers_off": {
+                "default": false,
+                "description": "ignore the special role of headings during reading order detection",
+                "type": "boolean"
+            },
+            "models": {
+                "cacheable": true,
+                "description": "Path to directory containing models to be used (See https://qurator-data.de/eynollah)",
+                "format": "file",
+                "required": true,
+                "type": "string"
+            }
+        },
+        "steps": [
+            "layout/segmentation/region",
+            "layout/segmentation/line"
+        ]
+    },
     "ocrd-fileformat-transform": {
         "categories": [
             "Image preprocessing"
