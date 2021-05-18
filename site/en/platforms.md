@@ -19,7 +19,10 @@ which are mostly open to the professional public to read and participate.
 [https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view](https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view)
 
 **OCR(-D) & Co** - bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 p.m. in a 
-[BBB room](https://meet.gwdg.de/b/kon-v6q-azq-3el).
+[BBB room](https://meet.gwdg.de/b/kon-v6q-azq-3el). Topics for discussion can be suggested any time in this [HackMD](https://hackmd.io/-3IoMzjCQKCXPmhe-51PzA).
+<details>
+<summary>Down here you will find the outcomes of our previous calls, ordered by topics.</summary>
+</details>
 
 **Ground Truth Repository** – make use of our data: We collect our test and reference data in the Ground Truth Repository. You may use the data for your own training.  
 [http://www.ocr-d.de/daten](http://www.ocr-d.de/daten)
