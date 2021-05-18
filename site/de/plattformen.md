@@ -18,7 +18,7 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 [https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view](https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view)
 
 **OCR(-D) & Co** - bringen Sie Ihre eigenen Fragen und Ideen ein und diskutieren Sie mit uns über OCR(-D); jeden ersten Freitag im Monat, 10 bis 11 Uhr in einem 
-[BBB-Raum](https://meet.gwdg.de/b/kon-v6q-azq-3el). Diskussionsthemen können jeder in diesem [HackMD](https://hackmd.io/-3IoMzjCQKCXPmhe-51PzA) vorgeschlagen werden.
+[BBB-Raum](https://meet.gwdg.de/b/kon-v6q-azq-3el). Diskussionsthemen können jederzeit in diesem [HackMD](https://hackmd.io/-3IoMzjCQKCXPmhe-51PzA) vorgeschlagen werden.
 <details>
 <summary>Hier unten finden sich die Ergebnisse der bisherigen Calls nach Themen geordnet.</summary>
 </details>
