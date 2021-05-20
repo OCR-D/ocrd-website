@@ -1629,7 +1629,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
 ocrd process \
   "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
   "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
-  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "skimage-denoise -I OCR-D-CROP -O OCR-D-BIN-DENOISE -P level-of-operation page" \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P shrink_polygons true" \
   "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-DEWARP" \
