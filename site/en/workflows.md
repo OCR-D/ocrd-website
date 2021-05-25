@@ -551,7 +551,7 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
 
 * `segmentation_level` determines the *highest level* to segment. Use `"none"` to disable segmentation altogether, i.e. only recognize existing segments.
 * `textequiv_level` determines the *lowest level* to segment. Use `"none"` to segment until the lowest level (`"glyph"`) and disable recognition altogether, only analyse layout.
-Be aware that if you use this parameter with `ocrd-tesserocr-recognize`, it will resegment the words anyway.
+Be aware that if you use `-P segmentation_level word -P textequiv_level word` with `ocrd-tesserocr-recognize`, it will resegment the words anyway.
 * `model` determines the model to use for text recognition. Use `""` or do not set at all to disable recognition, i.e. only analyse layout.
 
 Examples:
