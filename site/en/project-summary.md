@@ -3,6 +3,7 @@ layout: page
 toc: true
 lang: en
 lang-ref: brief-description
+title: Brief Description & Project Goals
 ---
 # Brief Description & Project Goals
 

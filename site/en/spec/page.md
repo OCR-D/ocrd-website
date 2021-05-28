@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: page.md
 toc: true
+title: Conventions for PAGE
 ---
 
 # Conventions for PAGE

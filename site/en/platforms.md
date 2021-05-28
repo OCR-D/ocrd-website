@@ -2,6 +2,7 @@
 layout: page
 lang: en
 lang-ref: platforms
+title: OCR-D Platforms
 ---
 # OCR-D Platforms
 

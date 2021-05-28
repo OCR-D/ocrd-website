@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: https://translate.google.com/translate?hl=&sl=en&tl=de&u=https%3A%2F%2Focr-d.de%2Fen%2Fsetup
 toc: true
+title: OCR-D setup guide
 ---
 
 # OCR-D setup guide

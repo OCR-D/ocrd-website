@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: docker.md
 toc: true
+title: Dockerfile provided by MP
 ---
 
 # Dockerfile provided by MP

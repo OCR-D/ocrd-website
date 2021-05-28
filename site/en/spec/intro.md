@@ -2,6 +2,7 @@
 layout: page
 lang: en
 lang-ref: spec-intro
+title: OCR-D Specs Overview
 ---
 
 # OCR-D Specs Overview

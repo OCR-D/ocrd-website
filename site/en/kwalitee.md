@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: kwalitee
 toc: true
+title: Kwalitee
 ---
 
 

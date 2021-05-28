@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: cli.md
 toc: true
+title: Command Line Interface (CLI)
 ---
 
 # Command Line Interface (CLI)

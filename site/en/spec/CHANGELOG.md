@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: CHANGELOG.md
 toc: true
+title: Change Log
 ---
 
 Change Log
