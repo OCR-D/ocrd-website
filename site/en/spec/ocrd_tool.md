@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: ocrd_tool.md
 toc: true
+title: ocrd-tool.json
 ---
 
 # ocrd-tool.json

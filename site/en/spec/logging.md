@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: logging.md
 toc: true
+title: Conventions for LOGGING
 ---
 
 # THIS IS JUST A FIRST DRAFT!

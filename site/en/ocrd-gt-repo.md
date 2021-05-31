@@ -4,6 +4,7 @@ author: Volker Hartmann
 toc: true
 lang: en
 lang-ref: ocrd-gt-repo
+title: Working with OCR-D-(Ground-Truth)-Repository
 ---
 # Working with OCR-D-(Ground-Truth)-Repository 
 

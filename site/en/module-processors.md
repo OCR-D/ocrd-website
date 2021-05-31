@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: kwalitee
 toc: true
+title: Module Processors
 ---
 
 {%- for repo in site.data.ocrd-repo -%}

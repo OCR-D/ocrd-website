@@ -2,6 +2,7 @@
 layout: page
 lang-ref: initial-tests
 lang: en
+title: Results and findings of the first OCR-D test
 ---
 
 # Results and findings of the first OCR-D test

@@ -5,6 +5,7 @@ date: 2020-02-04T19:16:54+01:00
 lang: en
 lang-ref: from-novice-to-pro
 toc: true
+title: Example METS
 ---
 
 # Example METS

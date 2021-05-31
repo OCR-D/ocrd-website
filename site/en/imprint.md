@@ -3,6 +3,7 @@ layout: page
 toc: true
 lang: en
 lang-ref: impressum
+title: Imprint
 ---
 
 # Imprint

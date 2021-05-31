@@ -1,6 +1,7 @@
 ---
 layout: page
 lang: en
+title: The OCR-D Project
 ---
 
 # The OCR-D Project

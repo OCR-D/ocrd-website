@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: glossary.md
 toc: true
+title: OCR-D Glossary
 ---
 
 # OCR-D Glossary

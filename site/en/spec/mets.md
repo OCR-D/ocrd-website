@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: mets.md
 toc: true
+title: Requirements on handling METS/PAGE
 ---
 
 # Requirements on handling METS/PAGE

@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: faq
 toc: true
+title: FAQ
 ---
 # FAQ
 

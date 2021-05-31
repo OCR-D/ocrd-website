@@ -2,6 +2,7 @@
 layout: page
 lang: en
 lang-ref: spec
+title: Specifications
 ---
 
 <div class="tile is-ancestor">
