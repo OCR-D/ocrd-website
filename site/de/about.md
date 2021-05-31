@@ -2,6 +2,7 @@
 layout: page
 lang-ref: about
 lang: de
+title: Das OCR-D Projekt
 ---
 
 # Das OCR-D-Projekt

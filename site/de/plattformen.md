@@ -2,6 +2,7 @@
 layout: page
 lang: de
 lang-ref: platforms
+title: OCR-D Kanäle und Plattformen
 ---
 # OCR-D Kanäle und Plattformen
 

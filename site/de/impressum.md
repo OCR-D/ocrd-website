@@ -3,6 +3,7 @@ layout: page
 toc: true
 lang: de
 lang-ref: impressum
+title: Impressum
 ---
 
 # Impressum
