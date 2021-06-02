@@ -3,8 +3,9 @@ layout: page
 lang: de
 lang-ref: contact
 toc: true
-title: Das OCR-D Team
+title: Das OCR-D-Team
 ---
+
 # Das OCR-D-Team
 
 ## Kontakt
