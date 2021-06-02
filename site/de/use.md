@@ -3,6 +3,7 @@ layout: page
 title: Wie Sie OCR-D nutzen können
 lang: de
 lang-ref: use
+title: Willkommen im Nutzerbereich von OCR-D!
 ---
 
 # Willkommen im Nutzerbereich von OCR-D!

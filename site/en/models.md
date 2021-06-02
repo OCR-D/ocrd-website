@@ -1,7 +1,7 @@
 ---
 layout: page
 lang: en
-lang-ref: faq
+lang-ref: models
 toc: true
 title: Models for OCR-D processors
 ---

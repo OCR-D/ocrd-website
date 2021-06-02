@@ -3,6 +3,7 @@ layout: page
 lang: de
 lang-ref: data
 toc: true
+title: Daten
 ---
 
 # Daten

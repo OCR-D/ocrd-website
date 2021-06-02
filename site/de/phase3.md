@@ -2,6 +2,7 @@
 layout: page
 lang-ref: phase3
 lang: de
+title: OCR-D - Phase III
 ---
 
 # OCR-D - Phase III

@@ -3,6 +3,7 @@ layout: page
 lang: de
 lang-ref: module-projects
 toc: true
+title: Modulprojekte
 ---
 
 # Modulprojekte

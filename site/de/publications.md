@@ -3,6 +3,7 @@ layout: page
 lang: de
 toc: true
 lang-ref: publications
+title: Publikationen
 ---
 
 ## Publikationen
