@@ -13,7 +13,7 @@ maintain and process collections. Four implementation and three module projects 
 ## Modul projects
 * Workflow for work-specific training based on generic models with OCR-D as well as ground truth enhancement (UB Mannheim).
 * Font Group Recognition for Improved OCR (JGU Mainz, FAU Erlangen)
-* OLA HD Service - A Generic Service for Long-Term Archiving of Historical Prints (SUB Göttingen, GWDG)
+* OLA-HD Service - A Generic Service for Long-Term Archiving of Historical Prints (SUB Göttingen, GWDG)
 
 ## Implementation projects
 * Integration of Kitodo and OCR-D for productive mass digitisation (UB Braunschweig, SLUB Dresden, UB Mannheim).
