@@ -158,17 +158,10 @@ deploy:
 
 # Build sphinx documentation for core
 core-docs:
-	rm -rf site/core ; \
-	tempdir=`tempfile -d /tmp/core. -s XXXXX`;  \
-	rm -f "$$tempdir" ; \
-	git clone --depth 1 https://github.com/OCR-D/core "$$tempdir"; \
-	make -C "$$tempdir" docs; \
-	mv "$$tempdir/docs/build/html" site/core; \
-	find site/core -name '*.html' | while read html;do \
-		grep --max-count 1 --line-regexp '^---' -q "$$html" || \
-		sed -i "1 i ---\nlayout: page\nlang: en\n---\n" $$html ; \
-	done; \
-	rm -rf "$$tempdir"
+	rm -rf docs/core
+	mkdir docs/core
+	make -C repo/core docs
+	mv repo/core/docs/build/html/* docs/core
 
 # Build the spec documents TODO translate
 spec:
