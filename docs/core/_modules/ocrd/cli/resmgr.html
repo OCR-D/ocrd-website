@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.cli.resmgr &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/cli/resmgr.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.cli.resmgr</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">OCR-D CLI: management of processor resources</span>
+
+<span class="sd">.. click:: ocrd.cli.resmgr:resmgr_cli</span>
+<span class="sd">    :prog: ocrd resmgr</span>
+<span class="sd">    :nested: full</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">initLogging</span><span class="p">,</span>
+    <span class="n">getLogger</span><span class="p">,</span>
+    <span class="n">RESOURCE_LOCATIONS</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">..resource_manager</span> <span class="kn">import</span> <span class="n">OcrdResourceManager</span>
+
+<div class="viewcode-block" id="print_resources"><a class="viewcode-back" href="../../../api/ocrd/ocrd.cli.resmgr.html#ocrd.cli.resmgr.print_resources">[docs]</a><span class="k">def</span> <span class="nf">print_resources</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">reslist</span><span class="p">,</span> <span class="n">resmgr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">executable</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">resdict</span> <span class="ow">in</span> <span class="n">reslist</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;- </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)</span><span class="se">\n</span><span class="s1">  </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;@ </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">resource_dir_to_location</span><span class="p">(</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;path&#39;</span> <span class="ow">in</span> <span class="n">resdict</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+            <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+        <span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span></div>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;resmgr&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">resmgr_cli</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Managing processor resources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">initLogging</span><span class="p">()</span>
+
+<span class="nd">@resmgr_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-available&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="s1">&#39;--executable&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Show only resources for executable EXEC&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;EXEC&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">list_available</span><span class="p">(</span><span class="n">executable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List available resources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resmgr</span> <span class="o">=</span> <span class="n">OcrdResourceManager</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">executable</span><span class="p">,</span> <span class="n">reslist</span> <span class="ow">in</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">list_available</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+        <span class="n">print_resources</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">reslist</span><span class="p">,</span> <span class="n">resmgr</span><span class="p">)</span>
+
+<span class="nd">@resmgr_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-installed&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="s1">&#39;--executable&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Show only resources for executable EXEC&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;EXEC&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">list_installed</span><span class="p">(</span><span class="n">executable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List installed resources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resmgr</span> <span class="o">=</span> <span class="n">OcrdResourceManager</span><span class="p">()</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">executable</span><span class="p">,</span> <span class="n">reslist</span> <span class="ow">in</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">list_installed</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+        <span class="n">print_resources</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">reslist</span><span class="p">,</span> <span class="n">resmgr</span><span class="p">)</span>
+
+<span class="nd">@resmgr_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;download&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--any-url&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Allow downloading/copying unregistered resources&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--allow-uninstalled&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Allow installing resources for uninstalled processors&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--overwrite&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Overwrite existing resources&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="s1">&#39;--location&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Where to store resources&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">RESOURCE_LOCATIONS</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;executable&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;url_or_name&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">any_url</span><span class="p">,</span> <span class="n">allow_uninstalled</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">url_or_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download resource URL_OR_NAME for processor EXECUTABLE.</span>
+
+<span class="sd">    URL_OR_NAME can either be the ``name`` or ``url`` of a registered resource.</span>
+
+<span class="sd">    If URL_OR_NAME is &#39;*&#39; (asterisk), download all known resources for this processor</span>
+
+<span class="sd">    If ``--any-url`` is given, also accepts URL or filenames of non-registered resources for ``URL_OR_NAME``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.resmgr&#39;</span><span class="p">)</span>
+    <span class="n">resmgr</span> <span class="o">=</span> <span class="n">OcrdResourceManager</span><span class="p">()</span>
+    <span class="n">basedir</span> <span class="o">=</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">location_to_resource_dir</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">executable</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url_or_name</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unless EXECUTABLE (&#39;</span><span class="si">%s</span><span class="s2">&#39;) is the &#39;*&#39; wildcard, URL_OR_NAME is required&quot;</span> <span class="o">%</span> <span class="n">executable</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">executable</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_url</span> <span class="o">=</span> <span class="p">(</span><span class="n">url_or_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url_or_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">))</span> <span class="k">if</span> <span class="n">url_or_name</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="n">is_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">url_or_name</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">if</span> <span class="n">url_or_name</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">executable</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_uninstalled</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Executable </span><span class="si">%s</span><span class="s2"> is not installed. Is there a typo in the executable? &quot;</span> \
+                <span class="s2">&quot;To install resources for uninstalled processor, use the -a/--allow-uninstalled flag&quot;</span> <span class="o">%</span> <span class="n">executable</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Executable </span><span class="si">%s</span><span class="s2"> is not installed but -a/--allow-uninstalled was given, so proceeding&quot;</span> <span class="o">%</span> <span class="n">executable</span><span class="p">)</span>
+    <span class="n">find_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;executable&#39;</span><span class="p">:</span> <span class="n">executable</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">url_or_name</span> <span class="ow">and</span> <span class="n">url_or_name</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+        <span class="n">find_kwargs</span><span class="p">[</span><span class="s1">&#39;url&#39;</span> <span class="k">if</span> <span class="n">is_url</span> <span class="k">else</span> <span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url_or_name</span>
+    <span class="n">reslist</span> <span class="o">=</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">find_resources</span><span class="p">(</span><span class="o">**</span><span class="n">find_kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reslist</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No resources found in registry&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">any_url</span> <span class="ow">and</span> <span class="p">(</span><span class="n">is_url</span> <span class="ow">or</span> <span class="n">is_filename</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> unregistered resource </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;Downloading&quot;</span> <span class="k">if</span> <span class="n">is_url</span> <span class="k">else</span> <span class="s2">&quot;Copying&quot;</span><span class="p">,</span> <span class="n">url_or_name</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">is_url</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_or_name</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+                    <span class="n">content_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">url_or_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">url_or_name</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+                <span class="n">content_length</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">url_or_name</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+            <span class="k">with</span> <span class="n">click</span><span class="o">.</span><span class="n">progressbar</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">content_length</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Downloading&quot;</span> <span class="k">if</span> <span class="n">is_url</span> <span class="k">else</span> <span class="s2">&quot;Copying&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bar</span><span class="p">:</span>
+                <span class="n">fpath</span> <span class="o">=</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
+                    <span class="n">executable</span><span class="p">,</span>
+                    <span class="n">url_or_name</span><span class="p">,</span>
+                    <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                    <span class="n">basedir</span><span class="o">=</span><span class="n">basedir</span><span class="p">,</span>
+                    <span class="n">no_subdir</span><span class="o">=</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;cwd&#39;</span><span class="p">,</span>
+                    <span class="n">progress_cb</span><span class="o">=</span><span class="k">lambda</span> <span class="n">delta</span><span class="p">:</span> <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> resource &#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%s</span><span class="s2">) not a known resource, creating stub in </span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">fpath</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">url_or_name</span><span class="p">,</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">user_list</span><span class="p">))</span>
+            <span class="n">resmgr</span><span class="o">.</span><span class="n">add_to_user_database</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">url_or_name</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;Downloaded&quot;</span> <span class="k">if</span> <span class="n">is_url</span> <span class="k">else</span> <span class="s2">&quot;Copied&quot;</span><span class="p">,</span> <span class="n">url_or_name</span><span class="p">,</span> <span class="n">fpath</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use in parameters as &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">fpath</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">executable</span><span class="p">,</span> <span class="n">resdict</span> <span class="ow">in</span> <span class="n">reslist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_uninstalled</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping installing resources for </span><span class="si">%s</span><span class="s2"> as it is not installed. (Use -a/--allow-uninstalled to force)&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;???&#39;</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cannot download user resource </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])),</span>
+                <span class="k">continue</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading resource </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">resdict</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">click</span><span class="o">.</span><span class="n">progressbar</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">bar</span><span class="p">:</span>
+                <span class="n">fpath</span> <span class="o">=</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
+                    <span class="n">executable</span><span class="p">,</span>
+                    <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">resource_type</span><span class="o">=</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span>
+                    <span class="n">path_in_archive</span><span class="o">=</span><span class="n">resdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path_in_archive&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">),</span>
+                    <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">],</span>
+                    <span class="n">no_subdir</span><span class="o">=</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;cwd&#39;</span><span class="p">,</span>
+                    <span class="n">basedir</span><span class="o">=</span><span class="n">basedir</span><span class="p">,</span>
+                    <span class="n">progress_cb</span><span class="o">=</span><span class="k">lambda</span> <span class="n">delta</span><span class="p">:</span> <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloaded </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">fpath</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use in parameters as &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">resmgr</span><span class="o">.</span><span class="n">parameter_usage</span><span class="p">(</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">usage</span><span class="o">=</span><span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;parameter_usage&#39;</span><span class="p">]))</span>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

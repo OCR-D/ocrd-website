@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_models.ocrd_file &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_models/ocrd_file.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_models.ocrd_file</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API to ``mets:file``</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">splitext</span><span class="p">,</span> <span class="n">basename</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">is_local_filename</span><span class="p">,</span> <span class="n">get_local_filename</span><span class="p">,</span> <span class="n">MIME_TO_EXT</span><span class="p">,</span> <span class="n">EXT_TO_MIME</span>
+
+<span class="kn">from</span> <span class="nn">.ocrd_xml_base</span> <span class="kn">import</span> <span class="n">ET</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">,</span> <span class="n">TAG_METS_FILE</span>
+
+<div class="viewcode-block" id="OcrdFile"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_file.html#ocrd_models.ocrd_file.OcrdFile">[docs]</a><span class="k">class</span> <span class="nc">OcrdFile</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a single `mets:file/mets:FLocat` (METS file entry).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#  @staticmethod</span>
+    <span class="c1">#  def create(mimetype, ID, url, local_filename):</span>
+    <span class="c1">#      el_fileGrp.SubElement(&#39;file&#39;)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loctype</span><span class="o">=</span><span class="s1">&#39;OTHER&#39;</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            el (LxmlElement): etree Element of the `mets:file` this represents. Create new if not provided</span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            mets (OcrdMets): Containing :py:class:`ocrd_models.ocrd_mets.OcrdMets`.</span>
+<span class="sd">            mimetype (string): `@MIMETYPE` of this `mets:file`</span>
+<span class="sd">            pageId (string): `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file`</span>
+<span class="sd">            loctype (string): `@LOCTYPE` of this `mets:file`</span>
+<span class="sd">            local_filename (string): Local filename</span>
+<span class="sd">            url (string): `@xlink:href` of this `mets:file`</span>
+<span class="sd">            ID (string): `@ID` of this `mets:file`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">TAG_METS_FILE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_el</span> <span class="o">=</span> <span class="n">el</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="n">mets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">local_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loctype</span> <span class="o">=</span> <span class="n">loctype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
+
+        <span class="k">if</span> <span class="n">url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="ow">and</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">get_local_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        String representation of this `mets:file`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#  props = &#39;\n\t&#39;.join([</span>
+        <span class="c1">#      &#39; : &#39;.join([k, getattr(self, k) if getattr(self, k) else &#39;---&#39;])</span>
+        <span class="c1">#      for k in [&#39;mimetype&#39;, &#39;ID&#39;, &#39;url&#39;, &#39;local_filename&#39;]</span>
+        <span class="c1">#  ])</span>
+        <span class="c1">#  return &#39;OcrdFile[&#39; + &#39;\n\t&#39; + props + &#39;\n\t]&#39;</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;---&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fileGrp&#39;</span><span class="p">,</span> <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;mimetype&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;local_filename&#39;</span><span class="p">]</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;OcrdFile &#39;</span> <span class="o">+</span> <span class="n">props</span> <span class="o">+</span> <span class="s1">&#39;]/&gt; &#39;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">ID</span> <span class="c1"># and \</span>
+               <span class="c1"># self.url == other.url and \</span>
+               <span class="c1"># EXT_TO_MIME[MIME_TO_EXT[self.mimetype]] == EXT_TO_MIME[MIME_TO_EXT[other.mimetype]] and \</span>
+               <span class="c1"># self.fileGrp == other.fileGrp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the ``os.path.basename`` of the local file, if any.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_filename</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_basename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_basename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tar&#39;</span><span class="p">):</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;.tar&quot;</span> <span class="o">+</span> <span class="n">ext</span>
+        <span class="k">return</span> <span class="n">ext</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basename_without_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the ``os.path.basename`` of the local file, if any, with extension removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tar&#39;</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@ID` of the `mets:file`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">)</span>
+
+    <span class="nd">@ID</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the `@ID` of the `mets:file` to ``ID``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pageId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file` (physical page manifestation).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;OcrdFile </span><span class="si">%s</span><span class="s2"> has no member &#39;mets&#39; pointing to parent OcrdMets&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">get_physical_page_for_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@pageId</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pageId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pageId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@ID` of the physical `mets:structMap` entry corresponding to this `mets:file` (physical page manifestation) to ``pageId``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pageId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;OcrdFile </span><span class="si">%s</span><span class="s2"> has no member &#39;mets&#39; pointing to parent OcrdMets&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">set_physical_page_for_file</span><span class="p">(</span><span class="n">pageId</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loctype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@LOCTYPE` of the `mets:file`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LOCTYPE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@loctype</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">loctype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loctype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the `@LOCTYPE` of the `mets:file` to ``loctype``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">loctype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">loctype</span> <span class="o">=</span> <span class="n">loctype</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_FLocat</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">)</span>
+        <span class="n">el_FLocat</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;LOCTYPE&#39;</span><span class="p">,</span> <span class="n">loctype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loctype</span> <span class="o">==</span> <span class="s1">&#39;OTHER&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otherloctype</span> <span class="o">=</span> <span class="s1">&#39;FILE&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otherloctype</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">otherloctype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OTHERLOCTYPE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@otherloctype</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">otherloctype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherloctype</span><span class="p">):</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_FLocat</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">otherloctype</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;OTHERLOCTYPE&#39;</span> <span class="ow">in</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;OTHERLOCTYPE&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">el_FLocat</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;LOCTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;OTHER&#39;</span><span class="p">)</span>
+            <span class="n">el_FLocat</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;OTHERLOCTYPE&#39;</span><span class="p">,</span> <span class="n">otherloctype</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@MIMETYPE` of the `mets:file`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MIMETYPE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@mimetype</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the `@MIMETYPE` of the `mets:file` to ``mimetype``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mimetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;MIMETYPE&#39;</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fileGrp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `@USE` of the containing `mets:fileGrp`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;USE&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;TEMP&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the `@xlink:href` of this `mets:file`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">TAG_METS_FLOCAT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">el_FLocat</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;{</span><span class="si">%s</span><span class="s2">}href&quot;</span> <span class="o">%</span> <span class="n">NS</span><span class="p">[</span><span class="s2">&quot;xlink&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the `@xlink:href` of this `mets:file` to ``url``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">el_FLocat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mets:FLocat&#39;</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_FLocat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">el_FLocat</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="p">,</span> <span class="n">TAG_METS_FLOCAT</span><span class="p">)</span>
+        <span class="n">el_FLocat</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;{</span><span class="si">%s</span><span class="s2">}href&quot;</span> <span class="o">%</span> <span class="n">NS</span><span class="p">[</span><span class="s2">&quot;xlink&quot;</span><span class="p">],</span> <span class="n">url</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

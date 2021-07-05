@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_models.ocrd_exif &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_models/ocrd_exif.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_models.ocrd_exif</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Technical image metadata</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+
+<div class="viewcode-block" id="OcrdExif"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif">[docs]</a><span class="k">class</span> <span class="nc">OcrdExif</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Represents technical image metadata.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        width (int): pixel dimensions</span>
+<span class="sd">        height (int): pixel dimensions</span>
+<span class="sd">        photometricInterpretation (str): pixel type/depth, e.g. \</span>
+
+<span class="sd">            * ``1`` for b/w,</span>
+<span class="sd">            * ``L`` for 8-bit grayscale,</span>
+<span class="sd">            * ``RGB`` for 24-bit truecolor,</span>
+<span class="sd">            * ``I`` for 32-bit signed integer grayscale,</span>
+<span class="sd">            * ``F`` for floating-point grayscale</span>
+<span class="sd">          (see PIL concept **mode**)</span>
+<span class="sd">        resolution (int): pixel density</span>
+<span class="sd">        xResolution (int): pixel density</span>
+<span class="sd">        yResolution (int): pixel density</span>
+<span class="sd">        resolutionUnit (str): unit of measurement (either ``inches`` or ``cm``)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            img (`PIL.Image`): PIL image technical metadata is about.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#  print(img.__dict__)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">photometricInterpretation</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">n_frames</span> <span class="k">if</span> <span class="s1">&#39;n_frames&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="c1">#  if img.format == &#39;PNG&#39;:</span>
+        <span class="c1">#      print(img.info)</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;compression&#39;</span><span class="p">,</span> <span class="s1">&#39;photometric_interpretation&#39;</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="k">if</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;TIFF&#39;</span><span class="p">,</span> <span class="s1">&#39;PNG&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;dpi&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dpi&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dpi&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s1">&#39;TIFF&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;cm&#39;</span> <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">296</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="s1">&#39;inches&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s1">&#39;JPEG&#39;</span> <span class="ow">and</span> <span class="s1">&#39;jfif_density&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;jfif_density&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;jfif_density&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;cm&#39;</span> <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;jfif_unit&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="s1">&#39;inches&#39;</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s1">&#39;PNG&#39;</span> <span class="ow">and</span> <span class="s1">&#39;aspect&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;aspect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;aspect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#  if img.format == &#39;JPEG2000&#39;:</span>
+            <span class="c1">#      import sys</span>
+            <span class="c1">#      print(&#39;JPEG 2000 not supported yet :(&#39;, file=sys.stderr)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span>
+        <span class="c1">#  print(&#39;format=%s type=%s&#39; % (img.format, type(self.xResolution))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span><span class="p">))</span>
+
+<div class="viewcode-block" id="OcrdExif.to_xml"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif.to_xml">[docs]</a>    <span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serialize all properties as XML string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;&lt;exif&gt;&#39;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="s1">&#39;&lt;</span><span class="si">%s</span><span class="s1">&gt;</span><span class="si">%s</span><span class="s1">&lt;/</span><span class="si">%s</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/exif&gt;&#39;</span>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

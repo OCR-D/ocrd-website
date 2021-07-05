@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.processor.base &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/processor/base.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.processor.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Processor base class and helper functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Processor&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;generate_processor_help&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;run_cli&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;run_processor&#39;</span>
+<span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfileobj</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span><span class="p">,</span>
+    <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+    <span class="n">getLogger</span><span class="p">,</span>
+    <span class="n">initLogging</span><span class="p">,</span>
+    <span class="n">list_resource_candidates</span><span class="p">,</span>
+    <span class="n">list_all_resources</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">MetadataItemType</span><span class="p">,</span> <span class="n">LabelType</span><span class="p">,</span> <span class="n">LabelsType</span>
+<span class="kn">from</span> <span class="nn">..resource_manager</span> <span class="kn">import</span> <span class="n">OcrdResourceManager</span>
+
+<span class="c1"># XXX imports must remain for backwards-compatibilty</span>
+<span class="kn">from</span> <span class="nn">.helpers</span> <span class="kn">import</span> <span class="n">run_cli</span><span class="p">,</span> <span class="n">run_processor</span><span class="p">,</span> <span class="n">generate_processor_help</span> <span class="c1"># pylint: disable=unused-import</span>
+
+<div class="viewcode-block" id="Processor"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor">[docs]</a><span class="k">class</span> <span class="nc">Processor</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A processor is a tool that implements the uniform OCR-D command-line interface</span>
+<span class="sd">    for run-time data processing. That is, it executes a single workflow step,</span>
+<span class="sd">    or a combination of workflow steps, on the workspace (represented by local METS).</span>
+<span class="sd">    It reads input files for all or requested physical pages of the input fileGrp(s),</span>
+<span class="sd">    and writes output files for them into the output fileGrp(s). It may take </span>
+<span class="sd">    a number of optional or mandatory parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">workspace</span><span class="p">,</span>
+            <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># TODO OCR-D/core#274</span>
+            <span class="c1"># input_file_grp=None,</span>
+            <span class="c1"># output_file_grp=None,</span>
+            <span class="n">input_file_grp</span><span class="o">=</span><span class="s2">&quot;INPUT&quot;</span><span class="p">,</span>
+            <span class="n">output_file_grp</span><span class="o">=</span><span class="s2">&quot;OUTPUT&quot;</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">list_resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">show_help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">show_version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">dump_json</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate, but do not process. Unless ``list_resources`` or</span>
+<span class="sd">        ``show_resource`` or ``show_help`` or ``show_version`` or</span>
+<span class="sd">        ``dump_json`` is true, setup for processing (parsing and</span>
+<span class="sd">        validating parameters, entering the workspace directory).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">dump_json</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">list_resources</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">show_resource</span><span class="p">:</span>
+            <span class="n">res_fname</span> <span class="o">=</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span> <span class="n">show_resource</span><span class="p">,</span> <span class="n">is_file</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">res_fname</span><span class="p">:</span>
+                <span class="n">initLogging</span><span class="p">()</span>
+                <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.</span><span class="si">%s</span><span class="s1">.__init__&#39;</span> <span class="o">%</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to resolve </span><span class="si">%s</span><span class="s2"> for processor </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">show_resource</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">res_fname</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">copyfileobj</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">ocrd_tool</span>
+        <span class="k">if</span> <span class="n">show_help</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_help</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="k">if</span> <span class="n">show_version</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_version</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">workspace</span>
+        <span class="c1"># FIXME HACK would be better to use pushd_popd(self.workspace.directory)</span>
+        <span class="c1"># but there is no way to do that in process here since it&#39;s an</span>
+        <span class="c1"># overridden method. chdir is almost always an anti-pattern.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_pwd</span> <span class="o">=</span> <span class="n">getcwd</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span> <span class="o">=</span> <span class="n">input_file_grp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span> <span class="o">=</span> <span class="n">output_file_grp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_id</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">page_id</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">or</span> <span class="n">page_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">page_id</span>
+        <span class="n">parameterValidator</span> <span class="o">=</span> <span class="n">ParameterValidator</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">)</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">parameterValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid parameters </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span>
+
+<div class="viewcode-block" id="Processor.show_help"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.show_help">[docs]</a>    <span class="k">def</span> <span class="nf">show_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">generate_processor_help</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Processor.show_version"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.show_version">[docs]</a>    <span class="k">def</span> <span class="nf">show_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Version </span><span class="si">%s</span><span class="s2">, ocrd/core </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">OCRD_VERSION</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Processor.verify"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Verify that the input fulfills the processor&#39;s requirements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Processor.process"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the :py:attr:`workspace` </span>
+<span class="sd">        from the given :py:attr:`input_file_grp`s</span>
+<span class="sd">        to the given :py:attr:`output_file_grp`s</span>
+<span class="sd">        under the given :py:attr:`parameter`s.</span>
+<span class="sd">        </span>
+<span class="sd">        (This contains the main functionality and needs to be overridden by subclasses.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must be implemented&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Processor.add_metadata"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.add_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pcgts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add PAGE-XML `MetadataItem` describing the processing step and runtime parameters to :py:class:`ocrd_models.ocrd_page.PcGtsType` ``pcgts``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Metadata</span><span class="p">()</span><span class="o">.</span><span class="n">add_MetadataItem</span><span class="p">(</span>
+                <span class="n">MetadataItemType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="s2">&quot;processingStep&quot;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
+                    <span class="n">Labels</span><span class="o">=</span><span class="p">[</span><span class="n">LabelsType</span><span class="p">(</span>
+                        <span class="n">externalModel</span><span class="o">=</span><span class="s2">&quot;ocrd-tool&quot;</span><span class="p">,</span>
+                        <span class="n">externalId</span><span class="o">=</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span>
+                        <span class="n">Label</span><span class="o">=</span><span class="p">[</span><span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                                         <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                               <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">keys</span><span class="p">()]),</span>
+                            <span class="n">LabelsType</span><span class="p">(</span>
+                        <span class="n">externalModel</span><span class="o">=</span><span class="s2">&quot;ocrd-tool&quot;</span><span class="p">,</span>
+                        <span class="n">externalId</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
+                        <span class="n">Label</span><span class="o">=</span><span class="p">[</span><span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
+                                         <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">),</span>
+                               <span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="s1">&#39;ocrd/core&#39;</span><span class="p">,</span>
+                                         <span class="n">value</span><span class="o">=</span><span class="n">OCRD_VERSION</span><span class="p">)])</span>
+                    <span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Processor.resolve_resource"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.resolve_resource">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve a resource name to an absolute file path with the algorithm in</span>
+<span class="sd">        https://ocr-d.de/en/spec/ocrd_tool#file-parameters</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val (string): resource value to resolve</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.</span><span class="si">%s</span><span class="s1">.resolve_resource&#39;</span> <span class="o">%</span> <span class="n">executable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Resolved to absolute path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">old_pwd</span><span class="p">)</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">cand</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Resolved </span><span class="si">%s</span><span class="s2"> to absolute path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not find resource &#39;</span><span class="si">%s</span><span class="s2">&#39; for executable &#39;</span><span class="si">%s</span><span class="s2">&#39;. Try &#39;ocrd resmgr download </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&#39; to download this resource.&quot;</span><span class="p">,</span>
+                <span class="n">val</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Processor.list_all_resources"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.list_all_resources">[docs]</a>    <span class="k">def</span> <span class="nf">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all resources found in the filesystem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List the input files (for single-valued :py:attr:`input_file_grp`).</span>
+
+<span class="sd">        For each physical page:</span>
+<span class="sd">        - If there is a single PAGE-XML for the page, take it (and forget about all</span>
+<span class="sd">          other files for that page)</span>
+<span class="sd">        - Else if there is a single image file, take it (and forget about all other</span>
+<span class="sd">          files for that page)</span>
+<span class="sd">        - Otherwise raise an error (complaining that only PAGE-XML warrants</span>
+<span class="sd">          having multiple images for a single page)</span>
+<span class="sd">        Algorithm &lt;https://github.com/cisocrgroup/ocrd_cis/pull/57#issuecomment-656336593&gt;_</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of :py:class:`ocrd_models.ocrd_file.OcrdFile` objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Processor is missing input fileGrp&quot;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zip_input_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;abort&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Use zip_input_files() instead of input_files when processing multiple input fileGrps&#39;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">tuples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">tuples</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Processor.zip_input_files"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.zip_input_files">[docs]</a>    <span class="k">def</span> <span class="nf">zip_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">require_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List tuples of input files (for multi-valued :py:attr:`input_file_grp`).</span>
+
+<span class="sd">        Processors that expect/need multiple input file groups,</span>
+<span class="sd">        cannot use :py:data:`input_files`. They must align (zip) input files</span>
+<span class="sd">        across pages. This includes the case where not all pages</span>
+<span class="sd">        are equally present in all file groups. It also requires</span>
+<span class="sd">        making a consistent selection if there are multiple files</span>
+<span class="sd">        per page.</span>
+
+<span class="sd">        Following the OCR-D functional model, this function tries to</span>
+<span class="sd">        find a single PAGE file per page, or fall back to a single</span>
+<span class="sd">        image file per page. In either case, multiple matches per page</span>
+<span class="sd">        are an error (see error handling below).</span>
+<span class="sd">        This default behaviour can be changed by using a fixed MIME</span>
+<span class="sd">        type filter via ``mimetype``. But still, multiple matching</span>
+<span class="sd">        files per page are an error.</span>
+
+<span class="sd">        Single-page multiple-file errors are handled according to</span>
+<span class="sd">        ``on_error``:</span>
+<span class="sd">        - if `&#39;skip&#39;`, then the page for the respective fileGrp will be</span>
+<span class="sd">          silently skipped (as if there was no match at all)</span>
+<span class="sd">        - if `&#39;first&#39;`, then the first matching file for the page will be</span>
+<span class="sd">          silently selected (as if the first was the only match)</span>
+<span class="sd">        - if `&#39;last&#39;`, then the last matching file for the page will be</span>
+<span class="sd">          silently selected (as if the last was the only match)</span>
+<span class="sd">        - if `&#39;abort&#39;`, then an exception will be raised.</span>
+<span class="sd">        Multiple matches for PAGE-XML will always raise an exception.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">             require_first (boolean): If true, then skip a page entirely</span>
+<span class="sd">                 whenever it is not available in the first input `fileGrp`.</span>
+<span class="sd">             mimetype (string): If not `None`, filter by the specified MIME</span>
+<span class="sd">                 type (literal or regex prefixed by `//`). Otherwise prefer</span>
+<span class="sd">                 PAGE or image.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of :py:class:`ocrd_models.ocrd_file.OcrdFile` tuples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Processor is missing input fileGrp&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.base&#39;</span><span class="p">)</span>
+        <span class="n">ifgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="c1"># Iterating over all files repeatedly may seem inefficient at first sight,</span>
+        <span class="c1"># but the unnecessary OcrdFile instantiations for posterior fileGrp filtering</span>
+        <span class="c1"># can actually be much more costly than traversing the ltree.</span>
+        <span class="c1"># This might depend on the number of pages vs number of fileGrps.</span>
+
+        <span class="n">pages</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ifg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ifgs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">(</span>
+                    <span class="n">pageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">ifg</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">),</span>
+                                <span class="c1"># sort by MIME type so PAGE comes before images</span>
+                                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">file_</span><span class="p">:</span> <span class="n">file_</span><span class="o">.</span><span class="n">mimetype</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">ift</span> <span class="o">=</span> <span class="n">pages</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ifgs</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;another file </span><span class="si">%s</span><span class="s2"> for page </span><span class="si">%s</span><span class="s2"> in input file group </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">)</span>
+                    <span class="c1"># fileGrp has multiple files for this page ID</span>
+                    <span class="k">if</span> <span class="n">mimetype</span><span class="p">:</span>
+                        <span class="c1"># filter was active, this must not happen</span>
+                        <span class="k">if</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                            <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
+                            <span class="k">pass</span> <span class="c1"># keep first match</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
+                            <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;abort&#39;</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Multiple &#39;</span><span class="si">%s</span><span class="s2">&#39; matches for page &#39;</span><span class="si">%s</span><span class="s2">&#39; in fileGrp &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                    <span class="n">mimetype</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown &#39;on_error&#39; strategy &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">on_error</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="p">(</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span> <span class="ow">and</span>
+                          <span class="n">file_</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">!=</span> <span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+                        <span class="k">pass</span> <span class="c1"># keep PAGE match</span>
+                    <span class="k">elif</span> <span class="p">(</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span> <span class="ow">and</span>
+                          <span class="n">file_</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;Multiple PAGE-XML matches for page &#39;</span><span class="si">%s</span><span class="s2">&#39; in fileGrp &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># filter was inactive but no PAGE is in control, this must not happen</span>
+                        <span class="k">if</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                            <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
+                            <span class="k">pass</span> <span class="c1"># keep first match</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
+                            <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
+                        <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;abort&#39;</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;No PAGE-XML for page &#39;</span><span class="si">%s</span><span class="s2">&#39; in fileGrp &#39;</span><span class="si">%s</span><span class="s2">&#39; but multiple matches.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                    <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown &#39;on_error&#39; strategy &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">on_error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;adding file </span><span class="si">%s</span><span class="s2"> for page </span><span class="si">%s</span><span class="s2"> to input file group </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="n">ifg</span><span class="p">)</span>
+                    <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
+        <span class="n">ifts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">page</span><span class="p">,</span> <span class="n">ifiles</span> <span class="ow">in</span> <span class="n">pages</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ifg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ifgs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ifiles</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="c1"># other fallback options?</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;found no page </span><span class="si">%s</span><span class="s1"> in file group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                              <span class="n">page</span><span class="p">,</span> <span class="n">ifg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ifiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">require_first</span><span class="p">:</span>
+                <span class="n">ifts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ifiles</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ifts</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

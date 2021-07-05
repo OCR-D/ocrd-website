@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_modelfactory &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_modelfactory.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_modelfactory</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Factory methods to create models for data, files, URLs.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">safe_load</span><span class="p">,</span> <span class="n">safe_dump</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">VERSION</span><span class="p">,</span> <span class="n">MIMETYPE_PAGE</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">OcrdExif</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PcGtsType</span><span class="p">,</span> <span class="n">PageType</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span>
+    <span class="n">parse</span><span class="p">,</span> <span class="n">parseEtree</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;exif_from_filename&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;page_from_file&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;page_from_image&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="exif_from_filename"><a class="viewcode-back" href="../api/ocrd_modelfactory/ocrd_modelfactory.html#ocrd_modelfactory.exif_from_filename">[docs]</a><span class="k">def</span> <span class="nf">exif_from_filename</span><span class="p">(</span><span class="n">image_filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create :py:class:`~ocrd_models.ocrd_exif.OcrdExif`</span>
+<span class="sd">    by opening an image file with PIL and reading its metadata.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        image_filename (str): Local image path name (relative to workspace).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">image_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must pass &#39;image_filename&#39; to &#39;exif_from_filename&#39;&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">pil_img</span><span class="p">:</span>
+        <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">OcrdExif</span><span class="p">(</span><span class="n">pil_img</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ocrd_exif</span></div>
+
+<div class="viewcode-block" id="page_from_image"><a class="viewcode-back" href="../api/ocrd_modelfactory/ocrd_modelfactory.html#ocrd_modelfactory.page_from_image">[docs]</a><span class="k">def</span> <span class="nf">page_from_image</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">with_tree</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create :py:class:`~ocrd_models.ocrd_page.OcrdPage`</span>
+<span class="sd">    from an :py:class:`~ocrd_models.ocrd_file.OcrdFile`</span>
+<span class="sd">    representing an image (i.e. should have ``@mimetype`` starting with ``image/``).</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        input_file (:py:class:`~ocrd_models.ocrd_file.OcrdFile`): file to open \</span>
+<span class="sd">            and produce a PAGE DOM for</span>
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">        with_tree (boolean): whether to return XML node tree, element-node mapping \</span>
+<span class="sd">            and reverse mapping, too (cf. :py:func:`ocrd_models.ocrd_page.parseEtree`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input_file must have &#39;local_filename&#39; property&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File not found: &#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="p">))</span>
+    <span class="n">exif</span> <span class="o">=</span> <span class="n">exif_from_filename</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">pcgts</span> <span class="o">=</span> <span class="n">PcGtsType</span><span class="p">(</span>
+        <span class="n">Metadata</span><span class="o">=</span><span class="n">MetadataType</span><span class="p">(</span>
+            <span class="n">Creator</span><span class="o">=</span><span class="s2">&quot;OCR-D/core </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VERSION</span><span class="p">,</span>
+            <span class="n">Created</span><span class="o">=</span><span class="n">now</span><span class="p">,</span>
+            <span class="n">LastChange</span><span class="o">=</span><span class="n">now</span>
+        <span class="p">),</span>
+        <span class="n">Page</span><span class="o">=</span><span class="n">PageType</span><span class="p">(</span>
+            <span class="n">imageWidth</span><span class="o">=</span><span class="n">exif</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">imageHeight</span><span class="o">=</span><span class="n">exif</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="c1"># XXX brittle</span>
+            <span class="n">imageFilename</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">url</span> <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span>
+        <span class="p">),</span>
+        <span class="n">pcGtsId</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">ID</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">with_tree</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pcgts</span>
+    <span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">etree</span> <span class="o">=</span> <span class="n">pcgts</span><span class="o">.</span><span class="n">to_etree</span><span class="p">(</span><span class="n">mapping_</span><span class="o">=</span><span class="n">mapping</span><span class="p">)</span>
+    <span class="n">revmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">node</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">pcgts</span><span class="p">,</span> <span class="n">etree</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">revmap</span></div>
+
+<div class="viewcode-block" id="page_from_file"><a class="viewcode-back" href="../api/ocrd_modelfactory/ocrd_modelfactory.html#ocrd_modelfactory.page_from_file">[docs]</a><span class="k">def</span> <span class="nf">page_from_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">with_tree</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new PAGE-XML from a METS file representing a PAGE-XML or an image.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        input_file (:py:class:`~ocrd_models.ocrd_file.OcrdFile`): file to open \</span>
+<span class="sd">            and produce a PAGE DOM for</span>
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">        with_tree (boolean): whether to return XML node tree, element-node mapping \</span>
+<span class="sd">            and reverse mapping, too (cf. :py:func:`ocrd_models.ocrd_page.parseEtree`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input_file must have &#39;local_filename&#39; property&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File not found: &#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">page_from_image</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">with_tree</span><span class="o">=</span><span class="n">with_tree</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">parseEtree</span> <span class="k">if</span> <span class="n">with_tree</span> <span class="k">else</span> <span class="n">parse</span><span class="p">)(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">silence</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported mimetype &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
