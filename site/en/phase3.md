@@ -18,5 +18,5 @@ maintain and process collections. Four implementation and three module projects 
 ## Implementation projects
 * Integration of Kitodo and OCR-D for productive mass digitisation (UB Braunschweig, SLUB Dresden, UB Mannheim).
 * OPERANDI: OCR-D Performance Optimisation and Integration (SUB Göttingen, GWDG)
-* OCR-D Software in Modular Mass Digitisation Workflows (ULB Halle)
+* ODEM: Extending OCR-D for mass digitisation (ULB Sachsen-Anhalt)
 * OCR4all libraries full text recognition of historical collections (GEI Braunschweig, HCI and ZPD of the University of Würzburg)
