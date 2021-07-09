@@ -19,7 +19,7 @@ DFG bewiligt.
 ## Implementierungsprojekte
 * Integration von Kitodo und OCR-D zur produktiven Massendigitalisierung (UB Braunschweig, SLUB Dresden, UB Mannheim)
 * OPERANDI: OCR-D Performance Optimisation and Integration (SUB Göttingen, GWDG)
-* OCR-D Software in modularen Massendigitalisierungs Workflows (ULB Halle)
+* ODEM: OCR-D Erweiterung für Massendigitalisierung (ULB Sachsen-Anhalt)
 * OCR4all libraries Volltexterkennung historischer Sammlungen (GEI Braunschweig, HCI und ZPD der Universität Würzburg)
  
 
