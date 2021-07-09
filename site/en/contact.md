@@ -12,11 +12,11 @@ title: OCR-D is you and me
 
 Contact person:
 
-### Elisabeth Engl
+### Lena Hinrichsen
 Project coordination OCR-D
 
 Duke August Library Wolfenbüttel
-[engl[at]hab.de](mailto:engl@hab.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)
 
 
 Substitution:
@@ -49,17 +49,22 @@ Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 State Library of Berlin Prussian Cultural Heritage
 [reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de)
 
-### Rainer Stotzka
-Karlsruhe Institute of Technology
-[rainer.stotzka[at]kit.edu](mailto:rainer.stotzka@kit.edu)
+### Mustafa Dogan
+Göttingen State and University Library
+[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de)
+
+### Philipp Wieder
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de)
+
 
 ## Staff
 
-### Elisabeth Engl
+### Lena Hinrichsen
 Project Coordinator
 
 Duke August Library Wolfenbüttel
-[engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
 ### Matthias Boenig
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
@@ -73,11 +78,22 @@ Berlin State Library - Prussian Cultural Heritage
 Berlin State Library - Prussian Cultural Heritage 
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
-### Volker Hartmann
-Karlsruhe Institute of Technology /Steinbuch Centre for Computing
-[volker.hartmann[at]kit.edu](mailto:volker.hartmann@kit.edu)
+### Mareen Geestmann
+Göttingen State and University Library
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de)
+
+### Michelle Weidling
+Göttingen State and University Library
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)
+
+### Paul Pestov
+Göttingen State and University Library
+[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de)
 
 ## Former Managers
+
+### Rainer Stotzka
+Karlsruhe Institute of Technology
 
 ### Thomas Stäcker
 Duke August Library Wolfenbüttel
@@ -86,6 +102,12 @@ Duke August Library Wolfenbüttel
 Bavarian State Library Munich
 
 ## Former staff
+
+### Elisabeth Engl
+Duke August Library Wolfenbüttel
+
+### Volker Hartmann
+Karlsruhe Institute of Technology /Steinbuch Centre for Computing
 
 ### Elisa Herrmann
 Duke August Library Wolfenbüttel
