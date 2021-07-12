@@ -86,23 +86,17 @@ bootstrap:
 	cd $(GTDIR) && make deps
 
 
-# Guideline langs to build. Default: $(GT_LANGS)
-LANGS_DST = $(LANGS:%=$(GTDIR)/%)
+LANGS_DST = $(LANGS:%=$(DSTDIR)/%/gt-guidelines)
+
+foo:
+	echo $(LANGS_DST)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
 gt: $(LANGS_DST)
 .PHONY: $(LANGS_DST)
 
-$(LANGS_DST): $(GTDIR)/% : $(SRCDIR)/%/gt-guidelines
-	make -C "$(GTDIR)" \
-	ANT_OPTS="" \
-	LANG="$(subst $(SRCDIR)/,,$(subst /gt-guidelines,,$<))" \
-	GT_DOC_OUT="$<" \
-	build;
-	cd "$<" ; find -name '*.html' | while read html;do \
-		grep --max-count 1 --line-regexp '^---' -q "$$html" || \
-		sed -i "1 i ---\nlayout: page\nlang: $(subst $(SRCDIR)/,,$(subst /gt-guidelines,,$<))\nlang-ref: $$html\n---\n" $$html ; \
-	done
+$(LANGS_DST): $(DSTDIR)/%/gt-guidelines : $(GTDIR)/%
+	make -C "$(GTDIR)" ANT_OPTS="" LANG="$*" GT_DOC_OUT="$@" build; \
 
 # Build ocrd-kwalitee data
 # data: $(SRCDIR/_data/ocrd-repo.json
