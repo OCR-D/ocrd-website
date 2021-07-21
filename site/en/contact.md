@@ -107,7 +107,7 @@ Bavarian State Library Munich
 Duke August Library Wolfenbüttel
 
 ### Volker Hartmann
-Karlsruhe Institute of Technology /Steinbuch Centre for Computing
+Karlsruhe Institute of Technology/Steinbuch Centre for Computing
 
 ### Elisa Herrmann
 Duke August Library Wolfenbüttel

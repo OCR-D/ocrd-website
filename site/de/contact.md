@@ -10,12 +10,12 @@ toc: true
 
 Ansprechpartnerin:
 
-### Elisabeth Engl
+### Lena Hinrichsen
 
 Projektkoordinatorin OCR-D
 
 Herzog August Bibliothek Wolfenbüttel
-[engl[at]hab.de](mailto:engl@hab.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)
 
 
 Stellvertreter*innen:
@@ -56,13 +56,21 @@ Staatsbibliothek zu Berlin Preußischer Kulturbesitz
 Karlsruher Institut für Technologie
 [rainer.stotzka[at]kit.edu](mailto:rainer.stotzka@kit.edu)
 
+### Mustafa Dogan
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de)
+
+### Philipp Wieder
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de)
+
 ## Projektmitarbeitende
 
-### Elisabeth Engl
+### Lena Hinrichsen
 
 Projektkoordinatorin
 Herzog August Bibliothek Wolfenbüttel
-[engl[at]hab.de](mailto:engl@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
 ### Matthias Boenig
 
@@ -79,37 +87,47 @@ Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
 
-### Volker Hartmann
+### Mareen Geestmann
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de)
 
-Karlsruher Institut für Technologie /Steinbuch Centre for Computing
-[volker.hartmann[at]kit.edu](mailto:volker.hartmann@kit.edu)
+### Michelle Weidling
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)
+
+### Paul Pestov
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de)
 
 ## Ehemalige Projektbeteiligte
 
-### Thomas Stäcker
+### Rainer Stotzka
+Karlsruhe Institute of Technology
 
+### Thomas Stäcker
 Herzog August Bibliothek Wolfenbüttel
 
 ### Markus Brantl
-
 Bayerische Staatsbibliothek München
 
 ## Ehemalige Projektmitarbeitende
 
-### Elisa Herrmann
+### Elisabeth Engl
+Herzog August Bibliothek Wolfenbüttel
 
+### Volker Hartmann
+Karlsruher Institut für Technologie/Steinbuch Centre for Computing
+
+### Elisa Herrmann
 Herzog August Bibliothek Wolfenbüttel
 
 ### Kay-Michael Würzner
-
 Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
 
 ### Ajinkya Prabhune
-
 Karlsruher Institut für Technologie
 
 ### Sebastian Mangold
-
 Bayerische Staatsbibliothek München
 
 ## Wissenschaftlicher Beirat
