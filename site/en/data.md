@@ -45,7 +45,7 @@ The special corpora contain:
 
 The image data were first subjected to a layout analysis (text region and line recognition) using [Transkribus](https://transkribus.eu/Transkribus/) and then segmented automatically. The automatically recognized text as well as the lines and text regions were corrected manually. Finally the data in form of PAGE files, digital images and METS files were zipped as a BagIt file.
 
-**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: [engl[at]hab.de](mailto:engl@hab.de)**
+**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: [hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)**
 
 The data are subject to a CC-BY-SA license, for the use of the image data
 different licenses may exist. Please [contact the project](contact) and/or the owning library.

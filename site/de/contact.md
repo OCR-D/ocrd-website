@@ -51,11 +51,6 @@ Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
 Staatsbibliothek zu Berlin Preußischer Kulturbesitz
 [reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de)
 
-### Rainer Stotzka
-
-Karlsruher Institut für Technologie
-[rainer.stotzka[at]kit.edu](mailto:rainer.stotzka@kit.edu)
-
 ### Mustafa Dogan
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
 [dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de)
