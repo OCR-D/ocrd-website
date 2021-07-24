@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.decorators &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/decorators.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.decorators</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_local_filename</span><span class="p">,</span>
+    <span class="n">get_local_filename</span><span class="p">,</span>
+    <span class="n">set_json_key_value_overrides</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">initLogging</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">WorkspaceValidator</span>
+
+<span class="kn">from</span> <span class="nn">..resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">..processor.base</span> <span class="kn">import</span> <span class="n">run_processor</span>
+
+<span class="kn">from</span> <span class="nn">.loglevel_option</span> <span class="kn">import</span> <span class="n">ocrd_loglevel</span>
+<span class="kn">from</span> <span class="nn">.parameter_option</span> <span class="kn">import</span> <span class="n">parameter_option</span><span class="p">,</span> <span class="n">parameter_override_option</span>
+<span class="kn">from</span> <span class="nn">.ocrd_cli_options</span> <span class="kn">import</span> <span class="n">ocrd_cli_options</span>
+<span class="kn">from</span> <span class="nn">.mets_find_options</span> <span class="kn">import</span> <span class="n">mets_find_options</span>
+
+<div class="viewcode-block" id="ocrd_cli_wrap_processor"><a class="viewcode-back" href="../../api/ocrd/ocrd.decorators.html#ocrd.decorators.ocrd_cli_wrap_processor">[docs]</a><span class="k">def</span> <span class="nf">ocrd_cli_wrap_processor</span><span class="p">(</span>
+    <span class="n">processorClass</span><span class="p">,</span>
+    <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dump_json</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># pylint: disable=redefined-builtin</span>
+    <span class="n">version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">list_resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">processorClass</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump_json</span> <span class="ow">or</span> <span class="n">help</span> <span class="ow">or</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">show_resource</span> <span class="ow">or</span> <span class="n">list_resources</span><span class="p">:</span>
+        <span class="n">processorClass</span><span class="p">(</span>
+            <span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">dump_json</span><span class="o">=</span><span class="n">dump_json</span><span class="p">,</span>
+            <span class="n">show_help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span>
+            <span class="n">show_version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">show_resource</span><span class="o">=</span><span class="n">show_resource</span><span class="p">,</span>
+            <span class="n">list_resources</span><span class="o">=</span><span class="n">list_resources</span>
+        <span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">initLogging</span><span class="p">()</span>
+        <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_cli_wrap_processor&#39;</span><span class="p">)</span>
+        <span class="c1"># LOG.info(&#39;kwargs=%s&#39; % kwargs)</span>
+        <span class="c1"># Merge parameter overrides and parameters</span>
+        <span class="k">if</span> <span class="s1">&#39;parameter_override&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">set_json_key_value_overrides</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter_override&#39;</span><span class="p">])</span>
+        <span class="c1"># TODO OCR-D/core#274</span>
+        <span class="c1"># Assert -I / -O</span>
+        <span class="c1"># if not kwargs[&#39;input_file_grp&#39;]:</span>
+        <span class="c1">#     raise ValueError(&#39;-I/--input-file-grp is required&#39;)</span>
+        <span class="c1"># if not kwargs[&#39;output_file_grp&#39;]:</span>
+        <span class="c1">#     raise ValueError(&#39;-O/--output-file-grp is required&#39;)</span>
+        <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">mets</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isfile</span><span class="p">(</span><span class="n">get_local_filename</span><span class="p">(</span><span class="n">mets</span><span class="p">)):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;File does not exist: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mets</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">working_dir</span><span class="p">)</span>
+        <span class="n">page_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_id&#39;</span><span class="p">)</span>
+        <span class="c1"># XXX not possible while processors do not adhere to # https://github.com/OCR-D/core/issues/505</span>
+        <span class="c1"># if overwrite</span>
+        <span class="c1">#     if &#39;output_file_grp&#39; not in kwargs or not kwargs[&#39;output_file_grp&#39;]:</span>
+        <span class="c1">#         raise Exception(&quot;--overwrite requires --output-file-grp&quot;)</span>
+        <span class="c1">#     LOG.info(&quot;Removing files because of --overwrite&quot;)</span>
+        <span class="c1">#     for grp in kwargs[&#39;output_file_grp&#39;].split(&#39;,&#39;):</span>
+        <span class="c1">#         if page_id:</span>
+        <span class="c1">#             for one_page_id in kwargs[&#39;page_id&#39;].split(&#39;,&#39;):</span>
+        <span class="c1">#                 LOG.debug(&quot;Removing files in output file group %s with page ID %s&quot;, grp, one_page_id)</span>
+        <span class="c1">#                 for file in workspace.mets.find_files(pageId=one_page_id, fileGrp=grp):</span>
+        <span class="c1">#                     workspace.remove_file(file, force=True, keep_file=False, page_recursive=True)</span>
+        <span class="c1">#         else:</span>
+        <span class="c1">#             LOG.debug(&quot;Removing all files in output file group %s &quot;, grp)</span>
+        <span class="c1">#             # TODO: can be reduced to `page_same_group=True` as soon as core#505 has landed (in all processors)</span>
+        <span class="c1">#             workspace.remove_file_group(grp, recursive=True, force=True, keep_files=False, page_recursive=True, page_same_group=False)</span>
+        <span class="c1">#     workspace.save_mets()</span>
+        <span class="c1"># XXX While https://github.com/OCR-D/core/issues/505 is open, set &#39;overwrite_mode&#39; globally on the workspace</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">overwrite_mode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">],</span> <span class="n">page_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid input/output file grps:</span><span class="se">\n\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
+        <span class="n">run_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
