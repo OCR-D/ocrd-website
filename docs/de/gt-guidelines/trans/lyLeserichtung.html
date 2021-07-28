@@ -1,51 +1,157 @@
-<!DOCTYPE html
-  SYSTEM "about:legacy-compat">
-<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2021"><meta name="DC.rights.owner" content="(C) Copyright 2021"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../trans/layout.html"><meta name="DC.creator" content="Matthias Boenig OCR-D, Zentrum Sprache, Berlin-Brandenburgische Akademie der Wissenschaften (BBAW)"><meta name="DC.date.created" content="March, 2017"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="lyLeserichtung"><link rel="stylesheet" type="text/css" href="../css/commonltr.css"><link rel="stylesheet" type="text/css" href="../css/dita-ot-doc.css"><title>Leserichtung (ReadingOrder)</title></head><body id="lyLeserichtung"><header role="banner"><div class="header">
-<table style="border: 0px;  width: 100%;" class="header">
-<tr>
-<td class="td1"><img src="../resources/logo_beta.png" class="logo" alt="Richtlinien zur Transkription für Ground Truth "></td>
-<td class="td2">Transcription Guidelines for Ground Truth<br><span class="small">OCR-D: DFG-funded Initiative for Optical Character Recognition Development</span></td>
-</tr>
-</table>
-  <hr>
-</div></header><nav role="toc"><ul><li><a href="../trans/index.html">Die Ground-Truth-Guidelines</a></li><li><a href="../trans/trDokuKonventionen.html">Konventionen für diese Richtlinien</a></li><li><a href="../trans/transkription.html">Transkription</a></li><li><a href="../trans/layout.html">Layout und Struktur</a><ul><li><a href="../trans/lyAllgemein.html">Allgemeines</a></li><li><a href="../trans/lySatzspiegel.html">Satzspiegel</a></li><li><a href="../trans/lyRand.html">Seitenrand</a></li><li class="active"><a href="../trans/lyLeserichtung.html">Leserichtung (ReadingOrder)</a></li><li><a href="../trans/lyTypographie.html">Typographische Besonderheiten</a></li><li><a href="../trans/lySeitentypen.html">Erster Schritt : Die Seitentypen</a></li><li><a href="../trans/lyTextregionen.html">Zweiter Schritt : Seitenregionen</a></li></ul></li><li><a href="../trans/structur_gt.html">Dokumentation zum OCR-D Struktur-Ground-Truth</a></li><li><a href="../trans/trPage.html">Dokumentation zum PAGE XML Format for Page Content</a></li><li><a href="../trans/page_xml_erweiterungen.html">Page XML Erweiterungen</a></li><li><a href="../trans/impressum.html">Impressum</a></li></ul></nav><main role="main"><article role="article" aria-labelledby="ariaid-title1">
-    <h1 class="title topictitle1" id="ariaid-title1">Leserichtung (ReadingOrder)</h1>
-    <div class="body">
-       
-<p class="p">Um inhaltliche und formale Zusammenhänge nicht zu zerreißen, werden einzelne Seitenelemente
-            gruppiert. Für eine solche Gruppierung kann in der Regel eine Leserrichtung vorgegeben
-            werden. Eine ReadingOrder besteht ausschließlich nur zwischen <strong class="ph b">Regionen</strong>. Die
-            Leserichtung in einer Zeile wird nur durch die Reihenfolge der einzelnen Word-Elemente
-            bestimmt, eine explizite Auszeichnung ist nicht vorgesehen. </p>
-        <p class="p">Dies erfolgt mit dem Element <code class="ph codeph">&lt;ReadingOrder&gt;</code>. </p>
-        <div class="p"><ul class="ul" id="lyLeserichtung__ul_j2l_lx1_vfb"><li class="li">Handelt es sich um in Beziehung stehende Elemente (z.B. bei  einer Überschrift und dem dazu
-                    folgenden Absatz), ist die Leserichtung vom Typ „geordnet“ in diesem Fall ist
-                    das Element <code class="ph codeph">&lt;OrderedGroup&gt;</code> zu verwenden.</li>
-                <li class="li">Handelt es sich um gleichberechtigte Elemente (z.B. bei Werbung), die für sich
-                    allein stehen, ist die Leserichtung vom Typ „ungeordnet“ in diesem Fall ist das
-                    Element <code class="ph codeph">&lt;UnorderedGroup&gt;</code> zu verwenden.</li>
-            </ul></div>
-        <p class="p">Durch eine laufende Nummerierung (beginnend bei Null) wird die Leserichtung festgelegt.
-            Hierbei werden die Regionen einer Seite zunächst von links nach rechts (bei
-            linksläufigen Schriften rechts nach links) und von oben nach unten unter Beachtung einer
-            Spalteneinteilung geordnet. </p>
-<p class="p">Elemente, die außerhalb des Satzspiegels liegen (z.B. Marginalien oder Kustoden), sind immer nach
-dem „Lesen“ der Satzspiegelinhalte zu betrachten.</p>
-        <div class="example"><h2 class="title sectiontitle">ReadingOrder in PAGE XML</h2><pre class="pre codeblock"><code>&lt;ReadingOrder&gt;
+<html lang="de">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+      <meta name="copyright" content="(C) Copyright 2021">
+      <meta name="DC.rights.owner" content="(C) Copyright 2021">
+      <meta name="DC.type" content="topic">
+      <meta name="DC.relation" scheme="URI" content="../trans/layout.html">
+      <meta name="DC.creator" content="Matthias Boenig OCR-D, Zentrum Sprache, Berlin-Brandenburgische Akademie der Wissenschaften (BBAW)">
+      <meta name="DC.date.created" content="March, 2017">
+      <meta name="DC.format" content="HTML5">
+      <meta name="DC.identifier" content="lyLeserichtung">
+      <link rel="stylesheet" type="text/css" href="../css/commonltr.css">
+      <link rel="stylesheet" type="text/css" href="../css/dita-ot-doc.css">
+      <title>Leserichtung (ReadingOrder)</title>
+   </head>
+   <body id="lyLeserichtung">
+      <header role="banner">
+         <div class="header">
+            <script src="https://prismjs.com/prism.js"><!--Prism javascript code for highlighting--></script>
+            
+            <table style="border: 0px;  width: 100%;" class="header">
+               
+               <tr>
+                  
+                  <td class="td1"><a href="https://ocr-d.de"><img src="../resources/ocrd.png" class="logo" alt="Richtlinien zur Transkription für Ground Truth "></a></td>
+                  
+                  <td class="td2">Transcription Guidelines für Ground Truth<br><span class="small">OCR-D: Koordinierten Förderinitiative zur Weiterentwicklung von Verfahren der Optical
+                        Character Recognition gefördert von der DFG</span></td>
+                  </tr>
+               </table>
+            
+            <hr>
+            </div>
+      </header>
+      <nav role="toc">
+         <ul>
+            <li><a href="../trans/index.html">Die Ground-Truth-Guidelines</a></li>
+            <li><a href="../trans/trDokuKonventionen.html">Konventionen für diese Richtlinien</a></li>
+            <li><a href="../trans/transkription.html">Transkription</a></li>
+            <li><a href="../trans/layout.html">Layout und Struktur</a><ul>
+                  <li><a href="../trans/lyAllgemein.html">Allgemeines</a></li>
+                  <li><a href="../trans/lySatzspiegel.html">Satzspiegel</a></li>
+                  <li><a href="../trans/lyRand.html">Seitenrand</a></li>
+                  <li class="active"><a href="../trans/lyLeserichtung.html">Leserichtung (ReadingOrder)</a></li>
+                  <li><a href="../trans/lyTypographie.html">Typographische Besonderheiten</a></li>
+                  <li><a href="../trans/lySeitentypen.html">Erster Schritt : Die Seitentypen</a></li>
+                  <li><a href="../trans/lyTextregionen.html">Zweiter Schritt : Seitenregionen</a></li>
+               </ul>
+            </li>
+            <li><a href="../trans/structur_gt.html">Dokumentation zum OCR-D Struktur-Ground-Truth</a></li>
+            <li><a href="../trans/trLabeling.html">Dokumentation zum gt-labelling : semantic-labelling OCR ground truth data</a></li>
+            <li><a href="../trans/trPage.html">Dokumentation zum PAGE XML Format for Page Content</a></li>
+            <li><a href="../trans/page_xml_erweiterungen.html">Page XML Erweiterungen</a></li>
+            <li><a href="../trans/impressum.html">Impressum</a></li>
+         </ul>
+      </nav>
+      <main role="main">
+         <article role="article" aria-labelledby="ariaid-title1">
+            
+            <h1 class="title topictitle1" id="ariaid-title1">Leserichtung (ReadingOrder)</h1>
+            
+            <div class="body">
+               
+               
+               <p class="p">Um inhaltliche und formale Zusammenhänge nicht zu zerreißen, werden einzelne Seitenelemente
+                  gruppiert. Für eine solche Gruppierung kann in der Regel eine Leserrichtung vorgegeben
+                  werden. Eine ReadingOrder besteht ausschließlich nur zwischen <strong class="ph b">Regionen</strong>. Die
+                  Leserichtung in einer Zeile wird nur durch die Reihenfolge der einzelnen Word-Elemente
+                  bestimmt, eine explizite Auszeichnung ist nicht vorgesehen. </p>
+               
+               <p class="p">Dies erfolgt mit dem Element <code class="ph codeph">&lt;ReadingOrder&gt;</code>. </p>
+               
+               <div class="p">
+                  <ul class="ul" id="lyLeserichtung__ul_j2l_lx1_vfb">
+                     <li class="li">Handelt es sich um in Beziehung stehende Elemente (z.B. bei  einer Überschrift und
+                        dem dazu
+                        folgenden Absatz), ist die Leserichtung vom Typ „geordnet“ in diesem Fall ist
+                        das Element <code class="ph codeph">&lt;OrderedGroup&gt;</code> zu verwenden.</li>
+                     
+                     <li class="li">Handelt es sich um gleichberechtigte Elemente (z.B. bei Werbung), die für sich
+                        allein stehen, ist die Leserichtung vom Typ „ungeordnet“ in diesem Fall ist das
+                        Element <code class="ph codeph">&lt;UnorderedGroup&gt;</code> zu verwenden.</li>
+                     </ul>
+               </div>
+               
+               <p class="p">Durch eine laufende Nummerierung (beginnend bei Null) wird die Leserichtung festgelegt.
+                  Hierbei werden die Regionen einer Seite zunächst von links nach rechts (bei
+                  linksläufigen Schriften rechts nach links) und von oben nach unten unter Beachtung
+                  einer
+                  Spalteneinteilung geordnet. </p>
+               
+               <p class="p">Elemente, die außerhalb des Satzspiegels liegen (z.B. Marginalien oder Kustoden),
+                  sind immer nach
+                  dem „Lesen“ der Satzspiegelinhalte zu betrachten.</p>
+               
+               <div class="example">
+                  <h2 class="title sectiontitle">ReadingOrder in PAGE XML</h2><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
+        function htmlDecode(input)
+            {
+               var e = document.createElement('div');
+               e.innerHTML = input;
+               return e.childNodes[0].nodeValue;
+            }
+        
+        
+        
+        function copyToClipboard(element) 
+            {
+               var $temp = $("<textarea></textarea>");
+                     $("body").append($temp);
+                     var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
+                     var x = htmlDecode(a);
+                     $temp.val(x).select();
+                     document.execCommand("copy");
+                     $temp.remove();
+                     }
+                     </script><pre class="pre codeblock language-xml"><button onclick="copyToClipboard('#coded109692e86')" title="copy clipboard" class="ccb">📋</button><code id="coded109692e86">&lt;ReadingOrder&gt;
             &lt;OrderedGroup id="ro_1542194237187" caption="Regions reading order"&gt;
             &lt;RegionRefIndexed index="0" regionRef="r_1"/&gt;
             &lt;RegionRefIndexed index="1" regionRef="r_2"/&gt;
             &lt;/OrderedGroup&gt;
-&lt;/ReadingOrder&gt;</code></pre></div>
-        <div class="example"><h2 class="title sectiontitle">Bildbeispiele</h2>
-<p class="p"><img class="image" id="lyLeserichtung__image_oqf_ld4_4bb" src="images/lyLeserichtung.png"></p>
-<p class="p"><img class="image" id="lyLeserichtung__image_y5g_cf4_4bb" src="images/lyLeserichtung2.png"></p>
-            <p class="p"><img class="image" id="lyLeserichtung__image_n43_qk4_4bb" src="images/lyLeserichtung3.png"></p></div>
-    </div>
-<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Übergeordnetes Thema:</strong> <a class="link" href="../trans/layout.html" title="Richtlinien zur Erfassung des Layouts und der Struktur von gedruckten Texten für die Nutzung als Ground Truth">Layout und Struktur</a></div></div></nav></article></main><footer role="contentinfo"><div class="footer">
-
- <details>
-  <summary>Published by OCR-D.</summary>
-  <p>The guidelines for Ground Truth transcription are based on the <a href="https://ocr-d.github.io/">OCR-D specs v3.4.0</a></p>
-</details> 
-</div></footer></body></html>
+&lt;/ReadingOrder&gt;</code></pre>
+               </div>
+               
+               <div class="example">
+                  <h2 class="title sectiontitle">Bildbeispiele</h2>
+                  
+                  <p class="p"><img class="image" id="lyLeserichtung__image_oqf_ld4_4bb" src="images/lyLeserichtung.png"></p>
+                  
+                  <p class="p"><img class="image" id="lyLeserichtung__image_y5g_cf4_4bb" src="images/lyLeserichtung2.png"></p>
+                  
+                  <p class="p"><img class="image" id="lyLeserichtung__image_n43_qk4_4bb" src="images/lyLeserichtung3.png"></p>
+               </div>
+               </div>
+            
+            <nav role="navigation" class="related-links">
+               <div class="familylinks">
+                  <div class="parentlink"><strong>Übergeordnetes Thema:</strong> <a class="link" href="../trans/layout.html" title="Richtlinien zur Erfassung des Layouts und der Struktur von gedruckten Texten für die Nutzung als Ground Truth">Layout und Struktur</a></div>
+               </div>
+            </nav>
+         </article>
+      </main>
+      <footer role="contentinfo">
+         <div class="footer">
+            
+            
+            <details>
+               
+               <summary>Published by OCR-D.</summary>
+               
+               <p>The guidelines for Ground Truth transcription are based on the <a href="https://ocr-d.github.io/">OCR-D specs v3.4.0</a></p>
+               </details> 
+            </div>
+      </footer>
+   </body>
+</html>
