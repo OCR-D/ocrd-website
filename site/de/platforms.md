@@ -15,16 +15,16 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 [https://gitter.im/OCR-D/Lobby](https://gitter.im/OCR-D/Lobby)
 
 **OCR-D TechCall** - nehmen Sie an unseren technischen Diskussionen über OCR-D-Werkzeuge und -Themen teil; jeden zweiten Mittwoch, 14 bis 15 Uhr.
-[https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view](https://hackmd.io/OOMgg3ZeSqK4vfKL1wRbwQ?view)
+[https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
 
 **OCR(-D) & Co** - bringen Sie Ihre eigenen Fragen und Ideen ein und diskutieren Sie mit uns über OCR(-D); jeden ersten Freitag im Monat, 10 bis 11 Uhr in einem 
-[BBB-Raum](https://meet.gwdg.de/b/kon-v6q-azq-3el). Diskussionsthemen können jederzeit in diesem [HackMD](https://hackmd.io/-3IoMzjCQKCXPmhe-51PzA) vorgeschlagen werden.
+[BBB-Raum](https://meet.gwdg.de/b/kon-v6q-azq-3el). Diskussionsthemen können jederzeit in diesem [HedgeDoc](https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w) vorgeschlagen werden.
 <details>
 <summary>Hier unten finden sich die Ergebnisse der bisherigen Calls nach Themen geordnet.</summary>
 </details>
 
 **Ground Truth Repository** - nutzen Sie unsere Daten: Wir sammeln unsere Test- und Referenzdaten im Ground Truth Repository. Sie können diese Daten gerne auch für Ihr eigenes Training nutzen.  
-[http://www.ocr-d.de/daten](http://www.ocr-d.de/daten)
+[https://ocr-d.de/en/data](https://ocr-d.de/de/data)
 
 **Technology Watch** - In der Zotero-Gruppe von OCR-D sammeln wir gemeinsam mit Interessierten relevante Literatur über OCR.  
 [Zotero-Liste](https://www.zotero.org/groups/ocr-d)
