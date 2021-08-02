@@ -20,7 +20,7 @@ which are mostly open to the professional public to read and participate.
 [https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
 
 **OCR(-D) & Co** - bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 p.m. in a 
-[BBB room](https://meet.gwdg.de/b/kon-v6q-azq-3el). Topics for discussion can be suggested any time in this [HedgeDoc](https://pad.gwdg.de/Xxd-dlbJSyedcOmUOqJbRQ).
+[BBB room](https://meet.gwdg.de/b/kon-v6q-azq-3el). Topics for discussion can be suggested any time in this [HedgeDoc](https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w).
 <details>
 <summary>Down here you will find the outcomes of our previous calls, ordered by topics.</summary>
 </details>
