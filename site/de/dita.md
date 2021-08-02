@@ -2,7 +2,7 @@
 layout: page
 toc: true
 lang: de
-title: OCR-D: Anforderungsprofil für die Dokumentation der Modulprojekte
+title: "OCR-D: Anforderungsprofil für die Dokumentation der Modulprojekte"
 ---
 
 # OCR-D: Anforderungsprofil für die Dokumentation der Modulprojekte
