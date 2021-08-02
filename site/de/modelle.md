@@ -1,3 +1,10 @@
+---
+layout: page
+lang: de
+lang-ref: models
+toc: true
+title: OCR-Modelle
+---
 # OCR-Modelle
 
 Für die Texterkennung wird ein geeignetes OCR-D-Modul und ein dazu passendes

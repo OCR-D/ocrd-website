@@ -2,8 +2,11 @@
 layout: page
 toc: true
 lang: de
+title: OCR-D: Anforderungsprofil für die Dokumentation der Modulprojekte
 ---
-# OCR-D: Anforderungsprofil für die Dokumentation der Modul Projekte 
+
+# OCR-D: Anforderungsprofil für die Dokumentation der Modulprojekte
+
 # ![](https://avatars0.githubusercontent.com/u/26362587?s=200&v=4) ![](https://www.dita-ot.org/images/dita-logo.png =100x) ![](https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg =100x)
 
 

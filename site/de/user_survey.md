@@ -2,6 +2,7 @@
 layout: page
 lang-ref: user survey
 lang: de
+title: Umfrage zur Verwendung von OCR-Texten
 ---
 
 # Umfrage zur Verwendung von OCR-Texten

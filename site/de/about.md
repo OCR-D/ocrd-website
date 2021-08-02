@@ -2,10 +2,13 @@
 layout: page
 lang-ref: about
 lang: de
+title: Das OCR-D-Projekt
 ---
 
 # Das OCR-D-Projekt
+
 ## Hintergrund
+
 Mit den Verzeichnissen der im deutschen Sprachraum erschienenen Drucke des 16.–18. Jahrhunderts (VD16, VD17, VD18) wird eine retrospektive Nationalbibliografie des frühneuzeitlichen Schriftguts aus dem deutschsprachigen Raum erstellt. Um der Forschung die Zugänglichkeit zu diesen Texten zu erleichtern, wurden und werden große, konzertierte Anstrengungen unternommen, Volldigitalisate oder Schlüsselseiten zu den einzelnen verzeichneten Titeln digital bereitzustellen.
 
 Mit Blick auf die Entwicklungen und neuen Möglichkeiten im Bereich der Optical Character Recognition (OCR) haben Experten im März 2014 im Rahmen eines DFG-Workshops die Volltexttransformation der VD als ambitioniertes, aber erreichbares Ziel eingeschätzt. Die Verfügbarmachung von Volltexten zum Zweck der Volltextsuche und Weiterbearbeitung, bspw. mit Werkzeugen der Digital Humanities, ist ein großes Desiderat der Forschung, das durch eine koordinierte Förderinitiative zu bearbeiten ist.
