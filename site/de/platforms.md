@@ -24,7 +24,7 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 </details>
 
 **Ground Truth Repository** - nutzen Sie unsere Daten: Wir sammeln unsere Test- und Referenzdaten im Ground Truth Repository. Sie können diese Daten gerne auch für Ihr eigenes Training nutzen.  
-[https://ocr-d.de/en/data](https://ocr-d.de/de/data)
+[https://ocr-d.de/de/data](https://ocr-d.de/de/data)
 
 **Technology Watch** - In der Zotero-Gruppe von OCR-D sammeln wir gemeinsam mit Interessierten relevante Literatur über OCR.  
 [Zotero-Liste](https://www.zotero.org/groups/ocr-d)
