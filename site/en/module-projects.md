@@ -3,10 +3,10 @@ layout: page
 lang: en
 lang-ref: module-projects
 toc: true
-title: Module Projects
+title: Phase II
 ---
 
-# Module Projects
+# Module Projects Phase II
 
 In the first project phase, a functional model for the OCR-D workflow was
 developed. Full text recognition is seen as a complex process that includes

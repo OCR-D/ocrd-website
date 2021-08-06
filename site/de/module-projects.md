@@ -3,10 +3,10 @@ layout: page
 lang: de
 lang-ref: module-projects
 toc: true
-title: Modulprojekte
+title: Phase II
 ---
 
-# Modulprojekte
+# Modulprojekte Phase II
 
 Aus den Projektanträgen für die Modulprojektausschreibung der DFG im März 2017 wurden acht Projekte bewilligt:
 
