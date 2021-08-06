@@ -1,7 +1,7 @@
---
+---
 layout: post
 lang: de
-lang-ref: OCR-D Phase III gestartet
+lang-ref: 2021-08-06-kick-off-phase3
 title: "OCR-D Phase III gestartet"
 tags: [Phase 3]
 author: Lena Hinrichsen
