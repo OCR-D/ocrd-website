@@ -9,7 +9,7 @@ author: Lena Hinrichsen
 
 Am 30. Juli fand unser Kick-off-Workshop statt, der die Phase III von OCR-D einläutete. 
 
-Das Team gab eine Einführung in die [Ziele und öffentlichen Kommunikationskanäle von OCR-D in Phase III](/assets/kick-off/phase3.pdf), in [Status und Pläne der OCR-Software](/assets/kick-off/spec_core_ocrd_all.pdf) und der (Web-API)[/assets/kick-off/web-api.pdf] und in den Umgang mit [Ground Truth Daten in OCR-D](/assets/kick-off/gt.pdf). Zudem gab das Koordinierungsprojekt einen Einblick in die bisherige Praxis der [Softwareentwicklung in OCR-D](/assets/kick-off/software-development.pdf) mit Möglichkeiten, mitzuwirken.
+Das Team gab eine Einführung in die [Ziele und öffentlichen Kommunikationskanäle von OCR-D in Phase III](/assets/kick-off/phase3.pdf), in [Status und Pläne der OCR-Software](/assets/kick-off/spec_core_ocrd_all.pdf) und der [Web-API](/assets/kick-off/web-api.pdf) und in den Umgang mit [Ground Truth Daten in OCR-D](/assets/kick-off/gt.pdf). Zudem gab das Koordinierungsprojekt einen Einblick in die bisherige Praxis der [Softwareentwicklung in OCR-D](/assets/kick-off/software-development.pdf) mit Möglichkeiten, mitzuwirken.
 
 Darüber hinaus stellten sich die Implementierungs- und Modulprojekte der interessierten Community und unseren Kooperationspartnern [in kurzen Vorträgen](/assets/kick-off/lightning-talks.pdf) vor.
 
