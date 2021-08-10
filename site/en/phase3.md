@@ -22,4 +22,4 @@ In addition, the [implementation and module projects presented themselves](https
 ## Module Projects
 * [Workflow for work-specific training based on generic models with OCR-D and ground truth enhancement (UB Mannheim)](https://www.bib.uni-mannheim.de/en/about/projects-of-the-university-library/ocr-d-modelltraining/)
 * [Font Group Recognition for Improved OCR (JGU Mainz, FAU Erlangen-Nürnberg)](https://lme.tf.fau.de/news/dfg-funds-font-group-recognition-for-improved-ocr/)
-* [OLA HD Service - A Generic Service for Long-Term Archiving of Historical Prints (SUB Göttingen, GWDG)](https://gepris.dfg.de/gepris/projekt/460652320?language=en)
+* [OLA-HD Service - A Generic Service for Long-Term Archiving of Historical Prints (SUB Göttingen, GWDG)](https://gepris.dfg.de/gepris/projekt/460652320?language=en)
