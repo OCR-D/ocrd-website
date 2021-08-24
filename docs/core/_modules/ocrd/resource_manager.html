@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.resource_manager &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/resource_manager.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.resource_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span><span class="p">,</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">getcwd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copytree</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">tarfile</span> <span class="kn">import</span> <span class="nb">open</span> <span class="k">as</span> <span class="n">open_tarfile</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span><span class="p">,</span> <span class="n">unquote</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">safe_load</span><span class="p">,</span> <span class="n">safe_dump</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">OcrdResourceListValidator</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils.constants</span> <span class="kn">import</span> <span class="n">HOME</span><span class="p">,</span> <span class="n">XDG_DATA_HOME</span><span class="p">,</span> <span class="n">XDG_CONFIG_HOME</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils.os</span> <span class="kn">import</span> <span class="n">list_all_resources</span><span class="p">,</span> <span class="n">pushd_popd</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">RESOURCE_LIST_FILENAME</span><span class="p">,</span> <span class="n">RESOURCE_USER_LIST_COMMENT</span>
+
+<div class="viewcode-block" id="OcrdResourceManager"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager">[docs]</a><span class="k">class</span> <span class="nc">OcrdResourceManager</span><span class="p">():</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Managing processor resources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.resource_manager&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_resource_list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">RESOURCE_LIST_FILENAME</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_list</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">XDG_CONFIG_HOME</span><span class="p">,</span> <span class="s1">&#39;ocrd&#39;</span><span class="p">,</span> <span class="s1">&#39;resources.yml&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">RESOURCE_USER_LIST_COMMENT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_resource_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdResourceManager.load_resource_list"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.load_resource_list">[docs]</a>    <span class="k">def</span> <span class="nf">load_resource_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_filename</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span>
+        <span class="k">if</span> <span class="n">list_filename</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">list_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">list_loaded</span> <span class="o">=</span> <span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">report</span> <span class="o">=</span> <span class="n">OcrdResourceListValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">list_loaded</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resource list </span><span class="si">%s</span><span class="s2"> is invalid!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">list_filename</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">executable</span><span class="p">,</span> <span class="n">resource_list</span> <span class="ow">in</span> <span class="n">list_loaded</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">executable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+                    <span class="n">database</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># Prepend, so user provided is sorted before builtin</span>
+                <span class="n">database</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_loaded</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span> <span class="o">+</span> <span class="n">database</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">database</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.list_available"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.list_available">[docs]</a>    <span class="k">def</span> <span class="nf">list_available</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List models available for download by processor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">executable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">executable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="n">executable</span><span class="p">])]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.list_installed"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.list_installed">[docs]</a>    <span class="k">def</span> <span class="nf">list_installed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List installed resources, matching with registry by ``name``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">executable</span><span class="p">:</span>
+            <span class="n">all_executables</span> <span class="o">=</span> <span class="p">[</span><span class="n">executable</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># resources we know about</span>
+            <span class="n">all_executables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="c1"># resources in the file system</span>
+            <span class="n">parent_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;ocrd-resources&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">XDG_DATA_HOME</span><span class="p">,</span> <span class="s1">&#39;/usr/local/share&#39;</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">parent_dir</span> <span class="ow">in</span> <span class="n">parent_dirs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">all_executables</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ocrd-&#39;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">this_executable</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_executables</span><span class="p">):</span>
+            <span class="n">reslist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">res_filename</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="n">this_executable</span><span class="p">):</span>
+                <span class="n">res_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res_filename</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">resdict</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">this_executable</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">res_name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">resdict</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> resource &#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%s</span><span class="s2">) not a known resource, creating stub in </span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">this_executable</span><span class="p">,</span> <span class="n">res_name</span><span class="p">,</span> <span class="n">res_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="p">))</span>
+                    <span class="n">resdict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_to_user_database</span><span class="p">(</span><span class="n">this_executable</span><span class="p">,</span> <span class="n">res_filename</span><span class="p">)]</span>
+                <span class="n">resdict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_filename</span>
+                <span class="n">reslist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resdict</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_executable</span><span class="p">,</span> <span class="n">reslist</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.add_to_user_database"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.add_to_user_database">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_user_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">res_filename</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a stub entry to the user resource.yml</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res_filename</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">res_size</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res_filename</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">user_database</span> <span class="o">=</span> <span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">executable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">user_database</span><span class="p">:</span>
+            <span class="n">user_database</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_resources</span><span class="p">(</span><span class="n">executable</span><span class="o">=</span><span class="n">executable</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">res_name</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="n">user_database</span><span class="p">):</span>
+            <span class="n">resdict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">res_name</span><span class="p">,</span>
+                <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span> <span class="k">else</span> <span class="s1">&#39;???&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Found at </span><span class="si">%s</span><span class="s1"> on </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resource_dir_to_location</span><span class="p">(</span><span class="n">res_filename</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+                <span class="s1">&#39;version_range&#39;</span><span class="p">:</span> <span class="s1">&#39;???&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">res_size</span>
+            <span class="p">}</span>
+            <span class="n">user_database</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resdict</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_list</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">RESOURCE_USER_LIST_COMMENT</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">user_database</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">resdict</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.find_resources"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.find_resources">[docs]</a>    <span class="k">def</span> <span class="nf">find_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find resources in the registry</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">executable</span> <span class="ow">and</span> <span class="n">executable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">database</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">for</span> <span class="n">executable</span> <span class="ow">in</span> <span class="p">[</span><span class="n">executable</span><span class="p">]</span> <span class="k">if</span> <span class="n">executable</span> <span class="k">else</span> <span class="n">database</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">resdict</span> <span class="ow">in</span> <span class="n">database</span><span class="p">[</span><span class="n">executable</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">executable</span><span class="p">,</span> <span class="n">resdict</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">url</span> <span class="ow">and</span> <span class="n">url</span> <span class="o">==</span> <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]:</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">executable</span><span class="p">,</span> <span class="n">resdict</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="n">resdict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">executable</span><span class="p">,</span> <span class="n">resdict</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_resource_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">location_to_resource_dir</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdResourceManager.location_to_resource_dir"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.location_to_resource_dir">[docs]</a>    <span class="k">def</span> <span class="nf">location_to_resource_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;/usr/local/share/ocrd-resources&#39;</span> <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;system&#39;</span> <span class="k">else</span> \
+                <span class="n">join</span><span class="p">(</span><span class="n">XDG_DATA_HOME</span><span class="p">,</span> <span class="s1">&#39;ocrd-resources&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span> <span class="k">else</span> \
+                <span class="n">getcwd</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.resource_dir_to_location"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.resource_dir_to_location">[docs]</a>    <span class="k">def</span> <span class="nf">resource_dir_to_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_path</span><span class="p">):</span>
+        <span class="n">resource_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">resource_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;system&#39;</span> <span class="k">if</span> <span class="n">resource_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/usr/local/share/ocrd-resources&#39;</span><span class="p">)</span> <span class="k">else</span> \
+               <span class="s1">&#39;data&#39;</span> <span class="k">if</span> <span class="n">resource_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">XDG_DATA_HOME</span><span class="p">,</span> <span class="s1">&#39;ocrd-resources&#39;</span><span class="p">))</span> <span class="k">else</span> \
+               <span class="s1">&#39;cwd&#39;</span> <span class="k">if</span> <span class="n">resource_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">getcwd</span><span class="p">())</span> <span class="k">else</span> \
+               <span class="n">resource_path</span></div>
+
+<div class="viewcode-block" id="OcrdResourceManager.parameter_usage"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.parameter_usage">[docs]</a>    <span class="k">def</span> <span class="nf">parameter_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="s1">&#39;as-is&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">usage</span> <span class="o">==</span> <span class="s1">&#39;as-is&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">usage</span> <span class="o">==</span> <span class="s1">&#39;without-extension&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span></div>
+
+    <span class="k">def</span> <span class="nf">_download_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">progress_cb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.resource_manager._download_impl&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">size</span> <span class="k">if</span> <span class="n">size</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">progress_cb</span><span class="p">:</span>
+                        <span class="n">progress_cb</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_copy_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_filename</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">progress_cb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.resource_manager._copy_impl&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copying </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">src_filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">src_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="n">f_in</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">progress_cb</span><span class="p">:</span>
+                        <span class="n">progress_cb</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+    <span class="c1"># TODO Proper caching (make head request for size, If-Modified etc)</span>
+<div class="viewcode-block" id="OcrdResourceManager.download"><a class="viewcode-back" href="../../api/ocrd/ocrd.resource_manager.html#ocrd.resource_manager.OcrdResourceManager.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">executable</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">,</span>
+        <span class="n">basedir</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">no_subdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">resource_type</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span>
+        <span class="n">path_in_archive</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+        <span class="n">progress_cb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download a resource by URL</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.resource_manager.download&#39;</span><span class="p">)</span>
+        <span class="n">destdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">basedir</span><span class="p">)</span> <span class="k">if</span> <span class="n">no_subdir</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">executable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">url_parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">unquote</span><span class="p">(</span><span class="n">url_parsed</span><span class="o">.</span><span class="n">path</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">destdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">is_url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fpath</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> to be </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> which already exists and overwrite is False&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;downloaded&#39;</span> <span class="k">if</span> <span class="n">is_url</span> <span class="k">else</span> <span class="s1">&#39;copied&#39;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">fpath</span>
+        <span class="n">destdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_url</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_download_impl</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">progress_cb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_copy_impl</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">progress_cb</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;tarball&#39;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">tempdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">is_url</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_download_impl</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;download.tar.xx&#39;</span><span class="p">,</span> <span class="n">progress_cb</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_copy_impl</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;download.tar.xx&#39;</span><span class="p">,</span> <span class="n">progress_cb</span><span class="p">)</span>
+                <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+                <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting tarball&quot;</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="n">open_tarfile</span><span class="p">(</span><span class="s1">&#39;../download.tar.xx&#39;</span><span class="p">,</span> <span class="s1">&#39;r:*&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                        <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">()</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copying &#39;</span><span class="si">%s</span><span class="s2">&#39; from tarball to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path_in_archive</span><span class="p">,</span> <span class="n">fpath</span><span class="p">))</span>
+                    <span class="n">copytree</span><span class="p">(</span><span class="n">path_in_archive</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
+        <span class="c1"># TODO</span>
+        <span class="c1"># elif resource_type == &#39;github-dir&#39;:</span>
+        <span class="k">return</span> <span class="n">fpath</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
