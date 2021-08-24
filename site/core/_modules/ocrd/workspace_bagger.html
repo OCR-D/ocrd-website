@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.workspace_bagger &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/workspace_bagger.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.workspace_bagger</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">chdir</span><span class="p">,</span> <span class="n">walk</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">exists</span><span class="p">,</span> <span class="n">relpath</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">make_archive</span><span class="p">,</span> <span class="n">rmtree</span><span class="p">,</span> <span class="n">copyfile</span><span class="p">,</span> <span class="n">move</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">get_distribution</span>
+<span class="kn">from</span> <span class="nn">bagit</span> <span class="kn">import</span> <span class="n">Bag</span><span class="p">,</span> <span class="n">make_manifests</span>  <span class="c1"># pylint: disable=no-name-in-module</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">pushd_popd</span><span class="p">,</span>
+    <span class="n">getLogger</span><span class="p">,</span>
+    <span class="n">is_local_filename</span><span class="p">,</span>
+    <span class="n">unzip_file_to_dir</span><span class="p">,</span>
+
+    <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+    <span class="n">VERSION</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators.constants</span> <span class="kn">import</span> <span class="n">BAGIT_TXT</span><span class="p">,</span> <span class="n">TMP_BAGIT_PREFIX</span><span class="p">,</span> <span class="n">OCRD_BAGIT_PROFILE_URL</span>
+<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="kn">import</span> <span class="n">page_from_file</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">to_xml</span>
+
+<span class="kn">from</span> <span class="nn">.workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
+
+<span class="n">tempfile</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span> <span class="c1"># TODO hard-coded</span>
+
+<span class="n">BACKUPDIR</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="s1">&#39;/tmp&#39;</span><span class="p">,</span> <span class="n">TMP_BAGIT_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;backup&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WorkspaceBagger"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace_bagger.html#ocrd.workspace_bagger.WorkspaceBagger">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceBagger</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serialize/De-serialize from OCRD-ZIP to workspace and back.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span> <span class="o">=</span> <span class="n">resolver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strict</span> <span class="o">=</span> <span class="n">strict</span>
+
+    <span class="k">def</span> <span class="nf">_serialize_bag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">in_place</span><span class="p">,</span> <span class="n">skip_zip</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">in_place</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">BACKUPDIR</span><span class="p">):</span>
+                <span class="n">makedirs</span><span class="p">(</span><span class="n">BACKUPDIR</span><span class="p">)</span>
+            <span class="n">backupdir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">BACKUPDIR</span><span class="p">)</span>
+            <span class="n">move</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">backupdir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">skip_zip</span><span class="p">:</span>
+            <span class="n">move</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">make_archive</span><span class="p">(</span><span class="n">dest</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.zip&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="s1">&#39;zip&#39;</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">)</span>
+
+            <span class="c1"># Remove temporary bagdir</span>
+            <span class="n">rmtree</span><span class="p">(</span><span class="n">bagdir</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_log_or_raise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace_bagger&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bag_mets_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">,</span> <span class="n">ocrd_manifestation_depth</span><span class="p">,</span> <span class="n">ocrd_mets</span><span class="p">,</span> <span class="n">processes</span><span class="p">):</span>
+        <span class="n">mets</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span>
+        <span class="n">changed_urls</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace_bagger&#39;</span><span class="p">)</span>
+        <span class="c1"># TODO allow filtering by fileGrp@USE and such</span>
+        <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+            <span class="c1"># URLs of the files before changing</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">():</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resolving </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">ocrd_manifestation_depth</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
+                    <span class="c1"># nothing to do then</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">ocrd_manifestation_depth</span> <span class="o">!=</span> <span class="s1">&#39;full&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_or_raise</span><span class="p">(</span><span class="s2">&quot;Not fetching non-local files, skipping </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_or_raise</span><span class="p">(</span><span class="s2">&quot;Not an http URL: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resolved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+                <span class="n">file_grp_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">fileGrp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">isdir</span><span class="p">(</span><span class="n">file_grp_dir</span><span class="p">):</span>
+                    <span class="n">makedirs</span><span class="p">(</span><span class="n">file_grp_dir</span><span class="p">)</span>
+
+                <span class="n">_basename</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+                <span class="n">_relpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileGrp</span><span class="p">,</span> <span class="n">_basename</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">file_grp_dir</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">_basename</span><span class="p">)</span>
+                <span class="n">changed_urls</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">_relpath</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">_relpath</span>
+
+            <span class="c1"># save mets.xml</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">ocrd_mets</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">to_xml</span><span class="p">())</span>
+
+        <span class="c1"># Walk through bagged workspace and fix the PAGE</span>
+        <span class="c1"># Page/@imageFilename and</span>
+        <span class="c1"># AlternativeImage/@filename</span>
+        <span class="n">bag_workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">bag_workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">page_file</span> <span class="ow">in</span> <span class="n">bag_workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+                <span class="n">pcgts</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">page_file</span><span class="p">)</span>
+                <span class="n">changed</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1">#  page_doc.set(imageFileName</span>
+            <span class="c1">#  for old, new in changed_urls:</span>
+                <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">changed_urls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">imageFilename</span> <span class="o">==</span> <span class="n">old</span><span class="p">:</span>
+                        <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">imageFilename</span> <span class="o">=</span> <span class="n">new</span>
+                        <span class="n">changed</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># TODO replace AlternativeImage, recursively...</span>
+                <span class="k">if</span> <span class="n">changed</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">page_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">))</span>
+                    <span class="c1">#  log.info(&quot;Replace %s -&gt; %s in %s&quot; % (old, new, page_file))</span>
+
+            <span class="n">chdir</span><span class="p">(</span><span class="n">bagdir</span><span class="p">)</span>
+            <span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span> <span class="o">=</span> <span class="n">make_manifests</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">processes</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sha512&#39;</span><span class="p">])</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;New vs. old: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">changed_urls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span>
+
+    <span class="k">def</span> <span class="nf">_set_bag_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bag</span><span class="p">,</span> <span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span><span class="p">,</span> <span class="n">ocrd_identifier</span><span class="p">,</span> <span class="n">ocrd_manifestation_depth</span><span class="p">,</span> <span class="n">ocrd_base_version_checksum</span><span class="p">):</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;BagIt-Profile-Identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OCRD_BAGIT_PROFILE_URL</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Bag-Software-Agent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ocrd/core </span><span class="si">%s</span><span class="s1"> (bagit.py </span><span class="si">%s</span><span class="s1">, bagit_profile </span><span class="si">%s</span><span class="s1">) [cmdline: &quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">VERSION</span><span class="p">,</span> <span class="c1"># TODO</span>
+            <span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;bagit&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;bagit_profile&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
+
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Ocrd-Identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ocrd_identifier</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Ocrd-Manifestation-Depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ocrd_manifestation_depth</span>
+        <span class="k">if</span> <span class="n">ocrd_base_version_checksum</span><span class="p">:</span>
+            <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Ocrd-Base-Version-Checksum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ocrd_base_version_checksum</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Bagging-Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;Payload-Oxum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WorkspaceBagger.bag"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace_bagger.html#ocrd.workspace_bagger.WorkspaceBagger.bag">[docs]</a>    <span class="k">def</span> <span class="nf">bag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">workspace</span><span class="p">,</span>
+            <span class="n">ocrd_identifier</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">ocrd_mets</span><span class="o">=</span><span class="s1">&#39;mets.xml&#39;</span><span class="p">,</span>
+            <span class="n">ocrd_manifestation_depth</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span>
+            <span class="n">ocrd_base_version_checksum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">skip_zip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">tag_files</span><span class="o">=</span><span class="kc">None</span>
+           <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bag a workspace</span>
+
+<span class="sd">        See https://ocr-d.github.com/ocrd_zip#packing-a-workspace-as-ocrd-zip</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            workspace (ocrd.Workspace): workspace to bag</span>
+<span class="sd">            ord_identifier (string): Ocrd-Identifier in bag-info.txt</span>
+<span class="sd">            dest (string): Path of the generated OCRD-ZIP.</span>
+<span class="sd">            ord_mets (string): Ocrd-Mets in bag-info.txt</span>
+<span class="sd">            ord_manifestation_depth (string): Ocrd-Manifestation-Depth in bag-info.txt</span>
+<span class="sd">            ord_base_version_checksum (string): Ocrd-Base-Version-Checksum in bag-info.txt</span>
+<span class="sd">            processes (integer): Number of parallel processes checksumming</span>
+<span class="sd">            skip_zip (boolean): Whether to leave directory unzipped</span>
+<span class="sd">            in_place (boolean): Whether to **replace** the workspace with its BagIt variant</span>
+<span class="sd">            tag_files (list&lt;string&gt;): Path names of additional tag files to be bagged at the root of the bag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ocrd_manifestation_depth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="s1">&#39;partial&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;manifestation_depth must be &#39;full&#39; or &#39;partial&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">in_place</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Setting &#39;dest&#39; and &#39;in_place&#39; is a contradiction&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">in_place</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">skip_zip</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Setting &#39;skip_zip&#39; and not &#39;in_place&#39; is a contradiction&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tag_files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tag_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># create bagdir</span>
+        <span class="n">bagdir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">TMP_BAGIT_PREFIX</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">in_place</span><span class="p">:</span>
+                <span class="n">dest</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">directory</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">skip_zip</span><span class="p">:</span>
+                <span class="n">dest</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.ocrd.zip&#39;</span> <span class="o">%</span> <span class="n">workspace</span><span class="o">.</span><span class="n">directory</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dest</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.ocrd&#39;</span> <span class="o">%</span> <span class="n">workspace</span><span class="o">.</span><span class="n">directory</span>
+
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace_bagger&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Bagging </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> (temp dir </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;(in-place)&#39;</span> <span class="k">if</span> <span class="n">in_place</span> <span class="k">else</span> <span class="n">dest</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">)</span>
+
+        <span class="c1"># create data dir</span>
+        <span class="n">makedirs</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">))</span>
+
+        <span class="c1"># create bagit.txt</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;bagit.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">BAGIT_TXT</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+
+        <span class="c1"># create manifests</span>
+        <span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bag_mets_files</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">,</span> <span class="n">ocrd_manifestation_depth</span><span class="p">,</span> <span class="n">ocrd_mets</span><span class="p">,</span> <span class="n">processes</span><span class="p">)</span>
+
+        <span class="c1"># create bag-info.txt</span>
+        <span class="n">bag</span> <span class="o">=</span> <span class="n">Bag</span><span class="p">(</span><span class="n">bagdir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bag_info</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="n">total_bytes</span><span class="p">,</span> <span class="n">total_files</span><span class="p">,</span> <span class="n">ocrd_identifier</span><span class="p">,</span> <span class="n">ocrd_manifestation_depth</span><span class="p">,</span> <span class="n">ocrd_base_version_checksum</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tag_file</span> <span class="ow">in</span> <span class="n">tag_files</span><span class="p">:</span>
+            <span class="n">copyfile</span><span class="p">(</span><span class="n">tag_file</span><span class="p">,</span> <span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="n">basename</span><span class="p">(</span><span class="n">tag_file</span><span class="p">)))</span>
+
+        <span class="c1"># save bag</span>
+        <span class="n">bag</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="c1"># ZIP it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_bag</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">in_place</span><span class="p">,</span> <span class="n">skip_zip</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created bag at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dest</span></div>
+
+<div class="viewcode-block" id="WorkspaceBagger.spill"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace_bagger.html#ocrd.workspace_bagger.WorkspaceBagger.spill">[docs]</a>    <span class="k">def</span> <span class="nf">spill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Spill a workspace, i.e. unpack it and turn it into a workspace.</span>
+
+<span class="sd">        See https://ocr-d.github.com/ocrd_zip#unpacking-ocrd-zip-to-a-workspace</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            src (string): Path to OCRD-ZIP</span>
+<span class="sd">            dest (string): Path to directory to unpack data folder to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace_bagger&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isdir</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Not a directory: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dest</span><span class="p">)</span>
+
+        <span class="c1"># If dest is an existing directory, try to derive its name from src</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
+            <span class="n">workspace_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(\.ocrd)?\.zip$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">basename</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
+            <span class="n">new_dest</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">new_dest</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Directory exists: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">new_dest</span><span class="p">)</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="n">new_dest</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spilling </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+
+        <span class="n">bagdir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">TMP_BAGIT_PREFIX</span><span class="p">)</span>
+        <span class="n">unzip_file_to_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">bagdir</span><span class="p">)</span>
+
+        <span class="n">datadir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">bagdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">walk</span><span class="p">(</span><span class="n">datadir</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">srcfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="n">destdir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">relpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">datadir</span><span class="p">))</span>
+                <span class="n">destfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">destdir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">destdir</span><span class="p">):</span>
+                    <span class="n">makedirs</span><span class="p">(</span><span class="n">destdir</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Copy </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">srcfile</span><span class="p">,</span> <span class="n">destfile</span><span class="p">)</span>
+                <span class="n">copyfile</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">destfile</span><span class="p">)</span>
+
+        <span class="c1"># TODO copy allowed tag files if present</span>
+
+        <span class="c1"># TODO validate bagit</span>
+
+        <span class="c1"># Drop tempdir</span>
+        <span class="n">rmtree</span><span class="p">(</span><span class="n">bagdir</span><span class="p">)</span>
+
+        <span class="c1"># Create workspace</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+        <span class="c1"># TODO validate workspace</span>
+
+        <span class="k">return</span> <span class="n">workspace</span></div>
+
+<div class="viewcode-block" id="WorkspaceBagger.validate"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace_bagger.html#ocrd.workspace_bagger.WorkspaceBagger.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate conformance with BagIt and OCR-D bagit profile.</span>
+
+<span class="sd">        See:</span>
+<span class="sd">            - https://ocr-d.github.io/ocrd_zip</span>
+<span class="sd">            - https://ocr-d.github.io/bagit-profile.json</span>
+<span class="sd">            - https://ocr-d.github.io/bagit-profile.yml</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

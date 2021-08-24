@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_utils package &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ocrd_utils.constants module" href="ocrd_utils.constants.html" />
+    <link rel="prev" title="ocrd_utils" href="modules.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.deapi/ocrd_utils/ocrd_utils.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ocrd_utils">
+<span id="ocrd-utils-package"></span><h1>ocrd_utils package<a class="headerlink" href="#module-ocrd_utils" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions and constants usable in various circumstances.</p>
+<ul>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">coordinates_of_segment()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">coordinates_for_segment()</span></code></p>
+<blockquote>
+<div><p>These functions convert polygon outlines for PAGE elements on all hierarchy
+levels below page (i.e. region, line, word, glyph) between relative coordinates
+w.r.t. a corresponding image and absolute coordinates w.r.t. the top-level image.
+This includes rotation and offset correction, based on affine transformations.
+(Used by <a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace" title="ocrd.workspace.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace</span></code></a> methods
+<a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_page" title="ocrd.workspace.Workspace.image_from_page"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace.image_from_page()</span></code></a> and
+<a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_segment" title="ocrd.workspace.Workspace.image_from_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace.image_from_segment()</span></code></a>.)</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">rotate_coordinates()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">shift_coordinates()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">transpose_coordinates()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">transform_coordinates()</span></code></p>
+<blockquote>
+<div><p>These backend functions compose affine transformations for reflection, rotation
+and offset correction of coordinates, or apply them to a set of points. They can be
+used to pass down the coordinate system along with images (both invariably sharing
+the same operations context) when traversing the element hierarchy top to bottom.
+(Used by <a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace" title="ocrd.workspace.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace</span></code></a> methods
+<a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_page" title="ocrd.workspace.Workspace.image_from_page"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace.image_from_page()</span></code></a> and
+<a class="reference internal" href="../ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_segment" title="ocrd.workspace.Workspace.image_from_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.workspace.Workspace.image_from_segment()</span></code></a>.)</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">rotate_image()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">crop_image()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">transpose_image()</span></code></p>
+<blockquote>
+<div><p>These <cite>PIL.Image</cite> functions are safe replacements for the <cite>rotate</cite>, <cite>crop</cite>, and
+<cite>transpose</cite> methods.</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">image_from_polygon()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">polygon_mask()</span></code></p>
+<blockquote>
+<div><p>These functions apply polygon masks to <cite>PIL.Image</cite> objects.</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">xywh_from_points()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">points_from_xywh()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">polygon_from_points()</span></code> etc.</p>
+<blockquote>
+<div><p>These functions have the syntax <cite>X_from_Y</cite>, where <cite>X</cite> and <cite>Y</cite> can be:</p>
+<ul>
+<li><p><cite>bbox</cite> is a 4-tuple of integers x0, y0, x1, y1 of the bounding box (rectangle)</p>
+<p>(used by <cite>PIL.Image</cite>)</p>
+</li>
+<li><p><cite>points</cite> a string encoding a polygon: <cite>“0,0 100,0 100,100, 0,100”</cite></p>
+<p>(used by PAGE-XML)</p>
+</li>
+<li><p><cite>polygon</cite> is a list of 2-lists of integers x, y of points forming an (implicitly closed)
+polygon path: <cite>[[0,0], [100,0], [100,100], [0,100]]</cite></p>
+<p>(used by Open <cite>cv2</cite> and higher-level coordinate functions in <a class="reference internal" href="#module-ocrd_utils" title="ocrd_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ocrd_utils</span></code></a>)</p>
+</li>
+<li><p><cite>xywh</cite> a dict with keys for x, y, width and height: <cite>{‘x’: 0, ‘y’: 0, ‘w’: 100, ‘h’: 100}</cite></p>
+<p>(produced by <cite>tesserocr</cite> and image/coordinate recursion methods in <a class="reference internal" href="../ocrd/ocrd.workspace.html#module-ocrd.workspace" title="ocrd.workspace"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ocrd.workspace</span></code></a>)</p>
+</li>
+<li><p><cite>x0y0x1y1</cite> is a 4-list of strings <cite>x0</cite>, <cite>y0</cite>, <cite>x1</cite>, <cite>y1</cite> of the bounding box (rectangle)</p>
+<p>(produced by <cite>tesserocr</cite>)</p>
+</li>
+<li><p><cite>y0x0y1x1</cite> is the same as <cite>x0y0x1y1</cite> with positions of <cite>x</cite> and <cite>y</cite> in the list swapped</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">is_local_filename()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">safe_filename()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">abspath()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_local_filename()</span></code></p>
+<blockquote>
+<div><p>filesystem-related utilities</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">is_string()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">membername()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">concat_padded()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">nth_url_segment()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">remove_non_path_from_url()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">parse_json_string_with_comments()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">parse_json_string_or_file()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">set_json_key_value_overrides()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">assert_file_grp_cardinality()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">make_file_id()</span></code>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">generate_range()</span></code></p>
+<blockquote>
+<div><p>String and OOP utilities</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">MIMETYPE_PAGE</span></code>,
+<code class="xref py py-data docutils literal notranslate"><span class="pre">EXT_TO_MIME</span></code>,
+<code class="xref py py-data docutils literal notranslate"><span class="pre">MIME_TO_EXT</span></code>,
+<code class="xref py py-data docutils literal notranslate"><span class="pre">VERSION</span></code></p>
+<blockquote>
+<div><p>Constants</p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">setOverrideLogLevel()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">getLevelName()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">getLogger()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">initLogging()</span></code></p>
+<blockquote>
+<div><p>Exports of <a class="reference internal" href="ocrd_utils.logging.html#module-ocrd_utils.logging" title="ocrd_utils.logging"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ocrd_utils.logging</span></code></a></p>
+</div></blockquote>
+</li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">deprecated_alias()</span></code></p>
+<blockquote>
+<div><p>Decorator to mark a kwarg as deprecated</p>
+</div></blockquote>
+</li>
+</ul>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.constants.html">ocrd_utils.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.deprecate.html">ocrd_utils.deprecate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.image.html">ocrd_utils.image module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.introspect.html">ocrd_utils.introspect module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.logging.html">ocrd_utils.logging module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.os.html">ocrd_utils.os module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocrd_utils.str.html">ocrd_utils.str module</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ocrd_utils</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ocrd_utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.constants.html">ocrd_utils.constants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.deprecate.html">ocrd_utils.deprecate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.image.html">ocrd_utils.image module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.introspect.html">ocrd_utils.introspect module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.logging.html">ocrd_utils.logging module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.os.html">ocrd_utils.os module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd_utils.str.html">ocrd_utils.str module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ocrd_utils</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">ocrd_utils</a></li>
+      <li>Next: <a href="ocrd_utils.constants.html" title="next chapter">ocrd_utils.constants module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/ocrd_utils/ocrd_utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

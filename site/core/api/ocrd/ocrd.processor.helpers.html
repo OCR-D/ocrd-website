@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.processor.helpers module &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ocrd.constants module" href="ocrd.constants.html" />
+    <link rel="prev" title="ocrd.processor.base module" href="ocrd.processor.base.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.deapi/ocrd/ocrd.processor.helpers.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ocrd.processor.helpers">
+<span id="ocrd-processor-helpers-module"></span><h1>ocrd.processor.helpers module<a class="headerlink" href="#module-ocrd.processor.helpers" title="Permalink to this headline">¶</a></h1>
+<p>Helper methods for running and documenting processors</p>
+<dl class="py function">
+<dt id="ocrd.processor.helpers.generate_processor_help">
+<code class="sig-prename descclassname"><span class="pre">ocrd.processor.helpers.</span></code><code class="sig-name descname"><span class="pre">generate_processor_help</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ocrd_tool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processor_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/helpers.html#generate_processor_help"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.processor.helpers.generate_processor_help" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a string describing the full CLI of this processor including params.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ocrd_tool</strong> (<em>dict</em>) – this processor’s <code class="docutils literal notranslate"><span class="pre">tools</span></code> section of the module’s <code class="docutils literal notranslate"><span class="pre">ocrd-tool.json</span></code></p></li>
+<li><p><strong>processor_instance</strong> (<em>object</em><em>, </em><em>optional</em>) – the processor implementation
+(for adding any module/class/function docstrings)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ocrd.processor.helpers.run_cli">
+<code class="sig-prename descclassname"><span class="pre">ocrd.processor.helpers.</span></code><code class="sig-name descname"><span class="pre">run_cli</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mets_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file_grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file_grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/helpers.html#run_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.processor.helpers.run_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a workspace and run a processor on the command line.</p>
+<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">workspace</span></code> is not none, reuse that. Otherwise, instantiate an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Workspace</span></code> for <code class="xref py py-attr docutils literal notranslate"><span class="pre">mets_url</span></code> (and <code class="xref py py-attr docutils literal notranslate"><span class="pre">working_dir</span></code>)
+by using <code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.Resolver.workspace_from_url()</span></code> (i.e. open or clone local workspace).</p>
+<p>Run the processor CLI <code class="xref py py-attr docutils literal notranslate"><span class="pre">executable</span></code> on the workspace, passing:
+- the workspace,
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">page_id</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file_grp</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">output_file_grp</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">parameter</span></code> (after applying any <code class="xref py py-attr docutils literal notranslate"><span class="pre">parameter_override</span></code> settings)</p>
+<p>(Will create output files and update the in the filesystem).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>executable</strong> (<em>string</em>) – Executable name of the module processor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ocrd.processor.helpers.run_processor">
+<code class="sig-prename descclassname"><span class="pre">ocrd.processor.helpers.</span></code><code class="sig-name descname"><span class="pre">run_processor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processorClass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocrd_tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mets_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file_grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file_grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/helpers.html#run_processor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.processor.helpers.run_processor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate a Pythonic processor, open a workspace, run the processor and save the workspace.</p>
+<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">workspace</span></code> is not none, reuse that. Otherwise, instantiate an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Workspace</span></code> for <code class="xref py py-attr docutils literal notranslate"><span class="pre">mets_url</span></code> (and <code class="xref py py-attr docutils literal notranslate"><span class="pre">working_dir</span></code>)
+by using <code class="xref py py-meth docutils literal notranslate"><span class="pre">ocrd.Resolver.workspace_from_url()</span></code> (i.e. open or clone local workspace).</p>
+<p>Instantiate a Python object for <code class="xref py py-attr docutils literal notranslate"><span class="pre">processorClass</span></code>, passing:
+- the workspace,
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">ocrd_tool</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">page_id</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file_grp</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">output_file_grp</span></code>
+- <code class="xref py py-attr docutils literal notranslate"><span class="pre">parameter</span></code> (after applying any <code class="xref py py-attr docutils literal notranslate"><span class="pre">parameter_override</span></code> settings)</p>
+<p>Run the processor on the workspace (creating output files in the filesystem).</p>
+<p>Finally, write back the workspace (updating the METS in the filesystem).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>processorClass</strong> (<em>object</em>) – Python class of the module processor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ocrd</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ocrd.html">ocrd package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ocrd.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ocrd.cli.html">ocrd.cli package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd.decorators.html">ocrd.decorators package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ocrd.processor.html">ocrd.processor package</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="ocrd.processor.html#subpackages">Subpackages</a></li>
+<li class="toctree-l5 current"><a class="reference internal" href="ocrd.processor.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ocrd.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ocrd</a><ul>
+  <li><a href="ocrd.html">ocrd package</a><ul>
+  <li><a href="ocrd.processor.html">ocrd.processor package</a><ul>
+      <li>Previous: <a href="ocrd.processor.base.html" title="previous chapter">ocrd.processor.base module</a></li>
+      <li>Next: <a href="ocrd.constants.html" title="next chapter">ocrd.constants module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/ocrd/ocrd.processor.helpers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

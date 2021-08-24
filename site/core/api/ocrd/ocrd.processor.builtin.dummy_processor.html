@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.processor.builtin.dummy_processor module &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ocrd.processor.base module" href="ocrd.processor.base.html" />
+    <link rel="prev" title="ocrd.processor.builtin package" href="ocrd.processor.builtin.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.deapi/ocrd/ocrd.processor.builtin.dummy_processor.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ocrd.processor.builtin.dummy_processor">
+<span id="ocrd-processor-builtin-dummy-processor-module"></span><h1>ocrd.processor.builtin.dummy_processor module<a class="headerlink" href="#module-ocrd.processor.builtin.dummy_processor" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ocrd.processor.builtin.dummy_processor.DummyProcessor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ocrd.processor.builtin.dummy_processor.</span></code><code class="sig-name descname"><span class="pre">DummyProcessor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/builtin/dummy_processor.html#DummyProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.processor.builtin.dummy_processor.DummyProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ocrd.processor.base.html#ocrd.processor.base.Processor" title="ocrd.processor.base.Processor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ocrd.processor.base.Processor</span></code></a></p>
+<p>Bare-bones processor that copies mets:file from input group to output group.</p>
+<p>Instantiate, but do not process. Unless <code class="docutils literal notranslate"><span class="pre">list_resources</span></code> or
+<code class="docutils literal notranslate"><span class="pre">show_resource</span></code> or <code class="docutils literal notranslate"><span class="pre">show_help</span></code> or <code class="docutils literal notranslate"><span class="pre">show_version</span></code> or
+<code class="docutils literal notranslate"><span class="pre">dump_json</span></code> is true, setup for processing (parsing and
+validating parameters, entering the workspace directory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>workspace</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Workspace</span></code>) – The workspace to process.                  Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> even for processing (esp. on multiple workspaces),                  but then needs to be set before running.</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ocrd_tool</strong> (<em>string</em>) – JSON of the ocrd-tool description for that processor.                  Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> for processing, but needs to be set before running.</p></li>
+<li><p><strong>parameter</strong> (<em>string</em>) – JSON of the runtime choices for ocrd-tool <code class="docutils literal notranslate"><span class="pre">parameters</span></code>.                  Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> even for processing, but then needs to be set before running.</p></li>
+<li><p><strong>input_file_grp</strong> (<em>string</em>) – comma-separated list of METS <a href="#id1"><span class="problematic" id="id2">``</span></a>fileGrp``s used for input.</p></li>
+<li><p><strong>output_file_grp</strong> (<em>string</em>) – comma-separated list of METS <a href="#id3"><span class="problematic" id="id4">``</span></a>fileGrp``s used for output.</p></li>
+<li><p><strong>page_id</strong> (<em>string</em>) – comma-separated list of METS physical <code class="docutils literal notranslate"><span class="pre">page</span></code> IDs to process                  (or empty for all pages).</p></li>
+<li><p><strong>show_resource</strong> (<em>string</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then instead of processing, resolve                  given resource by name and print its contents to stdout.</p></li>
+<li><p><strong>list_resources</strong> (<em>boolean</em>) – If true, then instead of processing, find all installed                  resource files in the search paths and print their path names.</p></li>
+<li><p><strong>show_help</strong> (<em>boolean</em>) – If true, then instead of processing, print a usage description                  including the standard CLI and all of this processor’s ocrd-tool parameters and                  docstrings.</p></li>
+<li><p><strong>show_version</strong> (<em>boolean</em>) – If true, then instead of processing, print information on                  this processor’s version and OCR-D version. Exit afterwards.</p></li>
+<li><p><strong>dump_json</strong> (<em>boolean</em>) – If true, then instead of processing, print <code class="xref py py-attr docutils literal notranslate"><span class="pre">ocrd_tool</span></code>                  on stdout.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ocrd.processor.builtin.dummy_processor.DummyProcessor.process">
+<code class="sig-name descname"><span class="pre">process</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/processor/builtin/dummy_processor.html#DummyProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.processor.builtin.dummy_processor.DummyProcessor.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the <code class="xref py py-attr docutils literal notranslate"><span class="pre">workspace</span></code>
+from the given <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file_grp</span></code>
+to the given <code class="xref py py-attr docutils literal notranslate"><span class="pre">output_file_grp</span></code>
+for the given <code class="xref py py-attr docutils literal notranslate"><span class="pre">page_id</span></code>
+under the given <code class="xref py py-attr docutils literal notranslate"><span class="pre">parameter</span></code>.</p>
+<p>(This contains the main functionality and needs to be overridden by subclasses.)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ocrd</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ocrd.html">ocrd package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ocrd.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ocrd.cli.html">ocrd.cli package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ocrd.decorators.html">ocrd.decorators package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ocrd.processor.html">ocrd.processor package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="ocrd.processor.html#subpackages">Subpackages</a></li>
+<li class="toctree-l5"><a class="reference internal" href="ocrd.processor.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ocrd.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ocrd</a><ul>
+  <li><a href="ocrd.html">ocrd package</a><ul>
+  <li><a href="ocrd.processor.html">ocrd.processor package</a><ul>
+  <li><a href="ocrd.processor.builtin.html">ocrd.processor.builtin package</a><ul>
+      <li>Previous: <a href="ocrd.processor.builtin.html" title="previous chapter">ocrd.processor.builtin package</a></li>
+      <li>Next: <a href="ocrd.processor.base.html" title="next chapter">ocrd.processor.base module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/ocrd/ocrd.processor.builtin.dummy_processor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

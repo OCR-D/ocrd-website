@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd.task_sequence &#8212; ocrd 2.25.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/ocrd-custom.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/task_sequence.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd.task_sequence</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">split</span> <span class="k">as</span> <span class="n">shlex_split</span>
+<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span> <span class="c1"># pylint: disable=import-error,no-name-in-module</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">parse_json_string_or_file</span><span class="p">,</span> <span class="n">set_json_key_value_overrides</span>
+<span class="c1"># from collections import Counter</span>
+<span class="kn">from</span> <span class="nn">ocrd.processor.base</span> <span class="kn">import</span> <span class="n">run_cli</span>
+<span class="kn">from</span> <span class="nn">ocrd.resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">WorkspaceValidator</span>
+<span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">ValidationReport</span>
+
+<div class="viewcode-block" id="ProcessorTask"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask">[docs]</a><span class="k">class</span> <span class="nc">ProcessorTask</span><span class="p">():</span>
+
+<div class="viewcode-block" id="ProcessorTask.parse"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">argstr</span><span class="p">):</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">shlex_split</span><span class="p">(</span><span class="n">argstr</span><span class="p">)</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="s1">&#39;ocrd-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">input_file_grps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">output_file_grps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-I&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="n">input_file_grps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-O&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="n">output_file_grps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-p&#39;</span><span class="p">:</span>
+                <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_json_string_or_file</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])}</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-P&#39;</span><span class="p">:</span>
+                <span class="n">set_json_key_value_overrides</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed parsing task description &#39;</span><span class="si">%s</span><span class="s2">&#39; with tokens remaining: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">argstr</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span> <span class="o">=</span> <span class="n">input_file_grps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span> <span class="o">=</span> <span class="n">output_file_grps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ocrd_tool_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span>
+
+<div class="viewcode-block" id="ProcessorTask.validate"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Executable not found in PATH: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Task must have input file group&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO uncomment and adapt once OCR-D/spec#121 lands</span>
+        <span class="c1"># # make implicit input/output groups explicit by defaulting to what is</span>
+        <span class="c1"># # provided in ocrd-tool.json</span>
+        <span class="c1"># actual_output_grps = [*self.ocrd_tool_json[&#39;output_file_grp&#39;]]</span>
+        <span class="c1"># for i, grp in enumerate(self.output_file_grps):</span>
+            <span class="c1"># actual_output_grps[i] = grp</span>
+        <span class="c1"># self.output_file_grps = actual_output_grps</span>
+        <span class="c1"># actual_input_grps = [*self.ocrd_tool_json[&#39;input_file_grp&#39;]]</span>
+        <span class="c1"># for i, grp in enumerate(self.input_file_grps):</span>
+            <span class="c1"># actual_input_grps[i] = grp</span>
+        <span class="c1"># self.input_file_grps = actual_input_grps</span>
+        <span class="n">param_validator</span> <span class="o">=</span> <span class="n">ParameterValidator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool_json</span><span class="p">)</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">param_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+        <span class="c1"># TODO remove once OCR-D/spec#121 lands</span>
+        <span class="k">if</span> <span class="s1">&#39;output_file_grp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool_json</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Processor requires output_file_grp but none was provided.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">report</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> -I </span><span class="si">%s</span><span class="s1"> -O </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ocrd-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">),</span>
+            <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot; -p &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="validate_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.validate_tasks">[docs]</a><span class="k">def</span> <span class="nf">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
+    <span class="n">prev_output_file_grps</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span>
+
+    <span class="n">first_task</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">first_task</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+
+    <span class="c1"># first task: check input/output file groups from METS</span>
+    <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">first_task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="n">first_task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+
+    <span class="n">prev_output_file_grps</span> <span class="o">+=</span> <span class="n">first_task</span><span class="o">.</span><span class="n">output_file_grps</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="c1"># check either existing fileGrp or output-file group of previous task matches current input_file_group</span>
+        <span class="k">for</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="n">prev_output_file_grps</span><span class="p">:</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Input file group not contained in METS or produced by previous steps: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">input_file_grp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="p">[],</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+        <span class="c1"># TODO disable output_file_grps checks once CLI parameter &#39;overwrite&#39; is implemented</span>
+        <span class="c1"># XXX Thu Jan 16 20:14:17 CET 2020 still not sufficiently clever.</span>
+        <span class="c1">#  if len(prev_output_file_grps) != len(set(prev_output_file_grps)):</span>
+        <span class="c1">#      report.add_error(&quot;Output file group specified multiple times: %s&quot; % </span>
+        <span class="c1">#          [grp for grp, count in Counter(prev_output_file_grps).items() if count &gt;= 2])</span>
+        <span class="n">prev_output_file_grps</span> <span class="o">+=</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid task sequence input/output file groups: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+
+
+<div class="viewcode-block" id="run_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.run_tasks">[docs]</a><span class="k">def</span> <span class="nf">run_tasks</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">log_level</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">task_strs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">)</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.task_sequence.run_tasks&#39;</span><span class="p">)</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProcessorTask</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">task_str</span> <span class="ow">in</span> <span class="n">task_strs</span><span class="p">]</span>
+
+    <span class="n">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">)</span>
+
+    <span class="c1"># Run the tasks</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># execute cli</span>
+        <span class="n">returncode</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
+            <span class="n">mets</span><span class="p">,</span>
+            <span class="n">resolver</span><span class="p">,</span>
+            <span class="n">workspace</span><span class="p">,</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+            <span class="n">input_file_grp</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">),</span>
+            <span class="n">output_file_grp</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">),</span>
+            <span class="n">parameter</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># check return code</span>
+        <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> exited with non-zero return value </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># reload mets</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">reload_mets</span><span class="p">()</span>
+
+        <span class="c1"># check output file groups are in mets</span>
+        <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group &#39;</span><span class="si">%s</span><span class="s2">&#39; not in METS (despite processor success)&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
