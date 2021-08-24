@@ -152,10 +152,10 @@ deploy:
 
 # Build sphinx documentation for core
 core-docs:
-	rm -rf docs/core
-	mkdir docs/core
 	make -C repo/core docs
-	mv repo/core/docs/build/html/* docs/core
+	rm -rf site/core
+	mkdir site/core
+	mv repo/core/docs/build/html/* site/core
 
 # Build the spec documents TODO translate
 spec:
