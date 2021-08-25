@@ -86,16 +86,13 @@ bootstrap:
 	cd $(GTDIR) && make deps
 
 
-LANGS_DST = $(LANGS:%=$(DSTDIR)/%/gt-guidelines)
-
-foo:
-	echo $(LANGS_DST)
+LANGS_DST = $(LANGS:%=$(SRCDIR)/%/gt-guidelines)
 
 # Build gt-guidelines. This takes a few minutes. Be patient.
 gt: $(LANGS_DST)
 .PHONY: $(LANGS_DST)
 
-$(LANGS_DST): $(DSTDIR)/%/gt-guidelines : $(GTDIR)/%
+$(LANGS_DST): $(SRCDIR)/%/gt-guidelines : $(GTDIR)/%
 	make -C "$(GTDIR)" ANT_OPTS="" LANG="$*" GT_DOC_OUT="$@" build; \
 
 # Build ocrd-kwalitee data
