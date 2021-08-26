@@ -13,7 +13,7 @@ Ziel dieser Phase ist die Implementierung der OCR-D-Software in bestandshaltende
 DFG bewilligt. 
 
 Am 30. Juli fand unser Kick-off-Workshop statt, der Phase III einläutete.
-Das Team gab eine Einführung in die [Ziele und öffentlichen Kommunikationskanäle von OCR-D in Phase III](https://ocr-d.de/assets/kick-off/phase3.pdf), in [Status und Pläne der OCR-Software](https://ocr-d.de/assets/kick-off/spec_core_ocrd_all.pdf) und der (Web-API)[https://ocr-d.de/assets/kick-off/web-api.pdf] und in den Umgang mit [Ground Truth Daten in OCR-D](https://ocr-d.de/assets/kick-off/gt.pdf). Zudem gab das Koordinierungsprojekt einen Einblick in die bisherige Praxis der [Softwareentwicklung in OCR-D](https://ocr-d.de/assets/kick-off/software-development.pdf) mit Möglichkeiten, mitzuwirken.
+Das Team gab eine Einführung in die [Ziele und öffentlichen Kommunikationskanäle von OCR-D in Phase III](https://ocr-d.de/assets/kick-off/phase3.pdf), in [Status und Pläne der OCR-Software](https://ocr-d.de/assets/kick-off/spec_core_ocrd_all.pdf) und der [Web-API](https://ocr-d.de/assets/kick-off/web-api.pdf) und in den Umgang mit [Ground Truth Daten in OCR-D](https://ocr-d.de/assets/kick-off/gt.pdf). Zudem gab das Koordinierungsprojekt einen Einblick in die bisherige Praxis der [Softwareentwicklung in OCR-D](https://ocr-d.de/assets/kick-off/software-development.pdf) mit Möglichkeiten, mitzuwirken.
 Außerdem [präsentierten sich unsere Implementierungs- und Modulprojekte](https://ocr-d.de/assets/kick-off/lightning-talks.pdf) gegenseitig sowie unseren [Kooperationspartnern](https://ocr-d.de/de/contact.html#kooperationspartner).
 
 ## Implementierungsprojekte
