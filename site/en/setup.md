@@ -156,7 +156,7 @@ docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maxim
 ```
 
 For instructions on how to process your own data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line
-calls to docker calls above](/en/user_guide.md#translating-native-commands-to-docker-calls). Make sure the image
+calls to docker calls above](/en/user_guide#translating-native-commands-to-docker-calls). Make sure the image
 name matches the executable. 
 
 
