@@ -156,6 +156,22 @@ git add .
 git commit -m 'website updated'
 ```
 
+## Changing the menu
+
+The menus are generated from the YAML file `site/_data/menu.yml`.
+
+Every menu entry
+  * **MUST** have a `url` field
+  * **MUST** have a `label` field
+  * **MAY** have a `children` field for a submenu
+
+Both `url` and `label` can be either a string or an object with keys `de` and
+`en`. In the former case, `url` or `label` are the same across languages, in
+the latter case, you can adapt it per language.
+
+`url` should not include the `/en` or `/de` prefix unless the page in question
+is only available in one language.
+
 ## Updating publications
 
 - Go to https://www.zotero.org/groups/418719/ocr-d
