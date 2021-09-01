@@ -17,7 +17,7 @@ which are mostly open to the professional public to read and participate.
 [https://gitter.im/OCR-D/Lobby](https://gitter.im/OCR-D/Lobby)
 
 **OCR-D TechCall** - take part in our technical discussions about OCR-D tools and issues; every second Wednesday, 2 to 3 p.m.
-[https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
+[link and agenda/protocol](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
 
 **OCR(-D) & Co** - bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 p.m. in a 
 [BBB room](https://meet.gwdg.de/b/kon-v6q-azq-3el). Topics for discussion can be suggested any time in this [HedgeDoc](https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w).
