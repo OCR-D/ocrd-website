@@ -91,6 +91,7 @@ rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, 
 Spam-Mails, vor.
 
 ### Verwendete Bilder
+
 Diese Website nutzt die folgenden Abbildungen aus Wikimedia Commons:
 Kupferstich "Le cabinet de la Bibliotheque de Sainte Genevieve", Paris: 1692, von Franz Ertinger
 Typ 615.92.341, Houghton Library, Harvard University
