@@ -17,13 +17,13 @@ which are mostly open to the professional public to read and participate.
 [https://gitter.im/OCR-D/Lobby](https://gitter.im/OCR-D/Lobby)
 
 **OCR-D TechCall** – Take part in our technical discussions about OCR-D tools and issues; every second Wednesday, 2 to 3 p.m.:
-[Link and agenda/protocol](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
+[Link and agenda/minutes](https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng)
 
 **!NEW! OCR-D GT-Call** – Take part in our discussions about Ground Truth Data; every second Thursday, 1 to 2 p.m.:
-[Link to agenda/protocol](https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig)
+[Link to agenda/minutes](https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig)
 
 **OCR(-D) & Co** – Bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 p.m.:
-[Link to agenda/protocol](https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w)
+[Link to agenda/minutes](https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w)
 
 **Ground Truth Repository** – Make use of our data: We collect our test and reference data in the Ground Truth Repository. You may use the data for your own training: 
 [https://ocr-d.de/en/data](https://ocr-d.de/en/data)
