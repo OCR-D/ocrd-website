@@ -29,7 +29,7 @@
     var calendarEl = document.getElementById('calendar');
     var initialTimeZone = 'Europe/Berlin';
     var timeZoneSelectorEl = document.getElementById('time-zone-selector');
-    var loadingEl = document.getElementById('loading');
+    const locale = window.parent.location.href.indexOf('/de/') > -1 ? 'de' : 'en';
     var calendar = new FullCalendar.Calendar(calendarEl, {
 
       headerToolbar: {
@@ -37,12 +37,10 @@
         center: 'title',
         right: 'listWeek,listMonth'
       },
-
-      // customize the button names,
       // otherwise they'd all just say "list"
       views: {
-        listWeek: { buttonText: 'list week' },
-        listMonth: { buttonText: 'list month' },
+        listWeek: { buttonText: locale === 'de' ? 'Wochenansicht' : 'list week' },
+        listMonth: { buttonText: locale === 'de' ? 'Monatsansicht' : 'list month' },
       },
 
       initialView: 'listMonth',
@@ -52,36 +50,8 @@
       dayMaxEvents: true, // allow "more" link when too many events
       firstDay: 1,
       // timeZone: initialTimeZone,
-      events: [
-        // { start: '2021-10-14T02:00:00', end: '2021-10-14T04:00:00', title: 'event 1' },
-        {
-          title: 'Open TechCall',
-          rrule: {
-            freq: 'weekly',
-            interval: 2,
-            dtstart: '2021-10-13T14:00:00'
-          }
-        },
-        {
-          title: 'Open GT-Call',
-          rrule: {
-            freq: 'weekly',
-            interval: 2,
-            dtstart: '2021-10-14T13:00:00'
-          }
-        },
-        {
-          title: 'OCR(-D) & Co.',
-          rrule: {
-            freq: 'monthly',
-            interval: 1,
-            wkst: 'fr',
-            // byweekday: 'fr',
-            bysetpos: [1],
-            dtstart: '2021-11-05T10:00:00'
-          }
-        }
-      ],
+      events: '/ocrd-events.json',
+      locale: locale,
 
       eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }
     });
@@ -99,11 +69,11 @@
 
     // when the timezone selector changes, dynamically change the calendar option
     timeZoneSelectorEl.addEventListener('change', (event) => {
-      console.log(event.target.value)
-      console.log(timeZoneSelectorEl.value)
       calendar.setOption('timeZone', event.target.value);
-      // calendar.render()
     })
+
+    if (locale === 'de') document.getElementById('time-zone-label').innerHTML = 'Zeitzone auswählen'
+
   })
 </script>
 
@@ -128,7 +98,7 @@
  <div id='top'>
 
     <div class='left'>
-      Timezone:
+      <span id="time-zone-label">Timezone</span>:
       <select id='time-zone-selector'>
         <option value='local' selected>local</option>
         <option value='UTC'>UTC</option>
