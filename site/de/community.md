@@ -41,7 +41,7 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 				</article>
 			</div>
 			<div class="tile is-parent">
-				<article>
+				<article class="tile is-child box has-text-alligned">
 					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
 				</article>
 			</div>
