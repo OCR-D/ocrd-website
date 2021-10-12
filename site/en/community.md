@@ -45,7 +45,7 @@ which are mostly open to the professional public to read and participate.
 			</div>
 			<div class="tile is-parent">
 				<article>
-					<iframe src ="/calendar/ocrd-calendar.html" width="600" height="400" ></iframe>
+					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
 				</article>
 			</div>
 		</div>
