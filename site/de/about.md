@@ -2,6 +2,7 @@
 layout: page
 lang-ref: about
 lang: de
+toc: true
 title: Das OCR-D-Projekt
 ---
 
@@ -32,4 +33,15 @@ Neben der anvisierten Volltexttransformation von VD-Titeln (16.–19. Jahrhunder
 *   die Erstellung [nachnutzbarer Softwarepakete](http://www.github.com/ocr-d)
 *   die Erstellung von Verfahren der Qualitätssicherung
 
+## Community
 In allen Schritten begrüßen wir einen regen Austausch mit Kolleginnen und Kollegen aus anderen Projekten und Einrichtungen sowie Dienstleistern, um schließlich ein konsolidiertes Verfahren zur OCR-Verarbeitung von Digitalisaten des gedruckten deutschen Kulturerbes des 16.–19. Jahrhunderts realisieren zu können. 
+Zu diesem Zweck gibt es bereits eine aktive Community, die unter anderem über unseren [Chat](https://gitter.im/OCR-D/Lobby) oder unsere [regfelmäßig stattfindenden Onlinemeetings](communit) erreicht werden kann. 
+Interessierte aus Wissenschaft und Praxis sind ebenso willkommen wie Privatpersonen, die OCR-D nutzen (möchten).
+
+Auf unserer Website finden Sie außerdem eine [Sammlung von (wissenschaftlichen) Publikationen und Vorträgen](publications) zum Thema OCR(-D) unserer aktuellen und ehemaligen Projektbeteiligten.
+
+## Ergebnisse vergangener Projektphasen
+Derzeit befindet sich OCR-D in der dritten Projektphase. Ergebnisse der vergangenen Projektphasen können Sie auf diesen Seiten jederzeit nachlesen:
+* [Nutzer*innenumfrage [Phase I]](user_survey)
+* [Modulprojekte aus Phase II](phase2)
+* [Pilotstudie [Phase II]](teststellung)

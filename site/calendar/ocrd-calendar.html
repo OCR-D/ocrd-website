@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='/calendar/lib/main.css' rel='stylesheet' />
+<!-- rrule lib -->
+<script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
+<!-- fullcalendar bundle -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.js'></script>
+<!-- the rrule-to-fullcalendar connector. must go AFTER the rrule lib -->
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@5.5.0/main.global.min.js'></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+	var initialTimeZone = 'Europe/Berlin';
+	var timeZoneSelectorEl = document.getElementById('time-zone-selector');
+    var loadingEl = document.getElementById('loading');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'listDay,listWeek'
+      },
+	  
+	header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+    },
+
+      // customize the button names,
+      // otherwise they'd all just say "list"
+      views: {
+        listDay: { buttonText: 'list day' },
+        listWeek: { buttonText: 'list week' }
+      },
+
+      initialView: 'listWeek',
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+	  selectable: true,
+	  eventLimit: true, // allow "more" link when too many events
+      dayMaxEvents: true, // allow "more" link when too many events
+	  firstDay: 1,
+	  // timeZone: initialTimeZone,
+      events: [
+		{
+			title: 'Open TechCall',
+			rrule: {
+				freq: 'weekly',
+				interval: 2,
+				dtstart: '2021-10-13T13:00:00'
+			}
+		},
+		{
+			title: 'Open GT-Call',
+			rrule: {
+				freq: 'weekly',
+				interval: 2,
+				dtstart: '2021-10-14T13:00:00'
+			}
+		},
+		{
+			title: 'OCR(-D) & Co.',
+			rrule: {
+				freq: 'monthly',
+				interval: 1,
+				wkst: 'fr',
+				// byweekday: 'fr',
+				bysetpos: [1],
+				dtstart: '2021-11-05T10:00:00'
+			}
+		}
+      ],
+
+      eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }
+	 });
+	  	calendar.render();
+
+
+	   // load the list of available timezones, build the <select> options
+		// it's highly encouraged to use your own AJAX lib instead of using FullCalendar's internal util
+	  FullCalendar.requestJson('GET', 'https://fullcalendar.io/demo-timezones.json', {}, function(timeZones) {
+		timeZones.forEach(function(timeZone) {
+		  var optionEl;
+
+		  if (timeZone !== 'UTC') { // UTC is already in the list
+			optionEl = document.createElement('option');
+			optionEl.value = timeZone;
+			optionEl.innerText = timeZone;
+			timeZoneSelectorEl.appendChild(optionEl);
+		  }
+		});
+	  }, function() {
+		// failure
+	  });
+
+	  // when the timezone selector changes, dynamically change the calendar option
+	  timeZoneSelectorEl.addEventListener('change', function() {
+		calendar.setOption('timeZone', this.value);
+	  });
+  });
+</script>
+
+
+<!--
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	  var initialTimeZone = 'UTC';
+	  var timeZoneSelectorEl = document.getElementById('time-zone-selector');
+	  var loadingEl = document.getElementById('loading');
+	  var calendarEl = document.getElementById('calendar');
+
+	  var calendar = new FullCalendar.Calendar(calendarEl, {
+		timeZone: initialTimeZone,
+		headerToolbar: {
+		  left: 'prev,next today',
+		  center: 'title',
+		  right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+		},
+		navLinks: true, // can click day/week names to navigate views
+		editable: true,
+		selectable: true,
+		dayMaxEvents: true, // allow "more" link when too many events
+		events: [
+			{
+				title: 'Open TechCall',
+				rrule: {
+					freq: 'weekly',
+					interval: 2,
+					dtstart: '2021-10-13T13:00:00'
+				}
+			}
+		],
+
+		eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }
+	  });
+
+	  calendar.render();
+
+	  // load the list of available timezones, build the <select> options
+	  // it's highly encouraged to use your own AJAX lib instead of using FullCalendar's internal util
+	  FullCalendar.requestJson('GET', 'https://fullcalendar.io/demo-timezones.json', {}, function(timeZones) {
+		timeZones.forEach(function(timeZone) {
+		  var optionEl;
+
+		  if (timeZone !== 'UTC') { // UTC is already in the list
+			optionEl = document.createElement('option');
+			optionEl.value = timeZone;
+			optionEl.innerText = timeZone;
+			timeZoneSelectorEl.appendChild(optionEl);
+		  }
+		});
+	  }, function() {
+		// failure
+	  });
+
+	  // when the timezone selector changes, dynamically change the calendar option
+	  timeZoneSelectorEl.addEventListener('change', function() {
+		calendar.setOption('timeZone', this.value);
+	  });
+
+	});
+</script>
+-->
+<style>
+
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+</style>
+</head>
+<body>
+
+  <div id='calendar'></div>
+
+</body>
+</html>

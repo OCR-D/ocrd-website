@@ -16,46 +16,46 @@ Contact person:
 Project coordination OCR-D
 
 Duke August Library Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Request%20via%20OCR-D.de)
 
 
 Substitution:
 
-### Andrea Opitz
+### Sandra Simon
 Deputy head of department
 New Media, Digital Library
 
 Duke August Library Wolfenbüttel
-[opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
+[simon[at]hab.de](mailto:simon@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### Johannes Mangei
 Deputy Director of the Herzog August Library Wolfenbüttel
 Head of Department New Media, Digital Library
 
 Duke August Library Wolfenbüttel
-[mangei[at]hab.de](mailto:mangei@hab.de?subject=Anfrage%20via%20OCR-D.de)
+[mangei[at]hab.de](mailto:mangei@hab.de?subject=Request%20via%20OCR-D.de)
 
 ## Managers
 
 ### Johannes Mangei
 Duke August Library Wolfenbüttel
-[mangei[at]hab.de](mailto:mangei@hab.de)
+[mangei[at]hab.de](mailto:mangei@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### Alexander Geyken
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
-[geyken[at]bbaw.de](mailto:geyken@bbaw.de)
+[geyken[at]bbaw.de](mailto:geyken@bbaw.de?subject=Request%20via%20OCR-D.de)
 
 ### Reinhard Altenhöner
 State Library of Berlin Prussian Cultural Heritage
-[reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de)
+[reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de?subject=Request%20via%20OCR-D.de)
 
 ### Mustafa Dogan
 Göttingen State and University Library
-[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de)
+[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Philipp Wieder
 Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
-[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de)
+[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de?subject=Request%20via%20OCR-D.de)
 
 
 ## Staff
@@ -64,31 +64,31 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 Project Coordinator
 
 Duke August Library Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### Matthias Boenig
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
-[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
+[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de?subject=Request%20via%20OCR-D.de)
 
 ### Konstantin Baierer
 Berlin State Library - Prussian Cultural Heritage
-[konstantin.baierer[at]sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de)
+[konstantin.baierer[at]sbb.spk-berlin.de](mailto:Konstantin.Baierer@sbb.spk-berlin.de?subject=Request%20via%20OCR-D.de)
 
 ### Clemens Neudecker
 Berlin State Library - Prussian Cultural Heritage 
-[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
+[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de?subject=Request%20via%20OCR-D.de)
 
 ### Mareen Geestmann
 Göttingen State and University Library
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de)
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Michelle Weidling
 Göttingen State and University Library
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)?subject=Request%20via%20OCR-D.de
 
 ### Paul Pestov
 Göttingen State and University Library
-[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de)
+[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ## Former Managers
 
@@ -125,9 +125,9 @@ Bavarian State Library Munich
 
 The project is counseled by a scientific advisory board, which is constituted by the following persons at the moment:
 
-### Gregory Crane
+### Gerhard Lauer
 
-Tufts University
+JGU Mainz
 
 ### Max Kaiser
 
@@ -148,6 +148,10 @@ University of Innsbruck
 ### Klaus Schulz
 
 LMU Munich – CIS
+
+### Thomas Stäcker
+
+ULB Darmstadt
 
 ### Robert Strötgen
 
