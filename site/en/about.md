@@ -2,6 +2,7 @@
 layout: page
 lang-ref: about
 lang: en
+toc: true
 title: The OCR-D project
 ---
 
