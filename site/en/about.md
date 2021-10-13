@@ -40,6 +40,7 @@ In addition to the envisaged full text transformation of VD titles (16th-19th ce
 * the creation of [reusable software packages](http://www.github.com/ocr-d)
 * the establishment of quality assurance procedures
 
+## Community
 In all steps we welcome a lively exchange with colleagues from other projects and institutions as well as service providers, in order to finally be able to realize a consolidated procedure for the OCR processing of digitized material of the printed German cultural heritage of the 16th–19th century.
 To this end, there is already an active community, which you can join via our [chat](https://gitter.im/OCR-D/Lobby) or our [regular open online meetings](community).
 Interested parties from academia and practice are just as welcome as private individuals who (would like to) use OCR-D.
