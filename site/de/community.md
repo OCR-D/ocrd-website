@@ -2,10 +2,10 @@
 layout: page
 lang: de
 lang-ref: community
-title: OCR-D-Kanäle und -Plattformen
+title: OCR-D Community
 ---
 
-# OCR-D-Kanäle und -Plattformen
+# OCR-D Community
 
 In OCR-D bemühen wir uns um maximale Transparenz und Kommunikation unserer Arbeit nach innen und außen. Das Projekt ist auf verschiedenen Plattformen aktiv,
 die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmachen.
