@@ -17,17 +17,16 @@ Ansprechpartnerin:
 Projektkoordinatorin OCR-D
 
 Herzog August Bibliothek Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 
 Stellvertreter*innen:
 
-### Andrea Opitz
-
+### Sandra Simon
 Stellvertreterin der Abteilungsleitung 
 Neuere Medien, Digitale Bibliothek
 Herzog August Bibliothek Wolfenbüttel
-[opitz[at]hab.de](mailto:opitz@hab.de?subject=Anfrage%20via%20OCR-D.de)
+[simon[at]hab.de](mailto:simon@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Johannes Mangei
 
@@ -41,25 +40,25 @@ Herzog August Bibliothek Wolfenbüttel
 ### Johannes Mangei
 
 Herzog August Bibliothek Wolfenbüttel
-[mangei[at]hab.de](mailto:mangei@hab.de)
+[mangei[at]hab.de](mailto:mangei@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Alexander Geyken
 
 Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
-[geyken[at]bbaw.de](mailto:geyken@bbaw.de)
+[geyken[at]bbaw.de](mailto:geyken@bbaw.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Reinhard Altenhöner
 
 Staatsbibliothek zu Berlin Preußischer Kulturbesitz
-[reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de)
+[reinhard.altenhoener[at]sbb.spk-berlin.de](mailto:Reinhard.Altenhoener@sbb.spk-berlin.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Mustafa Dogan
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de)
+[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Philipp Wieder
 Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
-[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de)
+[philipp.wieder[at]gwdg.de](mailto:philipp.wieder@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Projektmitarbeitende
 
@@ -72,29 +71,29 @@ Herzog August Bibliothek Wolfenbüttel
 ### Matthias Boenig
 
 Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
-[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de)
+[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Konstantin Baierer
 
 Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
-[konstantin.baierer[at]sbb.spk-berlin.de](mailto:konstantin.baierer@sbb.spk-berlin.de)
+[konstantin.baierer[at]sbb.spk-berlin.de](mailto:konstantin.baierer@sbb.spk-berlin.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Clemens Neudecker
 
 Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
-[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de)
+[clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Mareen Geestmann
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de)
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Michelle Weidling
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Paul Pestov
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de)
+[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Ehemalige Projektbeteiligte
 
@@ -131,9 +130,9 @@ Bayerische Staatsbibliothek München
 
 Das Projekt wird von einem Wissenschaftlichen Beirat beraten, der sich derzeit aus den folgenden Personen zusammensetzt:
 
-### Gregory Crane
+### Gerhard Lauer
 
-Tufts University
+JGU Mainz
 
 ### Max Kaiser
 
@@ -154,6 +153,10 @@ Universität Innsbruck
 ### Klaus Schulz
 
 LMU München – CIS
+
+### Thomas Stäcker
+
+ULB Darmstadt
 
 ### Robert Strötgen
 

@@ -2,12 +2,13 @@
 layout: page
 title: How we want to develop software in OCR-D
 lang: en
-lang-ref: best-practices
+lang-ref: best-practice
 ---
 
-# Best Practices for Software Development in OCR-D
+# Best Practice for Software Development in OCR-D
 
-This guide is informed by the experience of coordinating distributed development of the [OCR-D software and specifications](https://github.com/OCR-D). We strive for a broad consensus on the practicalities and logistics of software development, particular in preparation of the upcoming [Phase III of OCR-D](https://ocr-d.de/en/2020/06/04/pilot.html).
+This guide is informed by the experience of coordinating distributed development of the [OCR-D software and specifications](https://github.com/OCR-D). 
+We strive for a broad consensus on the practicalities and logistics of software development, particular in the current [Phase III of OCR-D](https://ocr-d.de/de/phase3).
 
 You can find a concise summary [in the slides to our call on Best Practices, 2020-07-07](https://docs.google.com/presentation/d/1ZYcLx5lPxH6k3SLubzk55rUf22la0Hsf9_TEGFTydl0)
 
@@ -23,7 +24,7 @@ Since all development shall be openly and transparently carried out on GitHub, i
 
 ### Chat
 
-The [OCR-D gitter "Lobby"](https://gitter.im/OCR-D/Lobby) is the general channel for all things OCR-D. We strive to keep the threshold for participation as low as possible. Every question or comment is welcome. It is also the channel we use to announce changes to [OCR-D core](https://github.com/OCR-D/core), the [specifications](https://github.com/OCR-D/spec) or updates on [processors](https://github.com/topics/ocr-d).
+The [OCR-D Gitter "Lobby"](https://gitter.im/OCR-D/Lobby) is the general channel for all things OCR-D. We strive to keep the threshold for participation as low as possible. Every question or comment is welcome. It is also the channel we use to announce changes to [OCR-D core](https://github.com/OCR-D/core), the [specifications](https://github.com/OCR-D/spec) or updates on [processors](https://github.com/topics/ocr-d).
 
 Gitter accounts can also be used for private/direct conversations, for which the contacts in the Lobby are a good starting point.
 ### GitHub Issues
