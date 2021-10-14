@@ -127,35 +127,6 @@ weil es fuer die wirtschaft gut ist.
 
 You could then go to https://ocr-d.de/en/cars and to https://ocr-d.de/de/autos from there.
 
-## Deploying the site
-
-First, clone https://github.com/OCR-D/ocr-d.github.io:
-
-```sh
-git clone https://github.com/OCR-D/ocr-d.github.io:
-```
-
-Then, rebuild the website to render the changes to Markdown to HTML:
-
-
-```sh
-make build-site
-```
-
-Copy all the contents of `./docs` to `ocr-d.github.io`:
-
-```sh
-cp -r ./docs/* ocr-d.github.io
-```
-
-Commit and push the changes in `ocr-d.github.io`:
-
-```sh
-cd ocr-d.github.io
-git add .
-git commit -m 'website updated'
-```
-
 ## Changing the menu
 
 The menus are generated from the YAML file `site/_data/menu.yml`.
@@ -200,3 +171,16 @@ To automate this, you need to have [shinclude](https://github.com/kba/shinclude)
 Make sure that `repo/ocrd-website.wiki` is up-to-date: `cd repo/ocrd-website.wiki; git pull origin master`.
 
 `make workflows` will generate `site/en/workflows.md` from the wiki fragments. Inspect it for consistency before merging.
+
+## Building and deploying the site
+
+```make build-site```:  rebuild the website to render the changes to Markdown to HTML
+
+```make deploy```: Copy all the contents of ```./docs``` to ```ocr-d.github.io```, commit and push the changes in ```ocr-d.github.io```:
+
+or simply run both at once:
+
+```sh
+make build-site deploy
+```
+
