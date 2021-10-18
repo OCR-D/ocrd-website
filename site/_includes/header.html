@@ -1,3 +1,19 @@
+{% if page.lang == 'de' %}
+<script async src="https://cse.google.com/cse.js?cx=15ea814b8c422e7e4"></script>
+{% else %}
+<script async src="https://cse.google.com/cse.js?cx=e9e3f7148e57ed66c"></script>
+{% endif %}
+
+<script>
+function TestsFunction2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
+</script>
+
+
 <nav class="navbar is-transparent is-fixed-top">
 
   <div class="navbar-brand">
@@ -50,7 +66,57 @@
     <div class="navbar-end">
 
       <span class="navbar-item">
-         
+         
+    {%- if page.layout != 'index' and page.lang-ref -%}
+        {%- assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
+        {%- if posts.size == 0 -%}
+          {%- assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
+        {%- endif -%}
+        {%- if posts.size != 0 and posts.size != 1 -%}
+            {%- for post in posts -%}
+            {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
+			<!-- decision pending
+			{% if page.lang == 'de' %}
+			            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
+				<div class="navbar-item has-dropdown is-hoverable">Suche
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">Für diese Funktion haben wir Google Custom Search implementiert. 
+				Wenn Sie diese nutzen, beachten Sie bitte, dass Cookies gespeichert werden können und die Datenschutzbestimmungen von Google LLC gelten:
+				<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="TestsFunction2()" id="button-header">Einverstanden, zeige die Google-Suche!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			{% else %} 
+            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
+				<div class="navbar-item has-dropdown is-hoverable">Search
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Custom Search. 
+					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
+					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="TestsFunction2()" id="button-header">Agree, show me Google Search!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			{% endif %}
+			-->
+            {%- endif -%}
+            {%- endfor -%}
+        {%- endif -%}
+        {%- if posts.size == 1 -%}
+          {% assign firstfourchars = page.lang-ref | slice: 0, 4 %}
+          {% if firstfourchars == 'http' %}
+            <a href="{{ page.lang-ref }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">
+              {% if page.lang == 'en' %}de{% else %}en{% endif %}
+            </a>
+          {% endif %}
+        {%- endif -%}
+    {%- endif -%}
+         
+      </span>
+
+      <span class="navbar-item">
+         
     {%- if page.layout != 'index' and page.lang-ref -%}
         {%- assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
         {%- if posts.size == 0 -%}
@@ -74,7 +140,8 @@
           {% endif %}
         {%- endif -%}
     {%- endif -%}
-         
+         
       </span>
+
 
     </div> </div> </nav>
