@@ -10,25 +10,25 @@ title: OCR-D is you and me
 
 ## Contact
 
-Contact person:
+### Contact person:
 
-### Lena Hinrichsen
+#### Lena Hinrichsen
 Project coordination OCR-D
 
 Duke August Library Wolfenbüttel
 [hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Request%20via%20OCR-D.de)
 
 
-Substitution:
+### Substitution:
 
-### Sandra Simon
+#### Sandra Simon
 Deputy head of department
 New Media, Digital Library
 
 Duke August Library Wolfenbüttel
 [simon[at]hab.de](mailto:simon@hab.de?subject=Request%20via%20OCR-D.de)
 
-### Johannes Mangei
+#### Johannes Mangei
 Deputy Director of the Herzog August Library Wolfenbüttel
 Head of Department New Media, Digital Library
 
@@ -125,10 +125,6 @@ Bavarian State Library Munich
 
 The project is counseled by a scientific advisory board, which is constituted by the following persons at the moment:
 
-### Gerhard Lauer
-
-JGU Mainz
-
 ### Max Kaiser
 
 Austrian National Library
@@ -136,6 +132,10 @@ Austrian National Library
 ### Joachim Köhler
 
 Fraunhofer IAIS
+
+### Gerhard Lauer
+
+JGU Mainz
 
 ### Sebastian Meyer
 

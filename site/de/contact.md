@@ -10,25 +10,24 @@ title: Das OCR-D-Team
 
 ## Kontakt
 
-Ansprechpartnerin:
+### Ansprechpartnerin:
 
-### Lena Hinrichsen
-
+#### Lena Hinrichsen
 Projektkoordinatorin OCR-D
 
 Herzog August Bibliothek Wolfenbüttel
 [hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 
-Stellvertreter*innen:
+### Stellvertreter*innen:
 
-### Sandra Simon
+#### Sandra Simon
 Stellvertreterin der Abteilungsleitung 
 Neuere Medien, Digitale Bibliothek
 Herzog August Bibliothek Wolfenbüttel
 [simon[at]hab.de](mailto:simon@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
-### Johannes Mangei
+#### Johannes Mangei
 
 Stellvertretender Direktor der Herzog August Bibliothek
 Abteilungsleitung Neuere Medien, Digitale Bibliothek
@@ -130,10 +129,6 @@ Bayerische Staatsbibliothek München
 
 Das Projekt wird von einem Wissenschaftlichen Beirat beraten, der sich derzeit aus den folgenden Personen zusammensetzt:
 
-### Gerhard Lauer
-
-JGU Mainz
-
 ### Max Kaiser
 
 Österreichische Nationalbibliothek
@@ -141,6 +136,10 @@ JGU Mainz
 ### Joachim Köhler
 
 Fraunhofer IAIS
+
+### Gerhard Lauer
+
+JGU Mainz
 
 ### Sebastian Meyer
 
