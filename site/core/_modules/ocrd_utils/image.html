@@ -63,6 +63,7 @@
     <span class="s1">&#39;polygon_mask&#39;</span><span class="p">,</span>
     <span class="s1">&#39;rotate_coordinates&#39;</span><span class="p">,</span>
     <span class="s1">&#39;shift_coordinates&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;scale_coordinates&#39;</span><span class="p">,</span>
     <span class="s1">&#39;transform_coordinates&#39;</span><span class="p">,</span>
     <span class="s1">&#39;transpose_coordinates&#39;</span><span class="p">,</span>
     <span class="s1">&#39;xywh_from_bbox&#39;</span><span class="p">,</span>
@@ -335,6 +336,23 @@
     <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">shift</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="scale_coordinates"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.image.html#ocrd_utils.image.scale_coordinates">[docs]</a><span class="k">def</span> <span class="nf">scale_coordinates</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">factors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compose an affine coordinate transformation with a proportional scaling.</span>
+<span class="sd">    Given a numpy array ``transform`` of an existing transformation</span>
+<span class="sd">    matrix in homogeneous (3d) coordinates, and a numpy array</span>
+<span class="sd">    ``factors`` of the scaling factors, calculate the affine</span>
+<span class="sd">    coordinate transform corresponding to the composition of both</span>
+<span class="sd">    transformations.</span>
+<span class="sd">    </span>
+<span class="sd">    Return a numpy array of the resulting affine transformation matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_utils.coords.scale_coordinates&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;scaling coordinates by </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">factors</span><span class="p">))</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">factors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">factors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="transform_coordinates"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.image.html#ocrd_utils.image.transform_coordinates">[docs]</a><span class="k">def</span> <span class="nf">transform_coordinates</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Apply an affine transformation to a set of points.</span>

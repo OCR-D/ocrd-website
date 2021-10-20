@@ -54,12 +54,12 @@
 <span class="c1"># -------------------------------------------------</span>
 <span class="c1">#</span>
 
-<div class="viewcode-block" id="WorkspaceValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.workspace_validator.WorkspaceValidator">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceValidator</span><span class="p">():</span>
+<div class="viewcode-block" id="WorkspaceValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceValidator</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates an OCR-D/METS workspace against the specs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="WorkspaceValidator.check_file_grp"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.workspace_validator.WorkspaceValidator.check_file_grp">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="WorkspaceValidator.check_file_grp"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator.check_file_grp">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a report on whether input_file_grp is/are in workspace.mets and output_file_grp is/are not.</span>
@@ -127,7 +127,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="WorkspaceValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.workspace_validator.WorkspaceValidator.validate">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="WorkspaceValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator.validate">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validates the workspace of a METS URL against the specs</span>
@@ -244,9 +244,13 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Won&#39;t download remote image &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: More than 1 frame: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: More than 1 frame: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: Could not retrieve </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+                <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">_validate_pixel_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

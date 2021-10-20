@@ -575,15 +575,15 @@
 
 <span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;merge&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;METS_PATH&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--copy-files&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Copy files as well&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--copy-files/--no-copy-files&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Copy files as well&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--fileGrp-mapping&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;JSON object mapping src to dest fileGrp&quot;</span><span class="p">)</span>
 <span class="nd">@mets_find_options</span>
 <span class="nd">@pass_workspace</span>
-<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">copy_files</span><span class="p">,</span> <span class="n">filegrp_mapping</span><span class="p">,</span> <span class="n">filegrp</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">):</span>   <span class="c1"># pylint: disable=redefined-builtin</span>
+<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">copy_files</span><span class="p">,</span> <span class="n">filegrp_mapping</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">):</span>   <span class="c1"># pylint: disable=redefined-builtin</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merges this workspace with the workspace that contains ``METS_PATH``</span>
 
-<span class="sd">    The ``--file-id``, ``--page-id``, ``--mimetype`` and ``--fileGrp`` options have</span>
+<span class="sd">    The ``--file-id``, ``--page-id``, ``--mimetype`` and ``--file-grp`` options have</span>
 <span class="sd">    the same semantics as in ``ocrd workspace find``, see ``ocrd workspace find --help``</span>
 <span class="sd">    for an explanation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -596,7 +596,7 @@
         <span class="n">other_workspace</span><span class="p">,</span>
         <span class="n">copy_files</span><span class="o">=</span><span class="n">copy_files</span><span class="p">,</span>
         <span class="n">fileGrp_mapping</span><span class="o">=</span><span class="n">filegrp_mapping</span><span class="p">,</span>
-        <span class="n">fileGrp</span><span class="o">=</span><span class="n">filegrp</span><span class="p">,</span>
+        <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
         <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
         <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
         <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
