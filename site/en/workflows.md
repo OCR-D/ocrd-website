@@ -1448,7 +1448,7 @@ above on selected pages of some prints from the 17th and 18th century.
 
 The results vary quite a lot from page to page. In most cases, segmentation is a problem.
 
-Note that for our test pages, not all steps described above werde needed to obtain the best results.
+Note that for our test pages, not all steps described above were needed to obtain the best results.
 Depending on your particular images, you might want to include those processors again for better results.
 
 We are currently working on regression tests with the help of which we will be able to provide more profound
