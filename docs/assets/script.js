@@ -39,3 +39,10 @@ if (sidebarToggle) {
     mainContent.classList.toggle('is-two-thirds')
   }
 }
+
+function ToggleSearchActive2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
