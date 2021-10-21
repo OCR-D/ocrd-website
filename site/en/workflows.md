@@ -11,7 +11,11 @@ toc: true
 # Workflows
 There are several steps necessary to get the fulltext of a scanned print. The whole OCR process is shown in the following figure:
 
-![](https://ocr-d.de/assets/Funktionsmodell.png)
+<p class="figure img" style="max-width: 100%">
+	<a href="/assets/Funktionsmodell.svg" style="max-width: 100%">
+		<img src="/assets/Funktionsmodell.svg" style="max-width: 100%">
+	</a>
+</p>
 
 The following instructions describe all steps of an OCR workflow. Depending on your particular print (or rather images), not all of those
 steps might be necessary to obtain good results. Whether a step is required or optional is indicated in the description of each step.

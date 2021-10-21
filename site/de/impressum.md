@@ -90,6 +90,22 @@ hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausd
 rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch
 Spam-Mails, vor.
 
+
+Wir verwenden Google Programmable Search Engine als Suchdienst auf der Website.
+Der eingebundene Suchdienst ermöglicht eine Volltextsuche auf ocr-d.de. 
+
+Bei der Nutzung des Suchdienstes werden Daten an Google übertragen. 
+Dazu gehören z.B. die von Ihnen eingegebenen Suchbegriffe und die IP-Adresse des von Ihnen benutzten Gerätes. 
+Zudem können bei Nutzung des Dienstes Cookies gespeichert werden, was Sie über Ihre Browsereinstellungen verhindern können.
+Mit der Benutzung der Volltext-Suche stimmen Sie der Nutzung des Google-Suchdienstes 
+und damit auch der Übertragung von Daten an den Google-Service sowie ggf. der Speicherung von Cookies zu. 
+Sofern Sie gleichzeitig bei Google eingeloggt sind, kann Google zudem die Informationen unmittelbar Ihrem Nutzerprofil zuordnen. 
+Sie können sich ausloggen, um eine Sammlung von Profilinformationen über Sie zu vermeiden.
+Wir weisen ausdrücklich darauf hin, dass die Verarbeitung, insbesondere die Speicherung, Nutzung und Löschung von möglicherweise 
+übertragenen personenbezogenen Daten dem Anbieter des Suchdienstes obliegt.
+
+Die Datenschutzerklärung von Google finden Sie unter: [http://www.google.com/intl/de/policies/privacy](http://www.google.com/intl/de/policies/privacy)
+
 ### Verwendete Bilder
 
 Diese Website nutzt die folgenden Abbildungen aus Wikimedia Commons:

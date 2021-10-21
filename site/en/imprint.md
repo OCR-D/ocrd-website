@@ -88,6 +88,22 @@ is hereby expressly contradicted. The operators of the pages expressly reserve t
 take legal action in the event of the unsolicited sending of advertising information, for
 example through spam mails.
 
+We use Google Programmable Search Engine as a search service on the website.
+The integrated search service enables a full text search on ocr-d.de. 
+
+When using the search service, data is transferred to Google. 
+This includes, for example, the search terms you enter and the IP address of the device you are using. 
+In addition, cookies may be stored when you use the service, which you can prevent via your browser settings.
+By using the full-text search, you consent to the use of the Google search service and thus to the transfer of data to Google,
+and thus also to the transfer of data to the Google service and, if applicable, to the storage of cookies. 
+If you are logged in to Google at the same time, Google can also assign the information directly to your user profile. 
+You can log out to avoid the collection of profile information about you.
+We expressly point out that the processing, in particular the storage, use and deletion of any personal data that may be 
+transmitted is the responsibility of the provider of the search service.
+
+You can find Google's privacy policy at: [http://www.google.com/intl/de/policies/privacy](http://www.google.com/intl/de/policies/privacy)
+
+
 ### Images used
 This website uses the following images from Wikimedia Commons:
 Copper engraving "Le cabinet de la Bibliotheque de Sainte Genevieve", Paris: 1692, by

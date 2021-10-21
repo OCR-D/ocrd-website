@@ -3,6 +3,7 @@ layout: page
 lang-ref: initial-tests
 lang: de
 title: Ergebnisse und Erkenntnisse der ersten OCR-D-Teststellung
+toc: true
 ---
 
 # Ergebnisse und Erkenntnisse der ersten OCR-D-Teststellung

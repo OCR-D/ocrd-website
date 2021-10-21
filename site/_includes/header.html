@@ -5,7 +5,7 @@
 {% endif %}
 
 <script>
-function TestsFunction2() {
+function ToggleSearchActive2() {
     var T = document.getElementById("button-header")
 	var A = document.getElementById("google-search-header");
     T.style.display = "none";  // <-- Set it to none
@@ -59,8 +59,33 @@ function TestsFunction2() {
       {% else %}
         <a class="navbar-item" href="/{{ page.lang }}/{{ toplevel_menuitem.url }}">{{ toplevel_menuitem.label[page.lang] }}</a>
       {% endif %}
-      {% endfor %}
 
+      {% endfor %}
+	 <span class="navbar-item">
+	{% if page.lang == 'de' %}
+			        
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Suche
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">Für diese Funktion haben wir Google Programmable Search Engine implementiert. 
+				Wenn Sie diese nutzen, beachten Sie bitte, dass Cookies gespeichert werden können und die Datenschutzbestimmungen von Google LLC gelten:
+				<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Einverstanden, zeige die Google-Suche!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			{% else %} 
+            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Search
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Programmable Search Engine. 
+					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
+					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Agree, show me Google Search!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			{% endif %}
+	</span>
     </div>
 
     <div class="navbar-end">
@@ -75,31 +100,15 @@ function TestsFunction2() {
         {%- if posts.size != 0 and posts.size != 1 -%}
             {%- for post in posts -%}
             {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
-			<!-- decision pending
+
 			{% if page.lang == 'de' %}
 			            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
-				<div class="navbar-item has-dropdown is-hoverable">Suche
-				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">Für diese Funktion haben wir Google Custom Search implementiert. 
-				Wenn Sie diese nutzen, beachten Sie bitte, dass Cookies gespeichert werden können und die Datenschutzbestimmungen von Google LLC gelten:
-				<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
-					<button onclick="TestsFunction2()" id="button-header">Einverstanden, zeige die Google-Suche!</button></div>
-				</div>
-				<div id="google-search-header" style="visibility: hidden">
-					<div class="gcse-search"></div>
-				</div>
+				
 			{% else %} 
             <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
-				<div class="navbar-item has-dropdown is-hoverable">Search
-				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Custom Search. 
-					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
-					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
-					<button onclick="TestsFunction2()" id="button-header">Agree, show me Google Search!</button></div>
-				</div>
-				<div id="google-search-header" style="visibility: hidden">
-					<div class="gcse-search"></div>
-				</div>
+
 			{% endif %}
-			-->
+
             {%- endif -%}
             {%- endfor -%}
         {%- endif -%}

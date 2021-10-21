@@ -15,10 +15,10 @@ which are mostly open to the professional public to read and participate.
 ## Participation and communication
 
 **GitHub** – Try it out yourself: On GitHub you can find the latest status of our developmental work on the OCR-D framework and the module projects:  
-[https://github.com/OCR-D](https://github.com/OCR-D)
+[https://github.com/OCR&#8209;D](https://github.com/OCR-D)
 
 **Gitter** – Follow up on our discussions and ask your own questions: We use the chat platform Gitter for short-term and low-threshold communication with each other:
-[https://gitter.im/OCR-D/Lobby](https://gitter.im/OCR-D/Lobby)
+[https://gitter.im/OCR&#8209;D/Lobby](https://gitter.im/OCR-D/Lobby)
 
 ## Events and regular Calls
 
@@ -55,7 +55,7 @@ which are mostly open to the professional public to read and participate.
 ## Data and publications
 
 **Ground Truth Repository** – Make use of our data: We collect our test and reference data in the Ground Truth Repository. You may use the data for your own training: 
-[https://ocr-d.de/en/data](https://ocr-d.de/en/data)
+[https://ocr&#8209;d.de/en/data](https://ocr-d.de/en/data)
 
 **Technology Watch** – In the Zotero group of OCR-D we collect relevant literature about OCR together with interested parties:
 [Zotero list](https://www.zotero.org/groups/ocr-d)
