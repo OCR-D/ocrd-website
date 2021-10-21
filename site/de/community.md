@@ -56,4 +56,4 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 [https://ocr&#8209;d.de/de/data](https://ocr-d.de/de/data)
 
 **Technology Watch** – In der Zotero-Gruppe von OCR&#8209;D sammeln wir gemeinsam mit Interessierten relevante Literatur über OCR:
-[Zotero-Liste](https://www.zotero.org/groups/ocr&#8209;d)
+[Zotero-Liste](https://www.zotero.org/groups/ocr-d)
