@@ -124,33 +124,5 @@ function ToggleSearchActive2() {
          
       </span>
 
-      <span class="navbar-item">
-         
-    {%- if page.layout != 'index' and page.lang-ref -%}
-        {%- assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
-        {%- if posts.size == 0 -%}
-          {%- assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' -%}
-        {%- endif -%}
-        {%- if posts.size != 0 and posts.size != 1 -%}
-            {%- for post in posts -%}
-            {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
-            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">
-              {{  post.lang }}
-            </a>
-            {%- endif -%}
-            {%- endfor -%}
-        {%- endif -%}
-        {%- if posts.size == 1 -%}
-          {% assign firstfourchars = page.lang-ref | slice: 0, 4 %}
-          {% if firstfourchars == 'http' %}
-            <a href="{{ page.lang-ref }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">
-              {% if page.lang == 'en' %}de{% else %}en{% endif %}
-            </a>
-          {% endif %}
-        {%- endif -%}
-    {%- endif -%}
-         
-      </span>
-
 
     </div> </div> </nav>
