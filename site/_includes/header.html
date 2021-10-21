@@ -99,27 +99,17 @@ function ToggleSearchActive2() {
         {%- endif -%}
         {%- if posts.size != 0 and posts.size != 1 -%}
             {%- for post in posts -%}
-            {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
-
-			{% if page.lang == 'de' %}
-			            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
-				
-			{% else %} 
-            <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}"></a>
-
-			{% endif %}
-
-            {%- endif -%}
+              {%- if page.lang != post.lang and page.lang-ref == post.lang-ref -%}
+              <a href="{{ site.base-url }}{{ post.url }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">{% if page.lang == 'en' %}de{% else %}en{% endif %}</a>
+              {% endif %}
             {%- endfor -%}
         {%- endif -%}
-        {%- if posts.size == 1 -%}
-          {% assign firstfourchars = page.lang-ref | slice: 0, 4 %}
-          {% if firstfourchars == 'http' %}
-            <a href="{{ page.lang-ref }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">
-              {% if page.lang == 'en' %}de{% else %}en{% endif %}
-            </a>
-          {% endif %}
-        {%- endif -%}
+        {% assign firstfourchars = page.lang-ref | slice: 0, 4 %}
+        {% if firstfourchars == 'http' %}
+          <a href="{{ page.lang-ref }}" title="{% if page.lang == 'en' %}View in German{% else %}Auf Englisch lesen{% endif %}">
+            {% if page.lang == 'en' %}de{% else %}en{% endif %}
+          </a>
+        {% endif %}
     {%- endif -%}
          
       </span>
