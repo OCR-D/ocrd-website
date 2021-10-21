@@ -24,7 +24,11 @@ This is where the DFG-funded project OCR-D comes in. Its main goal is the concep
 For this purpose, a coordination project was formed that identified development needs in the first project phase. These were worked on in the [second project phase](phase2) by a total of eight module projects. 
 In the current [third project phase](phase3), the focus is on the conceptual preparation for the automatic generation of full texts for VD 16, VD 17 and VD 18. In addition, four implementation projects are working on integrating OCR-D into existing applications and infrastructures, while three module projects are further optimising OCR-D tools.
 
-![](/assets/Funktionsmodell.svg)
+<p class="figure img" style="max-width: 100%">
+	<a href="/assets/Funktionsmodell.svg" style="max-width: 100%">
+		<img src="/assets/Funktionsmodell.svg" style="max-width: 100%">
+	</a>
+</p>
 
 Full-text recognition is understood as a complex process that includes several preprocessing and postprocessing steps in addition
 to the actual text recognition (see figure). First, a digital image is prepared for text recognition in preprocessing by binarization, cropping,

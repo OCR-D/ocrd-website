@@ -21,7 +21,11 @@ Hier setzt das DFG-geförderte Projekt OCR-D an, dessen Hauptziel die konzeption
 
 Dazu wurde ein Koordinationsprojekt gebildet, das in der ersten Projektphase Entwicklungsbedarfe identifizierte. Diese wurden in der [zweiten Projektphase](phase2) von insgesamt acht Modulprojekten bearbeitet. In der derzeitigen [dritten Projektphase](phase3) steht die konzeptionelle Vorbereitung für die automatische Generierung von Volltexten für die Verzeichnisse der im deutschen Sprachraum erschienenen Drucke des 16., 17. und 18. Jahrhunderts im Fokus. Außerdem arbeiten vier Implementierungsprojekte daran, OCR-D in bestehende Anwendungen und Infrastrukturen zu integrieren, während drei Modulprojekte OCR-D-Werkzeuge weiter optimieren.
 
-![](/assets/Funktionsmodell.svg)
+<p class="figure img" style="max-width: 100%">
+	<a href="/assets/Funktionsmodell.svg" style="max-width: 100%">
+		<img src="/assets/Funktionsmodell.svg" style="max-width: 100%">
+	</a>
+</p>
 
 Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung mehrere vor- und nachgelagerte Schritte einschließt (vgl. Abbildung). Zunächst wird ein Bilddigitalisat im Preprocessing für die Texterkennung aufbereitet, indem es nach Bedarf in ein Schwarz-Weiß-Bild umgewandelt (Binarization), zugeschnitten (Cropping), begradigt (Deskewing), entzerrt (Dewarping) und von Flecken bereinigt (Despeckling) wird. Im Anschluss erfolgt die Layouterkennung, die die Textbereiche einer Seite bis auf Zeilenebene identifiziert. Besonders die Erkennung der Zeilen bzw. der Grundlinie ist wichtig für die anschließende eigentliche Texterkennung, die in allen modernen Ansätzen auf Neuronalen Netzen beruht. Danach werden die einzelnen Strukturen bzw. Elemente des volltexterkannten Dokuments ihrer typografischen Funktion nach klassifiziert und das OCR-Ergebnis ggf. in der Nachkorrektur verbessert, bevor es in Repositorien zur Langzeitarchivierung überführt wird.
 
@@ -35,7 +39,7 @@ Neben der anvisierten Volltexttransformation von VD-Titeln (16.–19. Jahrhunder
 
 ## Community
 In allen Schritten begrüßen wir einen regen Austausch mit Kolleginnen und Kollegen aus anderen Projekten und Einrichtungen sowie Dienstleistern, um schließlich ein konsolidiertes Verfahren zur OCR-Verarbeitung von Digitalisaten des gedruckten deutschen Kulturerbes des 16.–19. Jahrhunderts realisieren zu können. 
-Zu diesem Zweck gibt es bereits eine aktive Community, die unter anderem über unseren [Chat](https://gitter.im/OCR-D/Lobby) oder unsere [regfelmäßig stattfindenden Onlinemeetings](communit) erreicht werden kann. 
+Zu diesem Zweck gibt es bereits eine aktive Community, die unter anderem über unseren [Chat](https://gitter.im/OCR-D/Lobby) oder unsere [regelmäßig stattfindenden Onlinemeetings](community) erreicht werden kann. 
 Interessierte aus Wissenschaft und Praxis sind ebenso willkommen wie Privatpersonen, die OCR-D nutzen (möchten).
 
 Auf unserer Website finden Sie außerdem eine [Sammlung von (wissenschaftlichen) Publikationen und Vorträgen](publications) zum Thema OCR(-D) unserer aktuellen und ehemaligen Projektbeteiligten.
