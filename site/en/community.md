@@ -3,6 +3,7 @@ layout: page
 lang: en
 lang-ref: community
 title: OCR-D Community
+toc: true
 ---
 
 
