@@ -46,6 +46,10 @@ Weitere Informationen: [Projektseite der Niedersächsischen Staats- und Universi
 ### OCR4all libraries – Volltexterkennung historischer Sammlungen 
 _GEI Braunschweig, HCI und ZPD der Universität Würzburg_
 
+Im Projekt soll das am ZPD der Universität Würzburg entwickelte GUI-basierte Open-Source-Werkzeug OCR4all so erweitert und angepasst werden, dass Bibliotheken und Archive bei ihrer Massendigitalisierung die im Rahmen des OCR-D-Projekts erarbeiteten Lösungen niederschwellig, flexibel und eigenständig einsetzen können. Eine zusätzliche visuelle Erklärungskomponente soll darüber hinaus Unterstützung bei der Erstellung und Konfiguration optimaler OCR-Workflows bieten.
+
+Als Use Case fungiert die Forschungsbibliothek des GEI Braunschweig mit ihren digitalisierten Schulbüchern des 17. und 18. Jahrhunderts. Um zunehmende Komplexitäten der so entstehenden OCR-Lösung nutzerorientiert aufzufangen, wird die bestehende grafische Benutzerschnittstelle in enger Kooperation und unter Anleitung des HCI Lehrstuhl der Universität Würzburg angepasst und weiterentwickelt.
+
 <br/><br/>
 Weitere Informationen: [Projektseite der Deutschen Forschungsgemeinschaft](https://gepris.dfg.de/gepris/projekt/460665940?language=de)
 
