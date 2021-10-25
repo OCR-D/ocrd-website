@@ -3,6 +3,7 @@ layout: page
 title: How we want to develop software in OCR-D
 lang: en
 lang-ref: best-practice
+toc: true
 ---
 
 # Best Practice for Software Development in OCR-D
