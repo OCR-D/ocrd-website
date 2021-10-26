@@ -84,7 +84,7 @@ Göttingen State and University Library
 
 ### Michelle Weidling
 Göttingen State and University Library
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Paul Pestov
 Göttingen State and University Library
