@@ -53,7 +53,7 @@ Staatsbibliothek zu Berlin Preußischer Kulturbesitz
 
 ### Mustafa Dogan
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+[dogan[at]sub.uni-goettingen.de](mailto:dogan@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Philipp Wieder
 Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
@@ -84,15 +84,27 @@ Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 
 ### Mareen Geestmann
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Michelle Weidling
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+[weidling[at]sub.uni-goettingen.de](mailto:weidling@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Paul Pestov
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+[pestov[at]sub.uni-goettingen.de](mailto:pestov@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+
+### Triet Doan
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[triet.doan[at]gwdg.de](mailto:triet.doan@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
+
+### Mehmed Mustafa
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[mehmed.mustafa[at]gwdg.de](mailto:mehmed.mustafa@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
+
+### Jonas Schrewe
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[jonas.schrewe[at]gwdg.de](mailto:jonas.schrewe@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Ehemalige Projektbeteiligte
 

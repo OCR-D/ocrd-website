@@ -84,11 +84,23 @@ Göttingen State and University Library
 
 ### Michelle Weidling
 Göttingen State and University Library
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de)?subject=Request%20via%20OCR-D.de
+[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de
 
 ### Paul Pestov
 Göttingen State and University Library
 [pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
+
+### Triet Doan
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[triet.doan[at]gwdg.de](mailto:triet.doan@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
+
+### Mehmed Mustafa
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[mehmed.mustafa[at]gwdg.de](mailto:mehmed.mustafa@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
+
+### Jonas Schrewe
+Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
+[jonas.schrewe[at]gwdg.de](mailto:jonas.schrewe@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Former Managers
 
