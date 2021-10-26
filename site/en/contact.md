@@ -51,7 +51,7 @@ State Library of Berlin Prussian Cultural Heritage
 
 ### Mustafa Dogan
 Göttingen State and University Library
-[dogan[at]sub.uni-goettingen.de](mailto:dogan[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
+[dogan[at]sub.uni-goettingen.de](mailto:dogan@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Philipp Wieder
 Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
@@ -80,15 +80,15 @@ Berlin State Library - Prussian Cultural Heritage
 
 ### Mareen Geestmann
 Göttingen State and University Library
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
+[geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Michelle Weidling
 Göttingen State and University Library
-[weidling[at]sub.uni-goettingen.de](mailto:weidling[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
+[weidling[at]sub.uni-goettingen.de](mailto:weidling@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Paul Pestov
 Göttingen State and University Library
-[pestov[at]sub.uni-goettingen.de](mailto:pestov[at]sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
+[pestov[at]sub.uni-goettingen.de](mailto:pestov@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
 
 ### Triet Doan
 Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
