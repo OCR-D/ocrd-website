@@ -6,6 +6,8 @@ lang-ref: publications
 title: Publications
 ---
 
+<script>window.addEventListener('DOMContentLoaded', () => {linkifyVideosInPublications();})</script>
+
 ## Publications
 
 <div class="csl-bib-body" style="line-height: 1.35; ">
@@ -153,3 +155,4 @@ title: Publications
   <div class="csl-entry">Stäcker, Thomas; Herrmann, Elisa: Kooperationsprojekt zur Weiterentwicklung von OCR-Verfahren, Vortrag, 12. Workshop zur Texterkennung in historischen Dokumenten, Rostock 09.02.2016. Online: &lt;<a href="https://doi.org//slides/Rostock-2016-02-09/OCR-D_Rostock_09-02-2016.pdf">/slides/Rostock-2016-02-09/OCR-D_Rostock_09-02-2016.pdf</a>&gt;.</div>
   <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rft.type=presentation&amp;rft.title=Kooperationsprojekt%20zur%20Weiterentwicklung%20von%20OCR-Verfahren&amp;rft.identifier=%2Fslides%2FRostock-2016-02-09%2FOCR-D_Rostock_09-02-2016.pdf&amp;rft.aufirst=Thomas&amp;rft.aulast=St%C3%A4cker&amp;rft.au=Thomas%20St%C3%A4cker&amp;rft.au=Elisa%20Herrmann&amp;rft.date=2016-02-09&amp;rft.language=deutsch"></span>
 </div>
+
