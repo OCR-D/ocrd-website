@@ -5,6 +5,7 @@ toc: true
 lang-ref: publications
 title: Publications
 ---
+<script>window.addEventListener('DOMContentLoaded', () => {linkifyVideosInPublications();})</script>
 
 ## Publications
 
