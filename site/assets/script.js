@@ -29,6 +29,9 @@ function fixBulmanNavbarBurgers() {
 
 document.addEventListener('DOMContentLoaded', fixBulmanNavbarBurgers)
 
+/*
+ * table of contents toggle
+ */
 const sidebarToggle = document.querySelector('#toc-sidebar-toggle')
 if (sidebarToggle) {
   const sidebarContent = document.querySelector('#toc-sidebar-content')
@@ -40,9 +43,39 @@ if (sidebarToggle) {
   }
 }
 
+/*
+ * Toggle google search
+ */
 function ToggleSearchActive2() {
-    var T = document.getElementById("button-header")
-	var A = document.getElementById("google-search-header");
-    T.style.display = "none";  // <-- Set it to none
-	A.style.visibility = "visible";  // <-- Set it to visible
+  document.getElementById("button-header").style.display = "none";
+  document.getElementById("google-search-header").style.visibility = "visible";
 }
+
+/*
+ * Linkify videos in publications list / hide non-URL video (stemming from
+ * reusing the CSL short-title field for video URL)
+ */
+function linkifyVideosInPublications() {
+  const label = ' Video: '
+  document.querySelectorAll('.csl-entry').forEach(entry => {
+    const entry_text = entry.innerHTML
+    if (entry_text.indexOf(label) > -1) {
+      let [part_before, part_after] = entry_text.split(label)
+      if (part_after.indexOf('https://') > -1) {
+        // contains a link, linkify
+        part_after = part_after.replace('&lt;', '').replace('&gt;', '')
+        link_label = part_after
+        if (link_label.length > 50) {
+          link_label = `${link_label.substr(0, 50)}...`
+        }
+        part_after = `${label}&lt;<a href=${part_after}>${link_label}</a>&gt;.`
+      } else {
+        // contains something else, hide
+        part_after = ''
+        part_before = part_before.replace(/ ;$/, '.')
+      }
+      entry.innerHTML = `${part_before}${part_after}`
+    }
+  })
+}
+
