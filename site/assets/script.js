@@ -56,7 +56,7 @@ function ToggleSearchActive2() {
  * reusing the CSL short-title field for video URL)
  */
 function linkifyVideosInPublications() {
-  const label = ' Aufzeichnung: '
+  const label = ' Video: '
   document.querySelectorAll('.csl-entry').forEach(entry => {
     const entry_text = entry.innerHTML
     if (entry_text.indexOf(label) > -1) {
@@ -69,7 +69,6 @@ function linkifyVideosInPublications() {
           link_label = `${link_label.substr(0, 50)}...`
         }
         part_after = `${label}&lt;<a href=${part_after}>${link_label}</a>&gt;.`
-        console.log(part_after)
       } else {
         // contains something else, hide
         part_after = ''
