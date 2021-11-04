@@ -30,7 +30,7 @@ Die HAB Wolfenbüttel wird vertreten durch ihren Direktor, Herrn Prof. Dr. Peter
 Umsatzsteueridentifikationsnummer: DE811255517
 
 Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:
-Johannes Mangei Herzog August Bibliothek,
+Johannes Mangei, Herzog August Bibliothek,
 Lessingplatz 1,
 D-38304 Wolfenbüttel
 Tel.: +49(0)5331/808-3303,
