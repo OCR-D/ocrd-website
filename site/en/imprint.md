@@ -31,7 +31,7 @@ The HAB Wolfenbüttel is represented by its director, Prof. Dr. Peter Burschel
 Sales tax identification number: DE811255517
 
 Responsible for the content according to § 55 Abs. 2 RStV:
-Johannes Mangei
+Johannes Mangei,
 Duke August Library,
 Lessingplatz 1,
 D-38304 Wolfenbüttel
@@ -40,7 +40,7 @@ e-mail: mailto:mangei@hab.de
 
 ## Disclaimer:
 
-### Liability for contents 
+### Liability for contents
 The contents of our pages were created with the greatest care. However, we cannot guarantee
 that the contents are correct, complete and up-to-date. As a service provider, we are
 responsible for our own content on these pages according to § 7 para.1 TMG (German Telemedia
