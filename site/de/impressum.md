@@ -21,7 +21,8 @@ Lessingplatz 1,
 D-38304 Wolfenbüttel
 Tel.: +49(0)5331/808-0,
 Fax: +49(0)5331/808-302,
-e-mail: mailto:auskunft@hab.de
+E-Mail: [auskunft@hab.de](mailto:auskunft@hab.de)
+
 [http://www.hab.de](http://www.hab.de)
 
 ## Vertreter
@@ -34,7 +35,7 @@ Johannes Mangei, Herzog August Bibliothek,
 Lessingplatz 1,
 D-38304 Wolfenbüttel
 Tel.: +49(0)5331/808-3303,
-e-mail: mailto:mangei@hab.de
+E-Mail: [mangei@hab.de](mailto:mangei@hab.de)
 
 ## Haftungsausschluss:
 
