@@ -38,7 +38,7 @@ e-mail: mailto:mangei@hab.de
 
 ## Haftungsausschluss:
 
-### Haftung für Inhalte
+### Haftung für Inhalte 
 
 Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
 Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.

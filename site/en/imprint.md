@@ -40,7 +40,7 @@ e-mail: mailto:mangei@hab.de
 
 ## Disclaimer:
 
-### Liability for contents
+### Liability for contents 
 The contents of our pages were created with the greatest care. However, we cannot guarantee
 that the contents are correct, complete and up-to-date. As a service provider, we are
 responsible for our own content on these pages according to § 7 para.1 TMG (German Telemedia
