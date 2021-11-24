@@ -165,14 +165,17 @@ spec:
 	cd repo/spec; shinclude -c xml -i cli.md 2>/dev/null
 	cd repo/spec; shinclude -c xml -i ocrd_tool.md 2>/dev/null
 	cd repo/spec; shinclude -c xml -i ocrd_zip.md 2>/dev/null
-	for lang in en de;do \
-		mkdir -p $(SRCDIR)/$$lang/spec; \
-		find repo/spec -name '*.md'|while read md;do \
-			basename=$$(basename $$md); \
-			grep --max-count 1 --line-regexp '^---' "$$md" \
-			|| sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\n---\n" $$md \
-			> $(SRCDIR)/$$lang/spec/$$basename; \
-		done; \
+	mkdir -p $(SRCDIR)/en/spec $(SRCDIR)/de/spec; \
+	find repo/spec -name '*.md'|while read md;do \
+		basename=$$(basename $$md); \
+		title=$$(grep --max-count 1 '^# ' $$md|sed 's,# ,,'); \
+		lang="en"; \
+		if [[ "$$md" = *.de.md ]];then \
+			basename=$$(basename $$md|sed 's,\.de\.md,.md,'); \
+			lang="de"; \
+		fi; \
+		sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\ntitle: $$title\n---\n" $$md \
+		> $(SRCDIR)/de/spec/$$basename; \
 	done
 
 .PHONY: workflows
