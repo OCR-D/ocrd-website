@@ -167,11 +167,9 @@ Successful execution should signal `0`. Any non-zero return value is considered 
 
 ## Logging
 
-Data printed to `STDERR` and `STDOUT` is captured linewise and stored as log data.
+Data printed to `STDERR` is captured linewise and stored as log data.
 
 Processors must adjust logging verbosity according to the [`--log-level` parameter](#-l---log-level-loglevel).
-
-Errors, especially those leading to exceptions, must be printed to `STDERR`.
 
 The log messages must have the format `TIME LEVEL LOGGERNAME - MESSAGE\n`, where
 

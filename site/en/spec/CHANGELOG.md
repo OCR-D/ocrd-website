@@ -6,8 +6,7 @@ toc: true
 title: Change Log
 ---
 
-Change Log
-==========
+# Change Log
 
 All notable changes to the specs will be documented in this file.
 
@@ -15,9 +14,17 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.14.0] - 2021-11-03
+
 Changed:
 
-  * CLI: Processors being called without any arguments -> show help, #156
+  * Resource lookup: for `--location cwd` look directly in `<cwd>`, no subdirectory, OCR-D/core#727
+
+## [3.13.0] - 2021-09-20
+
+Changed:
+
+  * CLI: Logging should go to `STDERR`, parseable output to `STDOUT`, #183, OCR-D/core#713
 
 ## [3.12.0] - 2021-01-26
 
@@ -399,6 +406,8 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.14.0]: ../../compare/v3.14.0...v3.12.0
+[3.13.0]: ../../compare/v3.13.0...v3.12.0
 [3.12.0]: ../../compare/v3.12.0...v3.11.0
 [3.11.0]: ../../compare/v3.11.0...v3.10.0
 [3.10.0]: ../../compare/v3.10.0...v3.9.1
