@@ -315,8 +315,7 @@ function ToggleSearchActive2() {
 
     <div class="navbar-end">
 
-      <span class="navbar-item"><a href="/de/spec/ocrd_tool.html" title="View in German">de</a>
-              
+      <span class="navbar-item">
         </span>
 
 
@@ -362,7 +361,7 @@ large and static (e.g. a fixed dataset or a precomputed model) and should be cac
 indefinitely after download by setting the <code class="highlighter-rouge">cacheable</code> property to <code class="highlighter-rouge">true</code>.</p>
 
 <p>The filename itself, i.e. the concrete value <code class="highlighter-rouge">&lt;fpath&gt;</code> of a file parameter
-should be resolved in the following way:</p>
+should be resolved in the following way (<code class="highlighter-rouge">&lt;cwd&gt;</code> representing the current working directory):</p>
 
 <ul>
   <li>If <code class="highlighter-rouge">&lt;fpath&gt;</code> is an <code class="highlighter-rouge">http</code>/<code class="highlighter-rouge">https</code> URL: Download to a temporary directory (if
@@ -371,7 +370,7 @@ should be resolved in the following way:</p>
   <li>If <code class="highlighter-rouge">&lt;fpath&gt;</code> is a relative path, try resolving the following paths and return
 the first one found if any, otherwise abort with an error message stating so:
     <ul>
-      <li><code class="highlighter-rouge">$CWD/ocrd-resources/&lt;fpath&gt;</code></li>
+      <li><code class="highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly be in <code class="highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
       <li>If an environment variable is defined that has the name of the processor in
 upper-case and with <code class="highlighter-rouge">-</code> replaced with <code class="highlighter-rouge">-</code> and followed by <code class="highlighter-rouge">_PATH</code> (e.g. for a processor
 <code class="highlighter-rouge">ocrd-dummy</code>, the variable would need to be called <code class="highlighter-rouge">OCRD_DUMMY_PATH</code>):
