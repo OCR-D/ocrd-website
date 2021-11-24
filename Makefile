@@ -175,7 +175,7 @@ spec:
 			lang="de"; \
 		fi; \
 		sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\ntitle: $$title\n---\n" $$md \
-		> $(SRCDIR)/de/spec/$$basename; \
+		> $(SRCDIR)/$$lang/spec/$$basename; \
 	done
 
 .PHONY: workflows
