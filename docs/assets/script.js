@@ -52,8 +52,9 @@ function ToggleSearchActive2() {
 }
 
 /*
- * Linkify videos in publications list / hide non-URL video (stemming from
- * reusing the CSL short-title field for video URL)
+ * - Linkify videos in publications list / hide non-URL video (stemming from
+ *   reusing the CSL short-title field for video URL)
+ * - fix the `doi.org//` links
  */
 function linkifyVideosInPublications() {
   const label = ' Video: '
@@ -76,6 +77,11 @@ function linkifyVideosInPublications() {
       }
       entry.innerHTML = `${part_before}${part_after}`
     }
+    entry.querySelectorAll('a').forEach(link => {
+      if (link.href.indexOf('https://doi.org//') === 0) {
+        link.href = link.href.replace('https://doi.org//', '/')
+      }
+    })
   })
 }
 
