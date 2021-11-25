@@ -6,17 +6,61 @@ title: OCR-D Community
 toc: true
 ---
 
+
 # OCR-D Community
 
 In OCR-D bemühen wir uns um maximale Transparenz und Kommunikation unserer Arbeit nach innen und außen. Das Projekt ist auf verschiedenen Plattformen aktiv,
 die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmachen.
 
 ## Mitwirken und Mitreden
-**GitHub** – Probieren Sie es selbst aus: Auf GitHub finden Sie den aktuellen Stand unserer Entwicklungsarbeit am OCR-D Framework und den Modulprojekten:  
-[https://github.com/OCR&#8209;D](https://github.com/OCR-D)
+<div class="columns">
+	<main class="container content column" aria-label="Content">
+		<div class="tile is-ancestor">
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<p class="title title-image-header">Plattformen</p>	
+					<ul>
+						<li><b>Gitter</b> – Verfolgen Sie unsere Diskussionen und stellen Sie Ihre eigenen Fragen: Für die schnelle und niederschwellige Kommunikation untereinander nutzen wir den Gitter-Chat:  
+<a href="https://gitter.im/OCR&#8209;D/Lobby">https://gitter.im/OCR-D/Lobby</a>
+						</li>
+						<li> 
+						<b>GitHub</b> – Probieren Sie es selbst aus: Auf GitHub finden Sie den aktuellen Stand unserer Entwicklungsarbeit am OCR-D Framework und den Modulprojekten. Öffnen Sie bei Problemen ein Issue oder wirken Sie direkt mit, indem Sie ein Pull Request öffnen! <a href="https://github.com/OCR-D">https://github.com/OCR-D</a>
+						</li>
+						<li><b>Wiki</b> – Tutorials und mehr von der und für die Community:
+<a href="https://github.com/OCR-D/ocrd-website/wiki">https://github.com/OCR-D/ocrd-website/wiki</a>
+						</li>
+					</ul>
+				</article>
+			</div>
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+				<a href="https://github.com/OCR-D">
+					<p class="title title-image-header">GitHub</p>
+				</a>
+					<ul>
+						<li>
+							<div class="github-card" data-github="ocr-d/core" data-width="400" data-height="1" data-theme="default"></div>
+							<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+						</li>
+						<li>
+							<div class="github-card" data-github="ocr-d/ocrd_all" data-width="400" data-height="1" data-theme="default"></div>
+							<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+						</li>
+						<li>
+						Mehr Repositorien unter <a href="https://github.com/OCR-D">https://github.com/OCR-D</a>
+						</li>
+					</ul>
+<ul>
+						<li>
+</li>
+</ul>
+				</article>
+			</div>
+		</div>
+	</main>
+</div>
 
-**Gitter** – Verfolgen Sie unsere Diskussionen und stellen Sie Ihre eigenen Fragen: Für die schnelle und niederschwellige Kommunikation untereinander nutzen wir den Gitter-Chat:  
-[https://gitter.im/OCR&#8209;D/Lobby](https://gitter.im/OCR-D/Lobby)
+
 
 
 ## Veranstaltungen und regelmäßge Videokonferenzen
@@ -55,6 +99,7 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 		</div>
 	</main>
 </div>
+
 
 ## Daten und Publikationen
 

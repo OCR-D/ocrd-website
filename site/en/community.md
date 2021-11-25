@@ -15,11 +15,52 @@ which are mostly open to the professional public to read and participate.
 
 ## Participation and communication
 
-**GitHub** – Try it out yourself: On GitHub you can find the latest status of our developmental work on the OCR-D framework and the module projects:  
-[https://github.com/OCR&#8209;D](https://github.com/OCR-D)
-
-**Gitter** – Follow up on our discussions and ask your own questions: We use the chat platform Gitter for short-term and low-threshold communication with each other:
-[https://gitter.im/OCR&#8209;D/Lobby](https://gitter.im/OCR-D/Lobby)
+<div class="columns">
+	<main class="container content column" aria-label="Content">
+		<div class="tile is-ancestor">
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<p class="title title-image-header">Platforms</p>	
+					<ul>
+						<li><b>Gitter</b> – Follow up on our discussions and ask your own questions: We use the chat platform Gitter for short-term and low-threshold communication with each other:
+<a href="https://gitter.im/OCR&#8209;D/Lobby">https://gitter.im/OCR-D/Lobby</a>
+						</li>
+						<li> 
+						<b>GitHub</b> – Try it out yourself: On GitHub you can find the latest status of our developmental work on the OCR-D framework and the module projects. In case of problems, open an issue or participate directly with pull requests! <a href="https://github.com/OCR-D">https://github.com/OCR-D</a>
+						</li>
+						<li><b>Wiki</b> – Tutorials and more from and for the community:
+<a href="https://github.com/OCR-D/ocrd-website/wiki">https://github.com/OCR-D/ocrd-website/wiki</a>
+						</li>
+					</ul>
+				</article>
+			</div>
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+				<a href="https://github.com/OCR-D">
+					<p class="title title-image-header">GitHub</p>
+				</a>
+					<ul>
+						<li>
+							<div class="github-card" data-github="ocr-d/core" data-width="400" data-height="1" data-theme="default"></div>
+							<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+						</li>
+						<li>
+							<div class="github-card" data-github="ocr-d/ocrd_all" data-width="400" data-height="1" data-theme="default"></div>
+							<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+						</li>
+						<li>
+						More repositories at <a href="https://github.com/OCR-D">https://github.com/OCR-D</a>
+						</li>
+					</ul>
+<ul>
+						<li>
+</li>
+</ul>
+				</article>
+			</div>
+		</div>
+	</main>
+</div>
 
 ## Events and regular Calls
 
