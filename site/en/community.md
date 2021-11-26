@@ -13,6 +13,44 @@ In OCR-D, we strive for maximum transparency and communication of our work
 internally as well as externally. The project is active on various platforms,
 which are mostly open to the professional public to read and participate.
 
+## Events and regular Calls
+
+<div class="columns">
+	<main class="container content column" aria-label="Content">
+		<div class="tile is-ancestor">
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<ul>
+					<li><strong>OCR-D @ Kitodo-Anwendertreffen (Kitodo Users' Meeting) 2021 (24/25&nbsp;November)</strong> – Information on the programme and registration: <a href="https://www.kitodo.org/en/anwendertreffen">https://www.kitodo.org/en/anwendertreffen</a>
+					</li>
+					<li><strong>OCR-D @ vBIB2021 (01/02&nbsp;December)</strong> – Information on the programme: 
+					<a href="https://www.vbib.net/vbib21-programm/">https://www.vbib.net/vbib21-programm/</a>
+					</li>
+					<hr>
+					<li>
+						<strong>OCR-D TechCall</strong> – Take part in our technical discussions about OCR-D tools and issues; every second Wednesday, 2 to 3 p.m. (Berlin Time):
+						<a href="https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng">Link&nbsp;to&nbsp;agenda/minutes</a>
+					</li>
+					<li>
+						<strong>!NEW! OCR-D GT-Call</strong> – Take part in our discussions about Ground Truth Data; every second Thursday, 1 to 2 p.m. (Berlin Time): 
+						<a href="https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig">Link&nbsp;to&nbsp;agenda/minutes</a>
+					</li>
+					<li>
+						<strong>OCR(-D) & Co</strong> – Bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 a.m. (Berlin Time):
+						<a href="https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w">Link&nbsp;to&nbsp;agenda/minutes</a>
+					</li>
+					</ul>
+				</article>
+			</div>
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
+				</article>
+			</div>
+		</div>
+	</main>
+</div>
+
 ## Participation and communication
 
 <div class="columns">
@@ -56,44 +94,6 @@ which are mostly open to the professional public to read and participate.
 						<li>
 </li>
 </ul>
-				</article>
-			</div>
-		</div>
-	</main>
-</div>
-
-## Events and regular Calls
-
-<div class="columns">
-	<main class="container content column" aria-label="Content">
-		<div class="tile is-ancestor">
-			<div class="tile is-parent">
-				<article class="tile is-child box has-text-alligned">
-					<ul>
-					<li><strong>OCR-D @ Kitodo-Anwendertreffen (Kitodo Users' Meeting) 2021 (24/25&nbsp;November)</strong> – Information on the programme and registration: <a href="https://www.kitodo.org/en/anwendertreffen">https://www.kitodo.org/en/anwendertreffen</a>
-					</li>
-					<li><strong>OCR-D @ vBIB2021 (01/02&nbsp;December)</strong> – Information on the programme: 
-					<a href="https://www.vbib.net/vbib21-programm/">https://www.vbib.net/vbib21-programm/</a>
-					</li>
-					<hr>
-					<li>
-						<strong>OCR-D TechCall</strong> – Take part in our technical discussions about OCR-D tools and issues; every second Wednesday, 2 to 3 p.m. (Berlin Time):
-						<a href="https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng">Link&nbsp;to&nbsp;agenda/minutes</a>
-					</li>
-					<li>
-						<strong>!NEW! OCR-D GT-Call</strong> – Take part in our discussions about Ground Truth Data; every second Thursday, 1 to 2 p.m. (Berlin Time): 
-						<a href="https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig">Link&nbsp;to&nbsp;agenda/minutes</a>
-					</li>
-					<li>
-						<strong>OCR(-D) & Co</strong> – Bring in your own questions and ideas and join our discussions on OCR(-D); every first Friday in a month, 10 to 11 a.m. (Berlin Time):
-						<a href="https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w">Link&nbsp;to&nbsp;agenda/minutes</a>
-					</li>
-					</ul>
-				</article>
-			</div>
-			<div class="tile is-parent">
-				<article class="tile is-child box has-text-alligned">
-					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
 				</article>
 			</div>
 		</div>
