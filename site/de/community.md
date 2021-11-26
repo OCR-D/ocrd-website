@@ -12,6 +12,43 @@ toc: true
 In OCR-D bemühen wir uns um maximale Transparenz und Kommunikation unserer Arbeit nach innen und außen. Das Projekt ist auf verschiedenen Plattformen aktiv,
 die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmachen.
 
+## Veranstaltungen und regelmäßge Videokonferenzen
+<div class="columns">
+	<main class="container content column" aria-label="Content">
+		<div class="tile is-ancestor">
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<ul>
+					<li><strong>OCR-D @ Kitodo-Anwendertreffen 2021 (24./25.&nbsp;November)</strong> – Informationen zum Programm und zur Anmeldung: <a href="https://www.kitodo.org/anwendertreffen">https://www.kitodo.org/anwendertreffen</a>
+					</li>
+					<li><strong>OCR-D @ vBIB2021 (01./02.&nbsp;Dezember)</strong> – Informationen zum Programm: 
+					<a href="https://www.vbib.net/vbib21-programm/">https://www.vbib.net/vbib21-programm/</a>
+					</li>
+					<hr>
+					<li>
+						<strong>OCR-D TechCall</strong> – Nehmen Sie an unseren technischen Diskussionen über OCR-D-Werkzeuge und -Themen teil; jeden zweiten Mittwoch, 14 bis 15 Uhr:
+						<a href="https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
+					</li>
+					<li>
+						<strong>!NEU! OCR-D GT-Call</strong> – Nehmen Sie an unseren Diskussionen rund um das Thema Ground-Truth-Daten teil; jeden zweiten Donnerstag, 13 bis 14 Uhr:
+						<a href="https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
+					</li>
+					<li>
+						<strong>OCR(-D) & Co</strong> – Bringen Sie Ihre eigenen Fragen und Ideen ein und diskutieren Sie mit uns über OCR(-D); jeden ersten Freitag im Monat, 10 bis 11 Uhr:
+						<a href="https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
+					</li>
+					</ul>
+				</article>
+			</div>
+			<div class="tile is-parent">
+				<article class="tile is-child box has-text-alligned">
+					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
+				</article>
+			</div>
+		</div>
+	</main>
+</div>
+
 ## Mitwirken und Mitreden
 <div class="columns">
 	<main class="container content column" aria-label="Content">
@@ -59,47 +96,6 @@ die größtenteils für die Fachöffentlichkeit offen sind zum Lesen und Mitmach
 		</div>
 	</main>
 </div>
-
-
-
-
-## Veranstaltungen und regelmäßge Videokonferenzen
-<div class="columns">
-	<main class="container content column" aria-label="Content">
-		<div class="tile is-ancestor">
-			<div class="tile is-parent">
-				<article class="tile is-child box has-text-alligned">
-					<ul>
-					<li><strong>OCR-D @ Kitodo-Anwendertreffen 2021 (24./25.&nbsp;November)</strong> – Informationen zum Programm und zur Anmeldung: <a href="https://www.kitodo.org/anwendertreffen">https://www.kitodo.org/anwendertreffen</a>
-					</li>
-					<li><strong>OCR-D @ vBIB2021 (01./02.&nbsp;Dezember)</strong> – Informationen zum Programm: 
-					<a href="https://www.vbib.net/vbib21-programm/">https://www.vbib.net/vbib21-programm/</a>
-					</li>
-					<hr>
-					<li>
-						<strong>OCR-D TechCall</strong> – Nehmen Sie an unseren technischen Diskussionen über OCR-D-Werkzeuge und -Themen teil; jeden zweiten Mittwoch, 14 bis 15 Uhr:
-						<a href="https://pad.gwdg.de/75dyxG6gS-e0Q04_fpm-ng">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
-					</li>
-					<li>
-						<strong>!NEU! OCR-D GT-Call</strong> – Nehmen Sie an unseren Diskussionen rund um das Thema Ground-Truth-Daten teil; jeden zweiten Donnerstag, 13 bis 14 Uhr:
-						<a href="https://pad.gwdg.de/3mceR3VcSUOJSFVnazaiig">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
-					</li>
-					<li>
-						<strong>OCR(-D) & Co</strong> – Bringen Sie Ihre eigenen Fragen und Ideen ein und diskutieren Sie mit uns über OCR(-D); jeden ersten Freitag im Monat, 10 bis 11 Uhr:
-						<a href="https://pad.gwdg.de/4DOfRl42RIeAQYDaimFx-w">Link,&nbsp;Agenda&nbsp;und&nbsp;Protokoll</a>
-					</li>
-					</ul>
-				</article>
-			</div>
-			<div class="tile is-parent">
-				<article class="tile is-child box has-text-alligned">
-					<iframe src="/ocrd-calendar.html" width="600" height="400" ></iframe>
-				</article>
-			</div>
-		</div>
-	</main>
-</div>
-
 
 ## Daten und Publikationen
 
