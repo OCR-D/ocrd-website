@@ -30,7 +30,7 @@ Dazu wurde ein Koordinationsprojekt gebildet, das in der ersten Projektphase Ent
 Volltexterkennung wird dabei als ein komplexer Prozess aufgefasst, der neben der eigentlichen Texterkennung mehrere vor- und nachgelagerte Schritte einschließt (vgl. Abbildung). Zunächst wird ein Bilddigitalisat im Preprocessing für die Texterkennung aufbereitet, indem es nach Bedarf in ein Schwarz-Weiß-Bild umgewandelt (Binarization), zugeschnitten (Cropping), begradigt (Deskewing), entzerrt (Dewarping) und von Flecken bereinigt (Despeckling) wird. Im Anschluss erfolgt die Layouterkennung, die die Textbereiche einer Seite bis auf Zeilenebene identifiziert. Besonders die Erkennung der Zeilen bzw. der Grundlinie ist wichtig für die anschließende eigentliche Texterkennung, die in allen modernen Ansätzen auf Neuronalen Netzen beruht. Danach werden die einzelnen Strukturen bzw. Elemente des volltexterkannten Dokuments ihrer typografischen Funktion nach klassifiziert und das OCR-Ergebnis ggf. in der Nachkorrektur verbessert, bevor es in Repositorien zur Langzeitarchivierung überführt wird.
 
 Neben der anvisierten Volltexttransformation von VD-Titeln (16.–19. Jahrhundert), die im Rahmen des OCR-D-Projekts technisch und konzeptionell vorbereitet wird, verfolgt OCR-D die folgenden weiteren Ziele:
-*   die Erstellung von [Referenzkorpora](data) zum Trainieren und Testen
+*   die Erstellung von [Referenzkorpora](daten) zum Trainieren und Testen
 *   die Erarbeitung von [Standards in den Bereichen Metadaten, Dokumentation und Ground Truth](spec)
 *   die Weiterentwicklung einzelner Verarbeitungsschritte, wobei der Fokus insbesondere auf der Optical Layout Recognition (OLR) liegt
 *   die Analyse vorhandener Tools und deren Weiterentwicklung
@@ -42,10 +42,10 @@ In allen Schritten begrüßen wir einen regen Austausch mit Kolleginnen und Koll
 Zu diesem Zweck gibt es bereits eine aktive Community, die unter anderem über unseren [Chat](https://gitter.im/OCR-D/Lobby) oder unsere [regelmäßig stattfindenden Onlinemeetings](community) erreicht werden kann. 
 Interessierte aus Wissenschaft und Praxis sind ebenso willkommen wie Privatpersonen, die OCR-D nutzen (möchten).
 
-Auf unserer Website finden Sie außerdem eine [Sammlung von (wissenschaftlichen) Publikationen und Vorträgen](publications) zum Thema OCR(-D) unserer aktuellen und ehemaligen Projektbeteiligten.
+Auf unserer Website finden Sie außerdem eine [Sammlung von (wissenschaftlichen) Publikationen und Vorträgen](publikationen) zum Thema OCR(-D) unserer aktuellen und ehemaligen Projektbeteiligten.
 
 ## Ergebnisse vergangener Projektphasen
 Derzeit befindet sich OCR-D in der dritten Projektphase. Ergebnisse der vergangenen Projektphasen können Sie auf diesen Seiten jederzeit nachlesen:
-* [Nutzer*innenumfrage [Phase I]](user_survey)
+* [Nutzer*innenumfrage [Phase I]](survey)
 * [Modulprojekte aus Phase II](phase2)
 * [Pilotstudie [Phase II]](teststellung)
