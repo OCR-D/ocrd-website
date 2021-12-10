@@ -34,7 +34,7 @@ Das Projekt verfolgt vier aufeinander aufbauende und sich komplementär ergänze
 <br/><br/>
 Weitere Informationen: [Projektseite der Universitätsbibliothek Mannheim](https://www.bib.uni-mannheim.de/ihre-ub/projekte-der-ub/ocr-d-kitodo/)
 
-### OPERANDI - OCR-D Performanzoptimierung und Integration. Ein Implementierungspaket der OCR-D-Software für die Massendigitalisierung
+### OPERANDI – OCR-D Performanzoptimierung und Integration. Ein Implementierungspaket der OCR-D-Software für die Massendigitalisierung
 _SUB Göttingen, GWDG_
 
 Das Ziel von OPERANDI ist die Entwicklung und der Aufbau eines auf OCR-D basierenden Implementierungspaketes zur Massenvolltexterfassung mit verbessertem Durchsatz, bei besserer Qualität der Ergebnisse. Zugleich wird das Ziel verfolgt, dass das Implementierungspaket auch von anderen Vorhaben und Einrichtungen mit vergleichbaren Anforderungen nachgenutzt werden kann. Im Rahmen der Pilotierung wurden zwei Szenarien identifiziert. Im ersten Szenario soll die OCR-Erzeugung für bereits digitalisierte Werke stattfinden, was in einer Massenvolltexterfassung mündet. Im zweiten Szenario erfolgt die OCR-Erzeugung für neue zu digitalisierende Werke im Rahmen des Digitalisierungsprozesses.
@@ -64,7 +64,7 @@ Weitere Informationen: [Projektseite der Deutschen Forschungsgemeinschaft](https
 
 ## Modulprojekte
 
-### Workflow für werkspezifisches Training auf Basis generischer Modelle mit OCR-D sowie Ground Truth Aufwertung 
+### Workflow für werkspezifisches Training auf Basis generischer Modelle mit OCR-D sowie Ground-Truth-Aufwertung 
 _UB Mannheim_
 
 Ziel dieses Projektes ist, dass Einrichtungen (zum Beispiel Bibliotheken) möglichst einfach die Module des OCR-D-Workflows nachtrainieren können, so dass bessere Erkennungs­raten für spezifische Werke erreicht werden können.
@@ -72,13 +72,21 @@ Ziel dieses Projektes ist, dass Einrichtungen (zum Beispiel Bibliotheken) mögli
 <br/><br/>
 Weitere Informationen: [Projektseite der Universitätsbibliothek Mannheim](https://www.bib.uni-mannheim.de/ihre-ub/projekte-der-ub/ocr-d-modelltraining/)
 
-### Erkennung von Schriftartgruppen zur OCR Verbesserung
+### Erkennung von Schriftartgruppen zur OCR-Verbesserung
 _JGU Mainz, FAU Erlangen-Nürnberg_
+
+Dieses Projekt baut auf den Ergebnissen des Vorgängerprojekts »Entwicklung eines Modellrepositoriums und einer automatischen Schriftarterkennung für OCR-D« auf, in dem wir ein Werkzeug entwickelt haben, das automatisch die dominierende Schriftart auf einer gegebenen Seite erkennt.
+
+Diese Fortsetzung verfolgt drei Hauptziele:
+
+* Die Entwicklung eines feingranulareren Schriftarterkennungswerkzeugs
+* Die Generierung schriftartspezifischer OCR-Trainingsdaten
+* Das Training schriftartspezifischer OCR-Modelle
 
 <br/><br/>
 Weitere Informationen: [Projektseite der Deutschen Forschungsgemeinschaft](https://gepris.dfg.de/gepris/projekt/460605811?language=de)
 
-### OLA-HD Service - Ein generischer Dienst für die Langzeitarchivierung historischer Drucke 
+### OLA-HD Service – Ein generischer Dienst für die Langzeitarchivierung historischer Drucke 
 _SUB Göttingen, GWDG_
 
 Das primäre Projektziel ist die Entwicklung eines produktiven Dienstes für die Langzeitarchivierung von historischen Drucken im Rahmen von OCR-D. Dieser OLA-HD Service baut auf dem entsprechenden Prototypen aus der OCR-D Phase II auf, erweitert diesen gemäß der Anforderungen der Implementierungsprojekte, wird in das OCR-D Framework integriert und wird entsprechend der Ausschreibungsanforderungen generisch konzipiert und umgesetzt.

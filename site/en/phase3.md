@@ -78,10 +78,18 @@ Further information: [Projekt page of the University Library Mannheim](https://w
 ### Font Group Recognition for Improved OCR 
 _JGU Mainz, FAU Erlangen-Nürnberg_
 
+This project builds on the Module Projekt »Entwicklung eines Modellrepositoriums und einer automatischen Schriftarterkennung für OCR-D« in which we developed a tool that identifies the main font group present on a given page.
+
+This continuation aims for three main goals:
+
+* Development of a more fine-granular font group recognition tool
+* Generation of font-group-specific OCR training-data
+* Training of font-group-specific OCR-models 
+
 <br/><br/>
 Further information: [Project page of the German Research Foundation](https://gepris.dfg.de/gepris/projekt/460605811?language=en)
 
-### OLA-HD Service - A Generic Service for Long-Term Archiving of Historical Prints 
+### OLA-HD Service – A Generic Service for Long-Term Archiving of Historical Prints 
 _SUB Göttingen, GWDG_
 
 The primary goal of this project is the development of a productive service for the long-term archiving of historical prints in the context of OCR-D. This OLA-HD Service is based on the corresponding prototype from OCR-D Phase II, expands it according to the requirements of the implementation projects, is integrated into the OCR-D framework and is generically designed and implemented according to the tender requirements.
