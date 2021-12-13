@@ -184,3 +184,10 @@ or simply run both at once:
 make build-site deploy
 ```
 
+
+### URL Shortcuts
+
+To add a shortcut to use the `https://ocr-d.de/goto/foo` mechanism:
+
+* Add a line consisting of the shortcut name, a space charater and the URL to `shortcuts.txt`
+* `make shortcuts`

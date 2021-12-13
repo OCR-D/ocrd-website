@@ -189,3 +189,14 @@ site/en/workflows.md: site/en/workflows.src.md $(wildcard repo/ocrd-website.wiki
 	@echo "!!! Manually edit site/en/workflows.md before comitting!"
 	@echo "!!!"
 
+shortcuts:
+	mkdir -p site/goto
+	while read line;do \
+		slug_and_url=($${line}); \
+		slug=$${slug_and_url[0]}; \
+		url=$${slug_and_url[1]}; \
+		dir=site/goto/$$slug; \
+		index_html=$$dir/index.html; \
+		mkdir -p $$dir; \
+		sed "s,{{ url }},$$url,g" shortcuts.template.html > $$index_html; \
+	done < shortcuts.txt
