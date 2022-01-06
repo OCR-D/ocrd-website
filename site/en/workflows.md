@@ -187,9 +187,9 @@ can be especially useful for images which have not been enhanced.
     <tr data-processor="ocrd-olena-binarize">
       <td>ocrd-olena-binarize
       </td>
-      <td><code>-P k 0.10</code>
+      <td><code>-P impl wolf -P k 0.10</code>
       </td>
-      <td>Recommended</td>
+      <td>Fast</td>
       <td class="processor-call">
         <code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code>
       </td>
@@ -203,7 +203,7 @@ can be especially useful for images which have not been enhanced.
     <tr data-processor="ocrd-sbb-binarize">
       <td>ocrd-sbb-binarize</td>
       <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/) or via the [OCR-D resource manager](https://ocr-d.de/en/models)</td>
+      <td>Recommended; pre-trained models can be downloaded from <a href="https://qurator-data.de/sbb_binarization/">here</a> or via the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a></td>
       <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model modelname</code></td>
  </tr>
 	<tr data-processor="ocrd-skimage-binarize">
@@ -212,11 +212,11 @@ can be especially useful for images which have not been enhanced.
       <td>Slow</td>
       <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
-    <tr data-processor="ocrd-anybaseocr-binarize">
-      <td>ocrd-anybaseocr-binarize</td>
-      <td><code>-P threshold 0.1</code></td>
+    <tr data-processor="ocrd-doxa-binarize">
+      <td>ocrd-doxa-binarize</td>
+      <td><code>-P algorithm ISauvola</code></td>
       <td>Fast</td>
-      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+      <td><code>ocrd-doxa-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
   </tbody>
 </table>
@@ -507,7 +507,7 @@ In this processing step, an (optimized) document image is taken as an input and 
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, ...) or fine-grained (paragraph, marginalia, heading, ...).
 
-**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-eynollah segment`, `ocrd-sbb-textline-detector` and
+**Note:** The `ocrd-tesserocr-segment`, `ocrd-tesserocr-recognize`, `ocrd-eynollah-segment`, `ocrd-sbb-textline-detector` and
 `ocrd-cis-ocropy-segment` processors do not only segment the page, but
 also the text lines within the detected text regions in one
 step. Therefore with those (and only with those!) processors you don't need to
@@ -603,7 +603,7 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
       <td>Recommended. Will reuse internal tesseract iterators to produce a complete segmentation with tight polygons instead of bounding boxes where possible</td>
       <td><code>ocrd-tesserocr-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG -P find_tables false -P shrink_polygons true</code></td>
     </tr>
-	<tr data-processor="ocrd-eynollah-segment">
+    <tr data-processor="ocrd-eynollah-segment">
       <td>ocrd-eynollah-segment</td>
       <td><code>-P models</code></td>
       <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
@@ -821,7 +821,7 @@ boxes with lots of hard-to-recover overlap). _Alternatively_, run with
 `shrink_polygons=True` (accessing that same iterator to calculate convex hull
 polygons)
 
-**Note:** As described in [Step 7](#step-7-page-segmentation),`ocrd-eynollah-segment`, `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
+**Note:** As described in [Step 7](#step-7-page-segmentation), `ocrd-eynollah-segment`, `ocrd-sbb-textline-detector` and `ocrd-cis-ocropy-segment` do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
 need to segment into lines in an extra step.
 
@@ -1081,12 +1081,7 @@ one (e.g. to `deu3.traineddata`).
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md|sed '$d' -->
 In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned
-into one annotation with `TextEquiv` alternatives.
-
-**Note:** This step is only required if you want to do post-correction afterwards,
-feeding alternative character hypotheses from several OCR-engines to improve the search space.
-The previous recognition step must be run on glyph or at least on word level.
-
+into one annotation.
 
 #### Available processors
 
@@ -1101,13 +1096,34 @@ The previous recognition step must be run on glyph or at least on word level.
   </thead>
   <tbody>
     <tr>
+      <td>ocrd-cor-asv-ann-align</td>
+      <td>
+      <code>-P method majority</code>
+      </td>
+      <td></td>
+    <td><code>ocrd-cor-asv-ann-align -I OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 -O OCR-D-ALIGN</code></td>
+    </tr>
+    <tr>
       <td>ocrd-cis-align</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2 -O OCR-D-ALIGN</code></td>
+      <td></td>
+      <td></td>
+    <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 -O OCR-D-ALIGN</code></td>
     </tr>
   </tbody>
 </table>
+
+## Comparison
+
+| | ocrd-cor-asv-ann-align | ocrd-cis-align |
+| --- | --- | --- |
+| **goal** | optimal aligned string (i.e. _as_ post-correction) | candidates for input _for_ ocrd-cis-postcorrect |
+| **input arity** | N fileGrps | N fileGrps (first as "master") |
+| **input constraints** | textlines must have common IDs | regions and textlines must be in same order |
+| **input level** | textline (+ optionally words or glyphs for confidence) | textline (for strings) and word (for resegmentation) |
+| **output** | PAGE with single-best TextEquiv per textline | PAGE with multiple aligned TextEquivs per textline |
+| **alignment library** | `difflib.SequenceMatcher` | [`de.lmu.cis.ocrd.align`](https://github.com/cisocrgroup/ocrd-postcorrection/tree/master/src/main/java/de/lmu/cis/ocrd/align) |
+| **alignment method** | true n-ary multi-alignment (closest pairs first), including lower level confidences | 1:n alignment with master also restricting allowable word-segmentation |
+| **decision** | majority voting, confidence voting, or combination | no decision |
 
 <!-- END-EVAL -->
 
@@ -1185,7 +1201,9 @@ In this processing step, the text output of the OCR or post-correction can be ev
   <tbody>
     <tr data-processor="ocrd-dinglehopper">
       <td>ocrd-dinglehopper</td>
-      <td></td>
+      <td>
+      <code>-P textequiv_level region</code>
+      </td>
       <td>For page-wise visual comparison (2 file groups). First input group should point to the ground truth.</td>
       <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
@@ -1193,14 +1211,29 @@ In this processing step, the text output of the OCR or post-correction can be ev
       <td>ocrd-cor-asv-ann-evaluate</td>
       <td>
       <code>-P metric historic-latin</code>
+      <code>-P gt_level 2</code>      
       <code>-P confusion 20</code>
+      <code>-P histogram true</code>
       </td>
-      <td>For document-wide aggregation (N file groups). First input group should point to the ground truth. 
-      <br/>There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add <code>2> eval.txt</code> at the end of your command (or use <code>ocrd-make</code>).</td>
-      <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
+      <td>For document-wide aggregation (N file groups). First input group should point to the ground truth.</td>
+      <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
   </tbody>
 </table>
+
+## Comparison
+
+| | ocrd-dinglehopper | ocrd-cor-asv-ann-evaluate |
+| --- | ----------------| -------------------- |
+| **goal** | CER/WER and visualization | CER/WER (mean+stddev) |
+| **granularity** | only single pages | single-page + aggregated |
+| **input arity** | 2 fileGrps | N fileGrps |
+| **input constraints** | segmentations may deviate | segments must have same IDs |
+| **input level** | region or textline | textline |
+| **output** | HTML + JSON report per page | JSON report per page+all |
+| **alignment** | `rapidfuzz.string_metric.levenshtein_editops` | `difflib.SequenceMatcher` |
+| **Unicode** | `uniseg.graphemeclusters` to get distances on graphemes | calculates alignment on codepoints, but post-processes combining characters |
+| **charset** | NFC + a set of normalizations that (roughly) target OCR-D GT transcription guidelines level 3 to level 2 | NFC or NFKC or a custom normalization (called `historic_latin`) with setting `gt_level` 1/2/3 |
 
 <!-- END-EVAL -->
 
