@@ -1180,9 +1180,43 @@ echo '{}'
 
 ## Evaluation (Optional)
 
-If Ground Truth data is available, the OCR can be evaluated.
+If Ground Truth data is available, the OCR and layout recognition can be evaluated.
 
-### Step 17: OCR Evaluation
+### Step 17: Layout Evaluation
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-OLR-evaluation.md|sed '$d' -->
+In this processing step, GT annotation and segmentation results are matched
+and evaluated.
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ocrd-segment-evaluate</td>
+      <td>
+      <code>-P level-of-operation region</code>
+      <code>-P only-fg true</code>
+      <code>-P ignore-subtype true</code>
+      <code>-P for-categories TextRegion,TableRegion</code>
+      </td>
+      <td>alpha</td>
+    <td><code>ocrd-segment-evaluate -I OCR-D-GT-SEG,OCR-D-SEG -O OCR-D-SEG-EVAL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+### Step 18: OCR Evaluation
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d' -->
 In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.
@@ -1243,7 +1277,7 @@ OCR-D produces PAGE XML files which contain the recognized text as well as detai
 information on the structure of the processed pages, the coordinates of the recognized
 elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)
 
-### Step 18: Adaptation of Coordinates
+### Step 19: Adaptation of Coordinates
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaptation-of-coordinates.md|sed '$d' -->
 All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (`Page/@imageFilename`). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to function properly.
@@ -1283,7 +1317,7 @@ Conversely, you might want to align two PAGE-XML files for the same page that ha
 
 <!-- END-EVAL -->
 
-### Step 19: Format Conversion
+### Step 20: Format Conversion
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d' -->
 In this processing step the produced PAGE XML files can be converted to ALTO,
@@ -1410,7 +1444,7 @@ accessible format that can be used as-is by expert and layman alike.
 
 <!-- END-EVAL -->
 
-### Step 20: Archiving
+### Step 21: Archiving
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d' -->
 After you have successfully processed your images, the results should be saved and archived. OLA-HD is
@@ -1450,7 +1484,7 @@ To use the prototype, specify http://141.5.98.232/api as the endpoint parameter 
 
 <!-- END-EVAL -->
 
-### Step 21: Dummy Processing
+### Step 22: Dummy Processing
 
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.

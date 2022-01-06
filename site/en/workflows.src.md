@@ -299,9 +299,13 @@ In this processing step, the text line images get vertically aligned if they are
 
 ## Evaluation (Optional)
 
-If Ground Truth data is available, the OCR can be evaluated.
+If Ground Truth data is available, the OCR and layout recognition can be evaluated.
 
-### Step 17: OCR Evaluation
+### Step 17: Layout Evaluation
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-OLR-evaluation.md|sed '$d'-->
+
+### Step 18: OCR Evaluation
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d'-->
 
@@ -311,19 +315,19 @@ OCR-D produces PAGE XML files which contain the recognized text as well as detai
 information on the structure of the processed pages, the coordinates of the recognized
 elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)
 
-### Step 18: Adaptation of Coordinates
+### Step 19: Adaptation of Coordinates
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaptation-of-coordinates.md|sed '$d'-->
 
-### Step 19: Format Conversion
+### Step 20: Format Conversion
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d'-->
 
-### Step 20: Archiving
+### Step 21: Archiving
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d'-->
 
-### Step 21: Dummy Processing
+### Step 22: Dummy Processing
 
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.
