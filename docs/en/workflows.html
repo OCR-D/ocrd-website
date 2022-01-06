@@ -438,6 +438,10 @@ function ToggleSearchActive2() {
               <li><a href="#available-processors-17">Available processors</a></li>
             </ul>
           </li>
+        </ul>
+      </li>
+      <li><a href="#comparison">Comparison</a>
+        <ul>
           <li><a href="#step-16-post-correction">Step 16: Post-correction</a>
             <ul>
               <li><a href="#available-processors-18">Available processors</a></li>
@@ -447,33 +451,39 @@ function ToggleSearchActive2() {
       </li>
       <li><a href="#evaluation-optional">Evaluation (Optional)</a>
         <ul>
-          <li><a href="#step-17-ocr-evaluation">Step 17: OCR Evaluation</a>
+          <li><a href="#step-17-layout-evaluation">Step 17: Layout Evaluation</a>
             <ul>
               <li><a href="#available-processors-19">Available processors</a></li>
             </ul>
           </li>
-        </ul>
-      </li>
-      <li><a href="#generic-data-management-optional">Generic Data Management (Optional)</a>
-        <ul>
-          <li><a href="#step-18-adaptation-of-coordinates">Step 18: Adaptation of Coordinates</a>
+          <li><a href="#step-18-ocr-evaluation">Step 18: OCR Evaluation</a>
             <ul>
               <li><a href="#available-processors-20">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-19-format-conversion">Step 19: Format Conversion</a>
+        </ul>
+      </li>
+      <li><a href="#comparison-1">Comparison</a></li>
+      <li><a href="#generic-data-management-optional">Generic Data Management (Optional)</a>
+        <ul>
+          <li><a href="#step-19-adaptation-of-coordinates">Step 19: Adaptation of Coordinates</a>
             <ul>
               <li><a href="#available-processors-21">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-20-archiving">Step 20: Archiving</a>
+          <li><a href="#step-20-format-conversion">Step 20: Format Conversion</a>
             <ul>
               <li><a href="#available-processors-22">Available processors</a></li>
             </ul>
           </li>
-          <li><a href="#step-21-dummy-processing">Step 21: Dummy Processing</a>
+          <li><a href="#step-21-archiving">Step 21: Archiving</a>
             <ul>
               <li><a href="#available-processors-23">Available processors</a></li>
+            </ul>
+          </li>
+          <li><a href="#step-22-dummy-processing">Step 22: Dummy Processing</a>
+            <ul>
+              <li><a href="#available-processors-24">Available processors</a></li>
             </ul>
           </li>
         </ul>
@@ -686,9 +696,9 @@ can be especially useful for images which have not been enhanced.</p>
     <tr data-processor="ocrd-olena-binarize">
       <td>ocrd-olena-binarize
       </td>
-      <td><code>-P k 0.10</code>
+      <td><code>-P impl wolf -P k 0.10</code>
       </td>
-      <td>Recommended</td>
+      <td>Fast</td>
       <td class="processor-call">
         <code>ocrd-olena-binarize -I OCR-D-IMG -O OCR-D-BIN</code>
       </td>
@@ -702,7 +712,7 @@ can be especially useful for images which have not been enhanced.</p>
     <tr data-processor="ocrd-sbb-binarize">
       <td>ocrd-sbb-binarize</td>
       <td><code>-P model</code></td>
-      <td>pre-trained models can be downloaded from [here](https://qurator-data.de/sbb_binarization/) or via the [OCR-D resource manager](https://ocr-d.de/en/models)</td>
+      <td>Recommended; pre-trained models can be downloaded from <a href="https://qurator-data.de/sbb_binarization/">here</a> or via the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a></td>
       <td><code>ocrd-sbb-binarize -I OCR-D-IMG -O OCR-D-BIN -P model modelname</code></td>
  </tr>
 	<tr data-processor="ocrd-skimage-binarize">
@@ -711,11 +721,11 @@ can be especially useful for images which have not been enhanced.</p>
       <td>Slow</td>
       <td><code>ocrd-skimage-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
-    <tr data-processor="ocrd-anybaseocr-binarize">
-      <td>ocrd-anybaseocr-binarize</td>
-      <td><code>-P threshold 0.1</code></td>
+    <tr data-processor="ocrd-doxa-binarize">
+      <td>ocrd-doxa-binarize</td>
+      <td><code>-P algorithm ISauvola</code></td>
       <td>Fast</td>
-      <td><code>ocrd-anybaseocr-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
+      <td><code>ocrd-doxa-binarize -I OCR-D-IMG -O OCR-D-BIN</code></td>
     </tr>
   </tbody>
 </table>
@@ -1001,7 +1011,7 @@ if they are curved. The input image has to be binarized for the module to work.<
 image is segmented into the various regions, including columns.
 Segments are also classified, either coarse (text, separator, image, table, …) or fine-grained (paragraph, marginalia, heading, …).</p>
 
-<p><strong>Note:</strong> The <code class="highlighter-rouge">ocrd-tesserocr-segment</code>, <code class="highlighter-rouge">ocrd-tesserocr-recognize</code>, <code class="highlighter-rouge">ocrd-eynollah segment</code>, <code class="highlighter-rouge">ocrd-sbb-textline-detector</code> and
+<p><strong>Note:</strong> The <code class="highlighter-rouge">ocrd-tesserocr-segment</code>, <code class="highlighter-rouge">ocrd-tesserocr-recognize</code>, <code class="highlighter-rouge">ocrd-eynollah-segment</code>, <code class="highlighter-rouge">ocrd-sbb-textline-detector</code> and
 <code class="highlighter-rouge">ocrd-cis-ocropy-segment</code> processors do not only segment the page, but
 also the text lines within the detected text regions in one
 step. Therefore with those (and only with those!) processors you don’t need to
@@ -1099,7 +1109,7 @@ processors with calls to <code class="highlighter-rouge">ocrd-tesserocr-recogniz
       <td>Recommended. Will reuse internal tesseract iterators to produce a complete segmentation with tight polygons instead of bounding boxes where possible</td>
       <td><code>ocrd-tesserocr-segment -I OCR-D-DEWARP-PAGE -O OCR-D-SEG -P find_tables false -P shrink_polygons true</code></td>
     </tr>
-	<tr data-processor="ocrd-eynollah-segment">
+    <tr data-processor="ocrd-eynollah-segment">
       <td>ocrd-eynollah-segment</td>
       <td><code>-P models</code></td>
       <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br />
@@ -1315,7 +1325,7 @@ boxes with lots of hard-to-recover overlap). <em>Alternatively</em>, run with
 <code class="highlighter-rouge">shrink_polygons=True</code> (accessing that same iterator to calculate convex hull
 polygons)</p>
 
-<p><strong>Note:</strong> As described in <a href="#step-7-page-segmentation">Step 7</a>,<code class="highlighter-rouge">ocrd-eynollah-segment</code>, <code class="highlighter-rouge">ocrd-sbb-textline-detector</code> and <code class="highlighter-rouge">ocrd-cis-ocropy-segment</code> do not only segment
+<p><strong>Note:</strong> As described in <a href="#step-7-page-segmentation">Step 7</a>, <code class="highlighter-rouge">ocrd-eynollah-segment</code>, <code class="highlighter-rouge">ocrd-sbb-textline-detector</code> and <code class="highlighter-rouge">ocrd-cis-ocropy-segment</code> do not only segment
 the page, but also the text lines within the detected text regions in one step. Therefore with those (and only with those!) processors you don’t
 need to segment into lines in an extra step.</p>
 
@@ -1574,11 +1584,7 @@ one (e.g. to <code class="highlighter-rouge">deu3.traineddata</code>).</p>
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-text-alignment.md|sed '$d' -->
 <p>In this processing step, text results from multiple OCR engines (in different annotations sharing the same line segmentation) are aligned
-into one annotation with <code class="highlighter-rouge">TextEquiv</code> alternatives.</p>
-
-<p><strong>Note:</strong> This step is only required if you want to do post-correction afterwards,
-feeding alternative character hypotheses from several OCR-engines to improve the search space.
-The previous recognition step must be run on glyph or at least on word level.</p>
+into one annotation.</p>
 
 <h4 id="available-processors-17">Available processors</h4>
 
@@ -1593,10 +1599,72 @@ The previous recognition step must be run on glyph or at least on word level.</p
   </thead>
   <tbody>
     <tr>
+      <td>ocrd-cor-asv-ann-align</td>
+      <td>
+      <code>-P method majority</code>
+      </td>
+      <td></td>
+    <td><code>ocrd-cor-asv-ann-align -I OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 -O OCR-D-ALIGN</code></td>
+    </tr>
+    <tr>
       <td>ocrd-cis-align</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2 -O OCR-D-ALIGN</code></td>
+      <td></td>
+      <td></td>
+    <td><code>ocrd-cis-align -I OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 -O OCR-D-ALIGN</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="comparison">Comparison</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>ocrd-cor-asv-ann-align</th>
+      <th>ocrd-cis-align</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>goal</strong></td>
+      <td>optimal aligned string (i.e. <em>as</em> post-correction)</td>
+      <td>candidates for input <em>for</em> ocrd-cis-postcorrect</td>
+    </tr>
+    <tr>
+      <td><strong>input arity</strong></td>
+      <td>N fileGrps</td>
+      <td>N fileGrps (first as “master”)</td>
+    </tr>
+    <tr>
+      <td><strong>input constraints</strong></td>
+      <td>textlines must have common IDs</td>
+      <td>regions and textlines must be in same order</td>
+    </tr>
+    <tr>
+      <td><strong>input level</strong></td>
+      <td>textline (+ optionally words or glyphs for confidence)</td>
+      <td>textline (for strings) and word (for resegmentation)</td>
+    </tr>
+    <tr>
+      <td><strong>output</strong></td>
+      <td>PAGE with single-best TextEquiv per textline</td>
+      <td>PAGE with multiple aligned TextEquivs per textline</td>
+    </tr>
+    <tr>
+      <td><strong>alignment library</strong></td>
+      <td><code class="highlighter-rouge">difflib.SequenceMatcher</code></td>
+      <td><a href="https://github.com/cisocrgroup/ocrd-postcorrection/tree/master/src/main/java/de/lmu/cis/ocrd/align"><code class="highlighter-rouge">de.lmu.cis.ocrd.align</code></a></td>
+    </tr>
+    <tr>
+      <td><strong>alignment method</strong></td>
+      <td>true n-ary multi-alignment (closest pairs first), including lower level confidences</td>
+      <td>1:n alignment with master also restricting allowable word-segmentation</td>
+    </tr>
+    <tr>
+      <td><strong>decision</strong></td>
+      <td>majority voting, confidence voting, or combination</td>
+      <td>no decision</td>
     </tr>
   </tbody>
 </table>
@@ -1655,12 +1723,13 @@ echo '{}'
 
 <h2 id="evaluation-optional">Evaluation (Optional)</h2>
 
-<p>If Ground Truth data is available, the OCR can be evaluated.</p>
+<p>If Ground Truth data is available, the OCR and layout recognition can be evaluated.</p>
 
-<h3 id="step-17-ocr-evaluation">Step 17: OCR Evaluation</h3>
+<h3 id="step-17-layout-evaluation">Step 17: Layout Evaluation</h3>
 
-<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d' -->
-<p>In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.</p>
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-OLR-evaluation.md|sed '$d' -->
+<p>In this processing step, GT annotation and segmentation results are matched
+and evaluated.</p>
 
 <h4 id="available-processors-19">Available processors</h4>
 
@@ -1674,9 +1743,44 @@ echo '{}'
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>ocrd-segment-evaluate</td>
+      <td>
+      <code>-P level-of-operation region</code>
+      <code>-P only-fg true</code>
+      <code>-P ignore-subtype true</code>
+      <code>-P for-categories TextRegion,TableRegion</code>
+      </td>
+      <td>alpha</td>
+    <td><code>ocrd-segment-evaluate -I OCR-D-GT-SEG,OCR-D-SEG -O OCR-D-SEG-EVAL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- END-EVAL -->
+
+<h3 id="step-18-ocr-evaluation">Step 18: OCR Evaluation</h3>
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-ocr-evaluation.md|sed '$d' -->
+<p>In this processing step, the text output of the OCR or post-correction can be evaluated by aligning with ground truth text and measuring the error rates.</p>
+
+<h4 id="available-processors-20">Available processors</h4>
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr data-processor="ocrd-dinglehopper">
       <td>ocrd-dinglehopper</td>
-      <td></td>
+      <td>
+      <code>-P textequiv_level region</code>
+      </td>
       <td>For page-wise visual comparison (2 file groups). First input group should point to the ground truth.</td>
       <td><code>ocrd-dinglehopper -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
     </tr>
@@ -1684,11 +1788,71 @@ echo '{}'
       <td>ocrd-cor-asv-ann-evaluate</td>
       <td>
       <code>-P metric historic-latin</code>
+      <code>-P gt_level 2</code>      
       <code>-P confusion 20</code>
+      <code>-P histogram true</code>
       </td>
-      <td>For document-wide aggregation (N file groups). First input group should point to the ground truth. 
-      <br />There is no output file group, it only uses logging. If you want to save the evaluation findings in a file, you could e.g. add <code>2&gt; eval.txt</code> at the end of your command (or use <code>ocrd-make</code>).</td>
-      <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR</code></td>
+      <td>For document-wide aggregation (N file groups). First input group should point to the ground truth.</td>
+      <td><code>ocrd-cor-asv-ann-evaluate -I OCR-D-GT,OCR-D-OCR -O OCR-D-EVAL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="comparison-1">Comparison</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>ocrd-dinglehopper</th>
+      <th>ocrd-cor-asv-ann-evaluate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>goal</strong></td>
+      <td>CER/WER and visualization</td>
+      <td>CER/WER (mean+stddev)</td>
+    </tr>
+    <tr>
+      <td><strong>granularity</strong></td>
+      <td>only single pages</td>
+      <td>single-page + aggregated</td>
+    </tr>
+    <tr>
+      <td><strong>input arity</strong></td>
+      <td>2 fileGrps</td>
+      <td>N fileGrps</td>
+    </tr>
+    <tr>
+      <td><strong>input constraints</strong></td>
+      <td>segmentations may deviate</td>
+      <td>segments must have same IDs</td>
+    </tr>
+    <tr>
+      <td><strong>input level</strong></td>
+      <td>region or textline</td>
+      <td>textline</td>
+    </tr>
+    <tr>
+      <td><strong>output</strong></td>
+      <td>HTML + JSON report per page</td>
+      <td>JSON report per page+all</td>
+    </tr>
+    <tr>
+      <td><strong>alignment</strong></td>
+      <td><code class="highlighter-rouge">rapidfuzz.string_metric.levenshtein_editops</code></td>
+      <td><code class="highlighter-rouge">difflib.SequenceMatcher</code></td>
+    </tr>
+    <tr>
+      <td><strong>Unicode</strong></td>
+      <td><code class="highlighter-rouge">uniseg.graphemeclusters</code> to get distances on graphemes</td>
+      <td>calculates alignment on codepoints, but post-processes combining characters</td>
+    </tr>
+    <tr>
+      <td><strong>charset</strong></td>
+      <td>NFC + a set of normalizations that (roughly) target OCR-D GT transcription guidelines level 3 to level 2</td>
+      <td>NFC or NFKC or a custom normalization (called <code class="highlighter-rouge">historic_latin</code>) with setting <code class="highlighter-rouge">gt_level</code> 1/2/3</td>
     </tr>
   </tbody>
 </table>
@@ -1701,7 +1865,7 @@ echo '{}'
 information on the structure of the processed pages, the coordinates of the recognized
 elements etc. Optionally, the output can be converted to other formats, or copied verbatim (re-generating PAGE-XML)</p>
 
-<h3 id="step-18-adaptation-of-coordinates">Step 18: Adaptation of Coordinates</h3>
+<h3 id="step-19-adaptation-of-coordinates">Step 19: Adaptation of Coordinates</h3>
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-adaptation-of-coordinates.md|sed '$d' -->
 <p>All OCR-D processors are required to relate coordinates to the original image for each page, and to keep the original image reference (<code class="highlighter-rouge">Page/@imageFilename</code>). However, sometimes it may be necessary to deviate from that strict requirement in order to get the overall workflow to function properly.</p>
@@ -1712,7 +1876,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 <p>Conversely, you might want to align two PAGE-XML files for the same page that have different original image references, projecting all segments below the page level from the one to the other (transforming all coordinates according to the page-level annotation, or keeping them unchanged).</p>
 
-<h4 id="available-processors-20">Available processors</h4>
+<h4 id="available-processors-21">Available processors</h4>
 
 <table class="processor-table">
   <thead>
@@ -1741,7 +1905,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 <!-- END-EVAL -->
 
-<h3 id="step-19-format-conversion">Step 19: Format Conversion</h3>
+<h3 id="step-20-format-conversion">Step 20: Format Conversion</h3>
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d' -->
 <p>In this processing step the produced PAGE XML files can be converted to ALTO,
@@ -1749,7 +1913,7 @@ PDF, hOCR or text files. Note that ALTO and hOCR can also be converted into
 different formats whereas the PDF version of PAGE XML OCR results is a widely
 accessible format that can be used as-is by expert and layman alike.</p>
 
-<h4 id="available-processors-21">Available processors</h4>
+<h4 id="available-processors-22">Available processors</h4>
 
 <table class="processor-table">
 <thead>
@@ -1868,7 +2032,7 @@ accessible format that can be used as-is by expert and layman alike.</p>
 
 <!-- END-EVAL -->
 
-<h3 id="step-20-archiving">Step 20: Archiving</h3>
+<h3 id="step-21-archiving">Step 21: Archiving</h3>
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d' -->
 <p>After you have successfully processed your images, the results should be saved and archived. OLA-HD is
@@ -1877,7 +2041,7 @@ details on OLA-HD see the extensive <a href="https://github.com/subugoe/OLA-HD-I
 You can also check out the <a href="http://141.5.98.232/">prototype</a> to make sure, OLA-HD meets your needs and requirements.
 To use the prototype, specify http://141.5.98.232/api as the endpoint parameter in your call.</p>
 
-<h4 id="available-processors-22">Available processors</h4>
+<h4 id="available-processors-23">Available processors</h4>
 
 <table class="processor-table">
   <thead>
@@ -1908,12 +2072,12 @@ To use the prototype, specify http://141.5.98.232/api as the endpoint parameter 
 
 <!-- END-EVAL -->
 
-<h3 id="step-21-dummy-processing">Step 21: Dummy Processing</h3>
+<h3 id="step-22-dummy-processing">Step 22: Dummy Processing</h3>
 
 <p>Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.</p>
 
-<h4 id="available-processors-23">Available processors</h4>
+<h4 id="available-processors-24">Available processors</h4>
 
 <table class="processor-table">
   <thead>
