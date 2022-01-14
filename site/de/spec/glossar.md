@@ -351,7 +351,7 @@ Der Begriff *Workflow* wird in anderen Kontexten so verstanden, dass er mehr Fun
 
 ### (OCR-D) Workflow Engine
 
-Zentrale Softwarekomponente des Controllers, die Arbeitsabläufe, einschließlich Kontrollstrukturen (linear/parallel/inkrementell), ausführt. Wird auch bei CLI-Einsätzen auf einem einzigen Host benötigt (wo es allein auf Interprozesskommunikation und Dateisystem-E/A beruhen kann), z. B. `ocrd process`.
+Zentrale Softwarekomponente des Controllers, die Arbeitsabläufe, einschließlich Kontrollstrukturen (linear/parallel/inkrementell), ausführt. Wird auch bei CLI-Einsätzen auf einem einzigen Host benötigt (wo es allein auf Interprozesskommunikation und Dateisystemein- und -ausgabe beruhen kann), z. B. `ocrd process`.
 
 ### (OCR-D) Workflow Runtime Library
 
