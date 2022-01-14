@@ -322,7 +322,7 @@ Module können aus mehreren Methoden/Aktivitäten bestehen, die in OCR-D als [Pr
 ### (OCR-D) Processing-Server
 
 OCR-D-Server (der mindestens *Discovery*- und *Processing*-Dienste implementiert), der einen oder mehrere (lokal installierte) [Prozessoren](#ocr-d-prozessor) oder [Evaluator](#ocr-d-evaluator) 
-ausführen kann und Workspacedaten verwaltet; der Implementierer sollte abwägen, ob ein einzelner OCR-D-Processing-Server (mit seitenparalleler Verarbeitung) oder mehrere OCR-D-Processing-Server 
+ausführen kann und Workspacedaten verwaltet; die Implementierer sollten abwägen, ob ein einzelner OCR-D-Processing-Server (mit seitenparalleler Verarbeitung) oder mehrere OCR-D-Processing-Server 
 (mit dokumentenparalleler Verarbeitung) oder sogar dedizierte OCR-D-Processing-Server mit GPU/CUDA-Unterstützung am besten für den Anwendungsfall geeignet ist.
 
 ### (OCR-D) Prozessor
@@ -347,7 +347,7 @@ Wie in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173) vorgeschlagen, d
 
 Kombination von [Verarbeitungsschritten](#verarbeitungsschritte) über konkrete [Prozessoren](#ocr-d-prozessor) und [Evaluatoren](#ocr-d-evaluator) und deren Parametrisierung als Sequenz oder Verband konfiguriert, abhängig von deren Erfolg oder Misserfolg. Implementiert in der [OCR-D Workflow Runtime Library](#ocr-d-workflow-runtime-library) und serialisierbar in einem noch zu spezifizierenden Format.
 
-Der Begriff *Workflow* wird so verstanden, dass er in anderen Kontexten mehr Funktionen umfasst, wie z.B. manuelle Eingriffe durch den Benutzer. Im Gegensatz zur Terminologie in Workflow-Engines wie Taverna oder Digitalisierungs-Frameworks wie Kitodo ist ein OCR-D-Workflow ein vollautomatischer Prozess.
+Der Begriff *Workflow* wird in anderen Kontexten so verstanden, dass er mehr Funktionen umfasst, wie z.B. manuelle Eingriffe durch den Benutzer. Im Gegensatz zur Terminologie in Workflow-Engines wie Taverna oder Digitalisierungs-Frameworks wie Kitodo ist ein OCR-D-Workflow ein vollautomatischer Prozess.
 
 ### (OCR-D) Workflow Engine
 
