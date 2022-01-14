@@ -65,7 +65,7 @@ Siehe [Glyphe](#glyphe)
 
 ### Textzeile
 
-Eine Textzeile ist eine einzelne Reihe von [Wörtern](#wort) innerhalb einer Text-[Region](#region). (Je nach Ausrichtung der Region oder der Seite und je nach Schreibrichtung der Schrift kann sie horizontal oder vertikal sein).
+Eine Textzeile ist eine Reihe von [Wörtern](#wort) innerhalb einer Text-[Region](#region). (Je nach Ausrichtung der Region oder der Seite und je nach Schreibrichtung der Schrift kann sie horizontal oder vertikal sein).
 
 ### Wort
 
@@ -81,7 +81,7 @@ Siehe [Textzeile](#textzeile)
 
 Ground Truth (GT) [im Kontext von OCR-D](https://ocr-d.de/de/daten.html) sind
 Transkriptionen, spezifische Strukturbeschreibungen und Wortlisten. Diese sind
-sind im Wesentlichen im PAGE XML-Format in Kombination mit dem Originalbild verfügbar.
+sind im PAGE XML-Format in Kombination mit dem Originalbild verfügbar.
 Wesentliche Teile der GT wurden manuell erstellt.
 
 Wir unterscheiden verschiedene Nutzungsszenarien für GT:
@@ -100,7 +100,7 @@ Sie sollen die Bewertung von häufig auftretenden Schwierigkeiten und Herausford
 
 #### Trainingsdaten
 
-Viele OCR-Tools müssen an den spezifischen Bereich der zu bearbeitenden Werke angepasst werden. Diese Anpassung an den Bereich wird als Training bezeichnet. Die Daten, die zur Steuerung dieses Prozesses verwendet werden, nennt man Trainingsdaten. Es ist wichtig, dass die Teile dieser Daten, die dem Trainingsalgorithmus zugeführt werden, manuell erfasst werden.
+Viele OCR-Tools müssen an den spezifischen Bereich der zu bearbeitenden Werke angepasst werden. Diese Anpassung an den Bereich wird als Training bezeichnet. Die Daten, die zur Steuerung dieses Prozesses verwendet werden, nennt man Trainingsdaten. Es ist wichtig, dass die Teile dieser Daten, die dem Trainingsalgorithmus zugeführt werden, manuell erfasst werden und möglichst fehlerfrei sind.
 
 ## Verarbeitungsschritte
 
