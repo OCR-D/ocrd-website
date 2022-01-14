@@ -38,7 +38,7 @@ Siehe [TextLine](#textzeile)
 
 Aus der [PAGE XML-Dokumentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
 
-> Bestimmt die effektive Fläche einer gedruckten Seite auf dem Papier. Seine Größe ist für alle Seiten eines Buches gleich (Ausnahmen: Titelseite, mehrseitige Bilder).
+> Bestimmt die effektive Fläche einer gedruckten Seite auf dem Papier. [,,,]
 >
 > Sie enthält alle lebenden Elemente (außer Marginalien) wie Absätze und Überschriften sowie Fußnoten, Überschriften, laufende Titel.
 >
@@ -89,9 +89,7 @@ Wir unterscheiden verschiedene Nutzungsszenarien für GT:
 
 #### Evaluierungsdaten
 
-Evaluierungsdaten werden zur quantitativen Bewertung der Leistung von OCR-Werkzeugen
-und/oder Algorithmen genutzt. Teile dieser Daten, die dem/den betrachteten Tool(s) entsprechen,
-sind garantiert manuell zu erfassen.
+Evaluierungsdaten dienen der quantitativen Bewertung der Leistung von OCR-Werkzeugen und/oder -Algorithmen. Da diese Daten zur Bewertung genutzt werden, können sie nicht mit dem selben OCR-Werkzeug erstellt werden wie die zu evaluierenden Daten, sondern müssen in einem kontrollierten und nachvollziehbaren Verfahren erstellt werden. Der manuelle Anteil an der Erstellung kann dabei bis zu 100% betragen. Je nach Zweck der Evaluation braucht man entsprechend annotierte Evaluierungsdaten. Wenn man beispielsweise einen Algorithmus zur Segmentierung von Regionen evaluieren möchte, benötigt man Evaluierungsdaten mit annotierten Regionen.
 
 #### Referenzdaten
 
