@@ -10,8 +10,6 @@ title: OCR-D Glossar
 
 > Glossar von Begriffen aus dem Bereich der Bildverarbeitung/OCR und deren Verwendung im Rahmen von OCR-D
 
-Dieser Abschnitt ist nicht-normativ.
-
 ## Layout und Typografie
 
 ### Border
@@ -24,13 +22,13 @@ Aus der [PAGE XML-Dokumentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagec
 
 In OCR-D ist eine Glyphe die atomare Einheit innerhalb eines [Wortes](#wort).
 
-### Graphemhaufen / Grapheme Cluster
+### Grapheme Cluster
 
 Siehe [Glyphe](#glyph)
 
 ### Lesereihenfolge (Reading Order)
 
-Die Lesereihenfolge beschreibt die logische Abfolge von [Regionen](#region) innerhalb eines Dokuments.
+Die Lesereihenfolge beschreibt die logische Abfolge von [Regionen](#region) innerhalb eines Dokuments, wie sie von einem Menschen gelesen wird. Marginalien, Tabellen, Fußnoten und andere Elemente, die nicht in einer bestimmten Reihenfolge gelesen werden, sind nicht zwingend in der Beschreibung der Lesereihenfolge enthalten.
 
 ### Line
 
@@ -59,7 +57,7 @@ Siehe [PrintSpace](#printspace)
 
 ### Schriftfamilie
 
-Innerhalb von OCR-D bezieht sich *Schriftfamilie* auf die Gruppierung von Elementen nach Schriftähnlichkeit. Die Semantik einer *Schriftfamilie* bleibt dem überlassen, der die Daten erstellt.
+Innerhalb von OCR-D bezieht sich *Schriftfamilie* auf die Gruppierung von Elementen nach Schriftähnlichkeit. Die Semantik einer *Schriftfamilie* bleibt denen überlassen, von denen die Daten erstellt werden.
 
 ### Symbol
 
@@ -127,7 +125,7 @@ Controlled Term: `preprocessing/optimization/cropping`.
 
 ### Deskewing
 
-Ein Bild so drehen, dass alle Textzeilen horizontal sind.
+Ein Bild so drehen, dass die meisten Textregionen aufrecht (d.h. von links nach rechts, von oben nach unten lesbar) und gerade (d.h. nicht schief) liegen.
 
 Controlled Term: `preprocessing/optimization/deskewing`
 
@@ -180,7 +178,7 @@ Siehe [OCR](#ocr).
 
 ### OCR
 
-Abbildung von Pixelbereichen auf [Glyphen](#glyphe) und [Wörter](#wort).
+Abbildung von Pixelbereichen auf [Glyphen](#glyphe), [Wörter](#wort), [Zeilen](#textzeile) und [Regionen](region).
 
 ### Regionenklassifikation
 
@@ -273,7 +271,7 @@ Manipulation der Eingabebilder für die anschließende [Layoutanalyse](#layoutan
 
 ### Langzeitarchivierung und Persistenz
 
-Speicherung der Ergebnisse von OCR und OLR auf unbestimmte Zeit unter Berücksichtigung der Versionierung, mehrerer Durchläufe, Provenienz/Parametrisierung und Bereitstellung des Zugriffs auf diese gespeicherten Snapshots in einer granularen Weise.
+Speicherung der Ergebnisse von OCR und OLR auf unbestimmte Zeit unter Berücksichtigung der Versionierung, mehrerer Durchläufe, Provenienz/Parametrisierung und Bereitstellung des granularen Zugriffs auf diese gespeicherten Snapshots.
 
 ### Layoutanalyse
 
@@ -312,7 +310,7 @@ OCR-D Server (Implementierung von mindestens *Discovery*-, *Workspace*- und *Wor
 ### (OCR-D) Evaluator
 
 Ein Evaluator ist ein Werkzeug, das die einheitliche OCR-D CLI für die Qualitätsbewertung zur Laufzeit implementiert, indem es die Anmerkung eines [Verarbeitungsschrittes](#verarbeitungsschritte) 
-(d. h. die Ausgabe eines [Prozessors](#ocr-d-prozessor)) mit einer Qualitätsmetrik bewertet, um eine Punktzahl zu erhalten, und einen bestimmten Schwellenwert anwendet, um einen vollständigen oder 
+(d. h. die Ausgabe eines [Prozessors](#ocr-d-prozessor)) mit einer Qualitätsmetrik bewertet, um eine Metrik zu erhalten, und einen bestimmten Schwellenwert anwendet, um einen vollständigen oder 
 teilweisen Erfolg/Fehlschlag zu signalisieren.
 
 ### (OCR-D) Module
