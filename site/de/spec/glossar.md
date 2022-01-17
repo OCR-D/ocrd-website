@@ -176,7 +176,10 @@ Siehe [OCR](#ocr).
 
 ### OCR
 
-Abbildung von Pixelbereichen auf [Glyphen](#glyphe), [Wörter](#wort), [Zeilen](#textzeile) und [Regionen](region).
+Interpretation von Pixelbereichen als [Textregionen](#region), [Zeilen](#textzeile), [Wörter](#wort) und [Zeichen](#glyphe). 
+Meint im _engeren Sinne_ die Elementaroperation des Mustererkenners (welche früher auf Zeichen, heute auf ganzen Wörtern oder Zeilen angewandt wird), 
+im _weiteren Sinne_ alle dazu vorab nötigen [Verarbeitungsschritte](#verarbeitungsschritte), also auch die [Segmentierung](#segmentierung) in [Satzspiegel](#satzspiegel) 
+(d.h. [Cropping](#cropping)), [Regionen](#region) (d.h. [Regionensegmentierung](#regionensegmentierung)) und [Zeilen](#textzeile) (d.h. [Zeilensegmentierung](#zeilensegmentierung)).
 
 ### Regionenklassifikation
 
