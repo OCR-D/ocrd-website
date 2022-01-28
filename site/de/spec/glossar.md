@@ -89,7 +89,7 @@ Wir unterscheiden verschiedene Nutzungsszenarien für GT:
 
 #### Evaluierungsdaten
 
-Evaluierungsdaten dienen der quantitativen Bewertung der Leistung von OCR-Werkzeugen und/oder -Algorithmen. Da diese Daten zur Bewertung genutzt werden, können sie nicht mit dem selben OCR-Werkzeug erstellt werden wie die zu evaluierenden Daten, sondern müssen in einem kontrollierten und nachvollziehbaren Verfahren erstellt werden. Der manuelle Anteil an der Erstellung kann dabei bis zu 100% betragen. Je nach Zweck der Evaluation braucht man entsprechend annotierte Evaluierungsdaten. Wenn man beispielsweise einen Algorithmus zur Segmentierung von Regionen evaluieren möchte, benötigt man Evaluierungsdaten mit annotierten Regionen.
+Evaluierungsdaten dienen der quantitativen und qualitativen Bewertung der Leistung von OCR-Werkzeugen und/oder -Algorithmen. Da diese Daten zur Bewertung genutzt werden, können sie nicht mit dem selben OCR-Werkzeug erstellt werden wie die zu evaluierenden Daten, sondern müssen in einem kontrollierten und nachvollziehbaren Verfahren erstellt werden. Der manuelle Anteil an der Erstellung kann dabei bis zu 100% betragen. Je nach Zweck der Evaluation braucht man entsprechend annotierte Evaluierungsdaten. Wenn man beispielsweise einen Algorithmus zur Segmentierung von Regionen evaluieren möchte, benötigt man Evaluierungsdaten mit annotierten Regionen.
 
 #### Referenzdaten
 
