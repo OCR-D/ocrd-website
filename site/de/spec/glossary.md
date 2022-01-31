@@ -8,358 +8,352 @@ title: OCR-D Glossar
 
 # OCR-D Glossar
 
-> Glossary of terms from the domain of image processing/OCR and how they are used within the OCR-D framework
+> Glossar von Begriffen aus dem Bereich der Bildverarbeitung/OCR und deren Verwendung im Rahmen von OCR-D
 
-This section is non-normative.
-
-## Layout and Typography
-
-### Block
-
-See [Region](#region)
+## Layout und Typografie
 
 ### Border
 
-From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_BorderType.html)
+Aus der [PAGE XML-Dokumentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_BorderType.html)
 
-> Border of the actual page (if the scanned image contains parts not belonging to the page).
+> Rand der eigentlichen Seite (wenn das gescannte Bild Teile enthält, die nicht zur Seite gehören)
 
-### Font family
+### Glyphe
 
-Within OCR-D, *font family* refers to grouping elements by font similarity. The
-semantics of a *font family* are up to the data producer.
-
-### Glyph
-
-Within OCR-D, a glyph is the atomic unit within a [word](#word).
+In OCR-D ist eine Glyphe die atomare Einheit innerhalb eines [Wortes](#wort).
 
 ### Grapheme Cluster
 
-See [Glyph](#glyph)
+Siehe [Glyphe](#glyph)
+
+### Lesereihenfolge (Reading Order)
+
+Die Lesereihenfolge beschreibt die logische Abfolge von [Regionen](#region) innerhalb eines Dokuments, wie sie von einem Menschen gelesen wird. Marginalien, Tabellen, Fußnoten und andere Elemente, die nicht in einer bestimmten Reihenfolge gelesen werden, sind nicht zwingend in der Beschreibung der Lesereihenfolge enthalten.
 
 ### Line
 
-See [TextLine](#textline)
+Siehe [TextLine](#textzeile)
 
-### Reading Order
+### PrintSpace
 
-Reading order describes the logical sequence of [regions](#region) within a document.
+Aus der [PAGE XML-Dokumentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
+
+> Bestimmt die effektive Fläche einer gedruckten Seite auf dem Papier. [,,,]
+>
+> Sie enthält alle lebenden Elemente (außer Marginalien) wie Absätze und Überschriften sowie Fußnoten, Überschriften, laufende Titel.
+>
+> Sie enthält keine Seitenzahlen (wenn sie nicht Teil des laufenden Titels sind), Marginalien, Bogensignatur, Kustoden.
 
 ### Region
 
-A region is described by a polygon inside a page.
+Eine Region wird durch ein Polygon innerhalb einer Seite beschrieben.
 
 ### Region type
 
-The semantics or function of a [region](#region) such as heading, page number, column, table...
+Die Semantik oder Funktion einer [Region](#region) wie Überschrift, Seitenzahl, Spalte, Tabelle...
+
+### Satzspiegel
+Siehe [PrintSpace](#printspace)
+
+### Schriftfamilie
+
+Innerhalb von OCR-D bezieht sich *Schriftfamilie* auf die Gruppierung von Elementen nach Schriftähnlichkeit. Die Semantik einer *Schriftfamilie* bleibt denen überlassen, von denen die Daten erstellt werden.
 
 ### Symbol
 
-See [Glyph](#glyph)
+Siehe [Glyphe](#glyphe)
 
-### TextLine
+### Textzeile
 
-A text line is a single row of [words](#word) within a text [region](#region). (Depending on the region's or page's orientation, and the script's writing direction, it can be horizontal or vertical.)
+Eine Textzeile ist eine Reihe von [Wörtern](#wort) innerhalb einer Text-[Region](#region). (Je nach Ausrichtung der Region oder der Seite und je nach Schreibrichtung der Schrift kann sie horizontal oder vertikal sein).
 
-### Print space
+### Wort
 
-From the [PAGE-XML content schema documentation](https://ocr-d.de/de/gt-guidelines/pagexml/pagecontent_xsd_Complex_Type_pc_PrintSpaceType.html)
+Ein Wort ist eine Folge von [Glyphen](#glyphe) innerhalb einer [Zeile](#textzeile), die keine wortbegrenzenden Leerzeichen enthält. (Das heißt, es schließt Interpunktion ein und ist ein Synonym für _token_ im NLP.)
 
-> Determines the effective area on the paper of a printed page. Its size is equal for all pages of a book (exceptions: titlepage, multipage pictures).
->
-> It contains all living elements (except marginalia) like paragraphs and headings, as well as footnotes, headings, running titles.
->
-> It does not contain pagenumber (if not part of running title), marginalia, signature mark, preview words.
+### Zeile
 
-### Word
+Siehe [Textzeile](#textzeile)
 
-A word is a sequence of [glyphs](#glyph) within a [line](#textline) which does not contain any word-bounding whitespace. (That is, it includes punctuation and is synonym to _token_ in NLP.)
-
-## Data
+## Daten
 
 ### Ground Truth
 
-Ground truth (GT) [in the context of OCR-D](http://ocr-d.de/daten) are
-transcriptions, specific structure descriptions and word lists. These are
-essentially available in PAGE XML format in combination with the original
-image. Essential parts of the GT were created manually.
+Ground Truth (GT) [im Kontext von OCR-D](https://ocr-d.de/de/daten.html) sind
+Transkriptionen, spezifische Strukturbeschreibungen und Wortlisten. Diese sind
+sind im PAGE XML-Format in Kombination mit dem Originalbild verfügbar.
+Wesentliche Teile der GT wurden manuell erstellt.
 
-We distinguish different usage scenarios for GT:
+Wir unterscheiden verschiedene Nutzungsszenarien für GT:
 
-#### Reference data
 
-With the term *reference data*, we refer to data that illustrates
-different stages of an OCR/OLR process on representative materials. They are
-supposed to support the assessment of commonly encountered difficulties and challenges when
-running certain analysis operations and are therefore manually annotated
-at all levels.
+#### Evaluierungsdaten
 
-#### Evaluation data
+Evaluierungsdaten dienen der quantitativen und qualitativen Bewertung der Leistung von OCR-Werkzeugen und/oder -Algorithmen. Da diese Daten zur Bewertung genutzt werden, können sie nicht mit dem selben OCR-Werkzeug erstellt werden wie die zu evaluierenden Daten, sondern müssen in einem kontrollierten und nachvollziehbaren Verfahren erstellt werden. Der manuelle Anteil an der Erstellung kann dabei bis zu 100% betragen. Je nach Zweck der Evaluation braucht man entsprechend annotierte Evaluierungsdaten. Wenn man beispielsweise einen Algorithmus zur Segmentierung von Regionen evaluieren möchte, benötigt man Evaluierungsdaten mit annotierten Regionen.
 
-*Evaluation data* are used to quantitatively evaluate the performance of OCR tools
-and/or algorithms. Parts of these data which correspond to the tool(s) under consideration
-are guaranteed to be recorded manually.
+#### Referenzdaten
 
-#### Training data
+Mit dem Begriff Referenzdaten bezeichnen wir Daten, die verschiedene Stadien eines OCR/OLR-Prozesses an repräsentativen Materialien veranschaulichen. 
+Sie sollen die Bewertung von häufig auftretenden Schwierigkeiten und Herausforderungen bei der Durchführung bestimmter Analysevorgänge unterstützen und werden daher auf allen Ebenen manuell kommentiert.
 
-Many OCR-related tools need to be adapted to the specific domain of the works which are to
-be processed. This domain adaptation is called *training*. Data used to guide this process
-are called *training data*. It is essential that those parts of these data which are fed
-to the training algorithm are captured manually.
+#### Trainingsdaten
 
-## Activities
+Viele OCR-Tools müssen an den spezifischen Bereich der zu bearbeitenden Werke angepasst werden. Diese Anpassung an den Bereich wird als Training bezeichnet. Die Daten, die zur Steuerung dieses Prozesses verwendet werden, nennt man Trainingsdaten. Es ist wichtig, dass die Teile dieser Daten, die dem Trainingsalgorithmus zugeführt werden, manuell erfasst werden und möglichst fehlerfrei sind.
 
-### Binarization
+## Verarbeitungsschritte
 
-Binarization means converting all color or grayscale pixels in an image to either black or white.
+### Binarisierung
 
-Controlled term: `binarized` (`comments` of a mets:file), `preprocessing/optimization/binarization` (`step` in ocrd-tool.json)
+Binarisierung bedeutet die Umwandlung aller Farb- oder Graustufenpixel eines Bildes in Schwarz oder Weiß.
 
-See [Felix' Niklas interactive demo](http://felixniklas.com/imageprocessing/binarization)
+Controlled Term: `binarized` (`comments` einer mets:file), `preprocessing/optimization/binarization` (`step` in ocrd-tool.json)
 
-### Dewarping
-
-Manipulate an image in such a way that all text lines are
-straightened and any geometrical distortions have been corrected.
-
-Controlled term: `preprocessing/optimization/dewarping`
-
-See [Matt Zucker's entry on Dewarping](https://mzucker.github.io/2016/08/15/page-dewarping.html).
-
-### Despeckling
-
-Remove artifacts such as smudges, ink blots, underlinings etc. from an image. Typically applied to 
-remove "salt-and-pepper" noise resulting from [Binarization](#Binarization).
-
-Controlled term: `preprocessing/optimization/despeckling`
-
-### Deskewing
-
-Rotate an image so that all text lines are horizontal.
-
-Controlled term: `preprocessing/optimization/deskewing`
-
-### Font identification
-
-Detect the font type(s) used in the document, either before or after an OCR run.
-
-Controlled term: `recognition/font-identification`
-
-### Grayscale normalization
-
-> ISSUE: https://github.com/OCR-D/spec/issues/41
-
-Controlled term:
-  - `gray_normalized` (`comments` in file)
-  - `preprocessing/optimization/cropping` (step)
-
-Gray normalization is similar to binarization but instead of a purely bitonal
-image, the output can also contain shades of gray to avoid inadvertently
-combining glyphs when they are very close together.
-
-### Document analysis
-
-Document analysis is the detection of structure on the document level to e.g. create a table of contents.
-
-### Reading order detection
-
-Detect the [reading order](#reading-order) of [regions](#region).
-
-### Cropping
-
-Detecting the print space in a page, as opposed to the margins. It is a form of
-[region segmentation](#region-segmentation).
-
-Controlled term: `preprocessing/optimization/cropping`.
+Siehe [Felix Niklas' interaktive Demo](http://felixniklas.com/imageprocessing/binarization)
 
 ### Border removal
 
---> [Cropping](#cropping)
+siehe [Cropping](#cropping)
 
-### Segmentation
+### Cropping
 
-Segmentation means detecting areas within an image.
+Erkennung des Satzspiegels auf einer Seite, im Gegensatz zu den Rändern. Dies ist eine Form der
+[Regionensegmentierung](#regionensegmentierung).
 
-Specific segmentation algorithms are labelled by the semantics of the regions
-they detect not the semantics of the input, i.e. an algorithm that detects
-regions is called [region segmentation](#region-segmentation).
+Controlled Term: `preprocessing/optimization/cropping`.
 
-### Region segmentation
+### Deskewing
 
-Segment an image into [regions](#region). Also determines whether this is a text
-or non-text region (e.g. images).
+Ein Bild so drehen, dass die meisten Textregionen aufrecht (d.h. von links nach rechts, von oben nach unten lesbar) und gerade (d.h. nicht schief) liegen.
 
-Controlled term:
-- `SEG-REGION` (`USE`)
-- `layout/segmentation/region` (step)
+Controlled Term: `preprocessing/optimization/deskewing`
 
-### Region classification
+### Despeckling
 
-Determine the [type](#region-type) of a detected region.
+Artefakte wie Flecken, Tintenkleckse, Unterstreichungen usw. aus einem Bild entfernen. Wird üblicherweise angewendet, um 
+"Salz-und-Pfeffer"-Rauschen zu entfernen, das durch [Binarisierung](#binarisierung) entstanden ist.
 
-### Line segmentation
-Segment text [regions](#region) into [textlines](#textline).
+Controlled Term: `preprocessing/optimization/despeckling`
 
-Controlled term:
-- `SEG-LINE` (`USE`)
-- `layout/segmentation/line` (step)
+### Dewarping
 
-### Line recognition
+Ein Bild so bearbeiten, dass alle Textzeilen begradigt und alle geometrischen Verzerrungen korrigiert sind.
 
-See [OCR](#ocr).
+Controlled Term: `preprocessing/optimization/dewarping`
 
-### OCR
+Siehe [Matt Zuckers Eintrag zu Dewarping](https://mzucker.github.io/2016/08/15/page-dewarping.html).
 
-Map pixel areas to [glyphs](#glyph) and [words](#words).
+### Dokumentenanalyse
 
-### Word segmentation
+Die Dokumentenanalyse ist die Erkennung von Strukturen auf Dokumentenebene, um z.B. ein Inhaltsverzeichnis zu erstellen.
 
-Segment a [textline](#textline) into [words](#word)
+### Font-Identifizierung
 
-Controlled term:
-- `SEG-LINE` (`USE`)
-- `layout/segmentation/word` (step)
+Erkennung der im Dokument verwendete(n) Schrift(en), entweder vor oder nach einem OCR-Prozess.
+
+Controlled Term: `recognition/font-identification`
 
 ### Glyph segmentation
 
-Segment a [textline](#textline) into [glyphs](#glyph)
+Eine [Textzeile](#textzeile) in [Glyphen](#glyphe) unterteilen.
 
-Controlled term: `SEG-GLYPH`
+Controlled Term: `SEG-GLYPH`
 
-### Text recognition
+### Graustufen-Normalisierung
 
-See [OCR](#ocr).
+> ISSUE: [https://github.com/OCR-D/spec/issues/41](https://github.com/OCR-D/spec/issues/41)
 
-### Text optimization
+Controlled Term:
+- `gray_normalized` (`comments` in der Datei)
+- `preprocessing/optimization/cropping` (`step` in ocrd-tool.json)
 
-Text optimization encompasses the manipulations to the text based on the steps
-up to and including text recognition. This includes (semi-)automatically correcting
-recognition errors, orthographical harmonization, fixing segmentation errors etc.
+Die Graustufen-Normalisierung ist ähnlich wie die Binarisierung, aber statt eines rein bitonalen
+Bildes kann die Ausgabe auch Graustufen enthalten, um zu verhindern, dass versehentlich
+Glyphen kombiniert werden, wenn sie sehr nahe beieinander liegen.
 
-## Data Persistence
+### Line recognition
 
-### Software repository
+Siehe [OCR](#ocr).
 
-The software repository contains all OCR-D algorithms and tools developed
-during the project including tests. It will also contain the documentation and
-installation instructions for deploying a document analysis workflow.
+### OCR
 
-### Ground Truth repository
+Interpretation von Pixelbereichen als [Textregionen](#region), [Zeilen](#textzeile), [Wörter](#wort) und [Zeichen](#glyphe). 
+Meint im _engeren Sinne_ die Elementaroperation des Mustererkenners (welche früher auf Zeichen, heute auf ganzen Wörtern oder Zeilen angewandt wird), 
+im _weiteren Sinne_ alle dazu vorab nötigen [Verarbeitungsschritte](#verarbeitungsschritte), also auch die [Segmentierung](#segmentierung) in [Satzspiegel](#satzspiegel) 
+(d.h. [Cropping](#cropping)), [Regionen](#region) (d.h. [Regionensegmentierung](#regionensegmentierung)) und [Zeilen](#textzeile) (d.h. [Zeilensegmentierung](#zeilensegmentierung)).
 
-Contains all the [ground truth](#ground-truth) data.
+### Regionenklassifikation
 
-### Research data repository
+Bestimmung des [Typs](#region-type) einer erkannten Region.
 
-The research data repository may contain the results of all
-[activities](#activities) during document analysis. At least it contains the
-end results of every processed document and its full provenance. The research
-data repository must be available locally.
+### Regionensegmentierung
 
-### Model repository
+Segmentiert ein Bild in [Regionen](#region). Bestimmt auch, ob es sich um eine Text oder Nicht-Text-Region (z.B. Bilder) handelt.
 
-Contains all trained (OCR) models for text recognition. The model repository
-has to be available at least locally. Ideally, a publicly available model repository will
-be developed.
+Controlled Term:
+- `SEG-REGION` (`USE`)
+- `layout/segmentation/region` (`step` in ocrd-tool.json)
+
+### Segmentierung
+
+Segmentierung bedeutet die Erkennung von Bereichen innerhalb eines Bildes.
+
+Spezifische Segmentierungsalgorithmen werden durch die Semantik der Regionen gekennzeichnet die sie erkennen, und nicht nach der Semantik der Eingabe, d. h. ein Algorithmus, der Regionen erkennt, 
+wird [Regionensegmentierung](#regionensegmentierung) genannt.
+
+### Textoptimierung
+
+Die Textoptimierung umfasst die Manipulationen am Text anhand der Schritte
+bis hin zur Texterkennung. Dazu gehören die (halb-)automatische Korrektur von
+Erkennungsfehlern, orthografische Vereinheitlichung, Korrektur von Segmentierungsfehlern usw.
+
+### Texterkennung
+
+Siehe [OCR](#ocr).
+
+### Wortsegmentierung
+
+Segmentierung einer [Textzeile](#textzeile) in [Wörter](#wort).
+
+Controlled Term:
+- `SEG-LINE` (`USE`)
+- `layout/segmentation/word` (`step` in ocrd-tool.json)
+
+### Zeilensegmentierung
+Segmentiert [Textregionen](#region) in [Textzeilen](#textzeile).
+
+Controlled Term:
+- `SEG-LINE` (`USE`)
+- `layout/segmentation/line` (`step` in ocrd-tool.json)
+
+## Datenpersistenz
+
+### Forschungsdaten-Repository
+
+Das Forschungsdaten-Repository kann die Ergebnisse aller [Verarbeitungsschritte](#verarbeitungsschritte) während der Dokumentenanalyse enthalten. 
+Zumindest enthält es die Endergebnisse jedes verarbeiteten Dokuments und seine vollständige Provenienz. Das Forschungsdaten-Repository muss lokal verfügbar sein.
+
+### Ground-Truth-Repository
+
+Enthält alle [Ground-Truth](#ground-truth)-Daten.
+
+### Modell-Repository
+
+Enthält alle trainierten (OCR-)Modelle für die Texterkennung. Das Modell-Repository muss zumindest lokal verfügbar sein. Idealerweise wird ein öffentlich zugänglicher Modellspeicher
+entwickelt werden.
+
+### Software-Repository
+
+Das Software-Repository enthält alle OCR-D-Algorithmen und -Tools, die
+während des Projekts entwickelt wurden, einschließlich Tests. Es enthält auch die Dokumentation und
+Installationsanweisungen für den Einsatz eines Dokumentenanalyse-Workflows.
 
 ### Workspace
 
-A workspace is a representation for some document in the local file system. Minimally it consists of a directory with a copy of the [METS](https://ocr-d.de/en/spec/mets) file. Additionally, that directory may contain physical data files and sub-directories belonging to the document (required or generated by run-time OCR-D processing), as referenced by the METS via `mets:file/mets:FLocat/@href` and `mets:fileGrp/@USE`. Files and sub-directories without reference (like log or config files) are not part of the workspace, as are references to remote locations. They can be added to the workspace by referencing them in the METS via their relative local path names.
+Ein Workspace ist eine Repräsentation für ein Dokument im lokalen Dateisystem. 
+Er besteht im Wesentlichen aus einem Verzeichnis mit einer Kopie der [METS](https://ocr-d.de/en/spec/mets)-Datei. 
+Zusätzlich kann dieses Verzeichnis physische Datendateien und Unterverzeichnisse enthalten, die zu dem Dokument gehören (erforderlich oder durch die OCR-D-Verarbeitung zur Laufzeit erzeugt), 
+wie sie von METS über `mets:file/mets:FLocat/@href` und `mets:fileGrp/@USE` referenziert werden. 
+Dateien und Unterverzeichnisse ohne Verweis (wie Log- oder Konfigurationsdateien) sind nicht Teil des Workspaces, ebenso wenig wie Verweise auf entfernte Speicherorte. 
+Sie können dem Arbeitsbereich hinzugefügt werden, indem sie in der METS-Datei über ihre relativen lokalen Pfadnamen referenziert werden.
 
-## Workflow modules
+## Workflowmodule
 
-The [OCR-D project](https://ocr-d.de) divided the various elements of an OCR
-workflow into six abstract modules.
+Das [OCR-D-Projekt](https://ocr-d.de) hat die verschiedenen Elemente eines OCR-Workflows in sechs abstrakte Module aufgeteilt:
+1. [Bildvorverarbeitung](#bildvorverarbeitung)
+2. [Layoutanalyse](layoutanalyse)
+3. [Texterkennung und -optimierung](#texterkennung-und--optimierung)
+4. [Modelltraining](#modelltraining)
+5. [Langzeitarchivierung und Persistenz](#langzeitarchivierung-und-persistenz)
+6. [Qualitätssicherung](#qualitätssicherung)
 
-### Image preprocessing
+### Bildvorverarbeitung 
 
-Manipulating the input images for subsequent layout analysis and text recognition.
+Manipulation der Eingabebilder für die anschließende [Layoutanalyse](#layoutanalyse) und [Texterkennung](#texterkennung-und--optimierung).
 
-### Layout analysis
+### Langzeitarchivierung und Persistenz
 
-Detection of structure within the page.
+Speicherung der Ergebnisse von OCR und OLR auf unbestimmte Zeit unter Berücksichtigung der Versionierung, mehrerer Durchläufe, Provenienz/Parametrisierung und Bereitstellung des granularen Zugriffs auf diese gespeicherten Snapshots.
 
-### Text recognition and optimization
+### Layoutanalyse
 
-Recognition of text and post-correction of recognition errors.
+Erkennung von Strukturen innerhalb der Seite.
 
-### Model training
+### Modelltraining
 
-Generating data files from aligned ground truth text and images to configure
-the prediction of text and layout recognition engines.
+Generierung von Datendateien aus abgeglichenen Ground-Truth-Texten und -bildern zur Konfiguration der Vorhersage von Text- und Layout-Erkennungsprogrammen.
 
-### Long-term preservation and persistence
+### Texterkennung und -optimierung
 
-Storing results of OCR and OLR indefinitely, taking into account versioning,
-multiple runs, provenance/parametrization and providing access to these saved
-snapshots in a granular fashion.
+Erkennung von Text und Nachkorrektur von Erkennungsfehlern.
 
-### Quality assurance
+### Qualitätssicherung
+Bereitstellung von Messgrößen, Algorithmen und Software zur Bewertung der Qualität der [einzelnen Prozesse](#verarbeitungsschritte) innerhalb von OCR-D.
 
-Providing measures, algorithms and software to estimate the quality of the [individual processes](#activities) within the OCR-D domain.
-
-## Component architecture
-
-### (OCR-D) Application
-
-Application composed of various servers that can execute processors; can be a desktop computer or workstation, a distributed system comprising a controller and multiple processing servers, or an HPC cluster.
-
-### OCR-D Web API
-
-As proposed in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173), the OCR-D Web API defines uniform and interdependent services that can be distributed across network components, depending on the use case.
-
-### (OCR-D) Service
-
-Group of endpoints of the OCR-D Web API; discovery/workspace/processing/workflow/...
-
-### (OCR-D) Server
-
-Concrete implementation of a subset of OCR-D services, or the network host providing it.
-
-### (OCR-D) Controller
-
-OCR-D Server (implementing at least *discovery*, *workspace* and *workflow* services) executing workflows (a single workflow or multiple workflows simultaneously), distributing tasks to configured processing servers, managing workspace data management. Should also manage load balancing.
-
-### (OCR-D) Processing Server
-
-OCR-D server (implementing at least *discovery* and *processing* services) that can execute one or more (locally installed) processors or evaluators, manages workspace data; implementor should consider whether a single OCR-D processing server (with page-parallel processing) best fits the use case, or multiple OCR-D processing servers (with document-parallel processing), or even dedicated OCR-D processing servers with GPU/CUDA support.
-
-### (OCR-D) Backend
-
-Software component of a server concerned with network operations; e.g. Python library with request handlers, implementing service discovery and network-capable workspace data management.
-
-### (OCR-D) Workflow Runtime Library
-
-Software component of a server or processor concerned with OCR systems modelling; e.g. Python library in [OCR-D/core](https://github.com/OCR-D/core) providing classes for all essential functional components (`OcrdPage`, `OcrdMets`, `Workspace`, `Resolver`, `Processor`, `ProcessorTask`, `Workflow`, `WorkflowTask` ...), including mechanisms for signalling and orchestration of workflows, on top of which components (from processor to controller) can be implemented.
-
-### (OCR-D) Workflow Engine
-
-Central software component of the controller, executing workflows, including control structures (in a linear/parallel/incremental way). Also needed in single-host CLI deployments (where it can be based on inter-process communication and file system I/O alone), like `ocrd process`.
-
-### (OCR-D) Processor
-
-A processor is a tool that implements the uniform [OCR-D command-line-interface](https://ocr-d.de/en/spec/cli) for run-time data processing. That is, it executes a single [workflow step](#activities), or a combination of multiple workflow steps, on the [workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace) (represented by local [METS](https://ocr-d.de/en/spec/mets)), reading input files for all or requested physical pages of the input fileGrp(s), and writing output files for them into the output fileGrp(s). It may take a number of optional or mandatory [parameters](https://ocr-d.de/en/spec/ocrd_tool).
-
-→ [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
-
-
-### (OCR-D) Evaluator
-
-An evaluator is a tool that implements the uniform OCR-D CLI for run-time quality estimation, assessing an [activity's](#activities) annotation (i.e. a [processor's](#processor) output) with some quality metric to yield a score and applying a given threshold against it to signal full or partial success/failure.
-
-### (OCR-D) Module
-
-Software package/repository providing one or more processors or evaluators, possibly encompassing additional areas of functionality (training, format conversion, creation of GT, visualization)
-
-Modules can comprise multiple methods/activities that are called [*processors*](#processor)
-for OCR-D. There were [eight MP](https://ocr-d.de/en/module-projects) in the
-second phase of OCR-D (2018-2020).
+## Komponenten-Architektur
 
 ### Messaging
 
-Messaging service on the basis of Publish/Subscribe architecture (or similar) to coordinate network components, in particular for the distribution of tasks and load balancing, as well as signalling processor/evaluator results.
+Messagingdienst auf der Grundlage der Publish/Subscribe-Architektur (oder einer ähnlichen Architektur) zur Koordinierung der Netzkomponenten, insbesondere für die Verteilung von Aufgaben und den Lastausgleich sowie für die Übermittlung von [Prozessor](#ocr-d-prozessor)-/[Evaluator](#ocr-d-evaluator)ergebnissen.
+
+### (OCR-D) Applikation
+
+Anwendung, die aus verschiedenen Servern besteht, die [Prozessoren](#ocr-d-prozessor) ausführen können; kann ein Desktop-Computer oder eine Workstation sein, ein verteiltes System, 
+das einen Controller und mehrere Verarbeitungsserver umfasst, oder ein HPC-Cluster.
+
+### (OCR-D) Backend
+
+Softwarekomponente eines Servers, die sich mit dem Netzbetrieb befasst; z. B. Python-Bibliothek mit Request-Handlern, die eine Dienstsuche und eine netzfähige Arbeitsbereichsdatenverwaltung implementieren.
+
+### (OCR-D) Controller
+
+OCR-D Server (Implementierung von mindestens *Discovery*-, *Workspace*- und *Workflow*-Diensten), Ausführung von Workflows (ein einzelner Workflow oder mehrere Workflows gleichzeitig), Verteilung von Aufgaben an konfigurierte Verarbeitungsserver, Verwaltung von Workspace-Daten. Sollte auch den Lastausgleich verwalten.
+
+### (OCR-D) Evaluator
+
+Ein Evaluator ist ein Werkzeug, das die einheitliche OCR-D CLI für die Qualitätsbewertung zur Laufzeit implementiert, indem es die Anmerkung eines [Verarbeitungsschrittes](#verarbeitungsschritte) 
+(d. h. die Ausgabe eines [Prozessors](#ocr-d-prozessor)) mit einer Qualitätsmetrik bewertet, um eine Metrik zu erhalten, und einen bestimmten Schwellenwert anwendet, um einen vollständigen oder 
+teilweisen Erfolg/Fehlschlag zu signalisieren.
+
+### (OCR-D) Module
+
+Softwarepaket/Repository, das einen oder mehrere [Prozessoren](#ocr-d-prozessor) oder [Evaluator](#ocr-d-evaluator) bereitstellt und möglicherweise zusätzliche Funktionsbereiche umfasst (Training, Formatkonvertierung, Erstellung von GT, Visualisierung)
+
+Module können aus mehreren Methoden/Aktivitäten bestehen, die in OCR-D als [Prozessoren](#ocr-d-prozessor) bezeichnet werden. Es gab [acht Modulprojekte](https://ocr-d.de/de/phase2) in der zweiten Phase von OCR-D (2018–2020). In der aktuellen dritten Phase (2021–2024) gibt es [drei Modulprojekte](https://ocr-d.de/de/phase3).
+
+### (OCR-D) Processing-Server
+
+OCR-D-Server (der mindestens *Discovery*- und *Processing*-Dienste implementiert), der einen oder mehrere (lokal installierte) [Prozessoren](#ocr-d-prozessor) oder [Evaluator](#ocr-d-evaluator) 
+ausführen kann und Workspacedaten verwaltet; die Implementierer sollten abwägen, ob ein einzelner OCR-D-Processing-Server (mit seitenparalleler Verarbeitung) oder mehrere OCR-D-Processing-Server 
+(mit dokumentenparalleler Verarbeitung) oder sogar dedizierte OCR-D-Processing-Server mit GPU/CUDA-Unterstützung am besten für den Anwendungsfall geeignet ist.
+
+### (OCR-D) Prozessor
+
+Ein Prozessor ist ein Werkzeug, das die einheitliche [OCR-D-Befehlszeilenschnittstelle](https://ocr-d.de/en/spec/cli) für die Datenverarbeitung zur Laufzeit implementiert. Das heißt, er führt einen einzelnen [Workflowschritt](#verarbeitungsschritte) oder eine Kombination mehrerer Workflowschritte auf dem [Workspace](https://ocr-d.de/en/user_guide#preparing-a-workspace) (dargestellt durch lokale [METS](https://ocr-d.de/en/spec/mets)) aus, wobei er Eingabedateien für alle oder angeforderte physische Seiten der fileGrp(s) liest und Ausgabedateien für sie in die Output-fileGrp(s) schreibt. Er kann eine Reihe von optionalen oder obligatorischen [Parametern](https://ocr-d.de/en/spec/ocrd_tool) erwarten.
+
+→ [OCR-D Workflow Guide](https://ocr-d.de/en/workflows)
+
+### (OCR-D) Server
+
+Konkrete Implementierung einer Teilmenge von OCR-D-Diensten oder der Netzwerk-Host, der sie bereitstellt.
+
+### (OCR-D) Service
+
+Gruppe von Endpunkten der OCR-D Web-API; discovery/workspace/processing/workflow/...
+
+### OCR-D Web API
+
+Wie in [OCR-D/spec#173](https://github.com/OCR-D/spec/pull/173) vorgeschlagen, definiert die OCR-D-Web-API einheitliche und voneinander abhängige Dienste, die je nach Anwendungsfall auf Netzkomponenten verteilt werden können.
 
 ### OCR-D Workflow
 
-Combination of [activities](#activities) via concrete [processors](#processor) and [evaluators](#evaluator) and their parameterization configured as a sequence or lattice, depending on their success or failure. Implemented in the [OCR-D Workflow Runtime Library](#ocr-d-workflow-runtime-library) and serializable in a yet-to-specifcy format (as of 2020/10).
+Kombination von [Verarbeitungsschritten](#verarbeitungsschritte) über konkrete [Prozessoren](#ocr-d-prozessor) und [Evaluatoren](#ocr-d-evaluator) und deren Parametrisierung als Sequenz oder Verband konfiguriert, abhängig von deren Erfolg oder Misserfolg. Implementiert in der [OCR-D Workflow Runtime Library](#ocr-d-workflow-runtime-library) und serialisierbar in einem noch zu spezifizierenden Format.
 
-The term *Workflow* is understood to encompass more features in other contexts, such as manual intervention by the user. In contrast to the terminology in workflow engines like Taverna or digitization frameworks like Kitodo, an OCR-D workflow is a fully automatic process.
+Der Begriff *Workflow* wird in anderen Kontexten so verstanden, dass er mehr Funktionen umfasst, wie z.B. manuelle Eingriffe durch den Benutzer. Im Gegensatz zur Terminologie in Workflow-Engines wie Taverna oder Digitalisierungs-Frameworks wie Kitodo ist ein OCR-D-Workflow ein vollautomatischer Prozess.
+
+### (OCR-D) Workflow Engine
+
+Zentrale Softwarekomponente des Controllers, die Arbeitsabläufe, einschließlich Kontrollstrukturen (linear/parallel/inkrementell), ausführt. Wird auch bei CLI-Einsätzen auf einem einzigen Host benötigt (wo es allein auf Interprozesskommunikation und Dateisystemein- und -ausgabe beruhen kann), z. B. `ocrd process`.
+
+### (OCR-D) Workflow Runtime Library
+
+Softwarekomponente eines Servers oder Prozessors, die sich mit der Modellierung von OCR-Systemen befasst; z.B. Python-Bibliothek in [OCR-D/core](https://github.com/OCR-D/core), die Klassen für alle wesentlichen funktionalen Komponenten (`OcrdPage`, `OcrdMets`, `Workspace`, `Resolver`, `Processor`, `ProcessorTask`, `Workflow`, `WorkflowTask` ...) bereitstellt, einschließlich Mechanismen zur Signalisierung und Orchestrierung von Workflows, auf denen Komponenten (vom Prozessor bis zum Controller) implementiert werden können.

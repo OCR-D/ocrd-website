@@ -64,7 +64,7 @@ For this purpose, the METS file MUST contain a `mods:identifier` that must conta
 
 ## File Group USE syntax
 
-All `mets:fileGrp` MUST have a **unique** `USE` attribute that hints at the provenance of the files.
+All `mets:fileGrp` MUST have a **unique** `USE` attribute that hints at the provenance of the files and must be a valid [`xsd:ID`](https://www.w3.org/TR/xmlschema11-2/#ID).
 
 It SHOULD have the structure
 
