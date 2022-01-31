@@ -21,6 +21,10 @@ because [`-p` is repeatable](#-p---parameter-param_json).
 multiple values, formatted as a single string with comma-separated items (e.g.
 `-I group1,group2,group3` instead of `-I group1 -I group2 -I group3`).
 
+**NOTE**: Parameters marked **RANGE** support the numeric range operator `..` to
+generate all the values between the start and end value by incrementing the numeric
+part of the string.
+
 ## CLI executable name
 
 Every CLI executable's name must begin with `ocrd-`.
@@ -56,7 +60,7 @@ Omit to resort to default output file groups of the processor, or for processors
 
 ### `-g, --page-id ID`
 
-**MULTI-VALUE**
+**MULTI-VALUE** **RANGE** 
 
 The `mets:div[@TYPE='page']/@ID` that contains the `mets:fptr/@FILEID` pointers
 to files representing a page. Effectively, only those files in the [input file

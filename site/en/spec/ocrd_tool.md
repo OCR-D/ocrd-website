@@ -146,7 +146,15 @@ properties:
                     description: List the allowed values if a fixed list.
                   content-type:
                     type: string
-                    description: "If parameter is reference to file: Media type of the file"
+                    default: 'application/octet-stream'
+                    description: >
+                      The media type of resources this processor expects for
+                      this parameter. Most processors use files for resources
+                      (e.g.  `*.traineddata` for `ocrd-tesserocr-recognize`)
+                      while others use directories of files (e.g. `default` for
+                      `ocrd-eynollah-segment`).  If a parameter requires
+                      directories, it must set `content-type` to
+                      `text/directory`.
                   cacheable:
                     type: boolean
                     description: "If parameter is reference to file: Whether the file should be cached, e.g. because it is large and won't change."
