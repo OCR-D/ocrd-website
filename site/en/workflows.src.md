@@ -329,29 +329,7 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 ### Step 22: Dummy Processing
 
-Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
-copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.
-
-#### Available processors
-
-<table class="processor-table">
-  <thead>
-    <tr>
-      <th>Processor</th>
-      <th>Parameter</th>
-      <th>Remarks</th>
-    <th>Call</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr data-processor="ocrd-dummy">
-      <td>ocrd-dummy</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    <td><code>ocrd-dummy -I OCR-D-FILEGRP -O OCR-D-DUMMY</code></td>
-    </tr>
-  </tbody>
-</table>
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-dummy-processing.md|sed '$d'-->
 
 # Recommendations
 
