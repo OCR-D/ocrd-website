@@ -532,8 +532,8 @@ processors with calls to `ocrd-tesserocr-recognize` with specific parameters:
   <thead><tr><th>processor call</th><th><code>ocrd-tesserocr-recognize</code> parameters</th></tr></thead>
   <tbody>
     <tr>
-      <td>ocrd-tesserocr-segment-region -P overwrite_regions true -P find_tables false</td>
-      <td>ocrd-tesserocr-recognize -P textequiv_level region -P segmentation_level region -P overwrite_segments true -P find_tables false</td>
+      <td>ocrd-tesserocr-segment-region -P overwrite_regions true</td>
+      <td>ocrd-tesserocr-recognize -P textequiv_level region -P segmentation_level region -P overwrite_segments true</td>
     </tr>
     <tr>
       <td>ocrd-tesserocr-segment-table -P overwrite_cells true</td>
@@ -606,15 +606,15 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
     <tr data-processor="ocrd-eynollah-segment">
       <td>ocrd-eynollah-segment</td>
       <td><code>-P models</code></td>
-      <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
-      If you didn't download the model with the `resource manager`, for <code>model</code> you need to <strong>pass the absolute path on your hard drive</strong> as parameter value.</td>
+      <td>Models can be found <a href="https://qurator-data.de/eynollah/models_eynollah.tar.gz)">here</a> or downloaded with the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>; <br/>
+      If you didn't download the model with the <code>resmgr</code>, for <code>model</code> you need to <strong>pass the absolute path on your hard drive</strong> as parameter value.</td>
       <td><code>ocrd-eynollah-segment -I OCR-D-IMG -O OCR-D-SEG -P models default</code></td>
     </tr>
     <tr data-processor="ocrd-sbb-textline-detector">
       <td>ocrd-sbb-textline-detector</td>
       <td><code>-P model modelname</code></td>
-      <td>Models can be found <a href="https://qurator-data.de/sbb_textline_detector/">here</a> or downloaded with the [OCR-D resource manager](https://ocr-d.de/en/models); <br/>
-      If you didn't download the model with the `resource manager`, for <code>model</code> you need to <strong>pass the local path on your hard drive</strong> as parameter value.</td>
+      <td>Models can be found <a href="https://qurator-data.de/sbb_textline_detector/">here</a> or downloaded with the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>; <br/>
+      If you didn't download the model with <code>resmgr</code>, for <code>model</code> you need to <strong>pass the local filesystem path</strong> as parameter value.</td>
       <td><code>ocrd-sbb-textline-detector -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-LINE -P model /path/to/model</code></td>
     </tr>
     <tr data-processor="ocrd-cis-ocropy-segment">
@@ -638,8 +638,8 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
     <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
       <td><code>-P block_segmentation_model mrcnn_name</code> -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
-      <td>For available models take a look at <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">this site</a> ocr download them via [OCR-D resource manager](https://ocr-d.de/en/models); 
-      If you didn't use the `resource manager`, you need to <strong>pass the local path on your hard drive</strong> as parameter value.</td>
+      <td>For available models take a look at <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">this site</a> ocr download them via <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>; 
+      If you didn't use <code>resmgr</code>, you need to <strong>pass the local filesystem path</strong> as parameter value.</td>
       <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model mrcnn_name -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
     </tr>
     <tr data-processor="ocrd-pc-segmentation">
@@ -647,6 +647,11 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
       <td></td>
       <td></td>
       <td><code>ocrd-pc-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG</code></td>
+    </tr>
+    <tr data-processor="ocrd-detectron2-segment">
+      <td>ocrd-detectron2-segment</td>
+      <td></td>
+      <td>For available models, any model for <a href="https://github.com/facebookresearch/detectron2">Detectron2</a> forks trained on document layout analysis datasets can be integrated; instructions and examples can be found <a href="https://github.com/bertsky/ocrd_detectron2#models">here</a></td>
     </tr>
   </tbody>
 </table>
@@ -1382,12 +1387,6 @@ accessible format that can be used as-is by expert and layman alike.
       <td></td>
       <td><code>ocrd-pagetopdf -I OCR-D-OCR -O OCR-D-PDF -P textequiv_level word</code></td>
     </tr>
-    <tr data-processor="ocrd-export-larex">
-      <td>ocrd-export-larex</td>
-      <td></td>
-      <td>Create a file group with PAGE alongside image files (differing only in file name suffix) to accommodate <a href="https://github.com/OCR4all/LAREX">LAREX'</a> <i>bookpath</i> directory assumptions.</td>
-      <td><code>ocrd-export-larex -I OCR-D-OCR -O OCR-D-LAREX</code></td>
-    </tr>
     <tr data-processor="ocrd-segment-extract-pages">
       <td>ocrd-segment-extract-pages</td>
       <td><code>-P mimetype image/png -P transparency true</code></td>
@@ -1444,6 +1443,33 @@ accessible format that can be used as-is by expert and layman alike.
 
 <!-- END-EVAL -->
 
+### Step 20.1: Generic transformations
+
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-generic-transformations.md|sed '$d' -->
+TEXT
+
+#### Available processors
+
+<table class="processor-table">
+  <thead>
+    <tr>
+      <th>Processor</th>
+      <th>Parameter</th>
+      <th>Remarks</th>
+    <th>Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-processor="ocrd-page-transform">
+      <td>ocrd-page-transform</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    <td><code>ocrd-page-transform</code></td>
+    </tr>
+  </tbody>
+
+<!-- END-EVAL -->
+
 ### Step 21: Archiving
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d' -->
@@ -1486,6 +1512,7 @@ To use the prototype, specify http://141.5.98.232/api as the endpoint parameter 
 
 ### Step 22: Dummy Processing
 
+<!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-dummy-processing.md|sed '$d' -->
 Sometimes it can be useful to have a dummy processor, which takes the files in an Input fileGrp and
 copies them the a new Output fileGrp, re-generating the PAGE XML from the current namespace schema/model.
 
@@ -1510,6 +1537,8 @@ copies them the a new Output fileGrp, re-generating the PAGE XML from the curren
   </tbody>
 </table>
 
+<!-- END-EVAL -->
+
 # Recommendations
 
 <!-- BEGIN-INCLUDE ./repo/ocrd-website.wiki/Workflow-Guide-recommendations.md -->
@@ -1519,7 +1548,7 @@ above on selected pages of some prints from the 17th and 18th century.
 
 The results vary quite a lot from page to page. In most cases, segmentation is a problem.
 
-Note that for our test pages, not all steps described above were needed to obtain the best results.
+Note that for our test pages, not all steps described above werde needed to obtain the best results.
 Depending on your particular images, you might want to include those processors again for better results.
 
 We are currently working on regression tests with the help of which we will be able to provide more profound
