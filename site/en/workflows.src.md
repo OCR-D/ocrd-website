@@ -323,6 +323,10 @@ elements etc. Optionally, the output can be converted to other formats, or copie
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-format-conversion.md|sed '$d'-->
 
+### Step 20.1: Generic transformations
+
+<!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-generic-transformations.md|sed '$d'-->
+
 ### Step 21: Archiving
 
 <!-- HERE-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-archiving.md|sed '$d'-->
