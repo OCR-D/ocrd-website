@@ -1135,12 +1135,12 @@ into one annotation.
 ### Step 16: Post-correction
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-post-correction.md|sed '$d' -->
-In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries,
-morphology and orthography).
+In this processing step, the recognized text is corrected by statistical error modelling, language modelling, and word modelling (dictionaries, morphology and orthography).
 
 **Note:** Most tools benefit strongly from input which includes alternative OCR hypotheses. Currently, models for `ocrd-cor-asv-ann-process`
-are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` expects input from multi-OCR alignment.
+are optimised for input from specific OCR models, whereas `ocrd-cis-postcorrect` expects input from multi-OCR alignment. For more information, see [this presentation](https://vdhd2021.hypotheses.org/176) at vDHd 2021 (held on 23rd May 2021) ([slides](https://dhd-ag-ocr.github.io/slides/OCR@vDHd-Z3.pdf) / [video](https://meet.gwdg.de/playback/presentation/2.0/playback.html?meetingId=db36b9cd45a79838b121a8b68270a85734c8f026-1621428290680) in German)
 
+**Note:** There is some overlap with [text alignment](https://github.com/OCR-D/ocrd-website/wiki/Workflow-Guide-text-alignment) here, which can also be used (or contribute to) post-correction.
 
 #### Available processors
 <table class="processor-table">
@@ -1156,8 +1156,8 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
     <tr data-processor="ocrd-cor-asv-ann-process">
       <td>ocrd-cor-asv-ann-process</td>
       <td><code>-P textequiv_level word -P model_file modelname</code></td>
-      <td>Pre-trained models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a> or downloaded via the [OCR-D resource manager](https://ocr-d.de/en/models);
-      <br/>If you didn't download the model with the `resource manager`, for <code>model_file</code> you need to <b>pass the local path on your hard drive</b>
+      <td>Pre-trained models can be found <a href="https://github.com/ASVLeipzig/cor-asv-ann-models">here</a> and <a href="https://git.informatik.uni-leipzig.de/ocr-d/cor-asv-ann-models">here</a> or downloaded via the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>;
+      <br/>If you didn't download the model with <code>resmgr</code>, for <code>model_file</code> you need to <b>pass the local filesystem path</b>
       as parameter value.
      (Relative paths are resolved from the workspace directory or the environment variable <code>CORASVANN_DATA</code>.)
      There is no default <code>model_file</code>.</td>
@@ -1173,7 +1173,7 @@ are optimised for input from single OCR engines, whereas `ocrd-cis-postcorrect` 
 cat > /dev/null
 echo '{}'
 </code></pre>
-      For <code>model</code> you need to <b>pass the local path on your hard drive</b> as parameter value.
+      For <code>model</code> you need to <b>pass the local filesystem path</b> as parameter value.
       There is no default <code>model</code>.
       </td>
       <td><code>ocrd-cis-postcorrect -I OCR-D-ALIGN -O OCR-D-CORRECT -p postcorrect.json</code></td>
@@ -1446,7 +1446,7 @@ accessible format that can be used as-is by expert and layman alike.
 ### Step 20.1: Generic transformations
 
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-generic-transformations.md|sed '$d' -->
-TEXT
+Sometimes PAGE-XML annotations need to be processed specially to make a workflow's processors interoperate properly. For example, a text producing processor might forget to make `TextEquiv` consistent between hierarchy levels, or it might be necessary to remove specific region types. Also, repairing minor syntactic or semantic deficiencies is usually required for export or visualization, like removing empty `ReadingOrder` and dead `@regionRef`s, ensuring each `TextEquiv` has a `Unicode`, or fixing negative or floating-point coordinates. While it is always possible to do that ad-hoc via scripts, it might help formulate this as a proper workflow step via processor CLI.
 
 #### Available processors
 
@@ -1462,8 +1462,8 @@ TEXT
   <tbody>
     <tr data-processor="ocrd-page-transform">
       <td>ocrd-page-transform</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><code>-P xsl page-remove-regions.xsl -P xslt-params "-s type=ImageRegion"</code></td>
+      <td>Many <a href="https://bertsky.github.io/workflow-configuration/#usage">useful XSLTs</a> come as preinstalled resources, but can be passed any XSL file. Specify <code>mimetype</code> if the output is not PAGE-XML anymore</td>
     <td><code>ocrd-page-transform</code></td>
     </tr>
   </tbody>
