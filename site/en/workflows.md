@@ -1117,7 +1117,7 @@ into one annotation.
   </tbody>
 </table>
 
-## Comparison
+#### Comparison
 
 | | ocrd-cor-asv-ann-align | ocrd-cis-align |
 | --- | --- | --- |
@@ -1260,7 +1260,7 @@ In this processing step, the text output of the OCR or post-correction can be ev
   </tbody>
 </table>
 
-## Comparison
+#### Comparison
 
 | | ocrd-dinglehopper | ocrd-cor-asv-ann-evaluate |
 | --- | ----------------| -------------------- |
@@ -1363,9 +1363,23 @@ accessible format that can be used as-is by expert and layman alike.
       </code></pre>
       </td>
       <td>As the value consists of two words, when using <code>-P</code> form it has to be enclosed in quotation marks.<br/>
-      If you want to save all OCR results in one file, you can use the following command: `cat OCR* > full.txt`
+      If you want to save all OCR results in one file, you can use the following command: <pre>cat OCR* > full.txt</pre>
     </td>
       <td><code>ocrd-fileformat-transform -I OCR-D-OCR -O OCR-D-ALTO</code></td>
+    </tr>
+   <tr data-processor="mets-mods2tei">
+      <td><a href="https://github.com/slub/mets-mods2tei">mets-mods2tei</a></td>
+      <td><pre>--ocr -T FULLTEXT -I OCR-D-IMG</pre></td>
+      <td>Not a processor CLI, processes the workspace METS, generating a single TEI (<a href="https://deutschestextarchiv.de/doku/basisformat/">DTABf-formatted</a>) for the whole document. Only takes ALTO input, so usually needs a prior <code>ocrd-fileformat-transform -I OCR-D-OCR -O FULLTEXT -P from-to "page alto"</code>.
+    </td>
+      <td><code>mm2tei --ocr -T FULLTEXT -I OCR-D-IMG -O TEI.xml</code></td>
+    </tr>
+   <tr data-processor="ocrd-page2tei">
+      <td><a href="https://github.com/bertsky/ocrd_page2tei">ocrd-page2tei</a></td>
+      <td></td>
+      <td>generates a single TEI (using <a href="https://github.com/dariok/page2tei">page2tei</a> XSLT with Saxon) for the whole document.
+    </td>
+      <td><code>ocrd-page2tei -I OCR-D-OCR -O OCR-D-TEI</code></td>
     </tr>
     <tr data-processor="ocrd-pagetopdf">
       <td>ocrd-pagetopdf</td>
@@ -1467,6 +1481,7 @@ Sometimes PAGE-XML annotations need to be processed specially to make a workflow
     <td><code>ocrd-page-transform</code></td>
     </tr>
   </tbody>
+</table>
 
 <!-- END-EVAL -->
 
