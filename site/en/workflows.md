@@ -486,7 +486,7 @@ if they are curved. The input image has to be binarized for the module to work.
       <td>
         <code>-P model_path /path/to/latest_net_G.pth</code>
       </td>
-      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> or use the [OCR-D resource manager](https://ocr-d.de/en/models) <br/> Parameter <code>model_path</code> is optional if the model was installed via <code>ocrd resmgr download ocrd-anybaseocr-dewarp '*'</code> <br> <strong>GPU required!</strong></td>
+      <td>For available models take a look at this <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">site</a> or use the [OCR-D resource manager](https://ocr-d.de/en/models) <br/> Parameter <code>model_path</code> is optional if the model was installed via <code>ocrd resmgr download ocrd-anybaseocr-dewarp '*'</code> <br> <strong>GPU required! CPU fallback is broken.</strong></td>
       <td>
         <code>ocrd-anybaseocr-dewarp -I OCR-D-DESKEW-PAGE -O OCR-D-DEWARP-PAGE</code>
       </td>
