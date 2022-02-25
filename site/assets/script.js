@@ -64,7 +64,7 @@ function linkifyVideosInPublications() {
       let [part_before, part_after] = entry_text.split(label)
       if (part_after.indexOf('https://') > -1) {
         // contains a link, linkify
-        part_after = part_after.replace('&lt;', '').replace('&gt;', '')
+        part_after = part_after.replace('&lt;', '').replace('&gt;', '').replace(/\.$/, '')
         link_label = part_after
         if (link_label.length > 50) {
           link_label = `${link_label.substr(0, 50)}...`
