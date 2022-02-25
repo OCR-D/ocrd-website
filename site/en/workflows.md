@@ -1602,7 +1602,7 @@ results by configuring a more granular workflow like e.g. the
 ### Example with ocrd-process
 
 ```sh
-ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
+ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951 -I OCR-D-IMG -O OUTPUT"
 ```
 
 ## Best results for selected pages
