@@ -105,54 +105,119 @@
         "categories": [
             "Layout analysis"
         ],
-        "description": "Segments and classifies document segments in a single page and outputs the the region polygons and classes.",
+        "description": "Segments and classifies regions in each single page and annotates the the region polygons and classes.",
         "executable": "ocrd-anybaseocr-block-segmentation",
         "input_file_grp": [
             "OCR-D-IMG"
         ],
         "output_file_grp": [
-            "OCR-D-BLOCK-SEGMENT"
+            "OCR-D-SEG-BLOCK"
         ],
         "parameters": {
-            "DETECTION_MIN_CONFIDENCE": {
-                "default": 0.9,
-                "description": "Confidence value for a model to detect bounding box",
-                "type": "number"
+            "active_classes": {
+                "default": [
+                    "page-number",
+                    "paragraph",
+                    "catch-word",
+                    "heading",
+                    "drop-capital",
+                    "signature-mark",
+                    "marginalia",
+                    "caption"
+                ],
+                "description": "Restrict types of regions to be detected.",
+                "items": {
+                    "enum": [
+                        "page-number",
+                        "paragraph",
+                        "catch-word",
+                        "heading",
+                        "drop-capital",
+                        "signature-mark",
+                        "header",
+                        "marginalia",
+                        "footnote",
+                        "footnote-continued",
+                        "caption",
+                        "endnote",
+                        "footer",
+                        "keynote",
+                        "image",
+                        "table",
+                        "graphics"
+                    ],
+                    "type": "string"
+                },
+                "type": "array"
             },
             "block_segmentation_weights": {
+                "cacheable": true,
+                "content-type": "application/x-hdf;subtype=bag",
                 "default": "block_segmentation_weights.h5",
                 "description": "Path to model weights",
-                "required": false,
+                "format": "uri",
                 "type": "string"
             },
-            "operation_level": {
-                "default": "page",
-                "description": "PAGE XML hierarchy level to operate on",
-                "enum": [
-                    "page"
-                ],
-                "type": "string"
+            "min_confidence": {
+                "default": 0.9,
+                "description": "Confidence threshold for region detections",
+                "format": "float",
+                "type": "number"
+            },
+            "min_iou_drop": {
+                "default": 0.8,
+                "description": "Minimum required overlap (intersection over union) of mask-derived contour area between neighbours to suppress prediction scoring worse",
+                "format": "float",
+                "type": "number"
+            },
+            "min_iou_merge": {
+                "default": 0.2,
+                "description": "Minimum required overlap (intersection over union) of mask-derived contour area between neighbours to merge prediction scoring worse",
+                "format": "float",
+                "type": "number"
+            },
+            "min_share_drop": {
+                "default": 0.9,
+                "description": "Minimum required overlap (intersection over single) of mask-derived contour area between neighbours to suppress smaller prediction",
+                "format": "float",
+                "type": "number"
+            },
+            "min_share_merge": {
+                "default": 0.8,
+                "description": "Minimum required overlap (intersection over single) of mask-derived contour area between neighbours to merge smaller prediction",
+                "format": "float",
+                "type": "number"
             },
             "overwrite": {
                 "default": false,
-                "description": "check whether to overwrite existing text lines",
+                "description": "whether to delete existing text lines prior to segmentation",
+                "type": "boolean"
+            },
+            "post_process": {
+                "default": true,
+                "description": "whether to apply non-maximum suppression (across classes) on the detections",
                 "type": "boolean"
             },
             "th": {
                 "default": 15,
-                "description": "num of pixels to include in the area region",
+                "description": "num of pixels to include in the area region (when applying text/non-text mask from tiseg)",
                 "type": "integer"
+            },
+            "use_masks": {
+                "default": true,
+                "description": "whether to segment from the mask as polygon instead of just the bbox",
+                "type": "boolean"
             }
         },
         "steps": [
-            "layout/segmentation/text-image"
+            "layout/segmentation/region"
         ]
     },
     "ocrd-anybaseocr-crop": {
         "categories": [
             "Image preprocessing"
         ],
-        "description": "Crops the input image to the page frame using non-linear processing and outputs a border polygon",
+        "description": "Detect the input images' page frame, annotate it as border polygon and add a cropped derived image.",
         "executable": "ocrd-anybaseocr-crop",
         "input_file_grp": [
             "OCR-D-IMG-DESKEW"
@@ -161,69 +226,81 @@
             "OCR-D-IMG-CROP"
         ],
         "parameters": {
-            "colSeparator": {
-                "default": 0.04,
-                "description": "consider space between column. 25% of width",
-                "format": "float",
-                "type": "number"
-            },
-            "maxRularArea": {
-                "default": 0.3,
-                "description": "Consider maximum rular area",
-                "format": "float",
-                "type": "number"
-            },
-            "minArea": {
+            "columnAreaMin": {
                 "default": 0.05,
-                "description": "rular position in below",
+                "description": "text block detection: minimum area of individual columns (as ratio of total image pixels)",
                 "format": "float",
                 "type": "number"
             },
-            "minRularArea": {
-                "default": 0.01,
-                "description": "Consider minimum rular area",
+            "columnSepWidthMax": {
+                "default": 0.04,
+                "description": "text block detection: maximum width between individual columns (as ratio of total image width)",
+                "format": "float",
+                "type": "number"
+            },
+            "dpi": {
+                "default": 0,
+                "description": "pixel density in dots per inch (used to zoom/scale during processing; overrides any meta-data in the images); disabled when zero or negative",
+                "format": "float",
+                "type": "number"
+            },
+            "marginBottom": {
+                "default": 0.75,
+                "description": "ruler / edge / text detection: minimum y position to crop from below (as ratio of total image height)",
+                "format": "float",
+                "type": "number"
+            },
+            "marginLeft": {
+                "default": 0.3,
+                "description": "ruler / edge / text detection: maximum x position to crop from left (as ratio of total image width)",
+                "format": "float",
+                "type": "number"
+            },
+            "marginRight": {
+                "default": 0.7,
+                "description": "ruler / edge / text detection: minimum x position to crop from right (as ratio of total image width)",
+                "format": "float",
+                "type": "number"
+            },
+            "marginTop": {
+                "default": 0.25,
+                "description": "ruler / edge / text detection: maximum y position to crop from above (as ratio of total image height)",
                 "format": "float",
                 "type": "number"
             },
             "padding": {
                 "default": 10,
-                "description": "extend resulting border by this many px in each direction",
+                "description": "extend / shrink border resulting from edge detection / text detection by this many px in each direction",
                 "format": "integer",
                 "type": "number"
             },
-            "positionBelow": {
-                "default": 0.75,
-                "description": "rular position in below",
+            "rulerAreaMax": {
+                "default": 0.3,
+                "description": "ruler detection and suppression: maximum area of bbox (as ratio of total image pixels)",
                 "format": "float",
                 "type": "number"
             },
-            "positionLeft": {
-                "default": 0.4,
-                "description": "rular position in left",
+            "rulerAreaMin": {
+                "default": 0.01,
+                "description": "ruler detection and suppression: minimum area of bbox (as ratio of total image pixels)",
                 "format": "float",
                 "type": "number"
             },
-            "positionRight": {
-                "default": 0.6,
-                "description": "rular position in right",
+            "rulerRatioMax": {
+                "default": 50.0,
+                "description": "ruler detection and suppression: maximum aspect ratio of bbox",
                 "format": "float",
                 "type": "number"
             },
-            "rularRatioMax": {
-                "default": 10.0,
-                "description": "rular position in below",
-                "format": "float",
-                "type": "number"
-            },
-            "rularRatioMin": {
+            "rulerRatioMin": {
                 "default": 3.0,
-                "description": "rular position in below",
+                "description": "ruler detection and suppression: minimum aspect ratio of bbox",
                 "format": "float",
                 "type": "number"
             },
-            "rularWidth": {
+            "rulerWidthMax": {
                 "default": 0.95,
-                "description": "maximum rular width",
+                "description": "ruler detection and suppression: maximum width of bbox (as ratio of total image width)",
                 "format": "float",
                 "type": "number"
             }
@@ -404,7 +481,7 @@
             }
         },
         "steps": [
-            "layout/segmentation/text-image"
+            "layout/analysis"
         ]
     },
     "ocrd-anybaseocr-textline": {
@@ -557,45 +634,22 @@
             "OCR-D-SEG-TISEG"
         ],
         "parameters": {
-            "classes": {
-                "default": 3,
-                "description": "number of classes",
-                "type": "integer"
-            },
-            "height": {
-                "default": 800,
-                "description": "input image width",
-                "type": "integer"
-            },
-            "operation_level": {
-                "default": "page",
-                "description": "PAGE XML hierarchy level to operate on",
-                "enum": [
-                    "page",
-                    "region",
-                    "line"
-                ],
-                "type": "string"
-            },
             "seg_weights": {
+                "cacheable": true,
+                "content-type": "application/x-hdf;subtype=bag",
                 "default": "seg_model.hdf5",
-                "description": "path to weights file",
-                "required": false,
+                "description": "Path to weights file for deep learning model when use_deeplr is true.",
+                "format": "uri",
                 "type": "string"
             },
             "use_deeplr": {
                 "default": true,
-                "description": "use deep learning model",
+                "description": "Whether to use deep learning model (UNet pixel classifier) instead of rule-based implementation (multi-resolution morphology).",
                 "type": "boolean"
-            },
-            "width": {
-                "default": 1024,
-                "description": "input image height",
-                "type": "integer"
             }
         },
         "steps": [
-            "layout/segmentation/text-image"
+            "layout/segmentation/text-nontext"
         ]
     },
     "ocrd-calamari-recognize": {
@@ -1200,6 +1254,40 @@
             "recognition/post-correction"
         ]
     },
+    "ocrd-cor-asv-ann-align": {
+        "categories": [
+            "Text recognition and optimization"
+        ],
+        "description": "Align different textline annotations and pick best",
+        "executable": "ocrd-cor-asv-ann-align",
+        "input_file_grp": [
+            "OCR-D-GT-SEG-LINE",
+            "OCR-D-OCR-TESS",
+            "OCR-D-OCR-KRAK",
+            "OCR-D-OCR-OCRO",
+            "OCR-D-OCR-CALA",
+            "OCR-D-OCR-ANY",
+            "OCR-D-COR-ASV"
+        ],
+        "output_file_grp": [
+            "OCR-D-OCR-MULTI"
+        ],
+        "parameters": {
+            "method": {
+                "default": "majority",
+                "description": "decide by majority of OCR hypotheses, by highest confidence of OCRs or by a combination thereof",
+                "enum": [
+                    "majority",
+                    "confidence",
+                    "combined"
+                ],
+                "type": "string"
+            }
+        },
+        "steps": [
+            "recognition/post-correction"
+        ]
+    },
     "ocrd-cor-asv-ann-evaluate": {
         "categories": [
             "Text recognition and optimization"
@@ -1226,10 +1314,26 @@
                 "minimum": 0,
                 "type": "number"
             },
-            "metric": {
-                "default": "Levenshtein",
-                "description": "Distance metric to calculate and aggregate: historic_latin for GT level 1, NFKC for GT level 2 (except \u017f-s), Levenshtein for GT level 3",
+            "gt_level": {
+                "default": 1,
+                "description": "When `metric=historic_latin`, normalize and equate at this GT transcription level.",
                 "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            },
+            "histogram": {
+                "default": false,
+                "description": "Aggregate and show mutual character histograms.",
+                "type": "boolean"
+            },
+            "metric": {
+                "default": "Levenshtein-fast",
+                "description": "Distance metric to calculate and aggregate: `historic_latin` for GT level 1-3, `NFKC` for roughly GT level 2 (but including reduction of `\u017f/s` and superscript numerals etc), `Levenshtein` for GT level 3 (or `Levenshtein-fast` for faster alignment but using maximum sequence length instead of path length as CER denominator).",
+                "enum": [
+                    "Levenshtein-fast",
                     "Levenshtein",
                     "NFC",
                     "NFKC",
@@ -1259,6 +1363,11 @@
             "OCR-D-COR-ASV"
         ],
         "parameters": {
+            "charmap": {
+                "default": {},
+                "description": "mapping for input characters before passing to correction; can be used to adapt to character set mismatch between input and model (without relying on underspecification alone)",
+                "type": "object"
+            },
             "fast_mode": {
                 "default": false,
                 "description": "decode greedy instead of beamed, with batches of parallel lines instead of parallel alternatives; also disables rejection and beam parameters; enable if performance is far more important than quality",
@@ -1431,11 +1540,6 @@
             "OCR-D-SEG-LINE"
         ],
         "parameters": {
-            "allow_enhancement": {
-                "default": true,
-                "description": "if the input image has less than 300 DPI, then upscale and enhance",
-                "type": "boolean"
-            },
             "allow_scaling": {
                 "default": false,
                 "description": "check the resolution against the number of detected columns and if needed, scale the image up or down during layout detection (heuristic to improve quality and performance)",
@@ -1464,6 +1568,7 @@
             },
             "models": {
                 "cacheable": true,
+                "content-type": "text/directory",
                 "description": "Path to directory containing models to be used (See https://qurator-data.de/eynollah)",
                 "format": "file",
                 "required": true,
@@ -1863,6 +1968,11 @@
             "preprocessing/optimization/binarization"
         ]
     },
+    "ocrd-page2tei": {
+        "description": "Convert PAGE-XML to TEI-C",
+        "executable": "ocrd-page2tei",
+        "parameters": {}
+    },
     "ocrd-pagetopdf": {
         "categories": [
             "Long-term preservation"
@@ -2150,13 +2260,38 @@
         "categories": [
             "Layout analysis"
         ],
-        "description": "Compare region segmentations",
+        "description": "Compare segmentations",
         "executable": "ocrd-segment-evaluate",
         "input_file_grp": [
             "OCR-D-GT-SEG-BLOCK",
             "OCR-D-SEG-BLOCK"
         ],
-        "parameters": {},
+        "parameters": {
+            "for-categories": {
+                "default": "",
+                "description": "on region level, only compare these region types (comma-separated list; unless `ignore-subtype` is given, append subtypes via `.`; e.g. `TextRegion.page-number,TextRegion.marginalia`)",
+                "type": "string"
+            },
+            "ignore-subtype": {
+                "default": false,
+                "description": "on region level, ignore @type differentiation (where applicable)",
+                "type": "boolean"
+            },
+            "level-of-operation": {
+                "default": "region",
+                "description": "segment hierarchy level to compare GT and predictions at",
+                "enum": [
+                    "region",
+                    "line"
+                ],
+                "type": "string"
+            },
+            "only-fg": {
+                "default": false,
+                "description": "only overlap and compare the foregrounds in the binarized image",
+                "type": "boolean"
+            }
+        },
         "steps": [
             "layout/analysis"
         ]
@@ -2913,9 +3048,10 @@
         ],
         "parameters": {
             "operation_level": {
-                "default": "region",
+                "default": "page",
                 "description": "PAGE XML hierarchy level to operate on",
                 "enum": [
+                    "page",
                     "region",
                     "line"
                 ],
@@ -2987,7 +3123,8 @@
                 "description": "PAGE XML hierarchy level to operate on",
                 "enum": [
                     "page",
-                    "region"
+                    "region",
+                    "line"
                 ],
                 "type": "string"
             }
@@ -3054,6 +3191,11 @@
             "OCR-D-OCR-TESS"
         ],
         "parameters": {
+            "auto_model": {
+                "default": false,
+                "description": "Prefer models performing best (by confidence) per segment (if multiple given in `model`). Repeats the OCR of the best model once (i.e. slower). (Use as a fallback to xpath_model if you do not trust script/language detection.)",
+                "type": "boolean"
+            },
             "block_polygons": {
                 "default": false,
                 "description": "When detecting regions, annotate polygon coordinates instead of bounding box rectangles by querying Tesseract accordingly.",
@@ -3079,6 +3221,11 @@
                 "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
                 "format": "float",
                 "type": "number"
+            },
+            "find_staves": {
+                "default": false,
+                "description": "When detecting regions, recognize music staves as non-text, suppressing it in the binary image (Tesseract's ``pageseg_apply_music_mask``). Note that this might wrongly detect tables as staves.",
+                "type": "boolean"
             },
             "find_tables": {
                 "default": true,
@@ -3161,6 +3308,16 @@
                     "none"
                 ],
                 "type": "string"
+            },
+            "xpath_model": {
+                "default": {},
+                "description": "Prefer models mapped according to results of XPath queries into the segment. (As a convenience, `@language` and `@script` also match their upwards `@primary*` and `@secondary*` variants where applicable.) If no queries / mappings match (or under the default empty parameter), then fall back to `model`. If there are multiple matches, combine their results. (Example: {'starts-with(@script,\"Latn\")': 'Latin', 'starts-with(@script,\"Grek\")': 'Greek', '@language=\"Latin\"': 'lat', '@language=\"Greek\"': 'grc+ell', 'ancestor::TextRegion/@type=\"page-number\"': 'eng'})",
+                "type": "object"
+            },
+            "xpath_parameters": {
+                "default": {},
+                "description": "Set additional Tesseract runtime variables according to results of XPath queries into the segment. (As a convenience, `@language` and `@script` also match their upwards `@primary*` and `@secondary*` variants where applicable.) (Example: {'ancestor::TextRegion/@type=\"page-number\"': {'char_whitelist': '0123456789-'}, 'contains(@custom,\"ISBN\")': {'char_whitelist': '0123456789-'}})",
+                "type": "object"
             }
         },
         "steps": [
@@ -3194,6 +3351,11 @@
                 "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
                 "format": "float",
                 "type": "number"
+            },
+            "find_staves": {
+                "default": false,
+                "description": "When detecting regions, recognize music staves as non-text, suppressing it in the binary image (Tesseract's ``pageseg_apply_music_mask``). Note that this might wrongly detect tables as staves.",
+                "type": "boolean"
             },
             "find_tables": {
                 "default": true,
@@ -3288,6 +3450,11 @@
                 "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
                 "format": "float",
                 "type": "number"
+            },
+            "find_staves": {
+                "default": false,
+                "description": "When detecting regions, recognize music staves as non-text, suppressing it in the binary image (Tesseract's ``pageseg_apply_music_mask``). Note that this might wrongly detect tables as staves.",
+                "type": "boolean"
             },
             "find_tables": {
                 "default": true,
