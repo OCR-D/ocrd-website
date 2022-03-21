@@ -341,46 +341,46 @@ function ToggleSearchActive2() {
       <main class="container content column is-two-thirds" aria-label="Content">
         <h1 id="ocrd-tooljson">ocrd-tool.json</h1>
 
-<p>Tools MUST be described in a file <code class="highlighter-rouge">ocrd-tool.json</code> in the root of the repository.</p>
+<p>Tools MUST be described in a file <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> in the root of the repository.</p>
 
 <p>It must contain a JSON object adhering to the <a href="#Definition">ocrd-tool JSON Schema</a>.</p>
 
 <p>In particular, every tool provided must be described in an array item under the
-<code class="highlighter-rouge">tools</code> key. These definitions drive the <a href="cli">CLI</a> and the <a href="swagger">web
+<code class="language-plaintext highlighter-rouge">tools</code> key. These definitions drive the <a href="cli">CLI</a> and the <a href="swagger">web
 services</a>.</p>
 
-<p>To validate a <code class="highlighter-rouge">ocrd-tool.json</code> file, use <code class="highlighter-rouge">ocrd ocrd-tool /path/to/ocrd-tool.json validate</code>.</p>
+<p>To validate a <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> file, use <code class="language-plaintext highlighter-rouge">ocrd ocrd-tool /path/to/ocrd-tool.json validate</code>.</p>
 
 <h2 id="file-parameters">File parameters</h2>
 
 <p>To mark a parameter as expecting the address of a file, it must declare the
-<code class="highlighter-rouge">content-type</code> property as a <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">valid media
+<code class="language-plaintext highlighter-rouge">content-type</code> property as a <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">valid media
 type</a>.
 Optionally, workflow processors can be notified that this file is potentially
 large and static (e.g. a fixed dataset or a precomputed model) and should be cached
-indefinitely after download by setting the <code class="highlighter-rouge">cacheable</code> property to <code class="highlighter-rouge">true</code>.</p>
+indefinitely after download by setting the <code class="language-plaintext highlighter-rouge">cacheable</code> property to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 
-<p>The filename itself, i.e. the concrete value <code class="highlighter-rouge">&lt;fpath&gt;</code> of a file parameter
-should be resolved in the following way (<code class="highlighter-rouge">&lt;cwd&gt;</code> representing the current working directory):</p>
+<p>The filename itself, i.e. the concrete value <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> of a file parameter
+should be resolved in the following way (<code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code> representing the current working directory):</p>
 
 <ul>
-  <li>If <code class="highlighter-rouge">&lt;fpath&gt;</code> is an <code class="highlighter-rouge">http</code>/<code class="highlighter-rouge">https</code> URL: Download to a temporary directory (if
-<code class="highlighter-rouge">cacheable==False</code>) or a semi-temporary cache directory (if <code class="highlighter-rouge">cacheable==True</code>)</li>
-  <li>If <code class="highlighter-rouge">&lt;fpath&gt;</code> is an absolute path: Use as-is.</li>
-  <li>If <code class="highlighter-rouge">&lt;fpath&gt;</code> is a relative path, try resolving the following paths and return
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an <code class="language-plaintext highlighter-rouge">http</code>/<code class="language-plaintext highlighter-rouge">https</code> URL: Download to a temporary directory (if
+<code class="language-plaintext highlighter-rouge">cacheable==False</code>) or a semi-temporary cache directory (if <code class="language-plaintext highlighter-rouge">cacheable==True</code>)</li>
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an absolute path: Use as-is.</li>
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is a relative path, try resolving the following paths and return
 the first one found if any, otherwise abort with an error message stating so:
     <ul>
-      <li><code class="highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly be in <code class="highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly be in <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
       <li>If an environment variable is defined that has the name of the processor in
-upper-case and with <code class="highlighter-rouge">-</code> replaced with <code class="highlighter-rouge">-</code> and followed by <code class="highlighter-rouge">_PATH</code> (e.g. for a processor
-<code class="highlighter-rouge">ocrd-dummy</code>, the variable would need to be called <code class="highlighter-rouge">OCRD_DUMMY_PATH</code>):
+upper-case and with <code class="language-plaintext highlighter-rouge">-</code> replaced with <code class="language-plaintext highlighter-rouge">-</code> and followed by <code class="language-plaintext highlighter-rouge">_PATH</code> (e.g. for a processor
+<code class="language-plaintext highlighter-rouge">ocrd-dummy</code>, the variable would need to be called <code class="language-plaintext highlighter-rouge">OCRD_DUMMY_PATH</code>):
         <ul>
-          <li>Split the variable value at <code class="highlighter-rouge">:</code> and try to resolve by appending <code class="highlighter-rouge">&lt;fpath&gt;</code>
+          <li>Split the variable value at <code class="language-plaintext highlighter-rouge">:</code> and try to resolve by appending <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code>
 to each token and return the first found file if any</li>
         </ul>
       </li>
-      <li><code class="highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code> (with <code class="highlighter-rouge">$HOME/.local/share</code> instead of <code class="highlighter-rouge">$XDG_DATA_HOME</code> if unset)</li>
-      <li><code class="highlighter-rouge">/usr/local/share/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code></li>
+      <li><code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code> (with <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> instead of <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> if unset)</li>
+      <li><code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code></li>
     </ul>
   </li>
 </ul>
@@ -388,14 +388,14 @@ to each token and return the first found file if any</li>
 <h2 id="input--output-file-groups">Input / Output file groups</h2>
 
 <p>Tools should define the names of both expected input and produced output file
-groups as a list of <code class="highlighter-rouge">USE</code> attributes of <code class="highlighter-rouge">mets:fileGrp</code> elements. If more than
+groups as a list of <code class="language-plaintext highlighter-rouge">USE</code> attributes of <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> elements. If more than
 one file group is expected or produced, this should be explained in the
 description of the tool.</p>
 
 <p><strong>NOTE:</strong> Both input and output file groups can be <a href="cli#-i---input-file-grp-grp">overridden at
 runtime</a>. Tools must therefore ensure not to
 hardcode file group names. When multiple groups are expected, the order of the
-override reflects the order in which they are defined in the <code class="highlighter-rouge">ocrd-tool.json</code>.</p>
+override reflects the order in which they are defined in the <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code>.</p>
 
 <h2 id="definition">Definition</h2>
 
@@ -424,7 +424,7 @@ override reflects the order in which they are defined in the <code class="highli
     <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
     <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
     <span class="na">patternProperties</span><span class="pi">:</span>
-      <span class="s1">'</span><span class="s">ocrd-.*'</span><span class="pi">:</span>
+      <span class="s1">'</span><span class="s">ocrd-.*'</span><span class="err">:</span>
         <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
         <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
         <span class="na">required</span><span class="pi">:</span>
@@ -455,7 +455,7 @@ override reflects the order in which they are defined in the <code class="highli
             <span class="na">description</span><span class="pi">:</span> <span class="s">Object describing the parameters of a tool. Keys are parameter names, values sub-schemas.</span>
             <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
             <span class="na">patternProperties</span><span class="pi">:</span>
-              <span class="s2">"</span><span class="s">.*"</span><span class="pi">:</span>
+              <span class="s2">"</span><span class="s">.*"</span><span class="err">:</span>
                 <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
                 <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
                 <span class="na">required</span><span class="pi">:</span>

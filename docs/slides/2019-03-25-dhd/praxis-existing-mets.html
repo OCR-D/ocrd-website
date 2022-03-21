@@ -322,7 +322,7 @@ function ToggleSearchActive2() {
         <ul class="menu-list column is-one-third">
   <li><a href="#praxis-ocr-von-digitalisierten-beständen">Praxis: OCR von digitalisierten Beständen</a>
     <ul>
-      <li><a href="#ist-ocrd-installiert">Ist <code class="highlighter-rouge">ocrd</code> installiert?</a></li>
+      <li><a href="#ist-ocrd-installiert">Ist <code class="language-plaintext highlighter-rouge">ocrd</code> installiert?</a></li>
       <li><a href="#mets-herunterladen">METS herunterladen</a></li>
       <li><a href="#mets-untersuchen">METS untersuchen</a>
         <ul>
@@ -331,8 +331,8 @@ function ToggleSearchActive2() {
           <li><a href="#dateien-auflisten">Dateien auflisten</a></li>
         </ul>
       </li>
-      <li><a href="#anatomie-eines-ocrd--kommandozeilenaufrufs">Anatomie eines <code class="highlighter-rouge">ocrd-*</code> Kommandozeilenaufrufs</a></li>
-      <li><a href="#binarisierung-mit-ocrd-kraken-binarize">Binarisierung mit <code class="highlighter-rouge">ocrd-kraken-binarize</code></a></li>
+      <li><a href="#anatomie-eines-ocrd--kommandozeilenaufrufs">Anatomie eines <code class="language-plaintext highlighter-rouge">ocrd-*</code> Kommandozeilenaufrufs</a></li>
+      <li><a href="#binarisierung-mit-ocrd-kraken-binarize">Binarisierung mit <code class="language-plaintext highlighter-rouge">ocrd-kraken-binarize</code></a></li>
       <li><a href="#zeilensegmentierung-mit-ocropy">Zeilensegmentierung mit Ocropy</a></li>
       <li><a href="#texterkennung-mit-tesseract">Texterkennung mit tesseract</a></li>
       <li><a href="#in-einem-rutsch">“In einem Rutsch”</a></li>
@@ -353,7 +353,7 @@ innerhalb von OCR-D</a>, da diese weniger umfangreich
 sind. Prinzipiell funktionieren die OCR-D Werkzeuge aber mit allen METS-Dateien, die
 auch im DFG-Viewer angezeigt werden können.</p>
 
-<h2 id="ist-ocrd-installiert">Ist <code class="highlighter-rouge">ocrd</code> installiert?</h2>
+<h2 id="ist-ocrd-installiert">Ist <code class="language-plaintext highlighter-rouge">ocrd</code> installiert?</h2>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd <span class="nt">--help</span>
 Usage: ocrd <span class="o">[</span>OPTIONS] COMMAND <span class="o">[</span>ARGS]...
@@ -381,12 +381,12 @@ Commands:
 <p>Wir verwenden eine auf 2 Seiten reduzierte Erstausgabe von Kant “Kritik der reinen Vernunft” aus dem Bestand
 des Deutschen Textarchivs, die in GitHub liegt: https://github.com/OCR-D/assets/blob/master/data/kant_aufklaerung_1784/data/mets.xml</p>
 
-<p>Dazu nutze den <code class="highlighter-rouge">workspace</code> Unterbefehl von <code class="highlighter-rouge">ocrd</code>, der es erlaubt, mit METS zu
+<p>Dazu nutze den <code class="language-plaintext highlighter-rouge">workspace</code> Unterbefehl von <code class="language-plaintext highlighter-rouge">ocrd</code>, der es erlaubt, mit METS zu
 interagieren, ohne das XML direkt bearbeiten zu müssen.</p>
 
-<p>Der Unterbefehl <code class="highlighter-rouge">clone</code> erlaubt das Herunterladen von METS und ggf. enthaltenen Dateien.</p>
+<p>Der Unterbefehl <code class="language-plaintext highlighter-rouge">clone</code> erlaubt das Herunterladen von METS und ggf. enthaltenen Dateien.</p>
 
-<p>Mit dem Parameter <code class="highlighter-rouge">--download</code> werden auch alle referenzierten Dateien mit heruntergeladen (das entfernte Verzeichnis wird “geklont”)</p>
+<p>Mit dem Parameter <code class="language-plaintext highlighter-rouge">--download</code> werden auch alle referenzierten Dateien mit heruntergeladen (das entfernte Verzeichnis wird “geklont”)</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace clone <span class="nt">--download</span> <span class="s2">"https://raw.githubusercontent.com/OCR-D/assets/master/data/kant_aufklaerung_1784/data/mets.xml"</span> kant
 20:47:48.914 INFO ocrd.workspace - Saving mets <span class="s1">'/home/kba/build/github.com/OCR-D/monorepo/slides/2019-03-25-dhd/kant/mets.xml'</span>
@@ -406,7 +406,7 @@ kant/OCR-D-GT-PAGE/PAGE_0020_PAGE
 kant/mets.xml
 </code></pre></div></div>
 
-<p>Das METS liegt nun als <code class="highlighter-rouge">mets.xml</code> im Unterverzeichnis <code class="highlighter-rouge">kant</code>, die Bilder in
+<p>Das METS liegt nun als <code class="language-plaintext highlighter-rouge">mets.xml</code> im Unterverzeichnis <code class="language-plaintext highlighter-rouge">kant</code>, die Bilder in
 Unterverzeichnissen, die Dateigruppen repräsentieren.</p>
 
 <p><strong>TIPP</strong> Kopieren sie das geklonte Verzeichnis an diesem Punkt. Dann müssen Sie nicht
@@ -428,11 +428,11 @@ OCR-D-GT-PAGE
 OCR-D-GT-ALTO
 </code></pre></div></div>
 
-<p>Es gibt also drei Dateigruppen, wobei wir uns für die Bilder interessieren, die in <code class="highlighter-rouge">OCR-D-IMG</code> gelistet sind.</p>
+<p>Es gibt also drei Dateigruppen, wobei wir uns für die Bilder interessieren, die in <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> gelistet sind.</p>
 
 <h3 id="welche-seiten-gibt-es">Welche Seiten gibt es?</h3>
 
-<p>Physische Seiten werden in METS in einer <code class="highlighter-rouge">structMap</code> aufgelistet. Wir können uns die IDs der Seiten ausgeben lassen:</p>
+<p>Physische Seiten werden in METS in einer <code class="language-plaintext highlighter-rouge">structMap</code> aufgelistet. Wir können uns die IDs der Seiten ausgeben lassen:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace list-page
 PHYS_0017
@@ -443,7 +443,7 @@ PHYS_0020
 
 <h3 id="dateien-auflisten">Dateien auflisten</h3>
 
-<p>Wir können uns die enthaltenen Dateien auflisten lassen mit dem <code class="highlighter-rouge">find</code> Unterbefehl:</p>
+<p>Wir können uns die enthaltenen Dateien auflisten lassen mit dem <code class="language-plaintext highlighter-rouge">find</code> Unterbefehl:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace find
 OCR-D-IMG/INPUT_0017
@@ -457,7 +457,7 @@ OCR-D-GT-ALTO/PAGE_0020_ALTO
 <p>Es gibt sechs Dateien: Für jede der zwei Seiten Dateien für jede der drei Dateigruppen.</p>
 
 <p>Standardmäßig wird nur die Datei-ID ausgegeben, weitere Felder können über den
-Parameter <code class="highlighter-rouge">-k</code> angegeben werden (<code class="highlighter-rouge">ocrd workspace find --help</code> liefert weitere
+Parameter <code class="language-plaintext highlighter-rouge">-k</code> angegeben werden (<code class="language-plaintext highlighter-rouge">ocrd workspace find --help</code> liefert weitere
 Informationen):</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd workspace find <span class="nt">-k</span> url <span class="nt">-k</span> mimetype <span class="nt">-k</span> pageId <span class="nt">-k</span> ID
@@ -473,7 +473,7 @@ OCR-D-GT-ALTO/PAGE_0020_ALTO    application/alto+xml    PHYS_0020       PAGE_002
 
 <!-- Prinzipiell kann `ocrd` auch mit entfernten Bildern arbeiten.  -->
 
-<h2 id="anatomie-eines-ocrd--kommandozeilenaufrufs">Anatomie eines <code class="highlighter-rouge">ocrd-*</code> Kommandozeilenaufrufs</h2>
+<h2 id="anatomie-eines-ocrd--kommandozeilenaufrufs">Anatomie eines <code class="language-plaintext highlighter-rouge">ocrd-*</code> Kommandozeilenaufrufs</h2>
 
 <p>Alle OCR-D Werkzeuge folgen einer einheitlichen Aufrufsyntax, die <a href="https://ocr-d.github.io/cli">Teil der
 Spezifikationen ist</a>.</p>
@@ -487,7 +487,7 @@ Spezifikationen ist</a>.</p>
   <span class="nt">-g</span> PAGE-ID          <span class="se">\ </span><span class="c"># Optional: ID einer Seite falls nur eine Seite verarbeitet werden soll</span>
 </code></pre></div></div>
 
-<h2 id="binarisierung-mit-ocrd-kraken-binarize">Binarisierung mit <code class="highlighter-rouge">ocrd-kraken-binarize</code></h2>
+<h2 id="binarisierung-mit-ocrd-kraken-binarize">Binarisierung mit <code class="language-plaintext highlighter-rouge">ocrd-kraken-binarize</code></h2>
 
 <p>Der erste Schritt für die OCR ist die Binarisierung des Bildes, bei der alle
 Farben durch schwarz oder weiss ersetzt werden.</p>
@@ -507,8 +507,8 @@ hier die Binarisierung von kraken.</p>
 19:49:36.986 INFO ocrd.workspace - Saving mets <span class="s1">'/home/kba/build/github.com/OCR-D/monorepo/slides/2019-03-25-dhd/kant/mets.xml'</span>
 </code></pre></div></div>
 
-<p>Damit werden alle Dateien in der <code class="highlighter-rouge">OCR-D-IMG</code> Dateigruppe binarisiert, das
-Ergebnis wird in die Dateigruppe <code class="highlighter-rouge">OCR-D-IMG-BIN</code> geschrieben.</p>
+<p>Damit werden alle Dateien in der <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> Dateigruppe binarisiert, das
+Ergebnis wird in die Dateigruppe <code class="language-plaintext highlighter-rouge">OCR-D-IMG-BIN</code> geschrieben.</p>
 
 <h2 id="zeilensegmentierung-mit-ocropy">Zeilensegmentierung mit Ocropy</h2>
 
@@ -526,7 +526,7 @@ Ergebnis wird in die Dateigruppe <code class="highlighter-rouge">OCR-D-IMG-BIN</
 19:52:55.739 INFO ocrd.workspace - Saving mets <span class="s1">'/home/kba/build/github.com/OCR-D/monorepo/slides/2019-03-25-dhd/kant/mets.xml'</span>
 </code></pre></div></div>
 
-<p>Ausgehend von den binarisierten Bilder in der Dateigruppe <code class="highlighter-rouge">OCR-D-IMG-BIN</code> erzeugen wir PAGE-XML mit Segmentierungsinformation in der Dateigruppe und dem lokalen Verzeichnis <code class="highlighter-rouge">OCR-D-SEG-LINE</code>.</p>
+<p>Ausgehend von den binarisierten Bilder in der Dateigruppe <code class="language-plaintext highlighter-rouge">OCR-D-IMG-BIN</code> erzeugen wir PAGE-XML mit Segmentierungsinformation in der Dateigruppe und dem lokalen Verzeichnis <code class="language-plaintext highlighter-rouge">OCR-D-SEG-LINE</code>.</p>
 
 <p>Das PAGE-XML sieht ausschnittsweise so aus:</p>
 
@@ -553,7 +553,7 @@ Zeilen), aber gut genug, um OCR durchzuführen.</p>
 
 <h2 id="texterkennung-mit-tesseract">Texterkennung mit tesseract</h2>
 
-<p>Das Projekt <code class="highlighter-rouge">ocrd_tesserocr</code> bindet tesseract über die <code class="highlighter-rouge">tesserocr</code>
+<p>Das Projekt <code class="language-plaintext highlighter-rouge">ocrd_tesserocr</code> bindet tesseract über die <code class="language-plaintext highlighter-rouge">tesserocr</code>
 Python-Bindings an OCR-D an.</p>
 
 <p>Der Aufruf ist analog zu Binarisierung und Segmentierung:</p>
@@ -569,7 +569,7 @@ OCR-D-SEG-LINE_0002.xml, <span class="nv">local_filename</span><span class="o">=
 21:11:09.617 INFO ocrd.workspace - Saving mets <span class="s1">'/home/kba/build/github.com/OCR-D/monorepo/slides/2019-03-25-dhd/kant/mets.xml'</span>
 </code></pre></div></div>
 
-<p>Das Ergebnis ist allerdings nicht optimal. Ausschnitt aus <code class="highlighter-rouge">kant/OCR-D-OCR-TESS/OCR-D-OCR-TESS_0002</code>:</p>
+<p>Das Ergebnis ist allerdings nicht optimal. Ausschnitt aus <code class="language-plaintext highlighter-rouge">kant/OCR-D-OCR-TESS/OCR-D-OCR-TESS_0002</code>:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">&lt;pc:TextLine</span> <span class="na">id=</span><span class="s">"line_0006"</span><span class="nt">&gt;</span>
      <span class="nt">&lt;pc:Coords</span> <span class="na">points=</span><span class="s">"529,410 1342,410 1342,468 529,468"</span><span class="nt">/&gt;</span>
@@ -580,8 +580,8 @@ OCR-D-SEG-LINE_0002.xml, <span class="nv">local_filename</span><span class="o">=
 </code></pre></div></div>
 
 <p>Das liegt daran, dass wir nicht angegeben haben, welches Modell verwendet werden soll. Standardmäßig verwendet
-tesseract daher <code class="highlighter-rouge">eng</code>, das Modell für englischsprachige Antiqua. Für deutsche Fraktur benötigen wir das
-Modell <code class="highlighter-rouge">frk</code>, das im <a href="https://github.com/tesseract-ocr/tessdata_best">tesseract-Modell-GitHub-Repository</a> zu finden ist.</p>
+tesseract daher <code class="language-plaintext highlighter-rouge">eng</code>, das Modell für englischsprachige Antiqua. Für deutsche Fraktur benötigen wir das
+Modell <code class="language-plaintext highlighter-rouge">frk</code>, das im <a href="https://github.com/tesseract-ocr/tessdata_best">tesseract-Modell-GitHub-Repository</a> zu finden ist.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /usr/share/tesseract-ocr/4.00/tessdata/
 <span class="nv">$ </span><span class="nb">sudo </span>wget <span class="s1">'https://github.com/tesseract-ocr/tessdata_best/raw/master/frk.traineddata'</span>
@@ -610,16 +610,16 @@ OCR-D-SEG-LINE_0002.xml, <span class="nv">local_filename</span><span class="o">=
 <span class="nt">&lt;/pc:TextLine&gt;</span>
 </code></pre></div></div>
 
-<p>Das sieht nicht nur korrekt aus, auch tesseract ist sich sicherer: Konfidenz <code class="highlighter-rouge">0.9.</code> vs <code class="highlighter-rouge">0.47</code> oben.</p>
+<p>Das sieht nicht nur korrekt aus, auch tesseract ist sich sicherer: Konfidenz <code class="language-plaintext highlighter-rouge">0.9.</code> vs <code class="language-plaintext highlighter-rouge">0.47</code> oben.</p>
 
 <h2 id="in-einem-rutsch">“In einem Rutsch”</h2>
 
 <p>Die einzelnen Prozessschritte nacheinander auszuführen wie beschrieben ist mühselig. Wenn an einem
-Punkt im Ablauf etwas schief läuft, muss der gesamte Vorgang abgebrochen werden. Daher bietet <code class="highlighter-rouge">ocrd</code>
+Punkt im Ablauf etwas schief läuft, muss der gesamte Vorgang abgebrochen werden. Daher bietet <code class="language-plaintext highlighter-rouge">ocrd</code>
 einen Modus, in dem ein kompletter Ablauf von Prozesschritten angegeben werden kann. Wenn innerhalb
 des Prozesses ein Fehler auftritt, endet der Gesamtprozess mit der Fehlermeldung.</p>
 
-<p>Die Syntax entsprocht weitgehend dem individuellen Aufruf mit der Einschränkung dass <code class="highlighter-rouge">ocrd-</code> weggelassen
+<p>Die Syntax entsprocht weitgehend dem individuellen Aufruf mit der Einschränkung dass <code class="language-plaintext highlighter-rouge">ocrd-</code> weggelassen
 wird:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd process <span class="nt">-m</span> mets.xml <span class="se">\</span>

@@ -330,10 +330,10 @@ function ToggleSearchActive2() {
       <li><a href="#naming-images">Naming images</a></li>
       <li><a href="#labelling-images">Labelling images</a></li>
       <li><a href="#shell-entrypoint">Shell entrypoint</a></li>
-      <li><a href="#data-as-volume"><code class="highlighter-rouge">/data</code> as volume</a></li>
+      <li><a href="#data-as-volume"><code class="language-plaintext highlighter-rouge">/data</code> as volume</a></li>
       <li><a href="#example">Example</a>
         <ul>
-          <li><a href="#dockerfile"><code class="highlighter-rouge">Dockerfile</code></a></li>
+          <li><a href="#dockerfile"><code class="language-plaintext highlighter-rouge">Dockerfile</code></a></li>
           <li><a href="#command-to-build-docker-image">Command to build docker image</a></li>
         </ul>
       </li>
@@ -357,14 +357,14 @@ with all requirements.</p>
 
 <p>Docker containers should be based on the <a href="https://hub.docker.com/r/ocrd/core/">ocrd base
 image</a> which itself is based on Ubuntu
-18.04. For one, this allows MP to use the <code class="highlighter-rouge">ocrd</code> tool to handle recurrent tasks
+18.04. For one, this allows MP to use the <code class="language-plaintext highlighter-rouge">ocrd</code> tool to handle recurrent tasks
 in a spec-conformant way. Besides, it locally installed and containerized
 <a href="cli">CLI</a> interchangeable.</p>
 
 <h2 id="naming-images">Naming images</h2>
 
-<p>Image tags MUST be the same as the project name but with underscore (<code class="highlighter-rouge">_</code>)
-replaced with forward slash (<code class="highlighter-rouge">/</code>).</p>
+<p>Image tags MUST be the same as the project name but with underscore (<code class="language-plaintext highlighter-rouge">_</code>)
+replaced with forward slash (<code class="language-plaintext highlighter-rouge">/</code>).</p>
 
 <p>Examples:</p>
 
@@ -377,27 +377,27 @@ replaced with forward slash (<code class="highlighter-rouge">/</code>).</p>
   </thead>
   <tbody>
     <tr>
-      <td><a href="https://github.com/OCR-D/ocrd_tesserocr"><code class="highlighter-rouge">ocrd_tesserocr</code></a></td>
-      <td><a href="https://hub.docker.com/r/ocrd/tesserocr"><code class="highlighter-rouge">ocrd/tesserocr</code></a></td>
+      <td><a href="https://github.com/OCR-D/ocrd_tesserocr"><code class="language-plaintext highlighter-rouge">ocrd_tesserocr</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/tesserocr"><code class="language-plaintext highlighter-rouge">ocrd/tesserocr</code></a></td>
     </tr>
     <tr>
-      <td><a href="https://github.com/OCR-D/ocrd_calamari"><code class="highlighter-rouge">ocrd_calamari</code></a></td>
-      <td><a href="https://hub.docker.com/r/ocrd/calamari"><code class="highlighter-rouge">ocrd/calamari</code></a></td>
+      <td><a href="https://github.com/OCR-D/ocrd_calamari"><code class="language-plaintext highlighter-rouge">ocrd_calamari</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/calamari"><code class="language-plaintext highlighter-rouge">ocrd/calamari</code></a></td>
     </tr>
     <tr>
-      <td><a href="https://github.com/OCR-D/ocrd_olena"><code class="highlighter-rouge">ocrd_olena</code></a></td>
-      <td><a href="https://hub.docker.com/r/ocrd/olena"><code class="highlighter-rouge">ocrd/olena</code></a></td>
+      <td><a href="https://github.com/OCR-D/ocrd_olena"><code class="language-plaintext highlighter-rouge">ocrd_olena</code></a></td>
+      <td><a href="https://hub.docker.com/r/ocrd/olena"><code class="language-plaintext highlighter-rouge">ocrd/olena</code></a></td>
     </tr>
   </tbody>
 </table>
 
 <h2 id="labelling-images">Labelling images</h2>
 
-<p>The Dockerfile MUST accept build args <code class="highlighter-rouge">VCS_REF</code> and <code class="highlighter-rouge">BUILD_DATE</code>.</p>
+<p>The Dockerfile MUST accept build args <code class="language-plaintext highlighter-rouge">VCS_REF</code> and <code class="language-plaintext highlighter-rouge">BUILD_DATE</code>.</p>
 
-<p><code class="highlighter-rouge">VCS_REF</code> contains the short id of the latest commit this image was built upon.</p>
+<p><code class="language-plaintext highlighter-rouge">VCS_REF</code> contains the short id of the latest commit this image was built upon.</p>
 
-<p><code class="highlighter-rouge">BUILD_DATE</code> contains an ISO-8601 date.</p>
+<p><code class="language-plaintext highlighter-rouge">BUILD_DATE</code> contains an ISO-8601 date.</p>
 
 <p>From these build args, the image shall be labelled with this command:</p>
 
@@ -408,25 +408,25 @@ replaced with forward slash (<code class="highlighter-rouge">/</code>).</p>
     org.label-schema.build-date=$BUILD_DATE
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">maintainer</code> and <code class="highlighter-rouge">org.label-schema.cvs-url</code> shall point to the issues and
+<p><code class="language-plaintext highlighter-rouge">maintainer</code> and <code class="language-plaintext highlighter-rouge">org.label-schema.cvs-url</code> shall point to the issues and
 landing page of the GitHub project resp.</p>
 
 <h2 id="shell-entrypoint">Shell entrypoint</h2>
 
-<p>No <code class="highlighter-rouge">CMD</code> should be provided.</p>
+<p>No <code class="language-plaintext highlighter-rouge">CMD</code> should be provided.</p>
 
-<p>No <code class="highlighter-rouge">ENTRYPOINT</code> should be provided.</p>
+<p>No <code class="language-plaintext highlighter-rouge">ENTRYPOINT</code> should be provided.</p>
 
-<p>If <code class="highlighter-rouge">CMD</code> or <code class="highlighter-rouge">ENTRYPOINT</code> are provided, they should be empty arrays.</p>
+<p>If <code class="language-plaintext highlighter-rouge">CMD</code> or <code class="language-plaintext highlighter-rouge">ENTRYPOINT</code> are provided, they should be empty arrays.</p>
 
-<h2 id="data-as-volume"><code class="highlighter-rouge">/data</code> as volume</h2>
+<h2 id="data-as-volume"><code class="language-plaintext highlighter-rouge">/data</code> as volume</h2>
 
-<p>The directory <code class="highlighter-rouge">/data</code> in the the container should be marked as a volume to
+<p>The directory <code class="language-plaintext highlighter-rouge">/data</code> in the the container should be marked as a volume to
 allow processing host data in the container in a uniform way.</p>
 
 <h2 id="example">Example</h2>
 
-<h3 id="dockerfile"><code class="highlighter-rouge">Dockerfile</code></h3>
+<h3 id="dockerfile"><code class="language-plaintext highlighter-rouge">Dockerfile</code></h3>
 
 <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ocrd:core</span>
 <span class="k">VOLUME</span><span class="s"> ["/data"]</span>

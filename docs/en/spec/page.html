@@ -344,16 +344,16 @@ function ToggleSearchActive2() {
         <ul>
           <li><a href="#consistency-strictness">Consistency strictness</a>
             <ul>
-              <li><a href="#strict"><code class="highlighter-rouge">strict</code></a></li>
-              <li><a href="#lax"><code class="highlighter-rouge">lax</code></a></li>
-              <li><a href="#fix"><code class="highlighter-rouge">fix</code></a></li>
-              <li><a href="#off"><code class="highlighter-rouge">off</code></a></li>
+              <li><a href="#strict"><code class="language-plaintext highlighter-rouge">strict</code></a></li>
+              <li><a href="#lax"><code class="language-plaintext highlighter-rouge">lax</code></a></li>
+              <li><a href="#fix"><code class="language-plaintext highlighter-rouge">fix</code></a></li>
+              <li><a href="#off"><code class="language-plaintext highlighter-rouge">off</code></a></li>
             </ul>
           </li>
           <li><a href="#example">Example</a></li>
         </ul>
       </li>
-      <li><a href="#textstyle"><code class="highlighter-rouge">TextStyle</code></a>
+      <li><a href="#textstyle"><code class="language-plaintext highlighter-rouge">TextStyle</code></a>
         <ul>
           <li><a href="#font-families">Font families</a></li>
           <li><a href="#clusters-of-typesets">Clusters of typesets</a></li>
@@ -379,101 +379,101 @@ documentation on the PAGE XML format itself.</p>
 <h2 id="media-type">Media Type</h2>
 
 <p>The <a href="https://github.com/OCR-D/spec/issues/33">preliminary media type</a> of a PAGE
-document is <code class="highlighter-rouge">application/vnd.prima.page+xml</code>, which MUST be used <a href="https://ocr-d.de/en/spec/mets#media-type-for-page-xml">as the <code class="highlighter-rouge">MIMETYPE</code> of a <code class="highlighter-rouge">&lt;mets:file&gt;</code>
+document is <code class="language-plaintext highlighter-rouge">application/vnd.prima.page+xml</code>, which MUST be used <a href="https://ocr-d.de/en/spec/mets#media-type-for-page-xml">as the <code class="language-plaintext highlighter-rouge">MIMETYPE</code> of a <code class="language-plaintext highlighter-rouge">&lt;mets:file&gt;</code>
 representing a PAGE document</a>.</p>
 
 <h2 id="one-page-in-one-page">One page in one PAGE</h2>
 
 <p>A single PAGE XML file represents one page in the original document.
-Every <code class="highlighter-rouge">&lt;pc:Page&gt;</code> element MUST have an attribute <code class="highlighter-rouge">image</code> which MUST always be the source image.
-The PAGE XML root element <code class="highlighter-rouge">&lt;pc:PcGts&gt;</code> MUST have exactly one <code class="highlighter-rouge">&lt;pc:Page&gt;</code>.</p>
+Every <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code> element MUST have an attribute <code class="language-plaintext highlighter-rouge">image</code> which MUST always be the source image.
+The PAGE XML root element <code class="language-plaintext highlighter-rouge">&lt;pc:PcGts&gt;</code> MUST have exactly one <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code>.</p>
 
 <h2 id="images">Images</h2>
 
 <h3 id="url-for-imagefilename--filename">URL for imageFilename / filename</h3>
 
-<p>The <code class="highlighter-rouge">imageFilename</code> of the <code class="highlighter-rouge">&lt;pg:Page&gt;</code> and <code class="highlighter-rouge">filename</code> of the
-<code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> element MUST be a filename relative to the <code class="highlighter-rouge">mets.xml</code>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">imageFilename</code> of the <code class="language-plaintext highlighter-rouge">&lt;pg:Page&gt;</code> and <code class="language-plaintext highlighter-rouge">filename</code> of the
+<code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> element MUST be a filename relative to the <code class="language-plaintext highlighter-rouge">mets.xml</code>.</p>
 
-<p>All URL used in <code class="highlighter-rouge">imageFilename</code> and <code class="highlighter-rouge">filename</code> <a href="https://ocr-d.de/en/spec/mets#if-in-page-then-in-mets">MUST be referenced in a fileGrp
+<p>All URL used in <code class="language-plaintext highlighter-rouge">imageFilename</code> and <code class="language-plaintext highlighter-rouge">filename</code> <a href="https://ocr-d.de/en/spec/mets#if-in-page-then-in-mets">MUST be referenced in a fileGrp
 in METS</a>. This MUST be
 the same file group as the PAGE-XML that was the result of the processing step
-that produced the <code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code>. In other words:
-<code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> should be written to the same <code class="highlighter-rouge">&lt;mets:fileGrp&gt;</code> as its source
+that produced the <code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code>. In other words:
+<code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> should be written to the same <code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp&gt;</code> as its source
 PAGE-XML, which in most implementations will mean the same folder.</p>
 
 <h3 id="original-image-as-imagefilename">Original image as imageFilename</h3>
 
-<p>The <code class="highlighter-rouge">imageFilename</code> attribute of the <code class="highlighter-rouge">&lt;pg:Page&gt;</code> MUST reference the original
+<p>The <code class="language-plaintext highlighter-rouge">imageFilename</code> attribute of the <code class="language-plaintext highlighter-rouge">&lt;pg:Page&gt;</code> MUST reference the original
 image and MUST NOT change between processing steps.</p>
 
 <h3 id="alternativeimage-for-derived-images">AlternativeImage for derived images</h3>
 
-<p>To encode images derived from the original image, the <code class="highlighter-rouge">&lt;pc:AlternativeImage&gt;</code>
-should be used. Its <code class="highlighter-rouge">filename</code> attribute should reference the URL of the
+<p>To encode images derived from the original image, the <code class="language-plaintext highlighter-rouge">&lt;pc:AlternativeImage&gt;</code>
+should be used. Its <code class="language-plaintext highlighter-rouge">filename</code> attribute should reference the URL of the
 derived image.</p>
 
-<p>The <code class="highlighter-rouge">comments</code> attribute SHOULD be used according to the <a href="#alternativeimage-classification">AlternativeImage classification</a>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">comments</code> attribute SHOULD be used according to the <a href="#alternativeimage-classification">AlternativeImage classification</a>.</p>
 
 <h3 id="alternativeimage-classification">AlternativeImage: classification</h3>
 
-<p>The <code class="highlighter-rouge">comments</code> attribute of the <code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> attribute should be used</p>
+<p>The <code class="language-plaintext highlighter-rouge">comments</code> attribute of the <code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> attribute should be used</p>
 
 <ul>
-  <li><code class="highlighter-rouge">binarized</code></li>
-  <li><code class="highlighter-rouge">grayscale_normalized</code></li>
-  <li><code class="highlighter-rouge">deskewed</code></li>
-  <li><code class="highlighter-rouge">despeckled</code></li>
-  <li><code class="highlighter-rouge">cropped</code></li>
-  <li><code class="highlighter-rouge">rotated-90</code> / <code class="highlighter-rouge">rotated-180</code> / <code class="highlighter-rouge">rotated-270</code></li>
-  <li><code class="highlighter-rouge">dewarped</code></li>
+  <li><code class="language-plaintext highlighter-rouge">binarized</code></li>
+  <li><code class="language-plaintext highlighter-rouge">grayscale_normalized</code></li>
+  <li><code class="language-plaintext highlighter-rouge">deskewed</code></li>
+  <li><code class="language-plaintext highlighter-rouge">despeckled</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cropped</code></li>
+  <li><code class="language-plaintext highlighter-rouge">rotated-90</code> / <code class="language-plaintext highlighter-rouge">rotated-180</code> / <code class="language-plaintext highlighter-rouge">rotated-270</code></li>
+  <li><code class="language-plaintext highlighter-rouge">dewarped</code></li>
 </ul>
 
 <h3 id="alternativeimage-on-sub-page-level-elements">AlternativeImage on sub-page level elements</h3>
 
 <p>For the results of image processing that changes the positions of pixels (e.g.
-cropping, rotation, dewarping), <code class="highlighter-rouge">AlternativeImage</code> on page level and polygon of
+cropping, rotation, dewarping), <code class="language-plaintext highlighter-rouge">AlternativeImage</code> on page level and polygon of
 recognized zones is not sufficient for accessing the section of the image that a region is based on
 since coordinates are always relative to the original image.</p>
 
-<p>For such use cases, <code class="highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> may be used as a child of
-<code class="highlighter-rouge">&lt;pg:TextRegion&gt;</code>, <code class="highlighter-rouge">&lt;pg:TextLine&gt;</code>, <code class="highlighter-rouge">&lt;pg:Word&gt;</code> or <code class="highlighter-rouge">&lt;pg:Glyph&gt;</code>.</p>
+<p>For such use cases, <code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> may be used as a child of
+<code class="language-plaintext highlighter-rouge">&lt;pg:TextRegion&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;pg:TextLine&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;pg:Word&gt;</code> or <code class="language-plaintext highlighter-rouge">&lt;pg:Glyph&gt;</code>.</p>
 
 <h2 id="attaching-text-recognition-results-to-elements">Attaching text recognition results to elements</h2>
 
 <p>A PAGE document can attach recognized text to typographical units of
-a page at different levels, such as region (<code class="highlighter-rouge">&lt;pg:TextRegion&gt;</code>), line
-(<code class="highlighter-rouge">&lt;pg:TextLine&gt;</code>), word (<code class="highlighter-rouge">&lt;pg:Word&gt;</code>) or glyph (<code class="highlighter-rouge">&lt;pg:Glyph&gt;</code>).</p>
+a page at different levels, such as region (<code class="language-plaintext highlighter-rouge">&lt;pg:TextRegion&gt;</code>), line
+(<code class="language-plaintext highlighter-rouge">&lt;pg:TextLine&gt;</code>), word (<code class="language-plaintext highlighter-rouge">&lt;pg:Word&gt;</code>) or glyph (<code class="language-plaintext highlighter-rouge">&lt;pg:Glyph&gt;</code>).</p>
 
-<p>To attach recognized text to an element <code class="highlighter-rouge">E</code>, it must be encoded as
-<code class="highlighter-rouge">UTF-8</code> in a single <code class="highlighter-rouge">&lt;pg:Unicode&gt;</code> element <code class="highlighter-rouge">U</code> within a <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code>
-element <code class="highlighter-rouge">T</code> of <code class="highlighter-rouge">E</code>.</p>
+<p>To attach recognized text to an element <code class="language-plaintext highlighter-rouge">E</code>, it must be encoded as
+<code class="language-plaintext highlighter-rouge">UTF-8</code> in a single <code class="language-plaintext highlighter-rouge">&lt;pg:Unicode&gt;</code> element <code class="language-plaintext highlighter-rouge">U</code> within a <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code>
+element <code class="language-plaintext highlighter-rouge">T</code> of <code class="language-plaintext highlighter-rouge">E</code>.</p>
 
-<p><code class="highlighter-rouge">T</code> must be the last element of <code class="highlighter-rouge">E</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">T</code> must be the last element of <code class="language-plaintext highlighter-rouge">E</code>.</p>
 
-<p>Leading and trailing whitespace (<code class="highlighter-rouge">U+0020</code>, <code class="highlighter-rouge">U+000A</code>) in the content of a
-<code class="highlighter-rouge">&lt;pg:Unicode&gt;</code> is not significant and must be removed from the string by
+<p>Leading and trailing whitespace (<code class="language-plaintext highlighter-rouge">U+0020</code>, <code class="language-plaintext highlighter-rouge">U+000A</code>) in the content of a
+<code class="language-plaintext highlighter-rouge">&lt;pg:Unicode&gt;</code> is not significant and must be removed from the string by
 processors.</p>
 
 <p>To encode an actual space character at the start or end of the content
-<code class="highlighter-rouge">&lt;pg:Unicode&gt;</code>, use a non-breaking space <code class="highlighter-rouge">U+00A0</code>.</p>
+<code class="language-plaintext highlighter-rouge">&lt;pg:Unicode&gt;</code>, use a non-breaking space <code class="language-plaintext highlighter-rouge">U+00A0</code>.</p>
 
 <h2 id="text-recognition-confidence">Text recognition confidence</h2>
 
 <p>The confidence score describing the assumed correctness of the text recognition results in a
-<code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> can be expressed in an attribute <code class="highlighter-rouge">@conf</code> as a float value
-between <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>, where <code class="highlighter-rouge">0</code> means “certainly wrong” and <code class="highlighter-rouge">1</code> means “certainly
+<code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> can be expressed in an attribute <code class="language-plaintext highlighter-rouge">@conf</code> as a float value
+between <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">1</code>, where <code class="language-plaintext highlighter-rouge">0</code> means “certainly wrong” and <code class="language-plaintext highlighter-rouge">1</code> means “certainly
 correct”.</p>
 
 <p><a name="multiple-textequivs"></a></p>
 <h2 id="attaching-multiple-text-recognition-results-to-elements">Attaching multiple text recognition results to elements</h2>
 
 <p>Alternative text recognition results can be expressed by using multiple
-<code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> wherever a single <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> would be allowed. When
-using multiple <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code>, they each must have an attribute <code class="highlighter-rouge">@index</code> with
-an integer number unique per set of <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> that allows ranking them
-in order of preference. <code class="highlighter-rouge">@index</code> of the first (preferred) <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> must be
-the value <code class="highlighter-rouge">1</code>.</p>
+<code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> wherever a single <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> would be allowed. When
+using multiple <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code>, they each must have an attribute <code class="language-plaintext highlighter-rouge">@index</code> with
+an integer number unique per set of <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> that allows ranking them
+in order of preference. <code class="language-plaintext highlighter-rouge">@index</code> of the first (preferred) <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> must be
+the value <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
 <h2 id="consistency-of-text-results-on-different-levels">Consistency of text results on different levels</h2>
 
@@ -482,38 +482,38 @@ nested, text results information can be redundant. To avoid inconsistencies,
 the following assertions must be true:</p>
 
 <ol>
-  <li>text of <code class="highlighter-rouge">&lt;pg:Word&gt;</code> must be equal to the text of all <code class="highlighter-rouge">&lt;pg:Glyph&gt;</code>
+  <li>text of <code class="language-plaintext highlighter-rouge">&lt;pg:Word&gt;</code> must be equal to the text of all <code class="language-plaintext highlighter-rouge">&lt;pg:Glyph&gt;</code>
     contained within, concatenated with empty string</li>
-  <li>text of <code class="highlighter-rouge">&lt;pg:TextLine&gt;</code> must be equal to the text of all
-    <code class="highlighter-rouge">&lt;pg:Word&gt;</code> contained  within, concatenated with a single space (<code class="highlighter-rouge">U+0020</code>).</li>
-  <li>text of <code class="highlighter-rouge">&lt;pg:TextRegion&gt;</code> must be equal to the text of all
-    <code class="highlighter-rouge">&lt;pg:TextLine&gt;</code> contained within, concatenated with a newline (<code class="highlighter-rouge">U+000A</code>).</li>
+  <li>text of <code class="language-plaintext highlighter-rouge">&lt;pg:TextLine&gt;</code> must be equal to the text of all
+    <code class="language-plaintext highlighter-rouge">&lt;pg:Word&gt;</code> contained  within, concatenated with a single space (<code class="language-plaintext highlighter-rouge">U+0020</code>).</li>
+  <li>text of <code class="language-plaintext highlighter-rouge">&lt;pg:TextRegion&gt;</code> must be equal to the text of all
+    <code class="language-plaintext highlighter-rouge">&lt;pg:TextLine&gt;</code> contained within, concatenated with a newline (<code class="language-plaintext highlighter-rouge">U+000A</code>).</li>
 </ol>
 
 <p><strong>NOTE:</strong> “Concatenation” means joining a list of strings with a separator, no
 separator is added to the start or end of the resulting string.</p>
 
-<p>These assertions are only to be enforced for the first <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> of both
-containing and contained elements, i.e. the only <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> of an element
-or the <code class="highlighter-rouge">&lt;pg:TextEquiv&gt;</code> with <code class="highlighter-rouge">@index = 1</code> if <a href="#multiple-textequivs">multiple text
+<p>These assertions are only to be enforced for the first <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> of both
+containing and contained elements, i.e. the only <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> of an element
+or the <code class="language-plaintext highlighter-rouge">&lt;pg:TextEquiv&gt;</code> with <code class="language-plaintext highlighter-rouge">@index = 1</code> if <a href="#multiple-textequivs">multiple text
 results</a> are attached.</p>
 
 <h3 id="consistency-strictness">Consistency strictness</h3>
 
 <p>A consistency checker must support four levels of strictness:</p>
 
-<h4 id="strict"><code class="highlighter-rouge">strict</code></h4>
+<h4 id="strict"><code class="language-plaintext highlighter-rouge">strict</code></h4>
 
 <p>If any of the assertions fail for a PAGE document, an exception
 should be raised and the document no further processed</p>
 
-<h4 id="lax"><code class="highlighter-rouge">lax</code></h4>
+<h4 id="lax"><code class="language-plaintext highlighter-rouge">lax</code></h4>
 
 <p>If any of the assertions fail for a PAGE document, another comparison
 disregarding all whitespace shall be made. If this still fails, an exception
 should be raised and the document no further processed</p>
 
-<h4 id="fix"><code class="highlighter-rouge">fix</code></h4>
+<h4 id="fix"><code class="language-plaintext highlighter-rouge">fix</code></h4>
 
 <p>If any of the assertions fail for a specific element in PAGE document, the text
 results of this element must be recreated, by concatenating the text results of
@@ -521,7 +521,7 @@ its children elements. This algorithm needs to be recursive, i.e. if any of the
 children elements is itself inconsistent, its text results must be recreated in
 the same way before concatenation.</p>
 
-<h4 id="off"><code class="highlighter-rouge">off</code></h4>
+<h4 id="off"><code class="language-plaintext highlighter-rouge">off</code></h4>
 
 <p>These consistency checks are so restrictive to spot data that cannot be
 unambigiously processed. However, there are valid use cases where the
@@ -551,29 +551,29 @@ validation altogether in the workflow.</p>
 <span class="nt">&lt;/Word&gt;</span>
 </code></pre></div></div>
 
-<p>In this <a href="#inconsistency-example">example</a>, the <code class="highlighter-rouge">&lt;pg:Word&gt;</code> has text <code class="highlighter-rouge">foof</code> but
-the concatenation of the first text results of the contained <code class="highlighter-rouge">&lt;pg:Glyphs&gt;</code>
-spells <code class="highlighter-rouge">foot</code>. As a result:</p>
+<p>In this <a href="#inconsistency-example">example</a>, the <code class="language-plaintext highlighter-rouge">&lt;pg:Word&gt;</code> has text <code class="language-plaintext highlighter-rouge">foof</code> but
+the concatenation of the first text results of the contained <code class="language-plaintext highlighter-rouge">&lt;pg:Glyphs&gt;</code>
+spells <code class="language-plaintext highlighter-rouge">foot</code>. As a result:</p>
 
 <ul>
   <li>Validation should raise an exception for inconsistency.</li>
-  <li>Data consumers should assume the text result to be <code class="highlighter-rouge">foot</code>.</li>
+  <li>Data consumers should assume the text result to be <code class="language-plaintext highlighter-rouge">foot</code>.</li>
 </ul>
 
-<h2 id="textstyle"><code class="highlighter-rouge">TextStyle</code></h2>
+<h2 id="textstyle"><code class="language-plaintext highlighter-rouge">TextStyle</code></h2>
 
 <p>Typographical information (type, cut etc.) must be documented in PAGE XML using the
-<code class="highlighter-rouge">&lt;TextStyle&gt;</code> element.</p>
+<code class="language-plaintext highlighter-rouge">&lt;TextStyle&gt;</code> element.</p>
 
 <p>See <a href="http://www.ocr-d.de/sites/all/gt_guidelines/pagecontent_xsd_Complex_Type_pc_TextStyleType.html?hl=textstyle">the PAGE documentation on TextStyle</a> for all possible values.</p>
 
-<p>The <code class="highlighter-rouge">&lt;TextStyle&gt;</code> element can be used in all relevant elements:</p>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;TextStyle&gt;</code> element can be used in all relevant elements:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">&lt;TextRegion&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;TextLine&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;Word&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;Glyph&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;TextRegion&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;TextLine&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;Word&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;Glyph&gt;</code></li>
 </ul>
 
 <p>Example:</p>
@@ -586,37 +586,37 @@ spells <code class="highlighter-rouge">foot</code>. As a result:</p>
 
 <h3 id="font-families">Font families</h3>
 
-<p>The <code class="highlighter-rouge">pg:TextStyle/@fontFamily</code> attribute can list one or more font
-families, separated by comma (<code class="highlighter-rouge">,</code>).</p>
+<p>The <code class="language-plaintext highlighter-rouge">pg:TextStyle/@fontFamily</code> attribute can list one or more font
+families, separated by comma (<code class="language-plaintext highlighter-rouge">,</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>font-families    := font-family ("," font-family)*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>font-families    := font-family ("," font-family)*
 font-family      := font-family-name (":" confidence)?
 font-family-name := ["A" - "Z" | "a" - "z" | "0" - "9"]+ | '"' ["A" - "Z" | "a" - "z" | "0" - "9" | " "]+ '"'
 confidence       := ("0" | "1")? "." ["0" - "9"]+
 </code></pre></div></div>
 
-<p>Font family names that contain a space must be quoted with double quotes (<code class="highlighter-rouge">"</code>).</p>
+<p>Font family names that contain a space must be quoted with double quotes (<code class="language-plaintext highlighter-rouge">"</code>).</p>
 
 <h3 id="clusters-of-typesets">Clusters of typesets</h3>
 
 <p>Sometimes it is necessary to not express that an element is typeset in a
 specific <strong>font family</strong> but in font family from <strong>a cluster of related font groups</strong>.</p>
 
-<p>For such typeset clusters, the <code class="highlighter-rouge">pg:TextStyle/@fontFamily</code> attribute should be re-used.</p>
+<p>For such typeset clusters, the <code class="language-plaintext highlighter-rouge">pg:TextStyle/@fontFamily</code> attribute should be re-used.</p>
 
 <p>This specification doesn’t restrict the naming of font families.
 However, we recommend to choose one of the following list of type groups names if
 applicable:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">textura</code></li>
-  <li><code class="highlighter-rouge">rotunda</code></li>
-  <li><code class="highlighter-rouge">bastarda</code></li>
-  <li><code class="highlighter-rouge">antiqua</code></li>
-  <li><code class="highlighter-rouge">greek</code></li>
-  <li><code class="highlighter-rouge">hebrew</code></li>
-  <li><code class="highlighter-rouge">italic</code></li>
-  <li><code class="highlighter-rouge">fraktur</code></li>
+  <li><code class="language-plaintext highlighter-rouge">textura</code></li>
+  <li><code class="language-plaintext highlighter-rouge">rotunda</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bastarda</code></li>
+  <li><code class="language-plaintext highlighter-rouge">antiqua</code></li>
+  <li><code class="language-plaintext highlighter-rouge">greek</code></li>
+  <li><code class="language-plaintext highlighter-rouge">hebrew</code></li>
+  <li><code class="language-plaintext highlighter-rouge">italic</code></li>
+  <li><code class="language-plaintext highlighter-rouge">fraktur</code></li>
 </ul>
 
 <h3 id="font-families-and-confidence">Font families and confidence</h3>
@@ -629,11 +629,11 @@ element</strong>. Instead, data producers are advised to increase output granula
 until every element is set in a single font family.</p>
 
 <p>The degree of confidence in the font family can be expressed by concatenating
-font family names with colon (<code class="highlighter-rouge">:</code>) followed by a float between <code class="highlighter-rouge">0</code> (information
-is certainly wrong) and <code class="highlighter-rouge">1</code> (information is certainly correct).</p>
+font family names with colon (<code class="language-plaintext highlighter-rouge">:</code>) followed by a float between <code class="language-plaintext highlighter-rouge">0</code> (information
+is certainly wrong) and <code class="language-plaintext highlighter-rouge">1</code> (information is certainly correct).</p>
 
 <p>If a font family is not suffixed with a confidence value, the confidence is
-considered to be <code class="highlighter-rouge">1</code>.</p>
+considered to be <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
 <p>Examples</p>
 
@@ -645,12 +645,12 @@ considered to be <code class="highlighter-rouge">1</code>.</p>
 
 <h2 id="columns">Columns</h2>
 
-<p>To model columns, use constructs in the <code class="highlighter-rouge">&lt;pg:ReadingOrder&gt;</code> of the PAGE
+<p>To model columns, use constructs in the <code class="language-plaintext highlighter-rouge">&lt;pg:ReadingOrder&gt;</code> of the PAGE
 document.</p>
 
-<p>A grid layout must be wrapped in a <code class="highlighter-rouge">&lt;pg:OrderedGroup&gt;</code> with a
-<code class="highlighter-rouge">@caption</code> that has the form <code class="highlighter-rouge">column_&lt;horizontal&gt;_&lt;vertical&gt;</code> where
-<code class="highlighter-rouge">&lt;vertical&gt;</code> is the number of columns and <code class="highlighter-rouge">&lt;horizontal&gt;</code> is the number of rows.</p>
+<p>A grid layout must be wrapped in a <code class="language-plaintext highlighter-rouge">&lt;pg:OrderedGroup&gt;</code> with a
+<code class="language-plaintext highlighter-rouge">@caption</code> that has the form <code class="language-plaintext highlighter-rouge">column_&lt;horizontal&gt;_&lt;vertical&gt;</code> where
+<code class="language-plaintext highlighter-rouge">&lt;vertical&gt;</code> is the number of columns and <code class="language-plaintext highlighter-rouge">&lt;horizontal&gt;</code> is the number of rows.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;OrderedGroup</span> <span class="na">caption=</span><span class="s">"column_1_1"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- the default: single column layout --&gt;</span>
 <span class="nt">&lt;OrderedGroup</span> <span class="na">caption=</span><span class="s">"column_1_2"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- two-column layout --&gt;</span>
@@ -659,8 +659,8 @@ document.</p>
 </code></pre></div></div>
 
 <p>Regions that belong to the same column must be grouped within
-<code class="highlighter-rouge">&lt;pg:OrderedGroupIndexed&gt;</code> with a caption that begins with <code class="highlighter-rouge">column_&lt;y&gt;_&lt;x&gt;</code>
-where <code class="highlighter-rouge">&lt;y&gt;</code> is the row position and <code class="highlighter-rouge">&lt;x&gt;</code> is the column position (counting starts at <code class="highlighter-rouge">1</code>):</p>
+<code class="language-plaintext highlighter-rouge">&lt;pg:OrderedGroupIndexed&gt;</code> with a caption that begins with <code class="language-plaintext highlighter-rouge">column_&lt;y&gt;_&lt;x&gt;</code>
+where <code class="language-plaintext highlighter-rouge">&lt;y&gt;</code> is the row position and <code class="language-plaintext highlighter-rouge">&lt;x&gt;</code> is the column position (counting starts at <code class="language-plaintext highlighter-rouge">1</code>):</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;OrderedGroup</span> <span class="na">caption=</span><span class="s">"column_2_2"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- two-column two-row layout --&gt;</span>
     <span class="nt">&lt;OrderedGroupIndexed</span> <span class="na">caption=</span><span class="s">"column_1_1"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/OrderedGroupIndexed&gt;</span> <span class="c">&lt;!-- upper-left column --&gt;</span>
