@@ -98,7 +98,7 @@ resolution. Optionally, you can specify to only load the file group needed:
 List all existing groups:
 
 ```sh
-ocrd workspace -d [/path/to/your/workspace] list-group
+ocrd workspace [-d /path/to/your/workspace] list-group
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace -d /data list-group
 ```
@@ -109,7 +109,7 @@ PRESENTATION, MAX.
 Download all files of one group:
 
 ```sh
-ocrd workspace -d [/path/to/your/workspace] find --file-grp [selected file group] --download
+ocrd workspace [-d /path/to/your/workspace] find --file-grp [selected file group] --download
 ## alternatively using docker
 docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace -d /data find --file-grp [selected file group] --download
 ```
@@ -181,12 +181,12 @@ EXT=".tif"  # the actual extension of the image files
 MEDIATYPE='image/tiff'  # the actual media type of the image files
 ## using local ocrd CLI
 for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
-  base= `basename ${i} $EXT`;
+  base=`basename ${i} $EXT`;
   ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ## alternatively using docker
 for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
-  base= `basename ${i} $EXT`;
+  base=`basename ${i} $EXT`;
   docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd workspace add -G $FILEGRP -i ${FILEGRP}_${base} -g P_${base} -m $MEDIATYPE ${i};
 done
 ```
