@@ -406,20 +406,16 @@
         "parameters": {
             "gpu_id": {
                 "default": -1,
-                "description": "device ID of CUDA GPU to use. Set -1 to use CPU only.",
+                "description": "CUDA device ID of GPU to use, or -1 for CPU only",
                 "format": "integer",
                 "type": "number"
-            },
-            "imgresize": {
-                "default": "resize_and_crop",
-                "description": "run on original size image",
-                "type": "string"
             },
             "model_path": {
                 "cacheable": true,
                 "content-type": "application/vnd.pytorch",
                 "default": "latest_net_G.pth",
                 "description": "Path to the trained pix2pixHD model",
+                "format": "uri",
                 "type": "string"
             },
             "operation_level": {
@@ -431,15 +427,27 @@
                 ],
                 "type": "string"
             },
-            "resizeHeight": {
+            "resize_height": {
                 "default": 1024,
-                "description": "resized image height",
+                "description": "target image height before input to the network",
                 "format": "integer",
                 "type": "number"
             },
-            "resizeWidth": {
+            "resize_mode": {
+                "default": "resize_and_crop",
+                "description": "transformation to apply to the original image before input to the network",
+                "enum": [
+                    "resize_and_crop",
+                    "crop",
+                    "scale_width",
+                    "scale_width_and_crop",
+                    "none"
+                ],
+                "type": "string"
+            },
+            "resize_width": {
                 "default": 1024,
-                "description": "resized image width",
+                "description": "target image width before input to the network",
                 "format": "integer",
                 "type": "number"
             }
@@ -468,15 +476,19 @@
                 "type": "number"
             },
             "class_mapping_path": {
+                "cacheable": true,
+                "content-type": "application/python-pickle",
                 "default": "mapping_densenet.pickle",
-                "description": "Path to Layout Structure Classes",
-                "required": false,
+                "description": "File path to layout structure classes",
+                "format": "uri",
                 "type": "string"
             },
             "model_path": {
-                "default": "structure_analysis.h5",
-                "description": "Path to Layout Structure Classification Model",
-                "required": false,
+                "cacheable": true,
+                "content-type": "text/directory",
+                "default": "structure_analysis",
+                "description": "Directory path to layout structure classification model",
+                "format": "uri",
                 "type": "string"
             }
         },
@@ -636,9 +648,9 @@
         "parameters": {
             "seg_weights": {
                 "cacheable": true,
-                "content-type": "application/x-hdf;subtype=bag",
-                "default": "seg_model.hdf5",
-                "description": "Path to weights file for deep learning model when use_deeplr is true.",
+                "content-type": "text/directory",
+                "default": "seg_model",
+                "description": "Directory path to deep learning model when use_deeplr is true.",
                 "format": "uri",
                 "type": "string"
             },
@@ -665,17 +677,12 @@
             "OCR-D-OCR-CALAMARI"
         ],
         "parameters": {
-            "checkpoint": {
-                "cacheable": true,
-                "description": "The calamari model files (*.ckpt.json)",
-                "format": "file",
-                "type": "string"
-            },
             "checkpoint_dir": {
                 "cacheable": true,
+                "content-type": "text/directory",
                 "default": "qurator-gt4histocr-1.0",
                 "description": "The directory containing calamari model files (*.ckpt.json). Uses all checkpoints in that directory",
-                "format": "file",
+                "format": "uri",
                 "type": "string"
             },
             "glyph_conf_cutoff": {
@@ -1019,7 +1026,7 @@
         "categories": [
             "Layout analysis"
         ],
-        "description": "Resegment lines with ocropy (by shrinking annotated polygons)",
+        "description": "Resegment text lines",
         "executable": "ocrd-cis-ocropy-resegment",
         "input_file_grp": [
             "OCR-D-SEG-LINE"
@@ -1036,22 +1043,32 @@
             },
             "extend_margins": {
                 "default": 3,
-                "description": "number of pixels to extend the input polygons horizontally and vertically before intersecting",
+                "description": "number of pixels to extend the input polygons in all directions",
                 "format": "integer",
                 "type": "number"
             },
             "level-of-operation": {
                 "default": "page",
-                "description": "PAGE XML hierarchy level granularity to segment lines in",
+                "description": "PAGE XML hierarchy level to segment textlines in ('region' abides by existing text region boundaries, 'page' optimises lines in the whole page once",
                 "enum": [
                     "page",
                     "region"
                 ],
                 "type": "string"
             },
+            "method": {
+                "default": "lineest",
+                "description": "source for new line polygon candidates ('lineest' for line estimation, i.e. how Ocropy would have segmented text lines; 'baseline' tries to re-polygonize from the baseline annotation; 'ccomps' avoids crossing connected components by majority rule)",
+                "enum": [
+                    "lineest",
+                    "baseline",
+                    "ccomps"
+                ],
+                "type": "string"
+            },
             "min_fraction": {
                 "default": 0.75,
-                "description": "share of foreground pixels that must be retained by the largest label",
+                "description": "share of foreground pixels that must be retained by the output polygons",
                 "format": "float",
                 "type": "number"
             }
@@ -1331,7 +1348,7 @@
             },
             "metric": {
                 "default": "Levenshtein-fast",
-                "description": "Distance metric to calculate and aggregate: `historic_latin` for GT level 1-3, `NFKC` for roughly GT level 2 (but including reduction of `\u017f/s` and superscript numerals etc), `Levenshtein` for GT level 3 (or `Levenshtein-fast` for faster alignment but using maximum sequence length instead of path length as CER denominator).",
+                "description": "Distance metric to calculate and aggregate: `historic_latin` for GT level 1-3, `NFKC` for roughly GT level 2 (but including reduction of `\u017f/s` and superscript numerals etc), `Levenshtein` for GT level 3 (or `Levenshtein-fast` for faster alignment - but using maximum sequence length instead of path length as CER denominator, and without confusion statistics).",
                 "enum": [
                     "Levenshtein-fast",
                     "Levenshtein",
@@ -1490,6 +1507,54 @@
         },
         "steps": [
             "recognition/post-correction"
+        ]
+    },
+    "ocrd-detectron2-segment": {
+        "categories": [
+            "Layout analysis"
+        ],
+        "description": "Detect regions with Detectron2 models",
+        "executable": "ocrd-detectron2-segment",
+        "input_file_grp": [
+            "OCR-D-IMG"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-REGION"
+        ],
+        "parameters": {
+            "categories": {
+                "description": "maps each region category (position) of the model to a PAGE region type (and @type or @custom if separated by colon), e.g. ['TextRegion:paragraph', 'TextRegion:heading', 'TextRegion:floating', 'TableRegion', 'ImageRegion'] for PubLayNet; categories with an empty string will be skipped during prediction",
+                "required": true,
+                "type": "array"
+            },
+            "device": {
+                "default": "cuda",
+                "description": "select computing device for Torch (e.g. cpu or cuda:0); will fall back to CPU if no GPU is available",
+                "type": "string"
+            },
+            "min_confidence": {
+                "default": 0.5,
+                "description": "confidence threshold for detections",
+                "format": "float",
+                "type": "number"
+            },
+            "model_config": {
+                "content-type": "text/yaml",
+                "description": "path name of model config",
+                "format": "uri",
+                "required": true,
+                "type": "string"
+            },
+            "model_weights": {
+                "content-type": "application/octet-stream",
+                "description": "path name of model weights",
+                "format": "uri",
+                "required": true,
+                "type": "string"
+            }
+        },
+        "steps": [
+            "layout/segmentation/region"
         ]
     },
     "ocrd-dinglehopper": {
@@ -1743,6 +1808,7 @@
         "parameters": {
             "level-of-operation": {
                 "default": "page",
+                "description": "level-of-operation",
                 "enum": [
                     "page",
                     "block",
@@ -1755,18 +1821,36 @@
             "preprocessing/optimization/binarization"
         ]
     },
-    "ocrd-kraken-ocr": {
+    "ocrd-kraken-recognize": {
         "categories": [
             "Text recognition and optimization"
         ],
         "description": "OCR with kraken",
-        "executable": "ocrd-kraken-ocr",
+        "executable": "ocrd-kraken-recognize",
         "parameters": {
-            "lines-json": {
-                "description": "URL to line segmentation in JSON",
-                "format": "url",
-                "required": "true",
+            "bidi_reordering": {
+                "default": true,
+                "description": "Reorder classes in the ocr_record according to  the Unicode bidirectional algorithm for correct display.",
+                "type": "boolean"
+            },
+            "device": {
+                "default": "cpu",
+                "description": "CUDA ID (e.g. 'cuda:0') for computation on GPU, or 'cpu' to run on CPU only",
                 "type": "string"
+            },
+            "model": {
+                "cacheable": true,
+                "content-type": "application/python-cpickle",
+                "default": "en_best.mlmodel",
+                "description": "OCR model to recognize with",
+                "format": "uri",
+                "type": "string"
+            },
+            "pad": {
+                "default": 16,
+                "description": "Extra blank padding to the left and right of text line.",
+                "format": "integer",
+                "type": "number"
             }
         },
         "steps": [
@@ -1782,31 +1866,38 @@
         "parameters": {
             "black_colseps": {
                 "default": false,
+                "description": "Whether column separators are assumed to be vertical black lines or not",
                 "type": "boolean"
             },
-            "level-of-operation": {
-                "default": "page",
-                "enum": [
-                    "page",
-                    "block",
-                    "line"
-                ],
+            "blla_model": {
+                "cacheable": true,
+                "content-type": "application/python-cpickle",
+                "default": "blla.mlmodel",
+                "description": "Model used for baseline detection. Use kraken-provided model if not give. Ignored if use_legacy.",
+                "format": "uri",
+                "type": "string"
+            },
+            "device": {
+                "default": "cpu",
+                "description": "GPU ID or 'cpu' to run on CPU only",
                 "type": "string"
             },
             "maxcolseps": {
                 "default": 2,
+                "description": "Maximum number of column separators. Set to 0 for single-column text to avoid unnecessary computation.",
                 "format": "integer",
                 "type": "number"
             },
+            "remove_hlines": {
+                "default": true,
+                "description": "Remove horizontal colseps before segmentation",
+                "type": "boolean"
+            },
             "scale": {
                 "default": 0,
+                "description": "mean xheight size of glyphs (guessed if zero)",
                 "format": "float",
                 "type": "number"
-            },
-            "script_detect": {
-                "default": false,
-                "description": "Enable script detection on segmenter output",
-                "type": "boolean"
             },
             "text_direction": {
                 "default": "horizontal-lr",
@@ -1819,8 +1910,9 @@
                 ],
                 "type": "string"
             },
-            "white_colseps": {
+            "use_legacy": {
                 "default": false,
+                "description": "Use legacy box segmenter as opposed to neural net baseline segmenter",
                 "type": "boolean"
             }
         },
@@ -2315,6 +2407,16 @@
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
                 "type": "string"
             },
+            "library-convention": {
+                "default": "none",
+                "description": "For xlsx extraction, to make line images hyperlinked, use this scheme in reconstructing presentation URLs of original pages. Libraries have different conventions in their METS files. Set to none to disable.",
+                "enum": [
+                    "slub",
+                    "sbb",
+                    "none"
+                ],
+                "type": "string"
+            },
             "mimetype": {
                 "default": "image/png",
                 "description": "File format to save extracted images in.",
@@ -2330,6 +2432,38 @@
                 ],
                 "type": "string"
             },
+            "min-line-height": {
+                "default": 30,
+                "description": "Only extract lines that are at least this high (in px).",
+                "type": "number"
+            },
+            "min-line-length": {
+                "default": 5,
+                "description": "Only extract lines with at least this many characters.",
+                "type": "number"
+            },
+            "min-line-width": {
+                "default": 200,
+                "description": "Only extract lines that are at least this wide (in px).",
+                "type": "number"
+            },
+            "output-types": {
+                "default": [
+                    "text",
+                    "json",
+                    "xslx"
+                ],
+                "description": "What kind of files to extract besides the line image itself (text/json files for  each line, xlsx per page).",
+                "items": {
+                    "enum": [
+                        "text",
+                        "json",
+                        "xslx"
+                    ],
+                    "type": "string"
+                },
+                "type": "array"
+            },
             "transparency": {
                 "default": true,
                 "description": "Add alpha channels with segment masks to the images",
@@ -2344,7 +2478,7 @@
         "categories": [
             "Image preprocessing"
         ],
-        "description": "Extract line segmentation as line images (deskewed according to `*/@orientation` and cropped+masked along `*/Coords` polygon and dewarped as in `*/AlternativeImage`) + text file (according to `*/TextEquiv`) + JSON (including line coordinates and meta-data).",
+        "description": "Extract line segmentation as line images + text file + JSON.",
         "executable": "ocrd-segment-extract-lines",
         "input_file_grp": [
             "OCR-D-SEG-LINE",
@@ -2580,6 +2714,16 @@
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
                 "type": "string"
             },
+            "library-convention": {
+                "default": "none",
+                "description": "For xlsx extraction, to make line images hyperlinked, use this scheme in reconstructing presentation URLs of original pages. Libraries have different conventions in their METS files. Set to none to disable.",
+                "enum": [
+                    "slub",
+                    "sbb",
+                    "none"
+                ],
+                "type": "string"
+            },
             "mimetype": {
                 "default": "image/png",
                 "description": "File format to save extracted images in.",
@@ -2594,6 +2738,38 @@
                     "image/tiff"
                 ],
                 "type": "string"
+            },
+            "min-line-height": {
+                "default": 30,
+                "description": "Only extract lines that are at least this high (in px).",
+                "type": "number"
+            },
+            "min-line-length": {
+                "default": 5,
+                "description": "Only extract lines with at least this many characters.",
+                "type": "number"
+            },
+            "min-line-width": {
+                "default": 200,
+                "description": "Only extract lines that are at least this wide (in px).",
+                "type": "number"
+            },
+            "output-types": {
+                "default": [
+                    "text",
+                    "json",
+                    "xslx"
+                ],
+                "description": "What kind of files to extract besides the line image itself (text/json files for  each line, xlsx per page).",
+                "items": {
+                    "enum": [
+                        "text",
+                        "json",
+                        "xslx"
+                    ],
+                    "type": "string"
+                },
+                "type": "array"
             },
             "transparency": {
                 "default": true,
@@ -2700,6 +2876,41 @@
             "layout/segmentation/region"
         ]
     },
+    "ocrd-segment-project": {
+        "categories": [
+            "Layout analysis"
+        ],
+        "description": "Project segment coordinates to their structural parents",
+        "executable": "ocrd-segment-project",
+        "input_file_grp": [
+            "OCR-D-SEG-BLOCK"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-BLOCK"
+        ],
+        "parameters": {
+            "level-of-operation": {
+                "default": "page",
+                "description": "hierarchy level which to assign new coordinates to",
+                "enum": [
+                    "page",
+                    "region",
+                    "line",
+                    "word"
+                ],
+                "type": "string"
+            },
+            "padding": {
+                "default": 10,
+                "description": "margin (in px) to extend the hull in every direction",
+                "format": "integer",
+                "type": "number"
+            }
+        },
+        "steps": [
+            "layout/segmentation"
+        ]
+    },
     "ocrd-segment-repair": {
         "categories": [
             "Layout analysis"
@@ -2711,23 +2922,23 @@
             "OCR-D-SEG-BLOCK"
         ],
         "output_file_grp": [
-            "OCR-D-EVAL-BLOCK"
+            "OCR-D-SEG-BLOCK"
         ],
         "parameters": {
             "plausibilize": {
                 "default": false,
-                "description": "Remove redundant (almost equal or almost contained) regions, and merge overlapping regions",
+                "description": "Identify and remove redundancies on text regions and text lines (deleting/merging/shrinking where overlaps occur).",
                 "type": "boolean"
             },
             "plausibilize_merge_min_overlap": {
                 "default": 0.9,
-                "description": "When merging a region almost contained in another, require at least this ratio of area is shared with the other",
+                "description": "When merging a region or line almost contained in another, require at least this ratio of area is shared with the other.",
                 "format": "float",
                 "type": "number"
             },
             "sanitize": {
                 "default": false,
-                "description": "Shrink and/or expand a region in such a way that it coordinates include those of all its lines",
+                "description": "Shrink/expand each text region such that its coordinates become the convex hull of its constituent text lines.",
                 "type": "boolean"
             }
         },
@@ -3320,6 +3531,84 @@
                 "type": "object"
             }
         },
+        "resource_locations": [
+            "data",
+            "system",
+            "module"
+        ],
+        "resources": [
+            {
+                "description": "Tesseract LSTM model trained on GT4HistOCR",
+                "name": "Fraktur_GT4HistOCR.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 1058487,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/Fraktur_5000000/tessdata_fast/Fraktur_50000000.334_450937.traineddata"
+            },
+            {
+                "description": "Tesseract LSTM model based on Austrian National Library newspaper data",
+                "name": "ONB.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 4358948,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/ONB/tessdata_best/ONB_1.195_300718_989100.traineddata"
+            },
+            {
+                "description": "Tesseract equ model",
+                "name": "equ.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 2251950,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/equ.traineddata"
+            },
+            {
+                "description": "Tesseract osd model",
+                "name": "osd.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 10562727,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/osd.traineddata"
+            },
+            {
+                "description": "Tesseract eng model",
+                "name": "eng.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 4113088,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata"
+            },
+            {
+                "description": "Tesseract deu model",
+                "name": "deu.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 1525436,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/deu.traineddata"
+            },
+            {
+                "description": "Tesseract frk model",
+                "name": "frk.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 6423052,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/frk.traineddata"
+            },
+            {
+                "description": "Tesseract Fraktur model",
+                "name": "Fraktur.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 10915632,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/script/Fraktur.traineddata"
+            },
+            {
+                "description": "Tesseract Latin model",
+                "name": "Latin.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 89384811,
+                "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/script/Latin.traineddata"
+            },
+            {
+                "description": "Tesseract configs (parameter sets) for use with the standalone tesseract CLI",
+                "name": "configs",
+                "path_in_archive": "tesseract-main/tessdata/configs",
+                "size": 1915529,
+                "type": "archive",
+                "url": "https://github.com/tesseract-ocr/tesseract/archive/main.tar.gz"
+            }
+        ],
         "steps": [
             "layout/segmentation/region",
             "layout/segmentation/line",
