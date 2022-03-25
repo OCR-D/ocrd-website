@@ -883,7 +883,10 @@ need to segment into lines in an extra step.
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md|sed '$d' -->
 In this processing step the segmented text lines can be corrected in order to reduce their overlap. 
 
-This can be done either via coordinates (polygonalizing the bounding boxes tightly around the glyphs) – which is what `ocrd-cis-ocropy-resegment` offers – or via derived images (clipping pixels that do not belong to a text line to the background color) – which is what `ocrd-cis-ocropy-clip` (on the `line` level) offers. The former is usually more accurate, but not always possible (for example, when neighbors intersect heavily, creating non-contiguous contours). The latter is only possible if no preceding workflow step has already annotated derived images (`AlternativeImage` references) on the line level (see also [region-level clipping](../Workflow-Guide-clipping)).
+This can be done either via coordinates (polygonalizing the bounding boxes tightly around the glyphs) – which is what `ocrd-cis-ocropy-resegment` and `ocrd-segment-project` offer – 
+or via derived images (clipping pixels that do not belong to a text line to the background color) – which is what `ocrd-cis-ocropy-clip` (on the `line` level) offers. 
+The former is usually more accurate, but not always possible (for example, when neighbors intersect heavily, creating non-contiguous contours). The latter is only possible if no preceding workflow 
+step has already annotated derived images (`AlternativeImage` references) on the line level (see also [region-level clipping](../Workflow-Guide-clipping)).
 
 <!-- TODO: add images -->
 
@@ -909,6 +912,12 @@ This can be done either via coordinates (polygonalizing the bounding boxes tight
       <td></td>
       <td></td>
       <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
+    </tr>
+	<tr data-processor="ocrd-segment-project">
+      <td>ocrd-segment-project</td>
+      <td><code>-P level-of-operation line</code></td>
+      <td></td>
+      <td><code>ocrd-segment-project -I OCR-D-SEG-LINE -O OCR-D-RESEG -P level-of-operation line</code></td>
     </tr>
   </tbody>
 </table>
@@ -1602,7 +1611,7 @@ results by configuring a more granular workflow like e.g. the
 ### Example with ocrd-process
 
 ```sh
-ocrd process "tesserocr-recognize -P segmentation_level region -P find_tables true -P find_staves false -P model Fraktur_GT4HistOCR -I OCR-D-IMG -O OCR-D-OCR"
+ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
 ```
 
 ## Best results for selected pages
