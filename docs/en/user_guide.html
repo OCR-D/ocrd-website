@@ -453,7 +453,7 @@ resolution. Optionally, you can specify to only load the file group needed:</p>
 
 <p>List all existing groups:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="nt">-d</span> <span class="o">[</span>/path/to/your/workspace] list-group
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> /path/to/your/workspace] list-group
 <span class="c">## alternatively using docker</span>
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="nt">-d</span> /data list-group
 </code></pre></div></div>
@@ -463,7 +463,7 @@ PRESENTATION, MAX.</p>
 
 <p>Download all files of one group:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="nt">-d</span> <span class="o">[</span>/path/to/your/workspace] find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> /path/to/your/workspace] find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
 <span class="c">## alternatively using docker</span>
 docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="nt">-d</span> /data find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
 </code></pre></div></div>
@@ -529,12 +529,12 @@ docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="
 <span class="nv">MEDIATYPE</span><span class="o">=</span><span class="s1">'image/tiff'</span>  <span class="c"># the actual media type of the image files</span>
 <span class="c">## using local ocrd CLI</span>
 <span class="k">for </span>i <span class="k">in</span> /path/to/your/picture/folder/in/workspace/<span class="k">*</span><span class="nv">$EXT</span><span class="p">;</span> <span class="k">do
-  </span><span class="nv">base</span><span class="o">=</span> <span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
+  </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
   ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span>
 <span class="k">done</span>
 <span class="c">## alternatively using docker</span>
 <span class="k">for </span>i <span class="k">in</span> /path/to/your/picture/folder/in/workspace/<span class="k">*</span><span class="nv">$EXT</span><span class="p">;</span> <span class="k">do
-  </span><span class="nv">base</span><span class="o">=</span> <span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
+  </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
   docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span>
 <span class="k">done</span>
 </code></pre></div></div>

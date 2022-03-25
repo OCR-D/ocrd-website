@@ -1389,7 +1389,10 @@ need to segment into lines in an extra step.</p>
 <!-- BEGIN-EVAL sed -n '0,/^## Notes/ p' ./repo/ocrd-website.wiki/Workflow-Guide-resegmentation.md|sed '$d' -->
 <p>In this processing step the segmented text lines can be corrected in order to reduce their overlap.</p>
 
-<p>This can be done either via coordinates (polygonalizing the bounding boxes tightly around the glyphs) – which is what <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-resegment</code> offers – or via derived images (clipping pixels that do not belong to a text line to the background color) – which is what <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-clip</code> (on the <code class="language-plaintext highlighter-rouge">line</code> level) offers. The former is usually more accurate, but not always possible (for example, when neighbors intersect heavily, creating non-contiguous contours). The latter is only possible if no preceding workflow step has already annotated derived images (<code class="language-plaintext highlighter-rouge">AlternativeImage</code> references) on the line level (see also <a href="../Workflow-Guide-clipping">region-level clipping</a>).</p>
+<p>This can be done either via coordinates (polygonalizing the bounding boxes tightly around the glyphs) – which is what <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-resegment</code> and <code class="language-plaintext highlighter-rouge">ocrd-segment-project</code> offer – 
+or via derived images (clipping pixels that do not belong to a text line to the background color) – which is what <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-clip</code> (on the <code class="language-plaintext highlighter-rouge">line</code> level) offers. 
+The former is usually more accurate, but not always possible (for example, when neighbors intersect heavily, creating non-contiguous contours). The latter is only possible if no preceding workflow 
+step has already annotated derived images (<code class="language-plaintext highlighter-rouge">AlternativeImage</code> references) on the line level (see also <a href="../Workflow-Guide-clipping">region-level clipping</a>).</p>
 
 <!-- TODO: add images -->
 
@@ -1415,6 +1418,12 @@ need to segment into lines in an extra step.</p>
       <td></td>
       <td></td>
       <td><code>ocrd-cis-ocropy-resegment -I OCR-D-SEG-LINE -O OCR-D-RESEG</code></td>
+    </tr>
+	<tr data-processor="ocrd-segment-project">
+      <td>ocrd-segment-project</td>
+      <td><code>-P level-of-operation line</code></td>
+      <td></td>
+      <td><code>ocrd-segment-project -I OCR-D-SEG-LINE -O OCR-D-RESEG -P level-of-operation line</code></td>
     </tr>
   </tbody>
 </table>
@@ -2191,7 +2200,7 @@ results by configuring a more granular workflow like e.g. the
 
 <h3 id="example-with-ocrd-process">Example with ocrd-process</h3>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="s2">"tesserocr-recognize -P segmentation_level region -P find_tables true -P find_staves false -P model Fraktur_GT4HistOCR -I OCR-D-IMG -O OCR-D-OCR"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="s2">"tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"</span>
 </code></pre></div></div>
 
 <h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
