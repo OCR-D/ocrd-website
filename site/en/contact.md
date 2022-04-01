@@ -78,6 +78,10 @@ Berlin State Library - Prussian Cultural Heritage
 Berlin State Library - Prussian Cultural Heritage 
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de?subject=Request%20via%20OCR-D.de)
 
+### Kristine Schima-Voigt
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[schima-voigt[at]sub.uni-goettingen.de](mailto:schima-voigt@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+
 ### Mareen Geestmann
 Göttingen State and University Library
 [geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)

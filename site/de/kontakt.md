@@ -82,6 +82,10 @@ Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 [clemens.neudecker[at]sbb.spk-berlin.de](mailto:clemens.neudecker@sbb.spk-berlin.de?subject=Anfrage%20via%20OCR-D.de)
 
+### Kristine Schima-Voigt
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
+[schima-voigt[at]sub.uni-goettingen.de](mailto:schima-voigt@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
+
 ### Mareen Geestmann
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
 [geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
