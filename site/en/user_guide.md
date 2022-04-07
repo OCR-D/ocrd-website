@@ -12,17 +12,17 @@ title: User Guide for Non-IT Users
 
 The following guide provides a detailed description on how to use the OCR-D-Software after it has been installed successfully. As explained in the
 setup guide, you can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can
-[install the Software locally](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that these two options require different prerequisites to get 
+[install the Software locally](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that these two options require different prerequisites to get
 started with OCR-D after the installation as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is
 obligatory for both Docker and Non-Docker users!
 
-Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). This guide always states native calls first and then provides the respective command for Docker users. 
+Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). This guide always states native calls first and then provides the respective command for Docker users.
 
 ## Prerequisites and Preparations
 
 ### Setup docker
 
-If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.  
+If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
 
 After installing docker you have to set up daemon and add user to  the group 'docker'
 
@@ -72,7 +72,7 @@ your venv.
 OCR-D processes digitized images in so-called workspaces, special directories
 which contain the images to be processed and their corresponding METS file. Any
 files generated while processing these images with the OCR-D-software will also
-be stored in this directory. 
+be stored in this directory.
 
 How you prepare a workspace depends on whether you already have or don't have a
 METS file with the paths to the images you want to process. For usage within
@@ -81,7 +81,7 @@ OCR-D your METS file should look similar to [this example](example_mets).
 #### Already existing METS
 
 If you already have a METS file as indicated above, you can create a workspace
-and load the pictures to be processed with the following command: 
+and load the pictures to be processed with the following command:
 
 ```sh
 ocrd workspace -d /path/to/workspace clone URL_OF_METS
@@ -150,12 +150,12 @@ cp -r [/path/to/your/pictures] .
 
 In OCR-D we  name the image folder OCR-D-IMG, which is used throughout the documentation. Naming your image folder differently is
 certainly possible, but you should be aware that you need to adapt the name of the image folder if copy and paste the sample
-calls provided on this website. 
+calls provided on this website.
 
-You should now have a workspace which contains the aforementioned `mets.xml` and a folder OCR-D-IMG with your images. 
+You should now have a workspace which contains the aforementioned `mets.xml` and a folder OCR-D-IMG with your images.
 
 Now you can add your pictures to the METS. When creating the workspace, a blank
-METS file was created, too, to which you can add the pictures to be processed. 
+METS file was created, too, to which you can add the pictures to be processed.
 
 You can do this manually with the following command:
 
@@ -191,7 +191,7 @@ for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
 done
 ```
 
-<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images starts with a number, at least one of the following characters must be placed in front of its name for parameter 'i': [a-z,A-Z,_,-] (e.g.: 'OCR-D-IMG_\_')
+<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images start with a number, at least one of the following characters must be placed in front of its name for parameter 'i': [a-z,A-Z,_,-] (e.g.: 'OCR-D-IMG_\_')
 
 Your for-loop could e.g. look like this:
 
@@ -250,11 +250,11 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-olen
 ```
 
 The specified processor will take the files in your Input-Group `-I`, process them and save the results in your Ouput-Group `-O`. It will also add
-the information about this processing step and its results to METS file in your workspace. 
+the information about this processing step and its results to METS file in your workspace.
 
-**Note:** For processors using multiple input-, or output groups you have to use a comma separated list. 
+**Note:** For processors using multiple input-, or output groups you have to use a comma separated list.
 
-E.g.: 
+E.g.:
 
 ```sh
 ocrd-anybaseocr-crop  -I OCR-D-IMG -O OCR-D-CROP,OCR-D-IMG-CROP
@@ -264,7 +264,7 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-anyb
 
 **Note:** If multiple parameter key-value pairs are necessary, each of them has to be preceded by `-P`
 
-E.g.: 
+E.g.:
 
 ```sh
 -P param1 value1 -P param2 value2 -P param3 value3
@@ -272,7 +272,7 @@ E.g.:
 
 **Note:** If a value consists of several words with whitespaces, they have to be enclosed in quotation marks
 
-E.g.: 
+E.g.:
 
 ```sh
 -P param "value value"
@@ -313,9 +313,9 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd proc
 
 Each specified processor will take all the files in your files in the respective Input-Group `-I`, process them and save the
 results in the respective Ouput-Group `-O`. It will also add the information about this processing step and its results to the METS file in your workspace.
-The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files 
+The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files
 will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
-in your workflow, which contains the (intermediate) processing results. 
+in your workflow, which contains the (intermediate) processing results.
 
 **Note:** In contrast to calling a single processor, for `ocrd process` you leave
 out the prefix `ocrd-` before the name of a particular processor.
@@ -328,7 +328,7 @@ several workspaces.
 
 Note that Taverna is not included in your [`ocrd_all`](https:/github.com/OCR-D/ocrd_all) installation. Therefore, you still might have to install it following this [setup guide](setup.md).
 
-Taverna comes with several predefined workflows which can help you getting started. These are stored in the `/conf` directory. 
+Taverna comes with several predefined workflows which can help you getting started. These are stored in the `/conf` directory.
 
 1. parameters.txt  (best results without gpu)
 2. parameters_fast.txt (good results for slower computers)
@@ -359,13 +359,13 @@ conf$ cp parameters.txt [name of your new parameters.txt]
 
 Open the new `parameters.txt` file with an editor like e.g. Nano and change the
 name of the old `workflow_configuration.txt` specified in this file to the name
-of your new `workflow_configuration.txt` file: 
+of your new `workflow_configuration.txt` file:
 
 ```sh
 nano [name of your new workflow_configuration.txt]
 ```
 
-Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. The first column contains the name of the processor, the following two columns indicate the names of the input and the output filegroups. The forth column for group-ID can be left blank. In the last column you can indicate the log level. 
+Then open your new `workflow_configuration.txt` file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. The first column contains the name of the processor, the following two columns indicate the names of the input and the output filegroups. The forth column for group-ID can be left blank. In the last column you can indicate the log level.
 
 If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a `json` file which should be stored in Taverna's subdirectory `models`. See [Calling a single processor](TODO) on how to create `json` files. Alternatively, you can directly write down the parameter needed using the following syntax:
 
@@ -389,7 +389,7 @@ In contrast to Taverna it is included in ocrd_all, therefore you most likely alr
 
 The `workflow-configuration` directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see [the table on GitHub](https://github.com/bertsky/workflow-configuration#usage).
 
-**Note:** Most workflows are configured for GT data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail. 
+**Note:** Most workflows are configured for GT data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail.
 
 In order to run a workflow, change into your data directory (that contains the workspaces) and call the desired configuration file on your workspace(s):
 
@@ -413,26 +413,26 @@ make --help
 ```
 
 When you want to adjust a workflow for better results on your particular
-images, you should start off by copying the original `workflow.mk` 
+images, you should start off by copying the original `workflow.mk`
 file:
 
 ```sh
 cp workflow.mk [name_of_your_new_workflow_configuration.mk]
 ```
 
-Then open the new file with an editor which understands `make` syntax like e.g. `nano`, and exchange or add the processors or parameters to your needs: 
+Then open the new file with an editor which understands `make` syntax like e.g. `nano`, and exchange or add the processors or parameters to your needs:
 
 ```sh
 nano [name_of_your_new_workflow_configuration.mk]
 ```
 
-You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable `.DEFAULT_GOAL` pointing to that target can be set anywhere in the makefile. 
+You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable `.DEFAULT_GOAL` pointing to that target can be set anywhere in the makefile.
 
 **Note:** Also see the [extensive Readme of workflow-configuration](https://bertsky.github.io/workflow-configuration) on how to adjust the preconfigured workflows to your needs.
 
 Each specified processor will take all the files in your files in the respective Input-Group `-I`, process them and save the
 results in the respective Ouput-Group `-O`. It will also add the information about this processing step and its results to the METS file in your workspace.
-The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files 
+The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files
 will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
 in your workflow, which contains the (intermediate) processing results.
 
@@ -479,7 +479,7 @@ the existing processors, their tasks and features, see the [next section](#get-m
 
 ### Get more Information about Processors
 
-To get all available processors you might use the autocomplete in your preferred console. 
+To get all available processors you might use the autocomplete in your preferred console.
 
 **Note:** Activate virtual environment first.
 
