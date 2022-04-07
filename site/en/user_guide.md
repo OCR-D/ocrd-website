@@ -191,7 +191,7 @@ for i in /path/to/your/picture/folder/in/workspace/*$EXT; do
 done
 ```
 
-<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images starts with a number, at least one of the following characters must be placed in front of its name for parameter 'i': [a-z,A-Z,_,-] (e.g.: 'OCR-D-IMG_\_')
+<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images start with a number, at least one of the following characters must be placed in front of its name for parameter 'i': [a-z,A-Z,_,-] (e.g.: 'OCR-D-IMG_\_')
 
 Your for-loop could e.g. look like this:
 
