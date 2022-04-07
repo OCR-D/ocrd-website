@@ -60,7 +60,7 @@ _ULB Sachsen-Anhalt_
 The University and State Library Saxony-Anhalt has been a partner in the digitization of VD18 holdings for many years now. 
 This project is the next step in the development of these holdings, because the 6.13 million digitized pages will be enriched with fulltext information, using the tools developed in the earlier OCR-D project phases. 
 The amount of data and the diversity of these holdings already show that this is a project under realistic conditions: In mass digitization, many languages are encountered and individual peculiarities of publications must be considered, when using and developing the OCR-D tools to gain fulltext information to increase their usefulness. 
-Since all of these holdings have already been digitized, updating and reformatting the metadata as well as the reuse of already exisiting information, such as structural metadata, for new viewing formats are key focal points of this project.
+Since all of these holdings have already been digitized, updating and reformatting the metadata as well as the reuse of already existing information, such as structural metadata, for new viewing formats are key focal points of this project.
 
 <br/><br/>
 Further information: [Project page of the German Research Foundation](https://gepris.dfg.de/gepris/projekt/460554747?language=en)
