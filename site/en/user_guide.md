@@ -38,7 +38,7 @@ sudo usermod -aG docker $USER
 To test access to docker try the following command:
 
 ```sh
-docker ps
+docker images
 ```
 
 Now you should see an (empty) list of available images.
