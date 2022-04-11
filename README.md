@@ -174,7 +174,7 @@ Make sure that `repo/ocrd-website.wiki` is up-to-date: `cd repo/ocrd-website.wik
 
 ## Building and deploying the site
 
-```make build-site```:  rebuild the website to render the changes to Markdown to HTML
+```make build-site```:  rebuild the website to render the changes from Markdown to HTML
 
 ```make deploy```: Copy all the contents of ```./docs``` to ```ocr-d.github.io```, commit and push the changes in ```ocr-d.github.io```:
 
