@@ -361,24 +361,26 @@ services</a>.</p>
 
 <h2 id="file-parameters">File parameters</h2>
 
-<p>To mark a parameter as expecting the address of a file, it must declare the
+<p>To mark a parameter as expecting the address of a file, it MUST declare the
 <code class="language-plaintext highlighter-rouge">content-type</code> property as a <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">valid media
 type</a>.
 Optionally, workflow processors can be notified that this file is potentially
 large and static (e.g. a fixed dataset or a precomputed model) and should be cached
 indefinitely after download by setting the <code class="language-plaintext highlighter-rouge">cacheable</code> property to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 
-<p>The filename itself, i.e. the concrete value <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> of a file parameter
-should be resolved in the following way (<code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code> representing the current working directory):</p>
+<p>The filename itself, i.e. the concrete value <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> of a file parameter,
+should be resolved in the following way (with <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code> representing the current 
+working directory, and <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code> representing the distribution directory of the module):</p>
 
 <ul>
   <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an <code class="language-plaintext highlighter-rouge">http</code>/<code class="language-plaintext highlighter-rouge">https</code> URL: Download to a temporary directory (if
 <code class="language-plaintext highlighter-rouge">cacheable==False</code>) or a semi-temporary cache directory (if <code class="language-plaintext highlighter-rouge">cacheable==True</code>)</li>
   <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an absolute path: Use as-is.</li>
-  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is a relative path, try resolving the following paths and return
-the first one found if any, otherwise abort with an error message stating so:
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is a relative path (with or without directory components):
+Try resolving via the following directories, and return the first one found if any,
+otherwise abort with an error message stating so:
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly be in <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly under <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
       <li>If an environment variable is defined that has the name of the processor in
 upper-case and with <code class="language-plaintext highlighter-rouge">-</code> replaced with <code class="language-plaintext highlighter-rouge">-</code> and followed by <code class="language-plaintext highlighter-rouge">_PATH</code> (e.g. for a processor
 <code class="language-plaintext highlighter-rouge">ocrd-dummy</code>, the variable would need to be called <code class="language-plaintext highlighter-rouge">OCRD_DUMMY_PATH</code>):
@@ -389,9 +391,14 @@ to each token and return the first found file if any</li>
       </li>
       <li><code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code> (with <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> instead of <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> if unset)</li>
       <li><code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code></li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;mod&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly under <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code>, not in a subdirectory)</li>
     </ul>
   </li>
 </ul>
+
+<p>The path of the <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code> directory is implementation specific and allows modules
+to distribute small resources along with the code, i.e. pre-installed files like
+<a href="cli#processor-resources">presets</a>.</p>
 
 <h2 id="input--output-file-groups">Input / Output file groups</h2>
 
@@ -545,6 +552,55 @@ override reflects the order in which they are defined in the <code class="langua
                 <span class="pi">-</span> <span class="s">layout/segmentation/word</span>
                 <span class="pi">-</span> <span class="s">layout/segmentation/classification</span>
                 <span class="pi">-</span> <span class="s">layout/analysis</span>
+          <span class="na">resource_locations</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">The locations in the filesystem this processor supports for resource lookup</span>
+            <span class="na">default</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">data'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">cwd'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">system'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">module'</span><span class="pi">]</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">data'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">cwd'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">system'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">module'</span><span class="pi">]</span>
+          <span class="na">resources</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Resources for this processor</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+              <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">required</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s">url</span>
+                <span class="pi">-</span> <span class="s">description</span>
+                <span class="pi">-</span> <span class="s">name</span>
+                <span class="pi">-</span> <span class="s">size</span>
+              <span class="na">properties</span><span class="pi">:</span>
+                <span class="na">url</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">URLs of all components of this resource</span>
+                <span class="na">description</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">A description of the resource</span>
+                <span class="na">name</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Name to store the resource as</span>
+                <span class="na">type</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">file'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">directory'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">archive'</span><span class="pi">]</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s">file</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Type of the URL</span>
+                <span class="na">parameter_usage</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Defines how the parameter is to be used</span>
+                  <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">as-is'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">without-extension'</span><span class="pi">]</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">as-is'</span>
+                <span class="na">path_in_archive</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">if type is archive, the resource is at this location in the archive</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">.'</span>
+                <span class="na">version_range</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Range of supported versions, syntax like in PEP </span><span class="m">440</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">&gt;=</span><span class="nv"> </span><span class="s">0.0.1'</span>
+                <span class="na">size</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">number</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Size of the resource in bytes</span>
 </code></pre></div></div>
 
 <!-- END-EVAL -->

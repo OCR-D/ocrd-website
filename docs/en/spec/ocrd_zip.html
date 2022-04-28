@@ -339,7 +339,6 @@ function ToggleSearchActive2() {
         <ul>
           <li><a href="#bagit-profile-identifier"><code class="language-plaintext highlighter-rouge">BagIt-Profile-Identifier</code></a></li>
           <li><a href="#ocrd-mets"><code class="language-plaintext highlighter-rouge">Ocrd-Mets</code></a></li>
-          <li><a href="#ocrd-manifestation-depth"><code class="language-plaintext highlighter-rouge">Ocrd-Manifestation-Depth</code></a></li>
           <li><a href="#ocrd-identifier"><code class="language-plaintext highlighter-rouge">Ocrd-Identifier</code></a></li>
           <li><a href="#ocrd-base-version-checksum"><code class="language-plaintext highlighter-rouge">Ocrd-Base-Version-Checksum</code></a></li>
         </ul>
@@ -432,8 +431,7 @@ the full definition</a>):</p>
   </li>
   <li><code class="language-plaintext highlighter-rouge">bag-info.txt</code> MAY additionally contain these tags:
     <ul>
-      <li></li>
-      <li><a href="#ocrd-manifestation-depth"><code class="language-plaintext highlighter-rouge">Ocrd-Manifestation-Depth</code></a>: Whether all URL are dereferenced as files or only some</li>
+      <li><a href="#ocrd-mets"><code class="language-plaintext highlighter-rouge">Ocrd-Mets</code></a>: Alternative path to the mets.xml file, relative to <code class="language-plaintext highlighter-rouge">/data</code>, if its path IS NOT <code class="language-plaintext highlighter-rouge">mets.xml</code></li>
     </ul>
   </li>
 </ul>
@@ -450,11 +448,6 @@ standard <code class="language-plaintext highlighter-rouge">mets.xml</code> but 
 <p>Implementations MUST check for the <code class="language-plaintext highlighter-rouge">Ocrd-Mets</code> tag: If it has a value, look for the
 METS file at that location, relative to <code class="language-plaintext highlighter-rouge">/data</code>. Otherwise, assume the default
 <code class="language-plaintext highlighter-rouge">mets.xml</code>.</p>
-
-<h3 id="ocrd-manifestation-depth"><code class="language-plaintext highlighter-rouge">Ocrd-Manifestation-Depth</code></h3>
-
-<p>Specify whether the bag contains the full manifestation of the data referenced in the METS (<code class="language-plaintext highlighter-rouge">full</code>)
-or only those files that were <code class="language-plaintext highlighter-rouge">file://</code> URLs before (<code class="language-plaintext highlighter-rouge">partial</code>). Default: <code class="language-plaintext highlighter-rouge">partial</code>.</p>
 
 <h3 id="ocrd-identifier"><code class="language-plaintext highlighter-rouge">Ocrd-Identifier</code></h3>
 
@@ -524,8 +517,7 @@ be referenced in a <code class="language-plaintext highlighter-rouge">mets:file/
 
 <h3 id="when-in-mets-and-not-in-data">When in METS and not in data</h3>
 
-<p>Due to partial OCRD-ZIP not all files may be part of the payload. If so they have to be 
-mentioned in fetch.txt and in all payload manifest files.</p>
+<p>All local files (<code class="language-plaintext highlighter-rouge">mets:file/mets:FLocat/@xlink:href</code> that represent file paths) must be part of the OCRD-ZIP.</p>
 
 <h2 id="optional-metadata-about-the-payload">Optional metadata about the payload</h2>
 
@@ -536,7 +528,7 @@ are allowed to be present in the root of the bag:</p>
   <li><code class="language-plaintext highlighter-rouge">README.md</code>: An extended, human-readable description of the dataset in the Markdown syntax</li>
   <li><code class="language-plaintext highlighter-rouge">Makefile</code>: A GNU make build file to reproduce the data in <code class="language-plaintext highlighter-rouge">/data</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">build.sh</code>: A bash script to reproduce the data in <code class="language-plaintext highlighter-rouge">/data</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">sources.csv</code>: A comma-separated values list to be used in the scripts. For straightforward HTTP downloads, prefer <a href="https://tools.ietf.org/html/rfc8493#section-2.2.3">fetch.txt</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">sources.csv</code>: A comma-separated values list to be used in the scripts.</li>
 </ul>
 
 <p>These files are purely for documentation and should not be used by processors in any way.</p>
@@ -554,8 +546,7 @@ are allowed to be present in the root of the bag:</p>
       <li>Strip <code class="language-plaintext highlighter-rouge">file://</code> from the beginning of the <code class="language-plaintext highlighter-rouge">xlink:href</code> of <code class="language-plaintext highlighter-rouge">f</code></li>
       <li>If it is not a file path (begins with <code class="language-plaintext highlighter-rouge">http://</code> or <code class="language-plaintext highlighter-rouge">https://</code>):
         <ul>
-          <li>If <code class="language-plaintext highlighter-rouge">Ocrd-Manifestation-Depth</code> is <code class="language-plaintext highlighter-rouge">partial</code>,
-continue</li>
+          <li>continue</li>
         </ul>
       </li>
       <li>Download/Copy the file to a location within <code class="language-plaintext highlighter-rouge">TMP/data</code>. The structure SHOULD be <code class="language-plaintext highlighter-rouge">&lt;USE&gt;/&lt;ID&gt;</code> where
@@ -592,7 +583,7 @@ continue</li>
 
 <!-- BEGIN-EVAL -w '```yaml' '```' -- cat ./bagit-profile.yml  -->
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">BagIt-Profile-Info</span><span class="pi">:</span>
-  <span class="na">BagIt-Profile-Identifier</span><span class="pi">:</span> <span class="s">https://ocr-d.de/bagit-profile.json</span>
+  <span class="na">BagIt-Profile-Identifier</span><span class="pi">:</span> <span class="s">https://ocr-d.de/en/spec/bagit-profile.json</span>
   <span class="na">BagIt-Profile-Version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">1.2.0'</span>
   <span class="na">Source-Organization</span><span class="pi">:</span> <span class="s">OCR-D</span>
   <span class="na">External-Description</span><span class="pi">:</span> <span class="s">BagIt profile for OCR data</span>
@@ -607,10 +598,6 @@ continue</li>
   <span class="na">Ocrd-Mets</span><span class="pi">:</span>
     <span class="na">required</span><span class="pi">:</span> <span class="no">false</span>
     <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mets.xml'</span>
-  <span class="na">Ocrd-Manifestation-Depth</span><span class="pi">:</span>
-    <span class="na">required</span><span class="pi">:</span> <span class="no">false</span>
-    <span class="na">default</span><span class="pi">:</span> <span class="s">partial</span>
-    <span class="na">values</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">partial"</span><span class="pi">,</span> <span class="s2">"</span><span class="s">full"</span><span class="pi">]</span>
   <span class="na">Ocrd-Identifier</span><span class="pi">:</span>
     <span class="na">required</span><span class="pi">:</span> <span class="no">true</span>
   <span class="na">Ocrd-Checksum</span><span class="pi">:</span>
@@ -627,7 +614,7 @@ continue</li>
   <span class="pi">-</span> <span class="s">sources.csv</span>
   <span class="pi">-</span> <span class="s">metadata/*.xml</span>
   <span class="pi">-</span> <span class="s">metadata/*.txt</span>
-<span class="na">Allow-Fetch.txt</span><span class="pi">:</span> <span class="no">true</span>
+<span class="na">Allow-Fetch.txt</span><span class="pi">:</span> <span class="no">false</span>
 <span class="na">Serialization</span><span class="pi">:</span> <span class="s">required</span>
 <span class="na">Accept-Serialization</span><span class="pi">:</span> <span class="s">application/zip</span>
 <span class="na">Accept-BagIt-Version</span><span class="pi">:</span>
