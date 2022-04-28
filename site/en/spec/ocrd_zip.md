@@ -57,8 +57,7 @@ the full definition](#appendix-a)):
   * [`Ocrd-Identifier`](#ocrd-identifier): A globally unique identifier for this bag
   * [`Ocrd-Base-Version-Checksum`](#ocrd-base-version-checksum): Checksum of the version this bag is based on
 * `bag-info.txt` MAY additionally contain these tags:
-  * [`Ocrd-Mets`]: Alternative path to the mets.xml file, relative to `/data`, if its path IS NOT `mets.xml`
-  * [`Ocrd-Manifestation-Depth`](#ocrd-manifestation-depth): Whether all URL are dereferenced as files or only some
+  * [`Ocrd-Mets`](#ocrd-mets): Alternative path to the mets.xml file, relative to `/data`, if its path IS NOT `mets.xml`
 
 ### `BagIt-Profile-Identifier`
 
@@ -72,11 +71,6 @@ standard `mets.xml` but another path relative to `/data/`.
 Implementations MUST check for the `Ocrd-Mets` tag: If it has a value, look for the
 METS file at that location, relative to `/data`. Otherwise, assume the default
 `mets.xml`.
-
-### `Ocrd-Manifestation-Depth`
-
-Specify whether the bag contains the full manifestation of the data referenced in the METS (`full`)
-or only those files that were `file://` URLs before (`partial`). Default: `partial`.
 
 ### `Ocrd-Identifier`
 
@@ -143,8 +137,7 @@ be referenced in a `mets:file/mets:Flocat` in the `mets.xml`.
 
 ### When in METS and not in data
 
-Due to partial OCRD-ZIP not all files may be part of the payload. If so they have to be 
-mentioned in fetch.txt and in all payload manifest files. 
+All local files (`mets:file/mets:FLocat/@xlink:href` that represent file paths) must be part of the OCRD-ZIP.
 
 ## Optional metadata about the payload
 
@@ -154,7 +147,7 @@ are allowed to be present in the root of the bag:
 * `README.md`: An extended, human-readable description of the dataset in the Markdown syntax
 * `Makefile`: A GNU make build file to reproduce the data in `/data`.
 * `build.sh`: A bash script to reproduce the data in `/data`.
-* `sources.csv`: A comma-separated values list to be used in the scripts. For straightforward HTTP downloads, prefer [fetch.txt].
+* `sources.csv`: A comma-separated values list to be used in the scripts.
 
 These files are purely for documentation and should not be used by processors in any way.
 
@@ -168,8 +161,7 @@ To pack a workspace to OCRD-ZIP:
 * Foreach `mets:file` `f` in the source METS:
   * Strip `file://` from the beginning of the `xlink:href` of `f`
   * If it is not a file path (begins with `http://` or `https://`):
-    * If `Ocrd-Manifestation-Depth` is `partial`,
-      continue
+      * continue
   * Download/Copy the file to a location within `TMP/data`. The structure SHOULD be `<USE>/<ID>` where
     * `<USE>` is the `USE` attribute of the parent `mets:fileGrp`
     * `<ID>` is the `ID` attribute of the `mets:file`
@@ -191,7 +183,7 @@ To pack a workspace to OCRD-ZIP:
 <!-- BEGIN-EVAL -w '```yaml' '```' -- cat ./bagit-profile.yml  -->
 ```yaml
 BagIt-Profile-Info:
-  BagIt-Profile-Identifier: https://ocr-d.de/bagit-profile.json
+  BagIt-Profile-Identifier: https://ocr-d.de/en/spec/bagit-profile.json
   BagIt-Profile-Version: '1.2.0'
   Source-Organization: OCR-D
   External-Description: BagIt profile for OCR data
@@ -206,10 +198,6 @@ Bag-Info:
   Ocrd-Mets:
     required: false
     default: 'mets.xml'
-  Ocrd-Manifestation-Depth:
-    required: false
-    default: partial
-    values: ["partial", "full"]
   Ocrd-Identifier:
     required: true
   Ocrd-Checksum:
@@ -226,7 +214,7 @@ Tag-Files-Allowed:
   - sources.csv
   - metadata/*.xml
   - metadata/*.txt
-Allow-Fetch.txt: true
+Allow-Fetch.txt: false
 Serialization: required
 Accept-Serialization: application/zip
 Accept-BagIt-Version:

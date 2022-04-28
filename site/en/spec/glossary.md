@@ -10,6 +10,8 @@ title: OCR-D Glossary
 
 > Glossary of terms from the domain of image processing/OCR and how they are used within the OCR-D framework
 
+This section is non-normative.
+
 ## Layout and Typography
 
 ### Block
@@ -41,9 +43,7 @@ See [TextLine](#textline)
 
 ### Reading Order
 
-Reading order describes the logical sequence of [regions](#region) within a document  as read by a human. 
-Marginalia, tables, footnotes, and other elements that are not read in a particular order are not necessarily included 
-in the reading order description.
+Reading order describes the logical sequence of [regions](#region) within a document.
 
 ### Region
 
@@ -79,7 +79,7 @@ A word is a sequence of [glyphs](#glyph) within a [line](#textline) which does n
 
 ### Ground Truth
 
-Ground truth (GT) [in the context of OCR-D](https://ocr-d.de/en/data) are
+Ground truth (GT) [in the context of OCR-D](http://ocr-d.de/daten) are
 transcriptions, specific structure descriptions and word lists. These are
 essentially available in PAGE XML format in combination with the original
 image. Essential parts of the GT were created manually.

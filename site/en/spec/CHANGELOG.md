@@ -14,6 +14,29 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Fixed:
+
+  * typos in the web OCR-D Web API, #199
+  * typo in the OCRD-ZIP spec, #203
+
+Changed:
+
+  * Drop `Ocrd-Manifestation-Depth` and disallow `fetch.txt` bagit mechanism, #182
+  * Drop unclear `has_docker` attribute in discovery response in OCR-D Web API, #201
+
+
+## [3.18.0] - 2022-04-06
+
+Added:
+
+  * Initial version of the OCR-D Web API, #173
+
+## [3.17.0] - 2022-02-14
+
+Added:
+
+  * `ocrd-tool.json`: Support processors listing their own `resources` and restrict `resource_locations`, OCR-D/spec#181, OCR-D/spec#190
+
 ## [3.16.0] - 2022-01-30
 
 Changed:
@@ -423,6 +446,8 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.18.0]: ../../compare/v3.18.0...v3.17.0
+[3.17.0]: ../../compare/v3.17.0...v3.16.0
 [3.16.0]: ../../compare/v3.16.0...v3.15.0
 [3.15.0]: ../../compare/v3.15.0...v3.14.0
 [3.14.0]: ../../compare/v3.14.0...v3.13.0
