@@ -176,7 +176,14 @@ spec:
 		fi; \
 		sed  "1 i ---\nlayout: page\nlang: $$lang\nlang-ref: $$basename\ntoc: true\ntitle: $$title\n---\n" $$md \
 		> $(SRCDIR)/$$lang/spec/$$basename; \
-	done
+	done;
+	cp -t $(SRCDIR)/en/spec repo/spec/bagit-profile.json
+	cp -t $(SRCDIR)/en/spec repo/spec/ocrd_tool.schema.json
+	cp -t $(SRCDIR)/en/spec repo/spec/openapi.yml
+	cp -t $(SRCDIR)/de/spec repo/spec/bagit-profile.json
+	cp -t $(SRCDIR)/de/spec repo/spec/ocrd_tool.schema.json
+	cp -t $(SRCDIR)/de/spec repo/spec/openapi.yml
+
 
 .PHONY: workflows
 
