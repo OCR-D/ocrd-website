@@ -33,7 +33,7 @@ Minimum system requirements
 <summary>- Operating system: Ubuntu 18.04</summary>
   
   - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
-  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and might be our next target platform.<br />
+  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
   - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
   - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
@@ -44,7 +44,7 @@ Minimum system requirements
   
   - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br>
   - Python 3.7 is also tested and supported<br>
-  - We currently **cannot fully support Python 3.8**, because there currently (May 2022) are no pre-built Python packages for Tensorflow 2.5 and other GPU related software). We expect to unconditionally support Python 3.8 and newer versions somewhere in the future when all processors work with a recent Tensorflow 2.x.
+  - We currently <b>cannot fully support Python 3.8</b>, because there currently (May 2022) are no pre-built Python packages for Tensorflow 2.5 and < 2 and other related software). We expect to unconditionally support Python 3.8 and newer versions sometime in the future when all processors work with a recent Tensorflow 2.x.
   
 </details>
 <br>
