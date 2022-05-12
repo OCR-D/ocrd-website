@@ -18,7 +18,7 @@ Minimum system requirements
 <details>
 <summary>- 8 GB RAM (more recommended)</summary>
   
-  - The more RAM is available, the more concurrent processes can be run
+  - The more RAM is available, the more concurrent processes can be run<br />
   - Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
   
 </details>
@@ -26,27 +26,28 @@ Minimum system requirements
 <summary>- min. 20 GB free disk space for local installation (more recommended)</summary>
   
   - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself 
-  you will need space for various [pretrained models](https://ocr-d.de/en/models), training and evaluation data for training, and data to process.
+  you will need space for various <a href="https://ocr-d.de/en/models">pretrained models</a>, training and evaluation data for training, and data to process.
   
 </details>
 <details>
 <summary>- Operating system: Ubuntu 18.04</summary>
   
-  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and [will be supported for the foreseeable future](https://ubuntu.com/about/release-cycle)
-  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and might be our next target platform.
-  - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)
-  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is [also possible to set up an Ubuntu 18.04 installation within Microsoft Windows](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows)
-  - OCR-D can be deployed on an [Apple MacOSX machine using Homebrew](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS)
+  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
+  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and might be our next target platform.<br />
+  - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
+  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
+  - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
   
 </details>
 <details>
 <summary>- Python 3.6 or 3.7</summary>
   
-  - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022
-  - Python 3.7 is also tested and supported
+  - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br>
+  - Python 3.7 is also tested and supported<br>
   - We currently **cannot fully support Python 3.8**, because there currently (May 2022) are no pre-built Python packages for Tensorflow 2.5 and other GPU related software). We expect to unconditionally support Python 3.8 and newer versions somewhere in the future when all processors work with a recent Tensorflow 2.x.
   
 </details>
+<br>
 For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
 
 Alternatively, you can use [Docker](https://hub.docker.com/u/ocrd). This way, you will only have to meet the minimum requirements for 
