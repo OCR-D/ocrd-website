@@ -18,7 +18,7 @@ Minimum system requirements
 <details>
 <summary>- 8 GB RAM (more recommended)</summary>
   
-  - The more RAM is available, the more concurrent processes can be run<br />
+  - The more RAM is available, the more concurrent processes can be run<br>
   - Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
   
 </details>
