@@ -33,17 +33,18 @@ Minimum system requirements
 <summary>- Operating system: Ubuntu 18.04</summary>
   
   - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and [will be supported for the foreseeable future](https://ubuntu.com/about/release-cycle)
+  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and might be our next target platform.
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)
   - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is [also possible to set up an Ubuntu 18.04 installation within Microsoft Windows](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows)
   - OCR-D can be deployed on an [Apple MacOSX machine using Homebrew](https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS)
   
 </details>
 <details>
-<summary>- Python 3.5, 3.6 or 3.7</summary>
+<summary>- Python 3.6 or 3.7</summary>
   
-  - OCR-D's target Python version is currently Python 3.5 which we will continue to support until at least Q1 2021
-  - Python 3.6 and 3.7 are also tested and supported
-  - We currently **cannot fully support Python 3.8**, because there currently (July 2020) are no pre-built Python packages for Tensorflow and other GPU related software). We expect to unconditionally support Python 3.8 in Q1 2021 the latest.
+  - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022
+  - Python 3.7 is also tested and supported
+  - We currently **cannot fully support Python 3.8**, because there currently (May 2022) are no pre-built Python packages for Tensorflow 2.5 and other GPU related software). We expect to unconditionally support Python 3.8 and newer versions somewhere in the future when all processors work with a recent Tensorflow 2.x.
   
 </details>
 For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki)
