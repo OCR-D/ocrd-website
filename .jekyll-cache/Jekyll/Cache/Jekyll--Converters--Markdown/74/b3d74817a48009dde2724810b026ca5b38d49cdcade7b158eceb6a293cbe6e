@@ -1,0 +1,67 @@
+I"<h1 id="this-is-just-a-first-draft">THIS IS JUST A FIRST DRAFT!</h1>
+
+<h1 id="conventions-for-logging">Conventions for LOGGING</h1>
+<p>This section specifies how the output of the digitization workflow is logged.</p>
+<h2 id="target-audience">Target Audience</h2>
+<p>Users and developers of digitization workflows in libraries and/or digitization centers.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Logging is essential for developers and users to debug applications.
+You always have to choose between two contradictory goals:</p>
+<ul>
+  <li>Runtime</li>
+  <li>Information</li>
+</ul>
+
+<p>Many issues make troubleshooting easier but have a negative effect on the runtime.
+Therefore, log levels have been introduced to customize the output to suit your needs.</p>
+
+<p>When a workflow is executed, the output of the applications MAY be stored in files.
+All log files were stored in a subfolder ‘metadata/log’.
+The file name SHOULD contain the ID of the activity in the provenance and the name of the stream.
+FILENAME := ACTIVITY_ID + “_” + OUTPUT_STREAM + “.log”
+‘'’Example:’’’ ocrd-kraken-bin_0001_stdout.log</p>
+
+<h2 id="log-levels">Log Levels</h2>
+<p>A more detailed description will be found <a href="https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels/5278006#5278006">here</a></p>
+<h3 id="trace--all">TRACE / ALL</h3>
+<p>This is the most verbose logging level to trace the path of the algorithm.
+E.g.: Start/End/Duration of a method, even loops may be logged. 
+Note that logging within loops can dramatically affect performance.</p>
+<h3 id="debug">DEBUG</h3>
+<p>This level is used if parameters and or the status of an algorithm/method should be logged.</p>
+<h3 id="info">INFO</h3>
+<p>Log information about used settings on application level.</p>
+<h3 id="warn">WARN</h3>
+<p>This level is used to log information about missing/wrong configurations which may lead to errors.</p>
+<h3 id="error">ERROR</h3>
+<p>Log all events that produce no or a wrong result. 
+It is useful to output all the information that helps to determine the cause without the need for further investigation.</p>
+
+<h2 id="format">Format</h2>
+<p>The format of the logging output has to be formatted like this:
+TIMESTAMP LEVEL LOGGERNAME - MESSAGE
+<strong><em>Example:</em></strong>
+08:03:40.017 WARN edu.kit.ocrd.MyTestClass - A warn message</p>
+
+<h2 id="mets">METS</h2>
+<p>The log files are not referenced inside METS.
+If they are listed in the provenance, their content must be included in the provenance.</p>
+
+<h2 id="ingest-workspace-to-ocr-d-repositorium">Ingest Workspace to OCR-D Repositorium</h2>
+<p>No log files will be stored in repository</p>
+
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="log-during-the-workflow">Log during the Workflow</h3>
+<p>All applications executed during workflow have to write there logging to STDERR and STDOUT.
+Since both outputs are also stored in the provenance, only information that is important 
+for later analysis should be provided.
+STDERR only contains error messages that cause the program to terminate (see <a href="#ERROR">Loglevel ERROR</a>).
+STDOUT should only contain outputs that are maximum of the log level INFO (see <a href="#INFO">Loglevel INFO</a>).
+For automated workflows it is recommended to save STDERR only.</p>
+
+<h3 id="analyze-applications">Analyze applications</h3>
+<p>All applications executed during workflow have to write there logging to STDERR and STDOUT.
+Since both outputs are used to analyze the program flow and possible errors and the performance 
+is not important, all information should be output here.</p>
+
+:ET

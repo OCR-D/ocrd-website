@@ -1,0 +1,318 @@
+I"�N<h1 id="requirements-on-handling-metspage">Requirements on handling METS/PAGE</h1>
+
+<p>OCR-D has decided to base its data exchange format on top of <a href="http://www.loc.gov/standards/mets/">METS</a>.</p>
+
+<p>For layout and text recognition results, the primary exchange format is <a href="https://github.com/OCR-D/PAGE-XML">PAGE</a></p>
+
+<p>This document defines a set of conventions and mechanism for using METS.</p>
+
+<p>Conventions for PAGE are outlined in <a href="page">a separate document</a></p>
+
+<h2 id="pixel-density-of-images-must-be-explicit-and-high-enough">Pixel density of images must be explicit and high enough</h2>
+
+<p>The pixel density is the ratio of the number of pixels that represent a a unit of measure of the scanned object. It is typically measured in pixels per inch (PPI, a.k.a. DPI).</p>
+
+<p>The original input images MUST have &gt;= 150 ppi.</p>
+
+<p>Every processing step that generates new images and changes their dimensions MUST make sure to adapt the density explicitly when serialising the image.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$&gt;</span> exiftool input.tif |grep <span class="s1">'X Resolution'</span>
+<span class="s2">"300"</span>
+
+<span class="c"># WRONG (ppi unchanged)</span>
+<span class="nv">$&gt;</span> convert input.tif <span class="nt">-resize</span> 50% output.tif
+
+<span class="c"># RIGHT:</span>
+<span class="nv">$&gt;</span> convert input.tif <span class="nt">-resize</span> 50% <span class="nt">-density</span> 150 <span class="nt">-unit</span> inches output.tif
+
+<span class="nv">$&gt;</span> exiftool output.tif |grep <span class="s1">'X Resolution'</span>
+<span class="s2">"150"</span>
+</code></pre></div></div>
+
+<p>However, since technical metadata about pixel density is so often lost in
+conversion or inaccurate, processors should assume <strong>300 ppi</strong> for images with
+missing or suspiciously low pixel density metadata.</p>
+
+<h2 id="no-multi-page-images">No multi-page images</h2>
+
+<p>Image formats like TIFF support encoding multiple images in a single file.</p>
+
+<p>Data providers MUST provide single-image TIFF files.</p>
+
+<p>OCR-D processors MUST raise an exception if they encounter multi-image TIFF files.</p>
+
+<h2 id="unique-id-for-the-document-processed">Unique ID for the document processed</h2>
+
+<p>METS provided to the MP must be uniquely addressable within the global library community.</p>
+
+<p>For this purpose, the METS file MUST contain a <code class="language-plaintext highlighter-rouge">mods:identifier</code> that must contain a globally unique identifier for the document and have a <code class="language-plaintext highlighter-rouge">type</code> attribute with a value of, in order of preference:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">purl</code></li>
+  <li><code class="language-plaintext highlighter-rouge">urn</code></li>
+  <li><code class="language-plaintext highlighter-rouge">handle</code></li>
+  <li><code class="language-plaintext highlighter-rouge">url</code></li>
+</ul>
+
+<h2 id="file-group-use-syntax">File Group USE syntax</h2>
+
+<p>All <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> MUST have a <strong>unique</strong> <code class="language-plaintext highlighter-rouge">USE</code> attribute that hints at the provenance of the files and must be a valid <a href="https://www.w3.org/TR/xmlschema11-2/#ID"><code class="language-plaintext highlighter-rouge">xsd:ID</code></a>.</p>
+
+<p>It SHOULD have the structure</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ID := "OCR-D-" + PREFIX? + WORKFLOW_STEP + ("-" + PROCESSOR)?
+PREFIX := ("" | "GT-")
+WORKFLOW_STEP := ("IMG" | "SEG" | "OCR" | "COR")
+PROCESSOR := [A-Z0-9\-]{3,}
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">PREFIX</code> can be <code class="language-plaintext highlighter-rouge">GT-</code> to indicate that these files are <a href="glossary#ground-truth">ground truth</a>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">WORKFLOW_STEP</code> can be one of:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">IMG</code>: Image(s)</li>
+  <li><code class="language-plaintext highlighter-rouge">SEG</code>: Segmented <a href="glossary#region">regions</a> / <a href="glossary#textline">lines</a> / <a href="glossary#word">words</a></li>
+  <li><code class="language-plaintext highlighter-rouge">OCR</code>: OCR produced from image</li>
+  <li><code class="language-plaintext highlighter-rouge">COR</code>: Post-correction</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">PROCESSOR</code> should be a mnemonic of the processor or result type in a terse,
+all-caps form, such as the name of the tool (<code class="language-plaintext highlighter-rouge">KRAKEN</code>) or the organisation
+<code class="language-plaintext highlighter-rouge">CIS</code> or the type of manipulation (<code class="language-plaintext highlighter-rouge">CROP</code>) or a combination of both starting
+with the type of manipulation (<code class="language-plaintext highlighter-rouge">BIN-KRAKEN</code>).</p>
+
+<h3 id="examples">Examples</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE&gt;</code></th>
+      <th>Type of use for OCR-D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-IMG"&gt;</code></td>
+      <td>The unmanipulated source images</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-BIN"&gt;</code></td>
+      <td>Binarization preprocessing</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-CROP"&gt;</code></td>
+      <td>Cropping preprocessing</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DESKEW"&gt;</code></td>
+      <td>Deskewing preprocessing</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DESPECK"&gt;</code></td>
+      <td>Despeckling preprocessing</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-PRE-DEWARP"&gt;</code></td>
+      <td>Dewarping preprocessing</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-SEG-REGION"&gt;</code></td>
+      <td>Region segmentation</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-SEG-LINE"&gt;</code></td>
+      <td>Line segmentation</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-SEG-WORD"&gt;</code></td>
+      <td>Word segmentation</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-SEG-GLYPH"&gt;</code></td>
+      <td>Glyph segmentation</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-OCR-TESS"&gt;</code></td>
+      <td><a href="https://github.com/OCR-D/ocrd_tesserocr">Tesseract OCR</a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-OCR-OCRO"&gt;</code></td>
+      <td><a href="https://github.com/OCR-D/ocrd_cis">Ocropus OCR</a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-COR-CIS"&gt;</code></td>
+      <td><a href="https://github.com/cisocrgroup/ocrd_cis">CIS post-correction</a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-COR-ASV"&gt;</code></td>
+      <td><a href="https://github.com/ASVLeipzig/cor-asv-ann">ASV post-correction</a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-SEG-REGION"&gt;</code></td>
+      <td>Region segmentation ground truth</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-SEG-LINE"&gt;</code></td>
+      <td>Line segmentation ground truth</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-SEG-WORD"&gt;</code></td>
+      <td>Word segmentation ground truth</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:fileGrp USE="OCR-D-GT-SEG-GLYPH"&gt;</code></td>
+      <td>Glyph segmentation ground truth</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="file-id-syntax">File ID syntax</h2>
+
+<p>Each <code class="language-plaintext highlighter-rouge">mets:file</code> must have an <code class="language-plaintext highlighter-rouge">ID</code> attribute. The <code class="language-plaintext highlighter-rouge">ID</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code> SHOULD be the <code class="language-plaintext highlighter-rouge">USE</code> of the containing <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> combined with a 4-zero-padded number.
+The <code class="language-plaintext highlighter-rouge">ID</code> MUST be unique inside the METS file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FILEID := ID + "_" + [0-9]{4}
+ID := FILEGRP + (".IMG")?
+</code></pre></div></div>
+<h3 id="examples-1">Examples</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th><code class="language-plaintext highlighter-rouge">&lt;mets:file ID&gt;</code></th>
+      <th>ID of the file for OCR-D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:file ID="OCR-D-IMG_0001"&gt;</code></td>
+      <td>The unmanipulated source image</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-BIN_0001"&gt;</code></td>
+      <td>PAGE encapsulating the result from binarization</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-BIN.IMG_0001"&gt;</code></td>
+      <td>Black-and-white image</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-CROP_0001"&gt;</code></td>
+      <td>PAGE encapsulating the result from (binarization and) cropping</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;mets:file ID="OCR-D-PRE-CROP.IMG_0001"&gt;</code></td>
+      <td>Cropped black-and-white image</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="grouping-files-by-page">Grouping files by page</h2>
+
+<p>Every METS file MUST have exactly one physical map that contains a single
+<code class="language-plaintext highlighter-rouge">mets:div[@TYPE="physSequence"]</code> which in turn must contain a
+<code class="language-plaintext highlighter-rouge">mets:div[@TYPE="page"]</code> for every page in the work.</p>
+
+<p>These <code class="language-plaintext highlighter-rouge">mets:div[@TYPE="page"]</code> can contain an arbitrary number of <code class="language-plaintext highlighter-rouge">mets:fptr</code>
+pointers to <code class="language-plaintext highlighter-rouge">mets:file</code> elements to signify that all the files within a div are
+encodings of the same page.</p>
+
+<h3 id="example">Example</h3>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:fileGrp</span> <span class="na">USE=</span><span class="s">"OCR-D-IMG"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:file</span> <span class="na">ID=</span><span class="s">"OCR-D-IMG_0001"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/mets:file&gt;</span>
+<span class="nt">&lt;/mets:fileGrp&gt;</span>
+<span class="nt">&lt;mets:fileGrp</span> <span class="na">USE=</span><span class="s">"OCR-D-OCR"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:file</span> <span class="na">ID=</span><span class="s">"OCR-D-OCR_0001"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/mets:file&gt;</span>
+<span class="nt">&lt;/mets:fileGrp&gt;</span>
+<span class="nt">&lt;mets:structMap</span> <span class="na">TYPE=</span><span class="s">"PHYSICAL"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"PHYS_0000"</span> <span class="na">TYPE=</span><span class="s">"physSequence"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"PHYS_0001"</span> <span class="na">TYPE=</span><span class="s">"page"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;mets:fptr</span> <span class="na">FILEID=</span><span class="s">"OCR-D-IMG_0001"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;mets:fptr</span> <span class="na">FILEID=</span><span class="s">"OCR-D-OCR_0001"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/mets:div&gt;</span>
+  <span class="nt">&lt;/mets:div&gt;</span>
+<span class="nt">&lt;/mets:structMap&gt;</span>
+</code></pre></div></div>
+
+<h2 id="images-and-coordinates">Images and coordinates</h2>
+
+<p>Coordinates are always absolute, i.e. relative to extent defined in the <code class="language-plaintext highlighter-rouge">imageWidth</code>/<code class="language-plaintext highlighter-rouge">imageHeight</code> attribute of the nearest <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code>.</p>
+
+<p>When a processor wants to access the image of a layout element like a TextRegion or TextLine, the algorithm should be:</p>
+
+<ul>
+  <li>If the element in question has an attribute <code class="language-plaintext highlighter-rouge">imageFilename</code>, resolve this value</li>
+  <li>If the element has a <code class="language-plaintext highlighter-rouge">&lt;pc:Coords&gt;</code> subelement, resolve by passing the attribute <code class="language-plaintext highlighter-rouge">imageFilename</code> of the nearest <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code> and the <code class="language-plaintext highlighter-rouge">points</code> attribute of the <code class="language-plaintext highlighter-rouge">&lt;pc:Coords&gt;</code> element</li>
+</ul>
+
+<h2 id="media-type-for-page-xml">Media Type for PAGE XML</h2>
+
+<p>Every <code class="language-plaintext highlighter-rouge">&lt;mets:file&gt;</code> representing a PAGE document MUST have its <code class="language-plaintext highlighter-rouge">MIMETYPE</code> attribute set to <code class="language-plaintext highlighter-rouge">application/vnd.prima.page+xml</code>.</p>
+
+<h2 id="always-use-url-or-relative-filenames">Always use URL or relative filenames</h2>
+
+<p>Always use URL, except for files located in the directory or any subdirectories of the METS file.</p>
+
+<h3 id="example-1">Example</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tmp/foo/ws1
+├── mets.xml
+├── foo.tif
+└── foo.xml
+</code></pre></div></div>
+
+<p>Valid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">foo.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">foo.tif</code></li>
+  <li><code class="language-plaintext highlighter-rouge">file://foo.tif</code></li>
+</ul>
+
+<p>Invalid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/foo.xml</code> (absolute path)</li>
+  <li><code class="language-plaintext highlighter-rouge">file:///tmp/foo/ws1/foo.tif</code> (file URL scheme with absolute path)</li>
+  <li><code class="language-plaintext highlighter-rouge">file:///foo.tif</code> (relative path written as absolute path)</li>
+</ul>
+
+<h2 id="if-in-page-then-in-mets">If in PAGE then in METS</h2>
+
+<p>All URL used in <code class="language-plaintext highlighter-rouge">imageFilename</code> and <code class="language-plaintext highlighter-rouge">filename</code> attributes of
+<code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;pc:AlternativeImage&gt;</code> MUST be referenced in a <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as the
+<code class="language-plaintext highlighter-rouge">@xlink:href</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code>. This MUST be the same file group as
+the PAGE-XML that was the result of the processing step that produced the
+<code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code>. In other words: <code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> should be
+written to the same <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as its source PAGE-XML, which in most
+implementations will mean the same folder.</p>
+
+<h2 id="recording-processing-information-in-mets">Recording processing information in METS</h2>
+
+<p>Processors should add information to the METS metadata header to indicate that
+they changed the METS. This information is mainly for human consumption to get
+an overview of the software agents involved in the METS file’s creation. More
+detailed or machine-actionable provenance information is outside the scope of
+the processor.</p>
+
+<p>To add agent information, a processor must:</p>
+
+<p>1) locate the first <code class="language-plaintext highlighter-rouge">mets:metsHdr</code> <code class="language-plaintext highlighter-rouge">M</code>.
+2) Add to <code class="language-plaintext highlighter-rouge">M</code> a new <code class="language-plaintext highlighter-rouge">mets:agent</code> <code class="language-plaintext highlighter-rouge">A</code> with these attributes</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">TYPE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
+  <li><code class="language-plaintext highlighter-rouge">OTHERTYPE</code> must be the string <code class="language-plaintext highlighter-rouge">SOFTWARE</code></li>
+  <li><code class="language-plaintext highlighter-rouge">ROLE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
+  <li><code class="language-plaintext highlighter-rouge">OTHERROLE</code> must be the processing step this processor provided, from the list in <a href="ocrd_tool#definition">the ocrd-tool.json spec</a>
+3) Add to <code class="language-plaintext highlighter-rouge">A</code> a <code class="language-plaintext highlighter-rouge">mets:name</code> <code class="language-plaintext highlighter-rouge">N</code> that should include, in free-text form, these data points</li>
+  <li>Name of the processor, e.g. the name of the executable from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
+  <li>Version of the processor, e.g. from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:agent</span> <span class="na">TYPE=</span><span class="s">"OTHER"</span> <span class="na">OTHERTYPE=</span><span class="s">"SOFTWARE"</span> <span class="na">ROLE=</span><span class="s">"OTHER"</span> <span class="na">OTHERROLE=</span><span class="s">"preprocessing/optimization/binarization"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;mets:name&gt;</span>ocrd_tesserocr v0.1.2<span class="nt">&lt;/mets:name&gt;</span>
+<span class="nt">&lt;/mets:agent&gt;</span>
+</code></pre></div></div>
+:ET

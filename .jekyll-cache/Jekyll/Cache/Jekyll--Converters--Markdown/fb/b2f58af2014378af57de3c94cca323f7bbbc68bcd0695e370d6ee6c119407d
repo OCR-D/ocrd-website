@@ -1,0 +1,654 @@
+I"‡F<h1 id="ocrd-tooljson">ocrd-tool.json</h1>
+
+<p>Tools MUST be described in a file <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> in the root of the repository.</p>
+
+<p>It must contain a JSON object adhering to the <a href="#Definition">ocrd-tool JSON Schema</a>.</p>
+
+<p>In particular, every tool provided must be described in an array item under the
+<code class="language-plaintext highlighter-rouge">tools</code> key. These definitions drive the <a href="cli">CLI</a> and the <a href="swagger">web
+services</a>.</p>
+
+<p>To validate a <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> file, use <code class="language-plaintext highlighter-rouge">ocrd ocrd-tool /path/to/ocrd-tool.json validate</code>.</p>
+
+<h2 id="file-parameters">File parameters</h2>
+
+<p>To mark a parameter as expecting the address of a file, it MUST declare the
+<code class="language-plaintext highlighter-rouge">content-type</code> property as a <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">valid media
+type</a>.
+Optionally, workflow processors can be notified that this file is potentially
+large and static (e.g. a fixed dataset or a precomputed model) and should be cached
+indefinitely after download by setting the <code class="language-plaintext highlighter-rouge">cacheable</code> property to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+
+<p>The filename itself, i.e. the concrete value <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> of a file parameter,
+should be resolved in the following way (with <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code> representing the current 
+working directory, and <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code> representing the distribution directory of the module):</p>
+
+<ul>
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an <code class="language-plaintext highlighter-rouge">http</code>/<code class="language-plaintext highlighter-rouge">https</code> URL: Download to a temporary directory (if
+<code class="language-plaintext highlighter-rouge">cacheable==False</code>) or a semi-temporary cache directory (if <code class="language-plaintext highlighter-rouge">cacheable==True</code>)</li>
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is an absolute path: Use as-is.</li>
+  <li>If <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code> is a relative path (with or without directory components):
+Try resolving via the following directories, and return the first one found if any,
+otherwise abort with an error message stating so:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">&lt;cwd&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly under <code class="language-plaintext highlighter-rouge">&lt;cwd&gt;</code>, not in a subdirectory)</li>
+      <li>If an environment variable is defined that has the name of the processor in
+upper-case and with <code class="language-plaintext highlighter-rouge">-</code> replaced with <code class="language-plaintext highlighter-rouge">-</code> and followed by <code class="language-plaintext highlighter-rouge">_PATH</code> (e.g. for a processor
+<code class="language-plaintext highlighter-rouge">ocrd-dummy</code>, the variable would need to be called <code class="language-plaintext highlighter-rouge">OCRD_DUMMY_PATH</code>):
+        <ul>
+          <li>Split the variable value at <code class="language-plaintext highlighter-rouge">:</code> and try to resolve by appending <code class="language-plaintext highlighter-rouge">&lt;fpath&gt;</code>
+to each token and return the first found file if any</li>
+        </ul>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code> (with <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> instead of <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> if unset)</li>
+      <li><code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources/&lt;name-of-processor&gt;/&lt;fpath&gt;</code></li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;mod&gt;/&lt;fpath&gt;</code> (<strong>Note</strong> that the file is expected to be directly under <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code>, not in a subdirectory)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The path of the <code class="language-plaintext highlighter-rouge">&lt;mod&gt;</code> directory is implementation specific and allows modules
+to distribute small resources along with the code, i.e. pre-installed files like
+<a href="cli#processor-resources">presets</a>.</p>
+
+<h2 id="input--output-file-groups">Input / Output file groups</h2>
+
+<p>Tools should define the names of both expected input and produced output file
+groups as a list of <code class="language-plaintext highlighter-rouge">USE</code> attributes of <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> elements. If more than
+one file group is expected or produced, this should be explained in the
+description of the tool.</p>
+
+<p><strong>NOTE:</strong> Both input and output file groups can be <a href="cli#-i---input-file-grp-grp">overridden at
+runtime</a>. Tools must therefore ensure not to
+hardcode file group names. When multiple groups are expected, the order of the
+override reflects the order in which they are defined in the <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code>.</p>
+
+<h2 id="definition">Definition</h2>
+
+<!-- Regenerate with 'shinclude -i ocrd_tool.md'. See https://github.com/kba/shinclude -->
+<!-- BEGIN-EVAL -w '```yaml' '```' -- cat ./ocrd_tool.schema.yml -->
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+<span class="na">description</span><span class="pi">:</span> <span class="s">Schema for tools by OCR-D MP</span>
+<span class="na">required</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">version</span>
+  <span class="pi">-</span> <span class="s">git_url</span>
+  <span class="pi">-</span> <span class="s">tools</span>
+<span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+<span class="na">properties</span><span class="pi">:</span>
+  <span class="na">version</span><span class="pi">:</span>
+    <span class="na">description</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Version</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">tool,</span><span class="nv"> </span><span class="s">expressed</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">MAJOR.MINOR.PATCH."</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="na">pattern</span><span class="pi">:</span> <span class="s1">'</span><span class="s">^[0-9]+\.[0-9]+\.[0-9]+$'</span>
+  <span class="na">git_url</span><span class="pi">:</span>
+    <span class="na">description</span><span class="pi">:</span> <span class="s">Github/Gitlab URL</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="na">format</span><span class="pi">:</span> <span class="s">url</span>
+  <span class="na">dockerhub</span><span class="pi">:</span>
+    <span class="na">description</span><span class="pi">:</span> <span class="s">DockerHub image</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+  <span class="na">tools</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+    <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">patternProperties</span><span class="pi">:</span>
+      <span class="s1">'</span><span class="s">ocrd-.*'</span><span class="err">:</span>
+        <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+        <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+        <span class="na">required</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">description</span>
+          <span class="pi">-</span> <span class="s">steps</span>
+          <span class="pi">-</span> <span class="s">executable</span>
+          <span class="pi">-</span> <span class="s">categories</span>
+          <span class="pi">-</span> <span class="s">input_file_grp</span>
+          <span class="c1"># Not required because not all processors produce output files</span>
+          <span class="c1"># - output_file_grp</span>
+        <span class="na">properties</span><span class="pi">:</span>
+          <span class="na">executable</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">The name of the CLI executable in $PATH</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+          <span class="na">input_file_grp</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Input fileGrp@USE this tool expects by default</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">pattern</span><span class="pi">:</span> <span class="s1">'</span><span class="s">^OCR-D-[A-Z0-9-]+$'</span>
+          <span class="na">output_file_grp</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Output fileGrp@USE this tool produces by default</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">pattern</span><span class="pi">:</span> <span class="s1">'</span><span class="s">^OCR-D-[A-Z0-9-]+$'</span>
+          <span class="na">parameters</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Object describing the parameters of a tool. Keys are parameter names, values sub-schemas.</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+            <span class="na">patternProperties</span><span class="pi">:</span>
+              <span class="s2">"</span><span class="s">.*"</span><span class="err">:</span>
+                <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+                <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+                <span class="na">required</span><span class="pi">:</span>
+                  <span class="pi">-</span> <span class="s">description</span>
+                  <span class="pi">-</span> <span class="s">type</span>
+                  <span class="c1"># also either 'default' or 'required'</span>
+                <span class="na">properties</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span>
+                    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">Data type of this parameter</span>
+                    <span class="na">enum</span><span class="pi">:</span>
+                      <span class="pi">-</span> <span class="s">string</span>
+                      <span class="pi">-</span> <span class="s">number</span>
+                      <span class="pi">-</span> <span class="s">boolean</span>
+                      <span class="pi">-</span> <span class="s">object</span>
+                      <span class="pi">-</span> <span class="s">array</span>
+                  <span class="na">format</span><span class="pi">:</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">Subtype, such as `float` for type `number` or `uri` for type `string`.</span>
+                  <span class="na">description</span><span class="pi">:</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">Concise description of syntax and semantics of this parameter</span>
+                  <span class="na">required</span><span class="pi">:</span>
+                    <span class="na">type</span><span class="pi">:</span> <span class="s">boolean</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">Whether this parameter is required</span>
+                  <span class="na">default</span><span class="pi">:</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">Default value when not provided by the user</span>
+                  <span class="na">enum</span><span class="pi">:</span>
+                    <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s">List the allowed values if a fixed list.</span>
+                  <span class="na">content-type</span><span class="pi">:</span>
+                    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                    <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">application/octet-stream'</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="pi">&gt;</span>
+                      <span class="s">The media type of resources this processor expects for</span>
+                      <span class="s">this parameter. Most processors use files for resources</span>
+                      <span class="s">(e.g.  `*.traineddata` for `ocrd-tesserocr-recognize`)</span>
+                      <span class="s">while others use directories of files (e.g. `default` for</span>
+                      <span class="s">`ocrd-eynollah-segment`).  If a parameter requires</span>
+                      <span class="s">directories, it must set `content-type` to</span>
+                      <span class="s">`text/directory`.</span>
+                  <span class="na">cacheable</span><span class="pi">:</span>
+                    <span class="na">type</span><span class="pi">:</span> <span class="s">boolean</span>
+                    <span class="na">description</span><span class="pi">:</span> <span class="s2">"</span><span class="s">If</span><span class="nv"> </span><span class="s">parameter</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">reference</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">file:</span><span class="nv"> </span><span class="s">Whether</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">file</span><span class="nv"> </span><span class="s">should</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">cached,</span><span class="nv"> </span><span class="s">e.g.</span><span class="nv"> </span><span class="s">because</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">large</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">won't</span><span class="nv"> </span><span class="s">change."</span>
+                    <span class="na">default</span><span class="pi">:</span> <span class="no">false</span>
+          <span class="na">description</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Concise description what the tool does</span>
+          <span class="na">categories</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Tools belong to this categories, representing modules within the OCR-D project structure</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">enum</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s">Image preprocessing</span>
+                <span class="pi">-</span> <span class="s">Layout analysis</span>
+                <span class="pi">-</span> <span class="s">Text recognition and optimization</span>
+                <span class="pi">-</span> <span class="s">Model training</span>
+                <span class="pi">-</span> <span class="s">Long-term preservation</span>
+                <span class="pi">-</span> <span class="s">Quality assurance</span>
+          <span class="na">steps</span><span class="pi">:</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">This tool can be used at these steps in the OCR-D functional model</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">enum</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s">preprocessing/characterization</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/cropping</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/deskewing</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/despeckling</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/dewarping</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/binarization</span>
+                <span class="pi">-</span> <span class="s">preprocessing/optimization/grayscale_normalization</span>
+                <span class="pi">-</span> <span class="s">recognition/text-recognition</span>
+                <span class="pi">-</span> <span class="s">recognition/font-identification</span>
+                <span class="pi">-</span> <span class="s">recognition/post-correction</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation/text-nontext</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation/region</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation/line</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation/word</span>
+                <span class="pi">-</span> <span class="s">layout/segmentation/classification</span>
+                <span class="pi">-</span> <span class="s">layout/analysis</span>
+          <span class="na">resource_locations</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">The locations in the filesystem this processor supports for resource lookup</span>
+            <span class="na">default</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">data'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">cwd'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">system'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">module'</span><span class="pi">]</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">data'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">cwd'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">system'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">module'</span><span class="pi">]</span>
+          <span class="na">resources</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+            <span class="na">description</span><span class="pi">:</span> <span class="s">Resources for this processor</span>
+            <span class="na">items</span><span class="pi">:</span>
+              <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+              <span class="na">additionalProperties</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">required</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s">url</span>
+                <span class="pi">-</span> <span class="s">description</span>
+                <span class="pi">-</span> <span class="s">name</span>
+                <span class="pi">-</span> <span class="s">size</span>
+              <span class="na">properties</span><span class="pi">:</span>
+                <span class="na">url</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">URLs of all components of this resource</span>
+                <span class="na">description</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">A description of the resource</span>
+                <span class="na">name</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Name to store the resource as</span>
+                <span class="na">type</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">file'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">directory'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">archive'</span><span class="pi">]</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s">file</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Type of the URL</span>
+                <span class="na">parameter_usage</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Defines how the parameter is to be used</span>
+                  <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">as-is'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">without-extension'</span><span class="pi">]</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">as-is'</span>
+                <span class="na">path_in_archive</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">if type is archive, the resource is at this location in the archive</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">.'</span>
+                <span class="na">version_range</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Range of supported versions, syntax like in PEP </span><span class="m">440</span>
+                  <span class="na">default</span><span class="pi">:</span> <span class="s1">'</span><span class="s">&gt;=</span><span class="nv"> </span><span class="s">0.0.1'</span>
+                <span class="na">size</span><span class="pi">:</span>
+                  <span class="na">type</span><span class="pi">:</span> <span class="s">number</span>
+                  <span class="na">description</span><span class="pi">:</span> <span class="s">Size of the resource in bytes</span>
+</code></pre></div></div>
+
+<!-- END-EVAL -->
+
+<h2 id="example">Example</h2>
+
+<p>This is from the <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr project</a>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.10.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"git_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/OCR-D/ocrd_tesserocr"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"dockerhub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd/tesserocr"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-deskew"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-deskew"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Image preprocessing"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Detect script, orientation and skew angle for pages or regions"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-DESKEW-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"preprocessing/optimization/deskewing"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"operation_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"page"</span><span class="p">,</span><span class="s2">"region"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"region"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAGE XML hierarchy level to operate on"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"min_orientation_confidence"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Minimum confidence score to apply orientation as detected by OSD"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-fontshape"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-fontshape"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Text recognition and optimization"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Recognize font shapes (family/monospace/bold/italic) and size in segmented words with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons), annotating TextStyle"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR-STYLE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"recognition/font-identification"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Number of background-filled pixels to add around the word image (i.e. the annotated AlternativeImage if it exists or the higher-level image cropped to the bounding box and masked by the polygon otherwise) on each side before recognition."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"osd"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tessdata model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or osd); must be an old (pre-LSTM) model"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-recognize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-recognize"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Text recognition and optimization"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment and/or recognize text with Tesseract (using annotated derived images, or masking and cropping images from coordinate polygons) on any level of the PAGE hierarchy."</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-TABLE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-REGION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-TABLE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-GLYPH"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-OCR-TESS"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"layout/segmentation/region"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"layout/segmentation/line"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"recognition/text-recognition"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Extend detected region/cell/line/word rectangles by this many (true) pixels, or extend existing region/line/word images (i.e. the annotated AlternativeImage if it exists or the higher-level image cropped to the bounding box and masked by the polygon otherwise) by this many (background/white) pixels on each side before recognition."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"segmentation_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cell"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w"> </span><span class="s2">"glyph"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Highest PAGE XML hierarchy level to remove existing annotation from and detect segments for (before iterating downwards); if ``none``, does not attempt any new segmentation; if ``cell``, starts at table regions, detecting text regions (cells). Ineffective when lower than ``textequiv_level``."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"textequiv_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cell"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w"> </span><span class="s2">"glyph"</span><span class="p">,</span><span class="w"> </span><span class="s2">"none"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"word"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lowest PAGE XML hierarchy level to re-use or detect segments for and add the TextEquiv results to (before projecting upwards); if ``none``, adds segmentation down to the glyph level, but does not attempt recognition at all; if ``cell``, stops short before text lines, adding text of text regions inside tables (cells) or on page level only."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_segments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"If ``segmentation_level`` is not none, but an element already contains segments, remove them and segment again. Otherwise use the existing segments of that element."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"If ``textequiv_level`` is not none, but a segment already contains TextEquivs, remove them and replace with recognised text. Otherwise add new text as alternative. (Only the first entry is projected upwards.)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"block_polygons"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, annotate polygon coordinates instead of bounding box rectangles."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"find_tables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, recognise tables as table regions (Tesseract's ``textord_tabfind_find_tables=1``)."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting regions, use 'sparse text' page segmentation mode (finding as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"raw_lines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When detecting lines, do not attempt additional segmentation (baseline+xheight+ascenders/descenders prediction) on line images. Can increase accuracy for certain workflows. Disable when line segments/images may contain components of more than 1 line, or larger gaps/white-spaces."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"char_whitelist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to allow exclusively; overruled by blacklist if set."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"char_blacklist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to suppress; overruled by unblacklist if set."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"char_unblacklist"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When recognizing text, enumeration of character hypotheses (from the model) to allow inclusively."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The tessdata text recognition model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or Fraktur)."</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+     </span><span class="nl">"ocrd-tesserocr-segment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment page into regions and lines with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-PAGE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"layout/segmentation/line"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"extend detected region rectangles by this many (true) pixels"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"block_polygons"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"annotate polygon coordinates instead of bounding box rectangles"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"find_tables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recognise tables as table regions (textord_tabfind_find_tables)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="nl">"ocrd-tesserocr-segment-region"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment-region"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment page into regions with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-PAGE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_regions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the Page level (otherwise skip page; no incremental annotation yet)."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"extend detected region rectangles by this many (true) pixels"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"crop_polygons"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"annotate polygon coordinates instead of bounding box rectangles"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"find_tables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recognise tables as table regions (textord_tabfind_find_tables)"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sparse_text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use 'sparse text' page segmentation mode (find as much text as possible in no particular order): only text regions, single lines without vertical or horizontal space"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+     </span><span class="nl">"ocrd-tesserocr-segment-table"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment-table"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment table regions into cell text regions with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/region"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_cells"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TableRegion level (otherwise skip table; no incremental annotation yet)."</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="nl">"ocrd-tesserocr-segment-line"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment-line"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment regions into lines with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-BLOCK"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/line"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_lines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TextRegion level (otherwise skip region; no incremental annotation yet)."</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-segment-word"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-segment-word"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Layout analysis"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segment lines into words with Tesseract"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-GT-SEG-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-WORD"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"layout/segmentation/word"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"overwrite_words"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remove existing layout and text annotation below the TextLine level (otherwise skip line; no incremental annotation yet)."</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-crop"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-crop"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Image preprocessing"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Poor man's cropping via region segmentation"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+	</span><span class="s2">"OCR-D-IMG"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+	</span><span class="s2">"OCR-D-SEG-PAGE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"preprocessing/optimization/cropping"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dpi"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pixel density in dots per inch (overrides any meta-data in the images); disabled when negative"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"extend detected border by this many (true) pixels on every side"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"ocrd-tesserocr-binarize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ocrd-tesserocr-binarize"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Image preprocessing"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Binarize regions or lines with Tesseract's global Otsu"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"input_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-IMG"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-SEG-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"output_file_grp"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"OCR-D-BIN-BLOCK"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"OCR-D-BIN-LINE"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"preprocessing/optimization/binarization"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"operation_level"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"enum"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"region"</span><span class="p">,</span><span class="w"> </span><span class="s2">"line"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"region"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAGE XML hierarchy level to operate on"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+:ET

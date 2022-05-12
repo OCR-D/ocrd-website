@@ -1,0 +1,156 @@
+I"d<h1 id="provenance">Provenance</h1>
+<p>Provenance is information about entities, activities, and people involved in producing a piece of data or thing, which can be used to form assessments about its quality, reliability or trustworthiness. (Source: <a href="https://www.w3.org/TR/prov-dm/">The PROV Data Model (PROV-DM)</a>)</p>
+
+<h2 id="data-model">Data Model</h2>
+<p><a href="https://www.w3.org/TR/prov-dm/">The PROV Data Model (PROV-DM)</a> is used to store all provenance metadata.
+All provenance have to be stored in files. 
+There’s provenance at the page level, but there’s also provenance at the document level.
+All files regarding provenance are stored in a subfolder <strong><code class="language-plaintext highlighter-rouge">metadata</code></strong>.</p>
+
+<h2 id="format">Format</h2>
+<p>The workflow provenance is stored in <a href="https://www.w3.org/TR/prov-xml/">PROV-XML</a>.</p>
+
+<h3 id="types">Types</h3>
+<p>All Activities, Entities belonging to the OCR-D workflow have the same namespace.</p>
+<h4 id="namespace">Namespace</h4>
+<dl>
+  <dt><strong>Prefix</strong></dt>
+  <dd>ocrd</dd>
+  <dt><strong>Namespace</strong></dt>
+  <dd>http://www.ocr-d.de</dd>
+</dl>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Data Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Entity</td>
+      <td>ocrd:mets</td>
+      <td>Filename  of METS file</td>
+    </tr>
+    <tr>
+      <td>Entity</td>
+      <td>ocrd:mets_referencedFile</td>
+      <td>ID of the file referenced inside METS.</td>
+    </tr>
+    <tr>
+      <td>Entity</td>
+      <td>ocrd:parameter_file</td>
+      <td>Content of the parameter file.</td>
+    </tr>
+    <tr>
+      <td>Activity</td>
+      <td>ocrd:processor</td>
+      <td>Processor that was executed</td>
+    </tr>
+    <tr>
+      <td>Activity</td>
+      <td>ocrd:workflow</td>
+      <td>Workflow that was executed</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="content">Content</h2>
+<p>Only the following information is stored for provenance:</p>
+
+<p>(a) <strong>General data</strong></p>
+
+<ol>
+  <li>Workflow engine
+    <ul>
+      <li>Label including version</li>
+      <li>Start date</li>
+      <li>End date</li>
+    </ul>
+  </li>
+</ol>
+
+<p>(b) <strong>Processor data</strong></p>
+
+<ol>
+  <li>Processor
+    <ul>
+      <li>Label including version, conforming to <a href="https://ocr-d.de/en/spec/mets#recording-processing-information-in-mets">OCR-D <code class="language-plaintext highlighter-rouge">mets:agent/mets:name</code></a> (e.g.: <code class="language-plaintext highlighter-rouge">ocrd-kraken-binarize_Version 0.1.0</code>, <code class="language-plaintext highlighter-rouge">ocrd/core 1.0.0</code>)</li>
+      <li>Start date</li>
+      <li>End date</li>
+    </ul>
+  </li>
+  <li>Content of METS file before executing the processor</li>
+  <li>Content of METS file after executing processor</li>
+  <li>ID of the input file(s)</li>
+  <li>ID of output file(s)</li>
+  <li>Content of parameter.json (optional)</li>
+</ol>
+
+<h3 id="inputoutput">Input/Output</h3>
+<p>All files referenced in METS must also be referenced in provenance by their <code class="language-plaintext highlighter-rouge">mets:file/@ID</code>.
+A file <em>may</em> be linked to its location (URL). The location may be replaced due to 
+different uses:</p>
+<ol>
+  <li>local files</li>
+  <li>external files</li>
+</ol>
+
+<p>All files not referenced in METS must be linked to their content in provenance. (e.g.: parameter.json)</p>
+
+<h3 id="ingest-workspace-to-ocr-d-repositorium">Ingest Workspace to OCR-D Repositorium</h3>
+<p>At least before ingesting into repository/LTA, the entire provenance must be stored in one file (metadata/ocrd_provenance.xml) to make the provenance searchable.
+Therefore all the provenance files are merged into one big file.
+This file replaces all provenance files stored in subfolder ‘metadata’</p>
+
+<h2 id="example">Example</h2>
+<p>The file structure could look like this after a workflow with 4 steps has been executed.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>metadata/
+   |
+   +-- mets.xml.'workflowid'_0000
+   |
+   +-- mets.xml.'workflowid'_0001
+   |
+   +-- mets.xml.'workflowid'_0002
+   |
+   +-- mets.xml.'workflowid'_0003
+   |
+   +-- mets.xml.'workflowid'_0004
+   |
+   +-- ocrd_provenance.xml
+   |
+   +-- provenance_'workflowid'.xml (optional)
+</code></pre></div></div>
+
+<h2 id="provenance-and-bagit">Provenance and BagIt</h2>
+<p>The provenance MAY be stored as tag directory in the bagIt container.
+E.g.:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;base directory&gt;/
+         |
+         +-- bagit.txt
+         |
+         +-- manifest-&lt;algorithm&gt;.txt
+         |
+         +-- [additional tag files]
+         |
+         +-- data/
+         |     |
+         |     +-- mets.xml
+         |     |
+         |     +-- ...
+         |
+         +-- metadata
+                |
+                +-- mets.xml.'workflowid'_0000
+                |
+                +-- ...
+                |
+                +-- mets.xml.'workflowid'_XXXX
+                |
+                +-- ocrd_provenance.xml
+
+</code></pre></div></div>
+
+:ET
