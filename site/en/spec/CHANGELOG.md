@@ -14,15 +14,22 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.19.0] - 2022-05-23
+
 Fixed:
 
   * typos in the web OCR-D Web API, #199
   * typo in the OCRD-ZIP spec, #203
+  * fix bagit-profile URL, #205
 
 Changed:
 
   * Drop `Ocrd-Manifestation-Depth` and disallow `fetch.txt` bagit mechanism, #182
   * Drop unclear `has_docker` attribute in discovery response in OCR-D Web API, #201
+
+Added:
+
+  * Parameters can now be described with most JSON-Schema constructs, #206, OCR-D/core#848
 
 
 ## [3.18.0] - 2022-04-06
@@ -446,6 +453,7 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.19.0]: ../../compare/v3.19.0...v3.18.0
 [3.18.0]: ../../compare/v3.18.0...v3.17.0
 [3.17.0]: ../../compare/v3.17.0...v3.16.0
 [3.16.0]: ../../compare/v3.16.0...v3.15.0
