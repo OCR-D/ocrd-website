@@ -31,12 +31,11 @@ This will install jekyll into `./vendor/bundle`.
 The OCR-D site requires quite a few sub repositories conveniently laid out in
 the `./repo` dir:
 
-* [`gt-guidelines`](repo/gt-guidelines): The DITA based guidelines on how Ground Truth is to be transcribed into the PAGE XML format. 
-* [`ocrd_all`](repo/ocrd_all)
-* [`ocrd-kwalitee`](repo/ocrd-kwalitee)
-* [`slides`](repo/slides)
-* [`spec`](repo/spec)
-* [`shinlcude`](repo/shinclude)
+* [`gt-guidelines`](https://github.com/OCR-D/gt-guidelines): The DITA based guidelines on how Ground Truth is to be transcribed into the PAGE XML format. 
+* [`ocrd-kwalitee`](https://github.com/OCR-D/kwalitee)
+* [`slides`](https://github.com/OCR-D/slides)
+* [`spec`](https://github.com/OCR-D/spec)
+* [`shinlcude`](https://github.com/kba/shinclude)
 
 ## `make help`
 Run `make help` to see a list of commands.
