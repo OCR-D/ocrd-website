@@ -156,8 +156,8 @@ core-docs:
 
 # Build the spec documents TODO translate
 spec:
-	cd repo/spec; traf -o json ocrd_tool.schema.yml
-	cd repo/spec; traf -o json bagit-profile.yml
+	python3 yaml-to-json.py --indent 0 repo/spec/ocrd_tool.schema.yml repo/spec/ocrd_tool.schema.json
+	python3 yaml-to-json.py --indent 0 repo/spec/bagit-profile.yml repo/spec/bagit-profile.json
 	# -cd repo/spec; traf -o json gt-profile.yml
 	# -cd repo/spec; traf -o json single-line.yml
 	# -cd repo/spec; traf -o json training-schema.yml
