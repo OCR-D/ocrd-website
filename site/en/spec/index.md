@@ -71,3 +71,25 @@ title: Specifications
 
 </div>
 
+<div class="tile is-ancestor">
+
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="api">Web API</a></p>
+      <p class="subtitle">Web API Documentation</p>
+    </article>
+  </div>
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="nextflow">Workflow Format</a></p>
+      <p class="subtitle">Usage of Nextflow in OCR-D</p>
+    </article>
+  </div>
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="decisions">Decision Log</a></p>
+      <p class="subtitle">Important decisions in OCR-D Development</p>
+    </article>
+  </div>
+
+</div>
