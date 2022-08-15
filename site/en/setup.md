@@ -30,16 +30,6 @@ Minimum system requirements
   
 </details>
 <details>
-<summary> Operating system: Ubuntu 18.04</summary>
-  
-  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
-  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
-  - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
-  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
-  - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
-  
-</details>
-<details>
 <summary> Python 3.6 or 3.7</summary>
   
   - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br>
@@ -47,10 +37,16 @@ Minimum system requirements
   - Python 3.8 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and <2 and other related software. We expect to unconditionally support Python 3.8 once all processors and models are upgraded to work with a more recent Tensorflow.
   
 </details>
-<br>
-For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki).
-
-Alternatively, you can use [Docker](https://hub.docker.com/u/ocrd). 
+<details>
+<summary> Operating system: Ubuntu 18.04 (or Docker)</summary>
+  - For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki).
+  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
+  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
+  - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
+  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
+  - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
+  
+</details>
 
 ## Installation
 
@@ -82,16 +78,19 @@ be interoperable with one another.
   
 There are two methods to install OCR-D:
 
- 1. **[Docker Installation of OCR-D](#ocrd_all-via-docker)** using the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)  
-  
-    We recommend using the prebuilt Docker images, since this does not require any changes to
-the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all). 
-  
-2. **[Native Installation of OCR-D](#ocrd_all-natively)** using the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively  
-  
-    Sometimes it can be useful to [install the modules individually](#individual-installation), either via Docker or natively.
+ 1. **[Docker Installation of OCR-D](#ocrd_all-via-docker)** using the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)    
+ 2. **[Native Installation of OCR-D](#ocrd_all-natively)** using the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively  
+
+We recommend using the prebuilt Docker images, since this does not require any changes to
+the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
+
+  <details>
+    <summary>Installation of individual OCR-D modules</summary>
+Sometimes it can be useful to [install the modules individually](#individual-installation-experts-only), either via Docker or natively.
 Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies, 
 keep the software versions up-to-date and ensure that all components are at a usable and interoperable state.
+
+  </details>
     
 ## ocrd_all via Docker
 
