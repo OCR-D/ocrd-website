@@ -97,20 +97,18 @@ keep the software versions up-to-date and ensure that all components are at a us
 ### mini medi maxi
 
 There are three versions of the
-[`ocrd/all`](https://hub.docker.com/r/ocrd/all) image:
+[`ocrd/all`](https://hub.docker.com/r/ocrd/all) Docker image:
 `minimum`, `medium` and `maximum`. They differ in which modules are included
 and hence the size of the image:  
 * `minimum` is comprised of the essential OCR-D components, with Tesseract and OCRopus as OCR engines.  
 * `medium` adds the Calamari OCR engine, as well as extra segmentation, pre- and postprocessing options.   
-* `maximum` includes all components, with added neural methods for best performance and full flexibility,  
-  but has much higher requirements for hardware and storage space. 
+* `maximum` includes all modules for best performance and full flexibility, but requires the most disk space. 
 
-Only use the `minimum` or `medium` images if
-you are certain that you do not need the full OCR-D stack for your workflows, otherwise
-we encourage you to use the large but complete `maximum` image.
+We encourage the use of the relatively large but complete `maximum` image. 
+The `minimum` or `medium` images should only be used when certain that no further OCR-D modules are needed. 
 
 <details>
-  <summary>Click here for a table showing which modules are included in which version:</summary>
+  <summary>Click here for a table showing the modules included in each version</summary>
 
 | Module                      | `minimum` | `medium` | `maximum` |
 | -----                       | ----      | ----     | ----      |
@@ -151,15 +149,18 @@ docker pull ocrd/all:maximum
 
 Replace `maximum` accordingly if you want the `minimum` or `medium` variant.
 
-(Also, if you want to keep the modules' git repos inside the Docker images – so you can keep making 
-fast updates, without waiting for a new pre-built image but also without building an image yourself –, 
-then add the suffix `-git` to the variant, e.g. `maximum-git`. This will behave like the native installation, 
+  <details>
+    <summary>Docker and git images</summary>
+If you want to keep the modules' git repos inside the Docker images – so you can keep making 
+fast updates, without waiting for a new pre-built image, but also without building an image yourself – 
+then add the suffix `-git` to the image version, e.g. `maximum-git`. This will behave like the native installation, 
 only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) 
 made in containers back to your local Docker image.)
+  </details>
 
 ### Testing the Docker installation
 
-For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
+To start, download and extract a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
 
 ```sh
 wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
@@ -171,26 +172,25 @@ Let's segment the images in file group `OCR-D-IMG` from the zip file into region
 first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 `OCR-D-SEG-BLOCK-DOCKER`)
 
-You can spin up a docker container, mounting the current working directory like this:
+You can spin up a Docker container, mounting the current working directory like this:
 
 ```sh
 docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
 ```
 
-For instructions on how to process your own data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line
-calls to docker calls above](/en/user_guide#translating-native-commands-to-docker-calls). Make sure the image
+For instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls above](/en/user_guide#translating-native-commands-to-docker-calls). Make sure the image
 name matches the executable. 
 
 
 ### Updating Docker image
 
-To update the docker images to their latest version, just run the `docker pull` command again:
+To update the Docker images to their latest version, just run the `docker pull` command:
 
 ```sh
 docker pull ocrd/all:<version>
 ```
 
-This can even be set up as a cron-job to ensure the image is always up-to-date.
+This can also be set up as a cron-job to ensure the image is always up-to-date.
 
 ## ocrd_all natively
 
