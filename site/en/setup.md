@@ -88,11 +88,18 @@ to be at a stable version and guaranteed to be interoperable with one another.
 There are three versions of the
 [`ocrd/all`](https://hub.docker.com/r/ocrd/all) image:
 `minimum`, `medium` and `maximum`. They differ in which modules are included
-and hence the size of the image. Only use the `minimum` or `medium` images if
+and hence the size of the image:  
+* `minimum` is comprised of the essential OCR-D components, with Tesseract and OCRopus as OCR engines.  
+* `medium` adds the Calamari OCR engine, as well as extra segmentation, pre- and postprocessing options.   
+* `maximum` includes all components, with added neural methods for best performance and full flexibility,  
+  but has much higher requirements for hardware and storage space. 
+
+Only use the `minimum` or `medium` images if
 you are certain that you do not need the full OCR-D stack for your workflows, otherwise
 we encourage you to use the large but complete `maximum` image.
 
-Check this table to see which modules are included in which version:
+<details>
+  <summary>Click here for a table showing which modules are included in which version:</summary>
 
 | Module                      | `minimum` | `medium` | `maximum` |
 | -----                       | ----      | ----     | ----      |
@@ -121,6 +128,8 @@ Check this table to see which modules are included in which version:
 | sbb_textline_detector       | -         | -        | ☑         |
 | cor-asv-fst                 | -         | -        | ☑         |
 
+  </details>
+  
 ### Fetch Docker image
 
 To fetch the `maximum` version of the `ocrd/all` Docker image:
