@@ -56,9 +56,9 @@ Alternatively, you can use [Docker](https://hub.docker.com/u/ocrd).
 
 There are two ways to install OCR-D modules:
 
-  1. [Using](#ocrd_all-via-docker) the [ocrd_all prebuilt Docker images `ocrd/all`](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
-  2. [Using](#ocrd_all-natively) the [ocrd_all git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
-
+  1. [Using](#ocrd_all-via-docker) the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
+  2. [Using](#ocrd_all-natively) the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
+<br>
 We recommend using the prebuilt Docker images since this does not require any changes to
 the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
   
