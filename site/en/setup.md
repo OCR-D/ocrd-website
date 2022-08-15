@@ -105,7 +105,8 @@ and hence the size of the image:
 * `maximum` includes all modules for best performance and full flexibility, but requires the most disk space. 
 
 We encourage the use of the relatively large but complete `maximum` image. 
-The `minimum` or `medium` images should only be used when certain that no further OCR-D modules are needed. 
+The `minimum` or `medium` images should only be used when certain that none but the included OCR-D 
+modules are needed. 
 
 <details>
   <summary>Click here for a table showing the modules included in each version</summary>
@@ -141,13 +142,12 @@ The `minimum` or `medium` images should only be used when certain that no furthe
   
 ### Fetch Docker image
 
-To fetch the `maximum` version of the `ocrd/all` Docker image:
+To fetch the `maximum` version of the `ocrd/all` Docker image:<br> 
+(replace `maximum` accordingly if you want the `minimum` or `medium` version)
 
 ```sh
 docker pull ocrd/all:maximum
 ```
-
-Replace `maximum` accordingly if you want the `minimum` or `medium` variant.
 
   <details>
     <summary>Docker and git images</summary>
@@ -182,14 +182,14 @@ For instructions on how to proceed further with the processing of your data, ple
 
 ### Updating Docker image
 
-To update the Docker images to their latest version, just run the `docker pull` command:
+To update the Docker image to the latest version, just run the `docker pull` command:<br> 
+(replace `maximum` accordingly if you use the `minimum` or `medium` version)
 
 ```sh
-docker pull ocrd/all:<version>
+docker pull ocrd/all:maximum
 ```
 
-This can also be set up as a cron-job to ensure the image is always up-to-date.
-
+  
 ## ocrd_all natively
 
 The `ocrd_all` project contains a sophisticated Makefile to install or compile
