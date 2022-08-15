@@ -168,9 +168,8 @@ unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
 
-Let's segment the images in file group `OCR-D-IMG` from the zip file into regions (creating a
-first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
-`OCR-D-SEG-BLOCK-DOCKER`)
+Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a 
+[PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group `OCR-D-SEG-BLOCK-DOCKER`)
 
 You can spin up a Docker container, mounting the current working directory like this:
 
@@ -178,8 +177,7 @@ You can spin up a Docker container, mounting the current working directory like 
 docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
 ```
 
-For instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls above](/en/user_guide#translating-native-commands-to-docker-calls). Make sure the image
-name matches the executable. 
+For instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls](/en/user_guide#translating-native-commands-to-docker-calls).
 
 
 ### Updating Docker image
