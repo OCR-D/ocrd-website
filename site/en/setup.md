@@ -54,20 +54,15 @@ Alternatively, you can use [Docker](https://hub.docker.com/u/ocrd).
 
 ## Installation
 
-There are two ways to install OCR-D modules:
+### ocrd_all
 
-  1. [Using](#ocrd_all-via-docker) the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
-  2. [Using](#ocrd_all-natively) the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
-<br>
-We recommend using the prebuilt Docker images, since this does not require any changes to
-the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).  
-
-Sometimes it can be useful to [install the modules individually](#individual-installation), either via Docker or natively.
-Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies, 
-keep the software versions up-to-date and ensure that all components are at a usable and interoperable state.
-
-## ocrd_all
-
+`ocrd_all` is the main way to distribute and install the OCR-D software. 
+If you want to produce OCR output from image data, 
+this is what you need.
+  
+  <details>
+    <summary>Tell me more about ocrd_all</summary>
+    
 The [`ocrd_all`](https://github.com/OCR-D/ocrd_all) project is an effort by the
 OCR-D community, now maintained by the OCR-D coordination team. It streamlines
 the native installation of OCR-D modules with a versatile Makefile approach.
@@ -76,10 +71,28 @@ it is also the base for the [`ocrd/all`](https://hub.docker.com/r/ocrd/all)
 Docker images available from DockerHub that contain the full stack (or certain subsets)
 of OCR-D modules ready for deployment.
 
-Technically, `ocrd_all` is a Git repository that keeps all the necessary software
-as Git submodules at specific revisions. This way, the software tools are known
-to be at a stable version and guaranteed to be interoperable with one another.
+Technically, [`ocrd_all`](https://github.com/OCR-D/ocrd_all) is a Git repository 
+that keeps all the necessary software as Git submodules at specific revisions. 
+This way, the software tools are known to be at a stable version and guaranteed to 
+be interoperable with one another.
+    
+  </details>
 
+### Installation: Docker or Native  
+  
+There are two methods to install OCR-D:
+
+ 1. **[Docker Installation of OCR-D](#ocrd_all-via-docker)** using the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)  
+  
+    We recommend using the prebuilt Docker images, since this does not require any changes to
+the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all). 
+  
+2. **[Native Installation of OCR-D](#ocrd_all-natively)** using the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively  
+  
+    Sometimes it can be useful to [install the modules individually](#individual-installation), either via Docker or natively.
+Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies, 
+keep the software versions up-to-date and ensure that all components are at a usable and interoperable state.
+    
 ## ocrd_all via Docker
 
 ### mini medi maxi
