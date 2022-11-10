@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.cli.resmgr module &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>ocrd.cli.resmgr module &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -35,72 +36,95 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-ocrd.cli.resmgr">
+  <section id="module-ocrd.cli.resmgr">
 <span id="ocrd-cli-resmgr-module"></span><h1>ocrd.cli.resmgr module<a class="headerlink" href="#module-ocrd.cli.resmgr" title="Permalink to this headline">¶</a></h1>
 <p>OCR-D CLI: management of processor resources</p>
-<div class="section" id="ocrd-resmgr">
+<section id="ocrd-resmgr">
 <h2>ocrd resmgr<a class="headerlink" href="#ocrd-resmgr" title="Permalink to this headline">¶</a></h2>
 <p>Managing processor resources</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
 </pre></div>
 </div>
-<div class="section" id="ocrd-resmgr-download">
+<section id="ocrd-resmgr-download">
 <h3>download<a class="headerlink" href="#ocrd-resmgr-download" title="Permalink to this headline">¶</a></h3>
-<p>Download resource URL_OR_NAME for processor EXECUTABLE.</p>
-<p>URL_OR_NAME can either be the <code class="docutils literal notranslate"><span class="pre">name</span></code> or <code class="docutils literal notranslate"><span class="pre">url</span></code> of a registered resource.</p>
-<p>If URL_OR_NAME is ‘*’ (asterisk), download all known resources for this processor</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">--any-url</span></code> is given, also accepts URL or filenames of non-registered resources for <code class="docutils literal notranslate"><span class="pre">URL_OR_NAME</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr download <span class="o">[</span>OPTIONS<span class="o">]</span> EXECUTABLE <span class="o">[</span>URL_OR_NAME<span class="o">]</span>
+<p>Download resource NAME for processor EXECUTABLE.</p>
+<p>NAME is the name of the resource made available by downloading or copying.</p>
+<p>If NAME is ‘*’ (asterisk), then download all known registered resources for this processor.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">--any-url=URL</span></code> or <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">URL</span></code> is given, then URL is accepted regardless of registered resources for <code class="docutils literal notranslate"><span class="pre">NAME</span></code>.
+(This can be used for unknown resources or for replacing registered resources.)</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">--resource-type</span></code> is set to <cite>archive</cite>, then that archive gets unpacked after download,
+and its <code class="docutils literal notranslate"><span class="pre">--path-in-archive</span></code> will subsequently be renamed to NAME.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr download <span class="o">[</span>OPTIONS<span class="o">]</span> EXECUTABLE <span class="o">[</span>NAME<span class="o">]</span>
 </pre></div>
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-n">
-<span id="cmdoption-ocrd-resmgr-download-any-url"></span><code class="sig-name descname"><span class="pre">-n</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--any-url</span></code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-n" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allow downloading/copying unregistered resources</p>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-n">
+<span id="cmdoption-ocrd-resmgr-download-any-url"></span><span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--any-url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;any_url&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-n" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL of unregistered resource to download/copy from</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-a">
-<span id="cmdoption-ocrd-resmgr-download-allow-uninstalled"></span><code class="sig-name descname"><span class="pre">-a</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--allow-uninstalled</span></code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-a" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-D">
+<span id="cmdoption-ocrd-resmgr-download-d"></span><span id="cmdoption-ocrd-resmgr-download-no-dynamic"></span><span class="sig-name descname"><span class="pre">-D</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-dynamic</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to skip looking into each processor’s –dump-{json,module-dir} for module-level resources</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-t">
+<span id="cmdoption-ocrd-resmgr-download-resource-type"></span><span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--resource-type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;resource_type&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of resource</p>
+<dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>file | directory | archive</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-P">
+<span id="cmdoption-ocrd-resmgr-download-p"></span><span id="cmdoption-ocrd-resmgr-download-path-in-archive"></span><span class="sig-name descname"><span class="pre">-P</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--path-in-archive</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;path_in_archive&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to extract in case of archive type</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-a">
+<span id="cmdoption-ocrd-resmgr-download-allow-uninstalled"></span><span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--allow-uninstalled</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allow installing resources for uninstalled processors</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-o">
-<span id="cmdoption-ocrd-resmgr-download-overwrite"></span><code class="sig-name descname"><span class="pre">-o</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--overwrite</span></code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-o" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-o">
+<span id="cmdoption-ocrd-resmgr-download-overwrite"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-o" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overwrite existing resources</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-l">
-<span id="cmdoption-ocrd-resmgr-download-location"></span><code class="sig-name descname"><span class="pre">-l</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--location</span></code><code class="sig-prename descclassname"> <span class="pre">&lt;location&gt;</span></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-l" title="Permalink to this definition">¶</a></dt>
-<dd><p>Where to store resources</p>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-l">
+<span id="cmdoption-ocrd-resmgr-download-location"></span><span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--location</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;location&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Where to store resources - defaults to first location in processor’s ‘resource_locations’ list or finally ‘data’</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>data</p>
-</dd>
-<dt class="field-even">Options</dt>
-<dd class="field-even"><p>data | cwd | system</p>
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>data | cwd | system | module</p>
 </dd>
 </dl>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-arg-EXECUTABLE">
-<span id="cmdoption-ocrd-resmgr-download-arg-executable"></span><code class="sig-name descname"><span class="pre">EXECUTABLE</span></code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-arg-EXECUTABLE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-arg-EXECUTABLE">
+<span id="cmdoption-ocrd-resmgr-download-arg-executable"></span><span class="sig-name descname"><span class="pre">EXECUTABLE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-arg-EXECUTABLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required argument</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-download-arg-URL_OR_NAME">
-<span id="cmdoption-ocrd-resmgr-download-arg-url-or-name"></span><code class="sig-name descname"><span class="pre">URL_OR_NAME</span></code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-arg-URL_OR_NAME" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-download-arg-NAME">
+<span id="cmdoption-ocrd-resmgr-download-arg-name"></span><span class="sig-name descname"><span class="pre">NAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-download-arg-NAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional argument</p>
 </dd></dl>
 
-</div>
-<div class="section" id="ocrd-resmgr-list-available">
+</section>
+<section id="ocrd-resmgr-list-available">
 <h3>list-available<a class="headerlink" href="#ocrd-resmgr-list-available" title="Permalink to this headline">¶</a></h3>
 <p>List available resources</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr list-available <span class="o">[</span>OPTIONS<span class="o">]</span>
@@ -108,13 +132,19 @@
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-list-available-e">
-<span id="cmdoption-ocrd-resmgr-list-available-executable"></span><code class="sig-name descname"><span class="pre">-e</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--executable</span></code><code class="sig-prename descclassname"> <span class="pre">&lt;EXEC&gt;</span></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-list-available-e" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show only resources for executable EXEC</p>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-list-available-D">
+<span id="cmdoption-ocrd-resmgr-list-available-d"></span><span id="cmdoption-ocrd-resmgr-list-available-no-dynamic"></span><span class="sig-name descname"><span class="pre">-D</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-dynamic</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-list-available-D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to skip looking into each processor’s –dump-{json,module-dir} for module-level resources</p>
 </dd></dl>
 
-</div>
-<div class="section" id="ocrd-resmgr-list-installed">
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-list-available-e">
+<span id="cmdoption-ocrd-resmgr-list-available-executable"></span><span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--executable</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;EXEC&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-list-available-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show only resources for executable beginning with EXEC</p>
+</dd></dl>
+
+</section>
+<section id="ocrd-resmgr-list-installed">
 <h3>list-installed<a class="headerlink" href="#ocrd-resmgr-list-installed" title="Permalink to this headline">¶</a></h3>
 <p>List installed resources</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr list-installed <span class="o">[</span>OPTIONS<span class="o">]</span>
@@ -122,19 +152,33 @@
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt id="cmdoption-ocrd-resmgr-list-installed-e">
-<span id="cmdoption-ocrd-resmgr-list-installed-executable"></span><code class="sig-name descname"><span class="pre">-e</span></code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname"><span class="pre">,</span> </code><code class="sig-name descname"><span class="pre">--executable</span></code><code class="sig-prename descclassname"> <span class="pre">&lt;EXEC&gt;</span></code><a class="headerlink" href="#cmdoption-ocrd-resmgr-list-installed-e" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-list-installed-e">
+<span id="cmdoption-ocrd-resmgr-list-installed-executable"></span><span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--executable</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;EXEC&gt;</span></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-list-installed-e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show only resources for executable EXEC</p>
 </dd></dl>
 
+</section>
+<section id="ocrd-resmgr-migrate">
+<h3>migrate<a class="headerlink" href="#ocrd-resmgr-migrate" title="Permalink to this headline">¶</a></h3>
+<p>Update the configuration after updating core to MIGRATION</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd resmgr migrate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span><span class="m">2</span>.37.0<span class="o">]</span>
+</pre></div>
 </div>
-</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-ocrd-resmgr-migrate-arg-MIGRATION">
+<span id="cmdoption-ocrd-resmgr-migrate-arg-migration"></span><span class="sig-name descname"><span class="pre">MIGRATION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-ocrd-resmgr-migrate-arg-MIGRATION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+</section>
 <dl class="py function">
-<dt id="ocrd.cli.resmgr.print_resources">
-<code class="sig-prename descclassname"><span class="pre">ocrd.cli.resmgr.</span></code><code class="sig-name descname"><span class="pre">print_resources</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reslist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resmgr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/cli/resmgr.html#print_resources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.cli.resmgr.print_resources" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ocrd.cli.resmgr.print_resources">
+<span class="sig-prename descclassname"><span class="pre">ocrd.cli.resmgr.</span></span><span class="sig-name descname"><span class="pre">print_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reslist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resmgr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd/cli/resmgr.html#print_resources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd.cli.resmgr.print_resources" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -160,7 +204,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ocrd</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="ocrd.html">ocrd package</a><ul class="current">
@@ -204,7 +248,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -226,7 +270,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

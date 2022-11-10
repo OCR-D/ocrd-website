@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_models.ocrd_exif &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>ocrd_models.ocrd_exif &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -39,6 +39,10 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
 
 <div class="viewcode-block" id="OcrdExif"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif">[docs]</a><span class="k">class</span> <span class="nc">OcrdExif</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Represents technical image metadata.</span>
@@ -70,10 +74,39 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">photometricInterpretation</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">n_frames</span> <span class="k">if</span> <span class="s1">&#39;n_frames&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">else</span> <span class="mi">1</span>
-        <span class="c1">#  if img.format == &#39;PNG&#39;:</span>
-        <span class="c1">#      print(img.info)</span>
+        <span class="k">if</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;identify&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_identify</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_exif&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ImageMagick &#39;identify&#39; not available, Consider installing ImageMagick for more robust pixel density estimation&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_pil</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdExif.run_identify"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif.run_identify">[docs]</a>    <span class="k">def</span> <span class="nf">run_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;compression&#39;</span><span class="p">,</span> <span class="s1">&#39;photometric_interpretation&#39;</span><span class="p">]:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="k">if</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="s1">&#39;identify&#39;</span><span class="p">,</span> <span class="s1">&#39;-format&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;%[resolution.x] %[resolution.y] %U&#39;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">filename</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">BytesIO</span><span class="p">()</span> <span class="k">as</span> <span class="n">bio</span><span class="p">:</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">bio</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="s1">&#39;identify&#39;</span><span class="p">,</span> <span class="s1">&#39;-format&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;%[resolution.x] %[resolution.y] %U&#39;</span><span class="p">,</span> <span class="s1">&#39;/dev/stdin&#39;</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">bio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
+            <span class="n">stderr</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;no decode delegate for this image format&#39;</span> <span class="ow">in</span> <span class="n">stderr</span><span class="p">:</span>
+                <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_exif&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ImageMagick does not support the &#39;</span><span class="si">%s</span><span class="s2">&#39; image format. &quot;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_exif&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;identify exited with non-zero </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span> <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;undefined&#39;</span> <span class="k">else</span> \
+                                  <span class="s1">&#39;cm&#39;</span> <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;PixelsPerCentimeter&#39;</span> <span class="k">else</span> \
+                                  <span class="s1">&#39;inches&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="OcrdExif.run_pil"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif.run_pil">[docs]</a>    <span class="k">def</span> <span class="nf">run_pil</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">format</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;TIFF&#39;</span><span class="p">,</span> <span class="s1">&#39;PNG&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;dpi&#39;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dpi&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dpi&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
@@ -97,7 +130,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resolutionUnit</span> <span class="o">=</span> <span class="s1">&#39;inches&#39;</span>
         <span class="c1">#  print(&#39;format=%s type=%s&#39; % (img.format, type(self.xResolution))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xResolution</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">yResolution</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="OcrdExif.to_xml"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_exif.html#ocrd_models.ocrd_exif.OcrdExif.to_xml">[docs]</a>    <span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -133,7 +166,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -155,7 +188,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -177,7 +210,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
