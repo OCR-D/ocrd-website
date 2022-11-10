@@ -14,6 +14,29 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Changed:
+
+  * web api: `POST /workflow/{workflow-id}` accepts a `WorkflowArgs` object with workspace ID and workflow parameters, #220
+  * `mets`: Reorganize structure of the document, add numbered section headings, #155, #207
+
+Added:
+
+  * `cli`: `--page-id`/`-g` option accepts regular expressions as well, #221, OCR-D/core#856
+  * `mets`: conventions for providing document-wide files (`FULLDOWNLOAD_...`), #154, #207
+
+
+## [3.20.0] - 2022-08-14
+
+Changed:
+
+  * web api: `/workspace`: support content-negotiation for either OcrdZip or JSON description, #210
+  * web api: `POST/PUT /workspace`: return OcrdZip, #209
+  * ocrd-tool.json schema: default for `parameters` is an empty object `{}`
+
+Removed:
+
+  * `logging`: obsolete docs better described in `cli`, #219
+
 ## [3.19.0] - 2022-05-23
 
 Fixed:
@@ -453,6 +476,7 @@ Removed
 Initial Release
 
 <!-- link-labels -->
+[3.20.0]: ../../compare/v3.20.0...v3.19.0
 [3.19.0]: ../../compare/v3.19.0...v3.18.0
 [3.18.0]: ../../compare/v3.18.0...v3.17.0
 [3.17.0]: ../../compare/v3.17.0...v3.16.0

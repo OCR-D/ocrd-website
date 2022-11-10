@@ -165,7 +165,7 @@ paths:
           description: Return Log
           content:
             'text/plain': {}
-        '404': 
+        '404':
           description: 'ProcessorJob not found'
 
   '/workflow':
@@ -231,6 +231,11 @@ paths:
           description: ID of the Workflow
           schema: {type: string}
           required: true
+      requestBody:
+        description: Execute this Workflow
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/WorkflowArgs'}}
+        required: true
       responses:
         '200':
           description: Return WorkflowJob
@@ -282,7 +287,10 @@ paths:
       requestBody:
         description: OCRD-ZIP of the new workspace
         content:
-          'application/vnd.ocrd+zip': {}
+          'application/vnd.ocrd+zip':
+            schema:
+              type: string
+              format: binary
         required: true
       responses:
         '201':
@@ -306,13 +314,15 @@ paths:
       requestBody:
         description: OCRD-ZIP of the updated workspace
         content:
-          multipart/form-data:
-            schema: {$ref: '#/components/schemas/WorkspaceRequest'}
+          'application/vnd.ocrd+zip':
+            schema:
+              type: string
+              format: binary
         required: true
       responses:
         '200':
           description: Workspace replaced or created
-          content: 
+          content:
             application/json: {schema: {$ref: '#/components/schemas/Workspace'}}
         '400':
           description: Workspace invalid
@@ -327,9 +337,10 @@ paths:
           required: true
       responses:
         '200':
-          description: Workspace found
+          description: Return workspace or OCRD-ZIP
           content:
             application/json: {schema: {$ref: '#/components/schemas/Workspace'}}
+            application/vnd.ocrd+zip: {}
         '404':
           description: Workspace not found
           content: {}
@@ -388,14 +399,6 @@ components:
     Workspace:
       allOf:
         - {$ref: '#/components/schemas/Resource'}
-    WorkspaceRequest:
-      type: object
-      properties:
-        json:
-          $ref: '#/components/schemas/Workspace'
-        workspace:
-          type: string
-          format: binary
     Job:
       allOf:
         - {$ref: '#/components/schemas/Resource'}
@@ -445,6 +448,18 @@ components:
     Workflow:
       allOf:
         - {$ref: '#/components/schemas/Resource'}
+    WorkflowArgs:
+      description: The arguments needed to run the Workflow
+      type: object
+      required: ['workspace_id']
+      properties:
+        workspace_id: {type: string}
+        workflow_parameters:
+          description: >-
+            Possibility to add additional parameters for the workflow. The parameters that can/must
+            be specified here depend on the respective implementation of the workflow.
+          type: object
+          default: {}
     WorkflowJob:
       allOf:
         - {$ref: '#/components/schemas/Job'}
