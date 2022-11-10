@@ -120,23 +120,30 @@ modules are needed.
 | ocrd_pagetopdf              | ☑         | ☑        | ☑         |
 | ocrd_repair_inconsistencies | ☑         | ☑        | ☑         |
 | ocrd_tesserocr              | ☑         | ☑        | ☑         |
+| ocrd_wrap                   | ☑         | ☑        | ☑         |
 | tesserocr                   | ☑         | ☑        | ☑         |
 | workflow-configuration      | ☑         | ☑        | ☑         |
 | cor-asv-ann                 | -         | ☑        | ☑         |
 | dinglehopper                | -         | ☑        | ☑         |
+| docstruct                   | -         | ☑        | ☑         |
 | format-converters           | -         | ☑        | ☑         |
 | ocrd_calamari               | -         | ☑        | ☑         |
 | ocrd_keraslm                | -         | ☑        | ☑         |
+| ocrd_olahd_client           | ☑         | ☑        | ☑         |
 | ocrd_olena                  | -         | ☑        | ☑         |
 | ocrd_segment                | -         | ☑        | ☑         |
 | tesseract                   | -         | ☑        | ☑         |
+| ocrd_neat                   | -         | ☑        | ☑         |
 | ocrd_anybaseocr             | -         | -        | ☑         |
+| ocrd_detectron2             | -         | -        | ☑         |
+| ocrd_doxa                   | -         | -        | ☑         |
 | ocrd_kraken                 | -         | -        | ☑         |
-| ocrd_ocropy                 | -         | -        | ☑         |
-| ocrd_pc_segmentation        | -         | -        | ☑         |
+| ocrd_ocropy                 | -         | -        | -         |
+| ocrd_pc_segmentation        | -         | -        | -         |
 | ocrd_typegroups_classifier  | -         | -        | ☑         |
-| sbb_textline_detector       | -         | -        | ☑         |
-| cor-asv-fst                 | -         | -        | ☑         |
+| sbb_binarization            | -         | -        | ☑         |
+| cor-asv-fst                 | -         | -        | -         |
+
 
   </details>
   
