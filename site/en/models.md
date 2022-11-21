@@ -218,7 +218,7 @@ Tesseract models are single files with a `.traineddata` extension.
 
 Since Tesseract only supports model lookup in a single directory, 
 and we want to share the tessdata directory with the standalone CLI,
-ocrd_tesserocr resources must be stored the `module` location.
+ocrd_tesserocr resources must be stored in the `module` location.
 If the default path of that location is not the place you want to use for Tesseract models,
 then either recompile Tesseract with the `tessdata` path you had in mind,
 or use the `TESSDATA_PREFIX` environment variable to override the `module` location at runtime.
