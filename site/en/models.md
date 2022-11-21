@@ -104,7 +104,7 @@ If you need to install a resource which OCR-D doesn't know of, that can be achie
 To install a model for `ocrd-tesserocr-recognize` that is located at `https://my-server/mymodel.traineddata`.
 
 ```
-ocrd resmgr download -n ocrd-tesserocr-recognize https://my-server/mymodel.traineddata
+ocrd resmgr download -n https://my-server/mymodel.traineddata ocrd-tesserocr-recognize mymodel.traineddata
 ```
 
 This will download and store the resource in the [proper location](#where-is-the-data) and create a stub entry in the
@@ -143,12 +143,13 @@ In order of preference, a resource `<name>` for a processor `ocrd-foo` is search
 * `$PWD/ocrd-resources/ocrd-foo/<name>`
 * `$XDG_DATA_HOME/ocrd-resources/ocrd-foo/<name>`
 * `/usr/local/share/ocrd-resources/ocrd-foo/<name>`
+* `$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/<name>` or `$VIRTUAL_ENV/share/ocrd-foo/<name>`
 
 (where `XDG_DATA_HOME` defaults to `$HOME/.local/share` if unset).
 
 We recommend using the `$XDG_DATA_HOME` location, which is also the default. But
 you can override the location to store data with the `--location` option, which can
-be `cwd`, `data` and `system` resp.
+be `cwd`, `data`, `system` and `module` resp.
 
 ```sh
 # will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
@@ -215,16 +216,15 @@ ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -P checkpoint '/path
 
 Tesseract models are single files with a `.traineddata` extension.
 
-Since tesseract only supports model lookup in a single directory, models should
-only be stored in a single location. If the default location (`virtualenv`) is
-not the place you want to use for tesseract models, consider [changing the default location
-in the OCR-D config file](#changing-the-default-resource-directory).
+Since Tesseract only supports model lookup in a single directory, 
+and we want to share the tessdata directory with the standalone CLI,
+ocrd_tesserocr resources must be stored the `module` location.
+If the default path of that location is not the place you want to use for Tesseract models,
+then either recompile Tesseract with the `tessdata` path you had in mind,
+or use the `TESSDATA_PREFIX` environment variable to override the `module` location at runtime.
 
-**NOTE:** For reasons of efficiency and to avoid duplicate models, all `ocrd-tesserocr-*` processors
-reuse the resource directory for `ocrd-tesserocr-recognize`.
-
-If the `TESSDATA_PREFIX` environment variable is set when any of the tesseract processors
-are called, it will be the location to look for resources instead of the default.
+**NOTE**: For reasons of efficiency and to avoid duplicate models, all `ocrd-tesserocr-*` processors
+re-use the resource directory for `ocrd-tesserocr-recognize`.
 
 OCR-D's Tesseract wrapper,
 [ocrd_tesserocr](https://github.com/OCR-D/ocrd_tesserocr) and more
