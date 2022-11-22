@@ -453,7 +453,7 @@ to download <em>all</em> known resources for <em>all</em> installed processors:<
 
 <p>To install a model for <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> that is located at <code class="language-plaintext highlighter-rouge">https://my-server/mymodel.traineddata</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download -n ocrd-tesserocr-recognize https://my-server/mymodel.traineddata
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download -n https://my-server/mymodel.traineddata ocrd-tesserocr-recognize mymodel.traineddata
 </code></pre></div></div>
 
 <p>This will download and store the resource in the <a href="#where-is-the-data">proper location</a> and create a stub entry in the
@@ -492,13 +492,14 @@ chat</a> so we can add it to the database.</p>
   <li><code class="language-plaintext highlighter-rouge">$PWD/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
   <li><code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
   <li><code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/&lt;name&gt;</code> or <code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/share/ocrd-foo/&lt;name&gt;</code></li>
 </ul>
 
 <p>(where <code class="language-plaintext highlighter-rouge">XDG_DATA_HOME</code> defaults to <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> if unset).</p>
 
 <p>We recommend using the <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> location, which is also the default. But
 you can override the location to store data with the <code class="language-plaintext highlighter-rouge">--location</code> option, which can
-be <code class="language-plaintext highlighter-rouge">cwd</code>, <code class="language-plaintext highlighter-rouge">data</code> and <code class="language-plaintext highlighter-rouge">system</code> resp.</p>
+be <code class="language-plaintext highlighter-rouge">cwd</code>, <code class="language-plaintext highlighter-rouge">data</code>, <code class="language-plaintext highlighter-rouge">system</code> and <code class="language-plaintext highlighter-rouge">module</code> resp.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth</span>
 ocrd resmgr download <span class="nt">--location</span> cwd ocrd-anybaseocr-dewarp latest_net_G.pth
@@ -561,16 +562,15 @@ ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="n
 
 <p>Tesseract models are single files with a <code class="language-plaintext highlighter-rouge">.traineddata</code> extension.</p>
 
-<p>Since tesseract only supports model lookup in a single directory, models should
-only be stored in a single location. If the default location (<code class="language-plaintext highlighter-rouge">virtualenv</code>) is
-not the place you want to use for tesseract models, consider <a href="#changing-the-default-resource-directory">changing the default location
-in the OCR-D config file</a>.</p>
+<p>Since Tesseract only supports model lookup in a single directory, 
+and we want to share the tessdata directory with the standalone CLI,
+ocrd_tesserocr resources must be stored in the <code class="language-plaintext highlighter-rouge">module</code> location.
+If the default path of that location is not the place you want to use for Tesseract models,
+then either recompile Tesseract with the <code class="language-plaintext highlighter-rouge">tessdata</code> path you had in mind,
+or use the <code class="language-plaintext highlighter-rouge">TESSDATA_PREFIX</code> environment variable to override the <code class="language-plaintext highlighter-rouge">module</code> location at runtime.</p>
 
-<p><strong>NOTE:</strong> For reasons of efficiency and to avoid duplicate models, all <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-*</code> processors
-reuse the resource directory for <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code>.</p>
-
-<p>If the <code class="language-plaintext highlighter-rouge">TESSDATA_PREFIX</code> environment variable is set when any of the tesseract processors
-are called, it will be the location to look for resources instead of the default.</p>
+<p><strong>NOTE</strong>: For reasons of efficiency and to avoid duplicate models, all <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-*</code> processors
+re-use the resource directory for <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code>.</p>
 
 <p>OCR-D’s Tesseract wrapper,
 <a href="https://github.com/OCR-D/ocrd_tesserocr">ocrd_tesserocr</a> and more
