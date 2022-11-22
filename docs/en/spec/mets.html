@@ -334,33 +334,65 @@ function ToggleSearchActive2() {
         <ul class="menu-list column is-one-third">
   <li><a href="#requirements-on-handling-metspage">Requirements on handling METS/PAGE</a>
     <ul>
-      <li><a href="#pixel-density-of-images-must-be-explicit-and-high-enough">Pixel density of images must be explicit and high enough</a></li>
-      <li><a href="#no-multi-page-images">No multi-page images</a></li>
-      <li><a href="#unique-id-for-the-document-processed">Unique ID for the document processed</a></li>
-      <li><a href="#file-group-use-syntax">File Group USE syntax</a>
+      <li><a href="#1-metadata">1) Metadata</a>
         <ul>
-          <li><a href="#examples">Examples</a></li>
+          <li><a href="#11-unique-id-for-the-document-processed">1.1 Unique ID for the document processed</a></li>
+          <li><a href="#12-always-use-url-or-relative-filenames">1.2 Always use URL or relative filenames</a>
+            <ul>
+              <li><a href="#example">Example</a></li>
+            </ul>
+          </li>
+          <li><a href="#13-recording-processing-information-in-mets">1.3 Recording processing information in METS</a>
+            <ul>
+              <li><a href="#example-1">Example</a></li>
+            </ul>
+          </li>
         </ul>
       </li>
-      <li><a href="#file-id-syntax">File ID syntax</a>
+      <li><a href="#2-images">2) Images</a>
         <ul>
-          <li><a href="#examples-1">Examples</a></li>
+          <li><a href="#21-if-in-page-then-in-mets">2.1 If in PAGE then in METS</a></li>
+          <li><a href="#22-pixel-density-of-images-must-be-explicit-and-high-enough">2.2 Pixel density of images must be explicit and high enough</a></li>
+          <li><a href="#23-no-multi-page-images">2.3 No multi-page images</a></li>
+          <li><a href="#24-images-and-coordinates">2.4 Images and coordinates</a></li>
         </ul>
       </li>
-      <li><a href="#grouping-files-by-page">Grouping files by page</a>
+      <li><a href="#3-file-groups-metsfilegrp">3) File groups <code class="language-plaintext highlighter-rouge">mets:fileGrp</code></a>
         <ul>
-          <li><a href="#example">Example</a></li>
+          <li><a href="#31-file-group-use-syntax">3.1 File Group <code class="language-plaintext highlighter-rouge">@USE</code> syntax</a>
+            <ul>
+              <li><a href="#examples">Examples</a></li>
+            </ul>
+          </li>
         </ul>
       </li>
-      <li><a href="#images-and-coordinates">Images and coordinates</a></li>
-      <li><a href="#media-type-for-page-xml">Media Type for PAGE XML</a></li>
-      <li><a href="#always-use-url-or-relative-filenames">Always use URL or relative filenames</a>
+      <li><a href="#4-files-metsfile">4) Files <code class="language-plaintext highlighter-rouge">mets:file</code></a>
         <ul>
-          <li><a href="#example-1">Example</a></li>
+          <li><a href="#41-file-id-syntax">4.1 File ID syntax</a>
+            <ul>
+              <li><a href="#examples-1">Examples</a></li>
+            </ul>
+          </li>
+          <li><a href="#42-mimetype-syntax">4.2 <code class="language-plaintext highlighter-rouge">@MIMETYPE</code> syntax</a></li>
+          <li><a href="#43-file-group-usefulldownload_">4.3 File Group <code class="language-plaintext highlighter-rouge">@USE="FULLDOWNLOAD_..."</code></a>
+            <ul>
+              <li><a href="#example-2">Example</a></li>
+            </ul>
+          </li>
         </ul>
       </li>
-      <li><a href="#if-in-page-then-in-mets">If in PAGE then in METS</a></li>
-      <li><a href="#recording-processing-information-in-mets">Recording processing information in METS</a></li>
+      <li><a href="#5-grouping-files-by-page-metsstructmap">5) Grouping files by page <code class="language-plaintext highlighter-rouge">mets:structMap</code></a>
+        <ul>
+          <li><a href="#51-grouping-files-by-page">5.1 Grouping files by page</a>
+            <ul>
+              <li><a href="#example-3">Example</a></li>
+            </ul>
+          </li>
+          <li><a href="#52-ocr-d-metsstructmap">5.2 OCR-D <code class="language-plaintext highlighter-rouge">mets:structMap</code></a></li>
+        </ul>
+      </li>
+      <li><a href="#6-ranges-of-pages-metsstructlink">6) Ranges of pages <code class="language-plaintext highlighter-rouge">mets:structLink</code></a>
+     -  <a href="#example-4">Example</a></li>
     </ul>
   </li>
 </ul>
@@ -372,15 +404,104 @@ function ToggleSearchActive2() {
       <main class="container content column is-two-thirds" aria-label="Content">
         <h1 id="requirements-on-handling-metspage">Requirements on handling METS/PAGE</h1>
 
-<p>OCR-D has decided to base its data exchange format on top of <a href="http://www.loc.gov/standards/mets/">METS</a>.</p>
+<p>OCR-D has decided to base its data exchange format on <a href="http://www.loc.gov/standards/mets/">METS</a>. This document defines a set of conventions and mechanism for using METS files within OCR-D. The basis for this is the METS Application Profile
+for digitised media by the <a href="http://dfg-viewer.de/">DFG-Viewer</a> (current version: <a href="http://dfg-viewer.de/fileadmin/groups/dfgviewer/METS-Anwendungsprofil_2.3.1.pdf">2.3.1</a>).</p>
 
-<p>For layout and text recognition results, the primary exchange format is <a href="https://github.com/OCR-D/PAGE-XML">PAGE</a></p>
+<p>For layout and text recognition results, the primary exchange format in OCR-D is <a href="https://github.com/OCR-D/PAGE-XML">PAGE</a>. Conventions for PAGE are outlined in <a href="page">a separate document</a>.</p>
 
-<p>This document defines a set of conventions and mechanism for using METS.</p>
+<h2 id="1-metadata">1) Metadata</h2>
 
-<p>Conventions for PAGE are outlined in <a href="page">a separate document</a></p>
+<p><a id="unique-id-for-the-document-processed"></a></p>
+<h3 id="11-unique-id-for-the-document-processed">1.1 Unique ID for the document processed</h3>
 
-<h2 id="pixel-density-of-images-must-be-explicit-and-high-enough">Pixel density of images must be explicit and high enough</h2>
+<p>METS documents must be uniquely addressable within the global library community.</p>
+
+<p>For this purpose, the METS file MUST contain a <code class="language-plaintext highlighter-rouge">mods:identifier</code> 
+that must contain a globally unique identifier for the document 
+and have a <code class="language-plaintext highlighter-rouge">type</code> attribute with a value of (in order of preference):</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">purl</code></li>
+  <li><code class="language-plaintext highlighter-rouge">urn</code></li>
+  <li><code class="language-plaintext highlighter-rouge">handle</code></li>
+  <li><code class="language-plaintext highlighter-rouge">url</code></li>
+</ul>
+
+<p><a id="always-use-url-or-relative-filenames"></a></p>
+<h3 id="12-always-use-url-or-relative-filenames">1.2 Always use URL or relative filenames</h3>
+
+<p>Always use URL, except for files located in the directory or any subdirectories of the METS file.</p>
+
+<h4 id="example">Example</h4>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tmp/foo/ws1
+├── mets.xml
+├── foo.tif
+└── foo.xml
+</code></pre></div></div>
+
+<p>Valid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">foo.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">foo.tif</code></li>
+  <li><code class="language-plaintext highlighter-rouge">file://foo.tif</code></li>
+</ul>
+
+<p>Invalid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/foo.xml</code> (absolute path)</li>
+  <li><code class="language-plaintext highlighter-rouge">file:///tmp/foo/ws1/foo.tif</code> (file URL scheme with absolute path)</li>
+  <li><code class="language-plaintext highlighter-rouge">file:///foo.tif</code> (relative path written as absolute path)</li>
+</ul>
+
+<p><a id="recording-processing-information-in-mets"></a></p>
+<h3 id="13-recording-processing-information-in-mets">1.3 Recording processing information in METS</h3>
+
+<p><a href="cli">OCR-D processors</a> should add information to the METS metadata header to indicate that
+they changed the METS. This information is mainly for human consumption to get
+an overview of the software agents involved in the METS file’s creation. More
+detailed or machine-actionable provenance information is outside the scope of
+the processor.</p>
+
+<p>To add agent information, a processor must:</p>
+
+<p>1) locate the first <code class="language-plaintext highlighter-rouge">mets:metsHdr</code> <code class="language-plaintext highlighter-rouge">M</code>.
+2) Add to <code class="language-plaintext highlighter-rouge">M</code> a new <code class="language-plaintext highlighter-rouge">mets:agent</code> <code class="language-plaintext highlighter-rouge">A</code> with these attributes</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">TYPE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
+  <li><code class="language-plaintext highlighter-rouge">OTHERTYPE</code> must be the string <code class="language-plaintext highlighter-rouge">SOFTWARE</code></li>
+  <li><code class="language-plaintext highlighter-rouge">ROLE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
+  <li><code class="language-plaintext highlighter-rouge">OTHERROLE</code> must be the processing step this processor provided, from the list in <a href="ocrd_tool#definition">the ocrd-tool.json spec</a>
+3) Add to <code class="language-plaintext highlighter-rouge">A</code> a <code class="language-plaintext highlighter-rouge">mets:name</code> <code class="language-plaintext highlighter-rouge">N</code> that should include, in free-text form, these data points</li>
+  <li>Name of the processor, e.g. the name of the executable from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
+  <li>Version of the processor, e.g. from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
+</ul>
+
+<h4 id="example-1">Example</h4>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:agent</span> <span class="na">TYPE=</span><span class="s">"OTHER"</span> <span class="na">OTHERTYPE=</span><span class="s">"SOFTWARE"</span> <span class="na">ROLE=</span><span class="s">"OTHER"</span> <span class="na">OTHERROLE=</span><span class="s">"preprocessing/optimization/binarization"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;mets:name&gt;</span>ocrd_tesserocr v0.1.2<span class="nt">&lt;/mets:name&gt;</span>
+<span class="nt">&lt;/mets:agent&gt;</span>
+</code></pre></div></div>
+
+<h2 id="2-images">2) Images</h2>
+
+<p><a id="if-in-page-then-in-mets"></a></p>
+<h3 id="21-if-in-page-then-in-mets">2.1 If in PAGE then in METS</h3>
+
+<p>All URLs used in the <code class="language-plaintext highlighter-rouge">imageFilename</code> / <code class="language-plaintext highlighter-rouge">filename</code> attributes of
+<code class="language-plaintext highlighter-rouge">pc:Page</code> / <code class="language-plaintext highlighter-rouge">pc:AlternativeImage</code> of all PAGE files MUST be referenced in a <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as the
+<code class="language-plaintext highlighter-rouge">@xlink:href</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code> in the METS. For derived images (<code class="language-plaintext highlighter-rouge">pc:AlternativeImage</code>), this MUST be the same file group as
+the PAGE-XML that was the result of the processing step that produced the
+<code class="language-plaintext highlighter-rouge">pc:AlternativeImage</code>.</p>
+
+<p>In other words: New <code class="language-plaintext highlighter-rouge">pc:AlternativeImage</code> files must be
+written to the same <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as their target PAGE-XML files, which in most
+implementations will mean the same directory. Existing images must be read from the filesystem, 
+and could reside in any fileGrp prior to the source PAGE-XML file in the workflow (including the original image in the first fileGrp).</p>
+
+<p><a id="pixel-density-of-images-must-be-explicit-and-high-enough"></a></p>
+<h3 id="22-pixel-density-of-images-must-be-explicit-and-high-enough">2.2 Pixel density of images must be explicit and high enough</h3>
 
 <p>The pixel density is the ratio of the number of pixels that represent a a unit of measure of the scanned object. It is typically measured in pixels per inch (PPI, a.k.a. DPI).</p>
 
@@ -405,7 +526,8 @@ function ToggleSearchActive2() {
 conversion or inaccurate, processors should assume <strong>300 ppi</strong> for images with
 missing or suspiciously low pixel density metadata.</p>
 
-<h2 id="no-multi-page-images">No multi-page images</h2>
+<p><a id="no-multi-page-images"></a></p>
+<h3 id="23-no-multi-page-images">2.3 No multi-page images</h3>
 
 <p>Image formats like TIFF support encoding multiple images in a single file.</p>
 
@@ -413,22 +535,30 @@ missing or suspiciously low pixel density metadata.</p>
 
 <p>OCR-D processors MUST raise an exception if they encounter multi-image TIFF files.</p>
 
-<h2 id="unique-id-for-the-document-processed">Unique ID for the document processed</h2>
+<p><a id="images-and-coordinates"></a></p>
+<h3 id="24-images-and-coordinates">2.4 Images and coordinates</h3>
 
-<p>METS provided to the MP must be uniquely addressable within the global library community.</p>
+<p>Coordinates in a PAGE-XML are always absolute, i.e. relative to extent defined in the <code class="language-plaintext highlighter-rouge">imageWidth</code> / <code class="language-plaintext highlighter-rouge">imageHeight</code> attributes of the top-level <code class="language-plaintext highlighter-rouge">pc:Page</code>.</p>
 
-<p>For this purpose, the METS file MUST contain a <code class="language-plaintext highlighter-rouge">mods:identifier</code> that must contain a globally unique identifier for the document and have a <code class="language-plaintext highlighter-rouge">type</code> attribute with a value of, in order of preference:</p>
+<p>When a processor wants to access the image of a layout element like a <code class="language-plaintext highlighter-rouge">pc:TextRegion</code> or <code class="language-plaintext highlighter-rouge">pc:TextLine</code>, the algorithm should be:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">purl</code></li>
-  <li><code class="language-plaintext highlighter-rouge">urn</code></li>
-  <li><code class="language-plaintext highlighter-rouge">handle</code></li>
-  <li><code class="language-plaintext highlighter-rouge">url</code></li>
+  <li>If the element in question has an attribute <code class="language-plaintext highlighter-rouge">imageFilename</code>, resolve this value</li>
+  <li>Else if the element in question has a subelement <code class="language-plaintext highlighter-rouge">pc:AlternativeImage</code> with attribute <code class="language-plaintext highlighter-rouge">filename</code>, resolve this value</li>
+  <li>Otherwise, resolve by passing the attribute <code class="language-plaintext highlighter-rouge">imageFilename</code> of the top-level <code class="language-plaintext highlighter-rouge">pc:Page</code> and the <code class="language-plaintext highlighter-rouge">points</code> attribute of the element’s <code class="language-plaintext highlighter-rouge">pc:Coords</code> subelement</li>
 </ul>
 
-<h2 id="file-group-use-syntax">File Group USE syntax</h2>
+<p>(For details on coordinate handling, see <a href="page#images">PAGE-XML specs</a>.)</p>
 
-<p>All <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> MUST have a <strong>unique</strong> <code class="language-plaintext highlighter-rouge">USE</code> attribute that hints at the provenance of the files and must be a valid <a href="https://www.w3.org/TR/xmlschema11-2/#ID"><code class="language-plaintext highlighter-rouge">xsd:ID</code></a>.</p>
+<h2 id="3-file-groups-metsfilegrp">3) File groups <code class="language-plaintext highlighter-rouge">mets:fileGrp</code></h2>
+
+<p>Referenced files MUST be organised into file groups without recursion.</p>
+
+<p><a id="file-group-use-syntax"></a></p>
+<h3 id="31-file-group-use-syntax">3.1 File Group <code class="language-plaintext highlighter-rouge">@USE</code> syntax</h3>
+
+<p>All <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> MUST have a <strong>unique</strong> <code class="language-plaintext highlighter-rouge">USE</code> attribute that hints at the provenance of the files
+and MUST be a valid <a href="https://www.w3.org/TR/xmlschema11-2/#ID"><code class="language-plaintext highlighter-rouge">xsd:ID</code></a>.</p>
 
 <p>It SHOULD have the structure</p>
 
@@ -454,7 +584,7 @@ all-caps form, such as the name of the tool (<code class="language-plaintext hig
 <code class="language-plaintext highlighter-rouge">CIS</code> or the type of manipulation (<code class="language-plaintext highlighter-rouge">CROP</code>) or a combination of both starting
 with the type of manipulation (<code class="language-plaintext highlighter-rouge">BIN-KRAKEN</code>).</p>
 
-<h3 id="examples">Examples</h3>
+<h4 id="examples">Examples</h4>
 
 <table>
   <thead>
@@ -539,15 +669,20 @@ with the type of manipulation (<code class="language-plaintext highlighter-rouge
   </tbody>
 </table>
 
-<h2 id="file-id-syntax">File ID syntax</h2>
+<h2 id="4-files-metsfile">4) Files <code class="language-plaintext highlighter-rouge">mets:file</code></h2>
 
-<p>Each <code class="language-plaintext highlighter-rouge">mets:file</code> must have an <code class="language-plaintext highlighter-rouge">ID</code> attribute. The <code class="language-plaintext highlighter-rouge">ID</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code> SHOULD be the <code class="language-plaintext highlighter-rouge">USE</code> of the containing <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> combined with a 4-zero-padded number.
+<p><a id="file-id-syntax"></a></p>
+<h3 id="41-file-id-syntax">4.1 File ID syntax</h3>
+
+<p>Each <code class="language-plaintext highlighter-rouge">mets:file</code> must have an <code class="language-plaintext highlighter-rouge">ID</code> attribute. The <code class="language-plaintext highlighter-rouge">ID</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code> SHOULD be the <code class="language-plaintext highlighter-rouge">USE</code> of the containing <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> 
+combined with its corresponding page ID or a 4-zero-padded number.
 The <code class="language-plaintext highlighter-rouge">ID</code> MUST be unique inside the METS file.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FILEID := ID + "_" + [0-9]{4}
 ID := FILEGRP + (".IMG")?
 </code></pre></div></div>
-<h3 id="examples-1">Examples</h3>
+
+<h4 id="examples-1">Examples</h4>
 
 <table>
   <thead>
@@ -580,9 +715,31 @@ ID := FILEGRP + (".IMG")?
   </tbody>
 </table>
 
-<h2 id="grouping-files-by-page">Grouping files by page</h2>
+<h3 id="42-mimetype-syntax">4.2 <code class="language-plaintext highlighter-rouge">@MIMETYPE</code> syntax</h3>
 
-<p>Every METS file MUST have exactly one physical map that contains a single
+<p>Every <code class="language-plaintext highlighter-rouge">mets:file</code> element representing a PAGE file MUST have its <code class="language-plaintext highlighter-rouge">MIMETYPE</code> attribute set to <code class="language-plaintext highlighter-rouge">application/vnd.prima.page+xml</code>.</p>
+
+<h3 id="43-file-group-usefulldownload_">4.3 File Group <code class="language-plaintext highlighter-rouge">@USE="FULLDOWNLOAD_..."</code></h3>
+
+<p>For <code class="language-plaintext highlighter-rouge">mets:file</code> entries representative of the publication <strong>as a whole</strong>, the <code class="language-plaintext highlighter-rouge">ID</code> attribute MUST have  prefix <code class="language-plaintext highlighter-rouge">FULLDOWNLOAD_</code>, followed by the file format (<code class="language-plaintext highlighter-rouge">TEI</code>, <code class="language-plaintext highlighter-rouge">ALTO</code>, <code class="language-plaintext highlighter-rouge">hOCR</code>, <code class="language-plaintext highlighter-rouge">HTML</code>, <code class="language-plaintext highlighter-rouge">TXT</code>, <code class="language-plaintext highlighter-rouge">COCO</code>, <code class="language-plaintext highlighter-rouge">PDF</code>).</p>
+
+<p>These entries SHOULD be referenced in the <a href="#ocr-d-structmap">structMap</a> under <code class="language-plaintext highlighter-rouge">/mets:mets/mets:structMap[@TYPE="PHYSICAL"]/mets:div/mets:fptr</code> (i.e. the top-level <code class="language-plaintext highlighter-rouge">mets:div</code> element).</p>
+
+<p>They MAY reside in the same <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as per-page files of the same type, or in a separate one.</p>
+
+<h4 id="example-2">Example</h4>
+<p><code class="language-plaintext highlighter-rouge">&lt;mets:file ID&gt;</code> | ID of the file for OCR-D
+–               | –
+<code class="language-plaintext highlighter-rouge">&lt;mets:file ID="FULLDOWNLOAD_TEI"  MIMETYPE="application/tei+xml"&gt;</code>            | The digitised publication or book in TEI format.
+<code class="language-plaintext highlighter-rouge">&lt;mets:file ID="FULLDOWNLOAD_TEI_01"  MIMETYPE="application/tei+xml"&gt;</code>            | The digitised publication or book in TEI format. Version one.
+<code class="language-plaintext highlighter-rouge">&lt;mets:file ID="FULLDOWNLOAD_TEI_02"  MIMETYPE="application/tei+xml"&gt;</code>            | The digitised publication or book in TEI format, a second Version.</p>
+
+<h2 id="5-grouping-files-by-page-metsstructmap">5) Grouping files by page <code class="language-plaintext highlighter-rouge">mets:structMap</code></h2>
+
+<p><a id="grouping-files-by-page"></a></p>
+<h3 id="51-grouping-files-by-page">5.1 Grouping files by page</h3>
+
+<p>The METS file MUST have exactly one physical map that contains a single
 <code class="language-plaintext highlighter-rouge">mets:div[@TYPE="physSequence"]</code> which in turn must contain a
 <code class="language-plaintext highlighter-rouge">mets:div[@TYPE="page"]</code> for every page in the work.</p>
 
@@ -590,7 +747,7 @@ ID := FILEGRP + (".IMG")?
 pointers to <code class="language-plaintext highlighter-rouge">mets:file</code> elements to signify that all the files within a div are
 encodings of the same page.</p>
 
-<h3 id="example">Example</h3>
+<h4 id="example-3">Example</h4>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:fileGrp</span> <span class="na">USE=</span><span class="s">"OCR-D-IMG"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;mets:file</span> <span class="na">ID=</span><span class="s">"OCR-D-IMG_0001"</span><span class="nt">&gt;</span>...<span class="nt">&lt;/mets:file&gt;</span>
@@ -608,84 +765,98 @@ encodings of the same page.</p>
 <span class="nt">&lt;/mets:structMap&gt;</span>
 </code></pre></div></div>
 
-<h2 id="images-and-coordinates">Images and coordinates</h2>
+<h3 id="52-ocr-d-metsstructmap">5.2 OCR-D <code class="language-plaintext highlighter-rouge">mets:structMap</code></h3>
 
-<p>Coordinates are always absolute, i.e. relative to extent defined in the <code class="language-plaintext highlighter-rouge">imageWidth</code>/<code class="language-plaintext highlighter-rouge">imageHeight</code> attribute of the nearest <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code>.</p>
-
-<p>When a processor wants to access the image of a layout element like a TextRegion or TextLine, the algorithm should be:</p>
-
+<p>The METS may contain different <code class="language-plaintext highlighter-rouge">mets:structMap</code> entries, differentiated by their <code class="language-plaintext highlighter-rouge">TYPE</code> attribute (e.g. <code class="language-plaintext highlighter-rouge">LOGICAL</code>, <code class="language-plaintext highlighter-rouge">PHYSICAL, ...</code>).</p>
 <ul>
-  <li>If the element in question has an attribute <code class="language-plaintext highlighter-rouge">imageFilename</code>, resolve this value</li>
-  <li>If the element has a <code class="language-plaintext highlighter-rouge">&lt;pc:Coords&gt;</code> subelement, resolve by passing the attribute <code class="language-plaintext highlighter-rouge">imageFilename</code> of the nearest <code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code> and the <code class="language-plaintext highlighter-rouge">points</code> attribute of the <code class="language-plaintext highlighter-rouge">&lt;pc:Coords&gt;</code> element</li>
+  <li>A <code class="language-plaintext highlighter-rouge">mets:structMap</code> with <code class="language-plaintext highlighter-rouge">TYPE="PHYSICAL"</code> is mandatory.</li>
+  <li>The <em>logical</em> document structure detected by <em>library or archive</em> MUST be described by <code class="language-plaintext highlighter-rouge">TYPE="LOGICAL"</code>.</li>
+  <li>The <em>logical</em> document structure detected by <em>OCR-D software</em> MUST be described by <code class="language-plaintext highlighter-rouge">TYPE="OCR-D-LOGICAL"</code>.</li>
 </ul>
 
-<h2 id="media-type-for-page-xml">Media Type for PAGE XML</h2>
+<table>
+  <thead>
+    <tr>
+      <th>attributes in <code class="language-plaintext highlighter-rouge">structMap</code></th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">LABEL</code></td>
+      <td>contains the recognized text of a structuring component, e.g. the title of a chapter</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">TYPE</code></td>
+      <td>contains the type of a structuring component according to some standardized, controlled vocabulary (see <a href="https://dfg-viewer.de/strukturdatenset/">DFG-Viewer: structural data set</a>), e.g. <code class="language-plaintext highlighter-rouge">chapter</code></td>
+    </tr>
+  </tbody>
+</table>
 
-<p>Every <code class="language-plaintext highlighter-rouge">&lt;mets:file&gt;</code> representing a PAGE document MUST have its <code class="language-plaintext highlighter-rouge">MIMETYPE</code> attribute set to <code class="language-plaintext highlighter-rouge">application/vnd.prima.page+xml</code>.</p>
+<h2 id="6-ranges-of-pages-metsstructlink">6) Ranges of pages <code class="language-plaintext highlighter-rouge">mets:structLink</code></h2>
 
-<h2 id="always-use-url-or-relative-filenames">Always use URL or relative filenames</h2>
+<p>The <code class="language-plaintext highlighter-rouge">mets:structLink</code> describes the ranges of pages in parts of a document 
+by linking <code class="language-plaintext highlighter-rouge">mets:div</code> elements of the logical <code class="language-plaintext highlighter-rouge">mets:structMap</code> to <code class="language-plaintext highlighter-rouge">mets:div</code> elements of the  physical <code class="language-plaintext highlighter-rouge">mets:structMap</code>.</p>
 
-<p>Always use URL, except for files located in the directory or any subdirectories of the METS file.</p>
+<h4 id="example-4">Example</h4>
 
-<h3 id="example-1">Example</h3>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:fileGrp</span> <span class="na">USE=</span><span class="s">"OCR-D-IMG"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:file</span> <span class="na">ID=</span><span class="s">"OCR-D-IMG_0001"</span> <span class="nt">&gt;</span>...<span class="nt">&lt;/mets:file&gt;</span>
+<span class="nt">&lt;/mets:fileGrp&gt;</span>
+<span class="nt">&lt;mets:fileGrp</span> <span class="na">USE=</span><span class="s">"OCR-D-OCR"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:file</span> <span class="na">ID=</span><span class="s">"OCR-D-OCR_0001"</span> <span class="nt">&gt;</span>...<span class="nt">&lt;/mets:file&gt;</span>
+<span class="nt">&lt;/mets:fileGrp&gt;</span>
+<span class="nt">&lt;mets:structMap</span> <span class="na">TYPE=</span><span class="s">"OCR-D-LOGICAL"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;mets:div</span> <span class="na">DMDID=</span><span class="s">"dmdSec_0001"</span> <span class="na">ADMID=</span><span class="s">"amdSec_0001"</span> <span class="na">ID=</span><span class="s">"OCR-D-loc_0001"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"OCR-D-loc_d5e320"</span> <span class="na">TYPE=</span><span class="s">"chapter"</span> <span class="na">LABEL=</span><span class="s">"KapıteI 1"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">TYPE=</span><span class="s">"chapter"</span> <span class="na">LABEL=</span><span class="s">"Unterkapitel"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/mets:div&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"OCR-D-loc_d9e376"</span> <span class="na">TYPE=</span><span class="s">"chapter"</span> <span class="na">LABEL=</span><span class="s">"Kapidel 2"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/mets:div&gt;</span>
+<span class="nt">&lt;/mets:structMap&gt;</span>
+<span class="nt">&lt;mets:structMap</span> <span class="na">TYPE=</span><span class="s">"LOGICAL"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;mets:div</span> <span class="na">TYPE=</span><span class="s">"Monograph"</span> <span class="na">DMDID=</span><span class="s">"dmdSec_0001"</span> <span class="na">ADMID=</span><span class="s">"amdSec_0001"</span> <span class="na">ID=</span><span class="s">"loc_0001"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"loc_d1e410"</span> <span class="na">TYPE=</span><span class="s">"chapter"</span> <span class="na">LABEL=</span><span class="s">"Kapitel 1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"loc_d1e451"</span> <span class="na">TYPE=</span><span class="s">"chapter"</span> <span class="na">LABEL=</span><span class="s">"Kapitel 2"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/mets:div&gt;</span>
+<span class="nt">&lt;/mets:structMap&gt;</span>
+<span class="nt">&lt;mets:structMap</span> <span class="na">TYPE=</span><span class="s">"PHYSICAL"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"PHYS_0000"</span> <span class="na">TYPE=</span><span class="s">"physSequence"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;mets:div</span> <span class="na">ID=</span><span class="s">"PHYS_0001"</span> <span class="na">TYPE=</span><span class="s">"page"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;mets:fptr</span> <span class="na">FILEID=</span><span class="s">"OCR-D-IMG_0001"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;mets:fptr</span> <span class="na">FILEID=</span><span class="s">"OCR-D-OCR_0001"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/mets:div&gt;</span>
+  <span class="nt">&lt;/mets:div&gt;</span>
+<span class="nt">&lt;/mets:structMap&gt;</span>
+<span class="nt">&lt;mets:structLink&gt;</span>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tmp/foo/ws1
-├── mets.xml
-├── foo.tif
-└── foo.xml
-</code></pre></div></div>
+<span class="c">&lt;!-- Library-Part--&gt;</span>   
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_0001"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0000"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e410"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0001"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e410"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0002"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e410"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0003"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e410"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0004"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e451"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0005"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"loc_d1e451"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0006"</span><span class="nt">/&gt;</span>
 
-<p>Valid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">foo.xml</code></li>
-  <li><code class="language-plaintext highlighter-rouge">foo.tif</code></li>
-  <li><code class="language-plaintext highlighter-rouge">file://foo.tif</code></li>
-</ul>
+ <span class="c">&lt;!-- OCR-D-Part--&gt;</span>   
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_0001"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0000"</span><span class="nt">/&gt;</span>
+<span class="c">&lt;!-- Kapitel 1--&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d5e320"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0001"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d5e320"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0002"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d5e320"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0003"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d5e320"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0004"</span><span class="nt">/&gt;</span>
 
-<p>Invalid <code class="language-plaintext highlighter-rouge">mets:FLocat/@xlink:href</code> in <code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/mets.xml</code>:</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">/tmp/foo/ws1/foo.xml</code> (absolute path)</li>
-  <li><code class="language-plaintext highlighter-rouge">file:///tmp/foo/ws1/foo.tif</code> (file URL scheme with absolute path)</li>
-  <li><code class="language-plaintext highlighter-rouge">file:///foo.tif</code> (relative path written as absolute path)</li>
-</ul>
+<span class="c">&lt;!-- Unter-Kapitel zu 1--&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0002"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0003"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0004"</span><span class="nt">/&gt;</span>
 
-<h2 id="if-in-page-then-in-mets">If in PAGE then in METS</h2>
+<span class="c">&lt;!-- Kapitel 2--&gt;</span>    
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0005"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mets:smLink</span> <span class="na">xlink:from=</span><span class="s">"OCR-D-loc_d7e560"</span> <span class="na">xlink:to=</span><span class="s">"PHYS_0006"</span><span class="nt">/&gt;</span>
 
-<p>All URL used in <code class="language-plaintext highlighter-rouge">imageFilename</code> and <code class="language-plaintext highlighter-rouge">filename</code> attributes of
-<code class="language-plaintext highlighter-rouge">&lt;pc:Page&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;pc:AlternativeImage&gt;</code> MUST be referenced in a <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as the
-<code class="language-plaintext highlighter-rouge">@xlink:href</code> attribute of a <code class="language-plaintext highlighter-rouge">mets:file</code>. This MUST be the same file group as
-the PAGE-XML that was the result of the processing step that produced the
-<code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code>. In other words: <code class="language-plaintext highlighter-rouge">&lt;pg:AlternativeImage&gt;</code> should be
-written to the same <code class="language-plaintext highlighter-rouge">mets:fileGrp</code> as its source PAGE-XML, which in most
-implementations will mean the same folder.</p>
-
-<h2 id="recording-processing-information-in-mets">Recording processing information in METS</h2>
-
-<p>Processors should add information to the METS metadata header to indicate that
-they changed the METS. This information is mainly for human consumption to get
-an overview of the software agents involved in the METS file’s creation. More
-detailed or machine-actionable provenance information is outside the scope of
-the processor.</p>
-
-<p>To add agent information, a processor must:</p>
-
-<p>1) locate the first <code class="language-plaintext highlighter-rouge">mets:metsHdr</code> <code class="language-plaintext highlighter-rouge">M</code>.
-2) Add to <code class="language-plaintext highlighter-rouge">M</code> a new <code class="language-plaintext highlighter-rouge">mets:agent</code> <code class="language-plaintext highlighter-rouge">A</code> with these attributes</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">TYPE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
-  <li><code class="language-plaintext highlighter-rouge">OTHERTYPE</code> must be the string <code class="language-plaintext highlighter-rouge">SOFTWARE</code></li>
-  <li><code class="language-plaintext highlighter-rouge">ROLE</code> must be the string <code class="language-plaintext highlighter-rouge">OTHER</code></li>
-  <li><code class="language-plaintext highlighter-rouge">OTHERROLE</code> must be the processing step this processor provided, from the list in <a href="ocrd_tool#definition">the ocrd-tool.json spec</a>
-3) Add to <code class="language-plaintext highlighter-rouge">A</code> a <code class="language-plaintext highlighter-rouge">mets:name</code> <code class="language-plaintext highlighter-rouge">N</code> that should include, in free-text form, these data points</li>
-  <li>Name of the processor, e.g. the name of the executable from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
-  <li>Version of the processor, e.g. from <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></li>
-</ul>
-
-<p><strong>Example:</strong></p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mets:agent</span> <span class="na">TYPE=</span><span class="s">"OTHER"</span> <span class="na">OTHERTYPE=</span><span class="s">"SOFTWARE"</span> <span class="na">ROLE=</span><span class="s">"OTHER"</span> <span class="na">OTHERROLE=</span><span class="s">"preprocessing/optimization/binarization"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;mets:name&gt;</span>ocrd_tesserocr v0.1.2<span class="nt">&lt;/mets:name&gt;</span>
-<span class="nt">&lt;/mets:agent&gt;</span>
+<span class="nt">&lt;/mets:structLink&gt;</span>
 </code></pre></div></div>
 
       </main>

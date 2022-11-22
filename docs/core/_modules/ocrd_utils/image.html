@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_utils.image &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>ocrd_utils.image &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -41,6 +41,10 @@
 
 <span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span> <span class="nn">.introspect</span> <span class="kn">import</span> <span class="n">membername</span>
+
+<span class="c1"># Allow processing of images with up to 1.6bn pixels</span>
+<span class="c1"># https://github.com/OCR-D/core/issues/735</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">MAX_IMAGE_PIXELS</span> <span class="o">=</span> <span class="mi">40_000</span> <span class="o">**</span> <span class="mi">2</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;adjust_canvas_to_rotation&#39;</span><span class="p">,</span>
@@ -226,7 +230,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">))</span>
-    <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mask</span></div>
 
 <div class="viewcode-block" id="rotate_coordinates"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.image.html#ocrd_utils.image.rotate_coordinates">[docs]</a><span class="k">def</span> <span class="nf">rotate_coordinates</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">orig</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])):</span>
@@ -294,7 +298,7 @@
         <span class="c1"># expose areas as transparent):</span>
         <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">image</span><span class="o">.</span><span class="n">putalpha</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;background&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fill</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">]:</span>
         <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span>
@@ -518,7 +522,8 @@
 <span class="sd">    of relative coordinates into the image, fill everything</span>
 <span class="sd">    outside the polygon hull to a color according to ``fill``:</span>
 
-<span class="sd">    - if ``background`` (the default),</span>
+<span class="sd">    - if ``none`` then do not touch the colour channels at all,</span>
+<span class="sd">    - else if ``background`` (the default),</span>
 <span class="sd">      then use the median color of the image;</span>
 <span class="sd">    - otherwise use the given color, e.g. ``&#39;white&#39;`` or (255,255,255).</span>
 
@@ -531,17 +536,20 @@
 <span class="sd">    </span>
 <span class="sd">    Return a new PIL.Image.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">polygon_mask</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">polygon</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;background&#39;</span><span class="p">:</span>
-        <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span> <span class="ow">or</span> <span class="n">fill</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">new_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">background</span> <span class="o">=</span> <span class="n">fill</span>
-    <span class="n">new_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
-    <span class="n">new_image</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">polygon_mask</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">polygon</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fill</span> <span class="o">==</span> <span class="s1">&#39;background&#39;</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">ImageStat</span><span class="o">.</span><span class="n">Stat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">background</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">fill</span>
+        <span class="n">new_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
+        <span class="n">new_image</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
     <span class="c1"># ensure no information is lost by a adding transparency channel</span>
     <span class="c1"># initialized to fully transparent outside the polygon mask</span>
     <span class="c1"># (so consumers do not have to rely on background estimation,</span>
@@ -667,7 +675,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -689,7 +697,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -711,7 +719,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

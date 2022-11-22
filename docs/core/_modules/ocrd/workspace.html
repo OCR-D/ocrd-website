@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.workspace &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>ocrd.workspace &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -69,6 +69,8 @@
     <span class="n">polygon_from_points</span><span class="p">,</span>
     <span class="n">xywh_from_bbox</span><span class="p">,</span>
     <span class="n">pushd_popd</span><span class="p">,</span>
+    <span class="n">is_local_filename</span><span class="p">,</span>
+    <span class="n">deprecated_alias</span><span class="p">,</span>
     <span class="n">MIME_TO_EXT</span><span class="p">,</span>
     <span class="n">MIME_TO_PIL</span><span class="p">,</span>
     <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
@@ -96,7 +98,7 @@
 <span class="sd">    Args:</span>
 
 <span class="sd">        directory (string) : Filesystem folder to work in</span>
-<span class="sd">        mets (:py:class:`ocrd_models.ocrd_mets.OcrdMets`) : `OcrdMets` representing this workspace. </span>
+<span class="sd">        mets (:py:class:`ocrd_models.ocrd_mets.OcrdMets`) : `OcrdMets` representing this workspace.</span>
 <span class="sd">            Loaded from `&#39;mets.xml&#39;` if `None`.</span>
 <span class="sd">        mets_basename (string) : Basename of the METS XML file. Default: Last URL segment of the mets_url.</span>
 <span class="sd">        overwrite_mode (boolean) : Whether to force add operations on this workspace globally</span>
@@ -129,7 +131,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="n">OcrdMets</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Workspace.merge"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_workspace</span><span class="p">,</span> <span class="n">copy_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Workspace.merge"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.merge">[docs]</a>    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">pageId</span><span class="o">=</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">fileGrp</span><span class="o">=</span><span class="s2">&quot;file_grp&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">fileGrp_mapping</span><span class="o">=</span><span class="s2">&quot;filegrp_mapping&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_workspace</span><span class="p">,</span> <span class="n">copy_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Merge ``other_workspace`` into this one</span>
 
@@ -139,17 +145,32 @@
 <span class="sd">            copy_files (boolean): Whether to copy files from `other_workspace` to this one</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">after_add_cb</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;callback to run on merged OcrdFile instances in the destination&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">copy_files</span><span class="p">:</span>
+                <span class="n">fpath_src</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">other_workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+                <span class="n">fpath_dst</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+                <span class="n">dstprefix</span> <span class="o">=</span> <span class="n">fpath_src</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">fpath_dst</span><span class="p">)</span> <span class="c1"># raises ValueError if not a subpath</span>
+                <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dstprefix</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
                 <span class="k">return</span>
             <span class="n">fpath_src</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">other_workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
             <span class="n">fpath_dest</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fpath_src</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">fpath_dest</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">fpath_dest</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Copying </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> would overwrite the latter&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fpath_src</span><span class="p">,</span> <span class="n">fpath_dest</span><span class="p">))</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">fpath_dest</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                     <span class="n">makedirs</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fpath_dest</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fpath_src</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fstream_in</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fpath_dest</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fstream_out</span><span class="p">:</span>
                     <span class="n">copyfileobj</span><span class="p">(</span><span class="n">fstream_in</span><span class="p">,</span> <span class="n">fstream_out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;page_id&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pageId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;page_id&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;file_id&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;file_grp&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fileGrp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;file_grp&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;filegrp_mapping&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fileGrp_mapping&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;filegrp_mapping&#39;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">other_workspace</span><span class="o">.</span><span class="n">mets</span><span class="p">,</span> <span class="n">after_add_cb</span><span class="o">=</span><span class="n">after_add_cb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -197,12 +218,12 @@
             <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span>
             <span class="k">return</span> <span class="n">f</span></div>
 
-<div class="viewcode-block" id="Workspace.remove_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Workspace.remove_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a METS `file` from the workspace.</span>
 
 <span class="sd">        Arguments:</span>
-<span class="sd">            ID (string|:py:class:`ocrd_models.ocrd_file.OcrdFile`): `@ID` of the METS `file`</span>
+<span class="sd">            file_id (string|:py:class:`ocrd_models.ocrd_file.OcrdFile`): `@ID` of the METS `file`</span>
 <span class="sd">                to delete or the file itself</span>
 <span class="sd">        Keyword Args:</span>
 <span class="sd">            force (boolean): Continue removing even if file not found in METS</span>
@@ -213,16 +234,19 @@
 <span class="sd">                Has no effect unless ``page_recursive`` is `True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace.remove_file&#39;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleting mets:file </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleting mets:file </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
             <span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">OcrdFile</span><span class="p">):</span>
-            <span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span><span class="o">.</span><span class="n">ID</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">OcrdFile</span><span class="p">):</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span><span class="o">.</span><span class="n">ID</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ocrd_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">ID</span><span class="p">))</span>
+                <span class="n">ocrd_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2"> not found in METS&quot;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">file_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">REGEX_PREFIX</span><span class="p">):</span>
+                    <span class="c1"># allow empty results if filter criteria involve a regex</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2"> not found in METS&quot;</span> <span class="o">%</span> <span class="n">file_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">page_recursive</span> <span class="ow">and</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
                     <span class="n">ocrd_page</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">silence</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -235,14 +259,15 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_file</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
-                        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;File not locally available but --force is set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;File not locally available </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ocrd_file</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;rm </span><span class="si">%s</span><span class="s2"> [cwd=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
                         <span class="n">unlink</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
             <span class="c1"># Remove from METS only after the recursion of AlternativeImages</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ocrd_file</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
@@ -258,9 +283,9 @@
 <span class="sd">            recursive (boolean): Whether to recursively delete all files in the group</span>
 <span class="sd">            force (boolean): Continue removing even if group or containing files not found in METS</span>
 <span class="sd">            keep_files (boolean): When deleting recursively whether to keep files on disk</span>
-<span class="sd">            page_recursive (boolean): Whether to remove all images referenced in the file </span>
+<span class="sd">            page_recursive (boolean): Whether to remove all images referenced in the file</span>
 <span class="sd">                if the file is a PAGE-XML document.</span>
-<span class="sd">            page_same_group (boolean): Remove only images in the same file group as the PAGE-XML. </span>
+<span class="sd">            page_same_group (boolean): Remove only images in the same file group as the PAGE-XML.</span>
 <span class="sd">                Has no effect unless ``page_recursive`` is `True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
@@ -274,9 +299,11 @@
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">fileGrp</span><span class="o">=</span><span class="n">USE</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="n">keep_files</span><span class="p">,</span> <span class="n">page_recursive</span><span class="o">=</span><span class="n">page_recursive</span><span class="p">,</span> <span class="n">page_same_group</span><span class="o">=</span><span class="n">page_same_group</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
-                    <span class="n">file_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">))</span>
+                    <span class="n">f_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">f_dir</span><span class="p">:</span>
+                        <span class="n">file_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f_dir</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file_group</span><span class="p">(</span><span class="n">USE</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_file_group</span><span class="p">(</span><span class="n">USE</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">)</span>
 
         <span class="c1"># PLEASE NOTE: this only removes directories in the workspace if they are empty</span>
         <span class="c1"># and named after the fileGrp which is a convention in OCR-D.</span>
@@ -312,12 +339,24 @@
             <span class="n">url_replacements</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Moving files&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">mets_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">fileGrp</span><span class="o">=</span><span class="n">old</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                <span class="n">new_url</span> <span class="o">=</span> <span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">old</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">new</span><span class="p">,</span> <span class="n">mets_file</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+                <span class="n">new_url</span> <span class="o">=</span> <span class="n">old_url</span> <span class="o">=</span> <span class="n">mets_file</span><span class="o">.</span><span class="n">url</span>
+                <span class="c1"># Directory part</span>
+                <span class="n">new_url</span> <span class="o">=</span> <span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">old</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">new</span><span class="p">,</span> <span class="n">new_url</span><span class="p">)</span>
+                <span class="c1"># File part</span>
+                <span class="n">new_url</span> <span class="o">=</span> <span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">old</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">new</span><span class="p">,</span> <span class="n">new_url</span><span class="p">)</span>
                 <span class="n">url_replacements</span><span class="p">[</span><span class="n">mets_file</span><span class="o">.</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_url</span>
                 <span class="c1"># move file from ``old`` to ``new``</span>
                 <span class="n">move</span><span class="p">(</span><span class="n">mets_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">new_url</span><span class="p">)</span>
                 <span class="c1"># change the url of ``mets:file``</span>
                 <span class="n">mets_file</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">new_url</span>
+                <span class="c1"># change the file ID and update structMap</span>
+                <span class="c1"># change the file ID and update structMap</span>
+                <span class="n">new_id</span> <span class="o">=</span> <span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">old</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">new</span><span class="p">,</span> <span class="n">mets_file</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">new_id</span><span class="p">))</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ID </span><span class="si">%s</span><span class="s2"> already exists, not changing ID while renaming </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_id</span><span class="p">,</span> <span class="n">old_url</span><span class="p">,</span> <span class="n">new_url</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="n">mets_file</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">new_id</span>
             <span class="c1"># change file paths in PAGE-XML imageFilename and filename attributes</span>
             <span class="k">for</span> <span class="n">page_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Renaming file references in PAGE-XML </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">page_file</span><span class="p">)</span>
@@ -345,10 +384,12 @@
             <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">old</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">listdir</span><span class="p">(</span><span class="n">old</span><span class="p">):</span>
                 <span class="n">Path</span><span class="p">(</span><span class="n">old</span><span class="p">)</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Workspace.add_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Workspace.add_file"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.add_file">[docs]</a>    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">pageId</span><span class="o">=</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a file to the :py:class:`ocrd_models.ocrd_mets.OcrdMets` of the workspace.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Arguments:</span>
 <span class="sd">            file_grp (string): `@USE` of the METS `fileGrp` to add to</span>
 <span class="sd">        Keyword Args:</span>
@@ -356,7 +397,7 @@
 <span class="sd">                in the filesystem</span>
 <span class="sd">            **kwargs: See :py:func:`ocrd_models.ocrd_mets.OcrdMets.add_file`</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            a new :py:class:`ocrd_models.ocrd_file.OcrdFile` </span>
+<span class="sd">            a new :py:class:`ocrd_models.ocrd_file.OcrdFile`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace.add_file&#39;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -364,15 +405,15 @@
             <span class="n">file_grp</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;local_filename&#39;</span><span class="p">),</span>
             <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;pageId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;workspace.add_file must be passed a &#39;pageId&#39; kwarg, even if it is None.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;local_filename&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;page_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;workspace.add_file must be passed a &#39;page_id&#39; kwarg, even if it is None.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;local_filename&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;content&#39; was set but no &#39;local_filename&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_mode</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s1">&#39;local_filename&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;local_filename&#39;</span><span class="p">):</span>
                 <span class="c1"># If the local filename has folder components, create those folders</span>
                 <span class="n">local_filename_dir</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;local_filename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">local_filename_dir</span> <span class="o">!=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;local_filename&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">local_filename_dir</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
@@ -381,6 +422,10 @@
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;local_filename&#39;</span><span class="p">]</span>
 
             <span class="c1">#  print(kwargs)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;pageId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;file_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
+
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">file_grp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -396,7 +441,7 @@
 <span class="sd">        Write out the current state of the METS file to the filesystem.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace.save_mets&#39;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving mets &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Saving mets &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">:</span>
             <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">atomic_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_target</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -421,7 +466,7 @@
             <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">exif_from_filename</span><span class="p">(</span><span class="n">image_filename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">download_temporary_file</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">exif_from_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">ocrd_exif</span> <span class="o">=</span> <span class="n">exif_from_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ocrd_exif</span></div>
 
 <div class="viewcode-block" id="Workspace.resolve_image_as_pil"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.resolve_image_as_pil">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Use workspace.image_from_page and workspace.image_from_segment&quot;</span><span class="p">)</span>
@@ -451,7 +496,7 @@
                 <span class="n">pil_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">download_temporary_file</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">pil_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="n">pil_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">pil_image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># alloc and give up the FD</span>
 
         <span class="c1"># Pillow does not properly support higher color depths</span>
@@ -508,26 +553,30 @@
 
 <div class="viewcode-block" id="Workspace.image_from_page"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_page">[docs]</a>    <span class="k">def</span> <span class="nf">image_from_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span>
                         <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">feature_filter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+                        <span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">feature_filter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extract an image for a PAGE-XML page from the workspace.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            page (:py:class:`ocrd_models.ocrd_page.PageType`): a PAGE `PageType` object</span>
 <span class="sd">            page_id (string): its `@ID` in the METS physical `structMap`</span>
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            fill (string): a `PIL` color specifier</span>
+<span class="sd">            fill (string): a `PIL` color specifier, or `background` or `none`</span>
 <span class="sd">            transparency (boolean): whether to add an alpha channel for masking</span>
 <span class="sd">            feature_selector (string): a comma-separated list of `@comments` classes</span>
 <span class="sd">            feature_filter (string): a comma-separated list of `@comments` classes</span>
+<span class="sd">            filename (string): which file path to use</span>
 
 <span class="sd">        Extract a `PIL.Image` from ``page``, either from its `AlternativeImage`</span>
 <span class="sd">        (if it exists), or from its `@imageFilename` (otherwise). Also crop it,</span>
 <span class="sd">        if a `Border` exists, and rotate it, if any `@orientation` angle is</span>
 <span class="sd">        annotated.</span>
 
+<span class="sd">        If ``filename`` is given, then among `@imageFilename` and the available</span>
+<span class="sd">        `AlternativeImage/@filename` images, pick that one, or raise an error.</span>
+
 <span class="sd">        If ``feature_selector`` and/or ``feature_filter`` is given, then</span>
-<span class="sd">        select/filter among the `@imageFilename` image and the available</span>
-<span class="sd">        AlternativeImages the richest one which contains all of the selected,</span>
+<span class="sd">        among the `@imageFilename` image and the available AlternativeImages,</span>
+<span class="sd">        select/filter the richest one which contains all of the selected,</span>
 <span class="sd">        but none of the filtered features (i.e. `@comments` classes), or</span>
 <span class="sd">        raise an error.</span>
 
@@ -546,8 +595,11 @@
 <span class="sd">        Cropping uses a polygon mask (not just the bounding box rectangle).</span>
 <span class="sd">        Areas outside the polygon will be filled according to ``fill``:</span>
 
+<span class="sd">        \b</span>
 <span class="sd">        - if `&quot;background&quot;` (the default),</span>
 <span class="sd">          then fill with the median color of the image;</span>
+<span class="sd">        - else if `&quot;none&quot;`, then avoid masking polygons where possible</span>
+<span class="sd">          (i.e. when cropping) or revert to the default (i.e. when rotating)</span>
 <span class="sd">        - otherwise, use the given color, e.g. `&quot;white&quot;` or `(255,255,255)`.</span>
 
 <span class="sd">        Moreover, if ``transparency`` is true, and unless the image already</span>
@@ -567,7 +619,7 @@
 <span class="sd">               - `&quot;angle&quot;`: the rotation/reflection angle applied to the image so far,</span>
 <span class="sd">               - `&quot;features&quot;`: the `AlternativeImage` `@comments` for the image, i.e.</span>
 <span class="sd">                 names of all applied operations that lead up to this result,</span>
-<span class="sd">             * an :py:class:`ocrd_models.ocrd_exif.OcrdExif` instance associated with </span>
+<span class="sd">             * an :py:class:`ocrd_models.ocrd_exif.OcrdExif` instance associated with</span>
 <span class="sd">               the original image.</span>
 
 <span class="sd">        (The first two can be used to annotate a new `AlternativeImage`,</span>
@@ -620,6 +672,8 @@
             <span class="c1"># but also ensure that we get the richest feature set, i.e. most</span>
             <span class="c1"># of those features that we cannot reproduce automatically below</span>
             <span class="k">for</span> <span class="n">alternative_image</span> <span class="ow">in</span> <span class="n">alternative_images</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filename</span> <span class="ow">and</span> <span class="n">filename</span> <span class="o">!=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+                    <span class="k">continue</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for page &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
@@ -707,6 +761,10 @@
                     <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
 
         <span class="c1"># verify constraints again:</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">page_image</span><span class="p">,</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Found no AlternativeImage that satisfies all requirements &#39;</span> <span class="o">+</span>
+                            <span class="s1">&#39;filename=&quot;</span><span class="si">%s</span><span class="s1">&quot; in page &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">filename</span><span class="p">,</span> <span class="n">page_id</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">page_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
                    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Found no AlternativeImage that satisfies all requirements &#39;</span> <span class="o">+</span>
@@ -722,7 +780,7 @@
 
 <div class="viewcode-block" id="Workspace.image_from_segment"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.image_from_segment">[docs]</a>    <span class="k">def</span> <span class="nf">image_from_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="n">parent_image</span><span class="p">,</span> <span class="n">parent_coords</span><span class="p">,</span>
                            <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                           <span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">feature_filter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+                           <span class="n">feature_selector</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">feature_filter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extract an image for a PAGE-XML hierarchy segment from its parent&#39;s image.</span>
 
 <span class="sd">        Args:</span>
@@ -741,19 +799,22 @@
 <span class="sd">               - `&quot;features&quot;`: the ``AlternativeImage/@comments`` for the image, i.e.</span>
 <span class="sd">                 names of all operations that lead up to this result, and</span>
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            fill (string): a `PIL` color specifier</span>
+<span class="sd">            fill (string): a `PIL` color specifier, or `background` or `none`</span>
 <span class="sd">            transparency (boolean): whether to add an alpha channel for masking</span>
 <span class="sd">            feature_selector (string): a comma-separated list of ``@comments`` classes</span>
-<span class="sd">            feature_filter (string): a comma-separated list of ``@comments`` classes            </span>
-<span class="sd">        </span>
+<span class="sd">            feature_filter (string): a comma-separated list of ``@comments`` classes</span>
+
 <span class="sd">        Extract a `PIL.Image` from `segment`, either from ``AlternativeImage``</span>
 <span class="sd">        (if it exists), or producing a new image via cropping from `parent_image`</span>
 <span class="sd">        (otherwise). Pass in `parent_image` and `parent_coords` from the result</span>
 <span class="sd">        of the next higher-level of this function or from :py:meth:`image_from_page`.</span>
 
-<span class="sd">        If `feature_selector` and/or `feature_filter` is given, then</span>
-<span class="sd">        select/filter among the cropped `parent_image` and the available</span>
-<span class="sd">        AlternativeImages the richest one which contains all of the selected,</span>
+<span class="sd">        If ``filename`` is given, then among the available `AlternativeImage/@filename`</span>
+<span class="sd">        images, pick that one, or raise an error.</span>
+
+<span class="sd">        If ``feature_selector`` and/or ``feature_filter`` is given, then</span>
+<span class="sd">        among the cropped `parent_image` and the available AlternativeImages,</span>
+<span class="sd">        select/filter the richest one which contains all of the selected,</span>
 <span class="sd">        but none of the filtered features (i.e. ``@comments`` classes), or</span>
 <span class="sd">        raise an error.</span>
 
@@ -764,8 +825,11 @@
 <span class="sd">        Cropping uses a polygon mask (not just the bounding box rectangle).</span>
 <span class="sd">        Areas outside the polygon will be filled according to `fill`:</span>
 
+<span class="sd">        \b</span>
 <span class="sd">        - if `&quot;background&quot;` (the default),</span>
 <span class="sd">          then fill with the median color of the image;</span>
+<span class="sd">        - else if `&quot;none&quot;`, then avoid masking polygons where possible</span>
+<span class="sd">          (i.e. when cropping) or revert to the default (i.e. when rotating)</span>
 <span class="sd">        - otherwise, use the given color, e.g. `&quot;white&quot;` or `(255,255,255)`.</span>
 
 <span class="sd">        Moreover, if `transparency` is true, and unless the image already</span>
@@ -878,6 +942,8 @@
             <span class="c1"># but also ensure that we get the richest feature set, i.e. most</span>
             <span class="c1"># of those features that we cannot reproduce automatically below</span>
             <span class="k">for</span> <span class="n">alternative_image</span> <span class="ow">in</span> <span class="n">alternative_images</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filename</span> <span class="ow">and</span> <span class="n">filename</span> <span class="o">!=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+                    <span class="k">continue</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="n">alternative_image</span><span class="o">.</span><span class="n">get_comments</span><span class="p">()</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;AlternativeImage </span><span class="si">%d</span><span class="s2"> for segment &#39;</span><span class="si">%s</span><span class="s2">&#39; does not have any feature attributes&quot;</span><span class="p">,</span>
@@ -949,6 +1015,10 @@
                     <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">transparency</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
 
         <span class="c1"># verify constraints again:</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">segment_image</span><span class="p">,</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Found no AlternativeImage that satisfies all requirements &#39;</span> <span class="o">+</span>
+                            <span class="s1">&#39;filename=&quot;</span><span class="si">%s</span><span class="s1">&quot; in segment &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">filename</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">segment_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
                    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_selector</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Found no AlternativeImage that satisfies all requirements&#39;</span> <span class="o">+</span>
@@ -979,7 +1049,7 @@
 <span class="sd">            page_id (string): `@ID` in the METS physical `structMap` to use</span>
 <span class="sd">            mimetype (string): MIME type of the image format to serialize as</span>
 <span class="sd">            force (boolean): whether to replace any existing `file` with that `@ID`</span>
-<span class="sd">        </span>
+
 <span class="sd">        Serialize the image into the filesystem, and add a `file` for it in the METS.</span>
 <span class="sd">        Use a filename extension based on ``mimetype``.</span>
 
@@ -993,16 +1063,38 @@
         <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">image_bytes</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MIME_TO_PIL</span><span class="p">[</span><span class="n">mimetype</span><span class="p">])</span>
         <span class="n">file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_grp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">MIME_TO_EXT</span><span class="p">[</span><span class="n">mimetype</span><span class="p">])))</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
-            <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
-            <span class="n">file_grp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
-            <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+            <span class="n">file_grp</span><span class="p">,</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
             <span class="n">local_filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
             <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">image_bytes</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;created file ID: </span><span class="si">%s</span><span class="s1">, file_grp: </span><span class="si">%s</span><span class="s1">, path: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
                  <span class="n">file_id</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">file_path</span></div></div>
+        <span class="k">return</span> <span class="n">file_path</span></div>
+
+<div class="viewcode-block" id="Workspace.find_files"><a class="viewcode-back" href="../../api/ocrd/ocrd.workspace.html#ocrd.workspace.Workspace.find_files">[docs]</a>    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search ``mets:file`` entries in wrapped METS document and yield results.</span>
+
+<span class="sd">        Delegator to :py:func:`ocrd_models.ocrd_mets.OcrdMets.find_files`</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            **kwargs: See :py:func:`ocrd_models.ocrd_mets.OcrdMets.find_files`</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Generator which yields :py:class:`ocrd_models:ocrd_file:OcrdFile` instantiations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.workspace.find_files&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;find files in mets. kwargs=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;page_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;pageId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;file_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;file_grp&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;fileGrp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;file_grp&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 <span class="k">def</span> <span class="nf">_crop</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="n">parent_image</span><span class="p">,</span> <span class="n">parent_coords</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s1">&#39;cropped&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">segment_coords</span> <span class="o">=</span> <span class="n">parent_coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1017,7 +1109,9 @@
     <span class="c1"># crop, if (still) necessary:</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">BorderType</span><span class="p">)</span> <span class="ow">or</span> <span class="c1"># always crop below page level</span>
         <span class="ow">not</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">parent_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">BorderType</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;recropped&#39;</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Recropping </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">BorderType</span><span class="p">):</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cropping </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
             <span class="n">segment_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">op</span>
         <span class="c1"># create a mask from the segment polygon:</span>
@@ -1083,9 +1177,13 @@
           <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">BorderType</span><span class="p">)</span> <span class="ow">or</span> <span class="c1"># always crop below page level</span>
            <span class="s1">&#39;cropped&#39;</span> <span class="ow">in</span> <span class="n">segment_coords</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">])):</span>
         <span class="c1"># only shift coordinates as if re-cropping</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">segment_coords</span><span class="p">,</span> <span class="n">segment_xywh</span> <span class="o">=</span> <span class="n">_crop</span><span class="p">(</span>
-            <span class="n">log</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="n">segment_image</span><span class="p">,</span> <span class="n">segment_coords</span><span class="p">,</span>
-            <span class="n">op</span><span class="o">=</span><span class="s1">&#39;recropped&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">segment_polygon</span> <span class="o">=</span> <span class="n">coordinates_of_segment</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">segment_image</span><span class="p">,</span> <span class="n">segment_coords</span><span class="p">)</span>
+        <span class="n">segment_bbox</span> <span class="o">=</span> <span class="n">bbox_from_polygon</span><span class="p">(</span><span class="n">segment_polygon</span><span class="p">)</span>
+        <span class="n">segment_xywh</span> <span class="o">=</span> <span class="n">xywh_from_bbox</span><span class="p">(</span><span class="o">*</span><span class="n">segment_bbox</span><span class="p">)</span>
+        <span class="n">segment_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shift_coordinates</span><span class="p">(</span>
+            <span class="n">segment_coords</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">segment_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                      <span class="o">-</span><span class="n">segment_bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
     <span class="k">return</span> <span class="n">segment_image</span><span class="p">,</span> <span class="n">segment_coords</span><span class="p">,</span> <span class="n">segment_xywh</span>
 
 <span class="k">def</span> <span class="nf">_scale</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">segment_image</span><span class="p">,</span> <span class="n">segment_coords</span><span class="p">,</span> <span class="n">segment_xywh</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1131,7 +1229,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -1153,7 +1251,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1175,7 +1273,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

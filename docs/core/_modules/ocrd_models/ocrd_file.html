@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_models.ocrd_file &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>ocrd_models.ocrd_file &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -146,7 +146,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;OcrdFile </span><span class="si">%s</span><span class="s2"> has no member &#39;mets&#39; pointing to parent OcrdMets&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">old_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="c1"># also update the references in the physical structmap</span>
+        <span class="k">for</span> <span class="n">pageId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">remove_physical_page_fptr</span><span class="p">(</span><span class="n">fileId</span><span class="o">=</span><span class="n">old_id</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pageId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -283,7 +289,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -305,7 +311,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -327,7 +333,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -339,8 +339,12 @@ function ToggleSearchActive2() {
   <li><a href="#ocr-d-setup-guide">OCR-D setup guide</a>
     <ul>
       <li><a href="#system-requirements">System requirements</a></li>
-      <li><a href="#installation">Installation</a></li>
-      <li><a href="#ocrd_all">ocrd_all</a></li>
+      <li><a href="#installation">Installation</a>
+        <ul>
+          <li><a href="#ocrd_all">ocrd_all</a></li>
+          <li><a href="#installation-docker-or-native">Installation: Docker or Native</a></li>
+        </ul>
+      </li>
       <li><a href="#ocrd_all-via-docker">ocrd_all via Docker</a>
         <ul>
           <li><a href="#mini-medi-maxi">mini medi maxi</a></li>
@@ -387,22 +391,30 @@ to achieve the workflow best suited for OCRing your content.</p>
 
 <p>Minimum system requirements</p>
 <details>
-<summary>- 8 GB RAM (more recommended)</summary>
+<summary> 8 GB RAM (more recommended)</summary>
   
   - The more RAM is available, the more concurrent processes can be run<br />
   - Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
   
 </details>
 <details>
-<summary>- min. 20 GB free disk space for local installation (more recommended)</summary>
+<summary> 20 GB free disk space for local installation (more recommended)</summary>
   
   - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself 
   you will need space for various <a href="https://ocr-d.de/en/models">pretrained models</a>, training and evaluation data for training, and data to process.
   
 </details>
 <details>
-<summary>- Operating system: Ubuntu 18.04</summary>
+<summary> Python 3.6 or 3.7</summary>
   
+  - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br />
+  - Python 3.7 is also tested and supported<br />
+  - Python 3.8 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and &lt;2 and other related software. We expect to unconditionally support Python 3.8 once all processors and models are upgraded to work with a more recent Tensorflow.
+  
+</details>
+<details>
+<summary> Operating system: Ubuntu 18.04 (or Docker)</summary>
+  - For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki).
   - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br />
   - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br />
@@ -410,265 +422,153 @@ to achieve the workflow best suited for OCRing your content.</p>
   - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
   
 </details>
-<details>
-<summary>- Python 3.6 or 3.7</summary>
-  
-  - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br />
-  - Python 3.7 is also tested and supported<br />
-  - We currently <b>cannot fully support Python 3.8</b>, because there currently (May 2022) are no pre-built Python packages for Tensorflow 2.5 and &lt; 2 and other related software). We expect to unconditionally support Python 3.8 and newer versions sometime in the future when all processors work with a recent Tensorflow 2.x.
-  
-</details>
-<p><br />
-For installation on Windows 10 (WSL) and macOS see the setup guides in the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D-Wiki</a></p>
-
-<p>Alternatively, you can use <a href="https://hub.docker.com/u/ocrd">Docker</a>. This way, you will only have to meet the minimum requirements for 
-free disk space. But you can use any operating system you want and do not have to worry about the Python version.</p>
 
 <h2 id="installation">Installation</h2>
 
-<p>There are two ways to install OCR-D modules:</p>
+<h3 id="ocrd_all">ocrd_all</h3>
 
-<ol>
-  <li><a href="#ocrd_all-via-docker">Using</a> the <a href="https://hub.docker.com/r/ocrd/all">ocrd_all prebuilt Docker images <code class="language-plaintext highlighter-rouge">ocrd/all</code></a> to install a module collection (<strong>recommended</strong>)</li>
-  <li><a href="#ocrd_all-natively">Using</a> the <a href="https://github.com/OCR-D/ocrd_all">ocrd_all git repository</a> to install selected modules natively</li>
-</ol>
+<p><code class="language-plaintext highlighter-rouge">ocrd_all</code> is the main way to distribute and install the OCR-D software. 
+If you want to produce OCR output from image data, 
+this is what you need.</p>
 
-<p>We recommend using the prebuilt Docker images since this does not require any changes to
-the host system besides <a href="https://hub.docker.com/r/ocrd/all">installing Docker</a>.</p>
-
-<p>For developers it might be useful to <a href="#individual-installation">install the modules individually</a>, either via Docker or natively.
-Beware that for all other users and purposes we do not recommend installing modules individually, because it can be difficult to catch all dependencies, 
-keep the software up-to-date and ensure that they are at usable and interoperable versions.</p>
-
-<h2 id="ocrd_all">ocrd_all</h2>
-
-<p>The <a href="https://github.com/OCR-D/ocrd_all"><code class="language-plaintext highlighter-rouge">ocrd_all</code></a> project is an effort by the
+<details>
+    <summary>Tell me more about ocrd_all</summary>
+    
+The [`ocrd_all`](https://github.com/OCR-D/ocrd_all) project is an effort by the
 OCR-D community, now maintained by the OCR-D coordination team. It streamlines
 the native installation of OCR-D modules with a versatile Makefile approach.
 Besides allowing native installation of the full OCR-D stack (or any subset),
-it is also the base for the <a href="https://hub.docker.com/r/ocrd/all"><code class="language-plaintext highlighter-rouge">ocrd/all</code></a>
+it is also the base for the [`ocrd/all`](https://hub.docker.com/r/ocrd/all)
 Docker images available from DockerHub that contain the full stack (or certain subsets)
-of OCR-D modules ready for deployment.</p>
+of OCR-D modules ready for deployment.
 
-<p>Technically, <code class="language-plaintext highlighter-rouge">ocrd_all</code> is a Git repository that keeps all the necessary software
-as Git submodules at specific revisions. This way, the software tools are known
-to be at a stable version and guaranteed to be interoperable with one another.</p>
+Technically, [`ocrd_all`](https://github.com/OCR-D/ocrd_all) is a Git repository 
+that keeps all the necessary software as Git submodules at specific revisions. 
+This way, the software tools are known to be at a stable version and guaranteed to 
+be interoperable with one another.
+    
+  </details>
+
+<h3 id="installation-docker-or-native">Installation: Docker or Native</h3>
+
+<p>There are two methods to install OCR-D:</p>
+
+<ol>
+  <li><strong><a href="#ocrd_all-via-docker">Docker Installation of OCR-D</a></strong> using the prebuilt <code class="language-plaintext highlighter-rouge">ocrd/all</code> <a href="https://hub.docker.com/r/ocrd/all">Docker images</a> to install a module collection (<strong>recommended</strong>)</li>
+  <li><strong><a href="#ocrd_all-natively">Native Installation of OCR-D</a></strong> using the <code class="language-plaintext highlighter-rouge">ocrd_all</code> <a href="https://github.com/OCR-D/ocrd_all">git repository</a> to install selected modules natively</li>
+</ol>
+
+<p>We recommend using the prebuilt Docker images, since this does not require any changes to
+the host system besides <a href="https://hub.docker.com/r/ocrd/all">installing Docker</a>.</p>
+
+<details>
+    <summary>Installation of individual OCR-D modules</summary>
+Sometimes it can be useful to [install the modules individually](#individual-installation-experts-only), either via Docker or natively.
+Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies, 
+keep the software versions up-to-date and ensure that all components are at a usable and interoperable state.
+
+  </details>
 
 <h2 id="ocrd_all-via-docker">ocrd_all via Docker</h2>
 
 <h3 id="mini-medi-maxi">mini medi maxi</h3>
 
 <p>There are three versions of the
-<a href="https://hub.docker.com/r/ocrd/all"><code class="language-plaintext highlighter-rouge">ocrd/all</code></a> image:
+<a href="https://hub.docker.com/r/ocrd/all"><code class="language-plaintext highlighter-rouge">ocrd/all</code></a> Docker image:
 <code class="language-plaintext highlighter-rouge">minimum</code>, <code class="language-plaintext highlighter-rouge">medium</code> and <code class="language-plaintext highlighter-rouge">maximum</code>. They differ in which modules are included
-and hence the size of the image. Only use the <code class="language-plaintext highlighter-rouge">minimum</code> or <code class="language-plaintext highlighter-rouge">medium</code> images if
-you are certain that you do not need the full OCR-D stack for your workflows, otherwise
-we encourage you to use the large but complete <code class="language-plaintext highlighter-rouge">maximum</code> image.</p>
+and hence the size of the image:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">minimum</code> is comprised of the essential OCR-D components, with Tesseract and OCRopus as OCR engines.</li>
+  <li><code class="language-plaintext highlighter-rouge">medium</code> adds the Calamari OCR engine, as well as extra segmentation, pre- and postprocessing options.</li>
+  <li><code class="language-plaintext highlighter-rouge">maximum</code> includes all modules for best performance and full flexibility, but requires the most disk space.</li>
+</ul>
 
-<p>Check this table to see which modules are included in which version:</p>
+<p>We encourage the use of the relatively large but complete <code class="language-plaintext highlighter-rouge">maximum</code> image. 
+The <code class="language-plaintext highlighter-rouge">minimum</code> or <code class="language-plaintext highlighter-rouge">medium</code> images should only be used when certain that none but the included OCR-D 
+modules are needed.</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>Module</th>
-      <th><code class="language-plaintext highlighter-rouge">minimum</code></th>
-      <th><code class="language-plaintext highlighter-rouge">medium</code></th>
-      <th><code class="language-plaintext highlighter-rouge">maximum</code></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>core</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_cis</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_fileformat</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_im6convert</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_pagetopdf</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_repair_inconsistencies</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_tesserocr</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>tesserocr</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>workflow-configuration</td>
-      <td>☑</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>cor-asv-ann</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>dinglehopper</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>format-converters</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_calamari</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_keraslm</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_olena</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_segment</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>tesseract</td>
-      <td>-</td>
-      <td>☑</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_anybaseocr</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_kraken</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_ocropy</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_pc_segmentation</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>ocrd_typegroups_classifier</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>sbb_textline_detector</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-    <tr>
-      <td>cor-asv-fst</td>
-      <td>-</td>
-      <td>-</td>
-      <td>☑</td>
-    </tr>
-  </tbody>
-</table>
+<details>
+  <summary>Click here for a table showing the modules included in each version</summary>
+
+| Module                      | `minimum` | `medium` | `maximum` |
+| -----                       | ----      | ----     | ----      |
+| core                        | ☑         | ☑        | ☑         |
+| ocrd_cis                    | ☑         | ☑        | ☑         |
+| ocrd_fileformat             | ☑         | ☑        | ☑         |
+| ocrd_im6convert             | ☑         | ☑        | ☑         |
+| ocrd_pagetopdf              | ☑         | ☑        | ☑         |
+| ocrd_repair_inconsistencies | ☑         | ☑        | ☑         |
+| ocrd_tesserocr              | ☑         | ☑        | ☑         |
+| ocrd_wrap                   | ☑         | ☑        | ☑         |
+| tesserocr                   | ☑         | ☑        | ☑         |
+| workflow-configuration      | ☑         | ☑        | ☑         |
+| cor-asv-ann                 | -         | ☑        | ☑         |
+| dinglehopper                | -         | ☑        | ☑         |
+| docstruct                   | -         | ☑        | ☑         |
+| format-converters           | -         | ☑        | ☑         |
+| ocrd_calamari               | -         | ☑        | ☑         |
+| ocrd_keraslm                | -         | ☑        | ☑         |
+| ocrd_olahd_client           | ☑         | ☑        | ☑         |
+| ocrd_olena                  | -         | ☑        | ☑         |
+| ocrd_segment                | -         | ☑        | ☑         |
+| tesseract                   | -         | ☑        | ☑         |
+| ocrd_neat                   | -         | ☑        | ☑         |
+| ocrd_anybaseocr             | -         | -        | ☑         |
+| ocrd_detectron2             | -         | -        | ☑         |
+| ocrd_doxa                   | -         | -        | ☑         |
+| ocrd_kraken                 | -         | -        | ☑         |
+| ocrd_ocropy                 | -         | -        | -         |
+| ocrd_pc_segmentation        | -         | -        | -         |
+| ocrd_typegroups_classifier  | -         | -        | ☑         |
+| sbb_binarization            | -         | -        | ☑         |
+| cor-asv-fst                 | -         | -        | -         |
+
+
+  </details>
 
 <h3 id="fetch-docker-image">Fetch Docker image</h3>
 
-<p>To fetch the <code class="language-plaintext highlighter-rouge">maximum</code> version of the <code class="language-plaintext highlighter-rouge">ocrd/all</code> Docker image:</p>
+<p>To fetch the <code class="language-plaintext highlighter-rouge">maximum</code> version of the <code class="language-plaintext highlighter-rouge">ocrd/all</code> Docker image:<br /> 
+(replace <code class="language-plaintext highlighter-rouge">maximum</code> accordingly if you want the <code class="language-plaintext highlighter-rouge">minimum</code> or <code class="language-plaintext highlighter-rouge">medium</code> version)</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:maximum
 </code></pre></div></div>
 
-<p>Replace <code class="language-plaintext highlighter-rouge">maximum</code> accordingly if you want the <code class="language-plaintext highlighter-rouge">minimum</code> or <code class="language-plaintext highlighter-rouge">medium</code> variant.</p>
-
-<p>(Also, if you want to keep the modules’ git repos inside the Docker images – so you can keep making 
-fast updates, without waiting for a new pre-built image but also without building an image yourself –, 
-then add the suffix <code class="language-plaintext highlighter-rouge">-git</code> to the variant, e.g. <code class="language-plaintext highlighter-rouge">maximum-git</code>. This will behave like the native installation, 
-only inside the container. Yes, you can also <a href="https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/">commit changes</a> 
-made in containers back to your local Docker image.)</p>
+<details>
+    <summary>Docker and git images</summary>
+If you want to keep the modules' git repos inside the Docker images – so you can keep making 
+fast updates, without waiting for a new pre-built image, but also without building an image yourself – 
+then add the suffix `-git` to the image version, e.g. `maximum-git`. This will behave like the native installation, 
+only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) 
+made in containers back to your local Docker image.)
+  </details>
 
 <h3 id="testing-the-docker-installation">Testing the Docker installation</h3>
 
-<p>For example, let’s fetch a document from the <a href="https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/">OCR-D GT Repo</a>:</p>
+<p>To start, download and extract a document from the <a href="https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/">OCR-D GT Repo</a>:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="s1">'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'</span>
 unzip wundt_grundriss_1896.ocrd.zip
 <span class="nb">cd </span>data
 </code></pre></div></div>
 
-<p>Let’s segment the images in file group <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> from the zip file into regions (creating a
-first <a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group
-<code class="language-plaintext highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>)</p>
+<p>Let’s segment the images in file group <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> from the zip file into regions, thereby creating a 
+<a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group <code class="language-plaintext highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>)</p>
 
-<p>You can spin up a docker container, mounting the current working directory like this:</p>
+<p>You can spin up a Docker container, mounting the current working directory like this:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
 </code></pre></div></div>
 
-<p>For instructions on how to process your own data, please see the <a href="/en/user_guide">user guide</a>. Make sure to also read <a href="/en/user_guide#translating-native-commands-to-docker-calls">the notes on translating native command line
-calls to docker calls above</a>. Make sure the image
-name matches the executable.</p>
+<p>For instructions on how to proceed further with the processing of your data, please see the <a href="/en/user_guide">user guide</a>. Make sure to also read <a href="/en/user_guide#translating-native-commands-to-docker-calls">the notes on translating native command line calls to docker calls</a>.</p>
 
 <h3 id="updating-docker-image">Updating Docker image</h3>
 
-<p>To update the docker images to their latest version, just run the <code class="language-plaintext highlighter-rouge">docker pull</code> command again:</p>
+<p>To update the Docker image to the latest version, just run the <code class="language-plaintext highlighter-rouge">docker pull</code> command:<br /> 
+(replace <code class="language-plaintext highlighter-rouge">maximum</code> accordingly if you use the <code class="language-plaintext highlighter-rouge">minimum</code> or <code class="language-plaintext highlighter-rouge">medium</code> version)</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:&lt;version&gt;
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:maximum
 </code></pre></div></div>
-
-<p>This can even be set up as a cron-job to ensure the image is always up-to-date.</p>
 
 <h2 id="ocrd_all-natively">ocrd_all natively</h2>
 

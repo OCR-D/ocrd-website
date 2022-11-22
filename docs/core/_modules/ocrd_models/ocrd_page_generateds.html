@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_models.ocrd_page_generateds &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>ocrd_models.ocrd_page_generateds &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
@@ -38,7 +38,7 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="c1">#</span>
-<span class="c1"># Generated Wed Jun 30 17:57:54 2021 by generateDS.py version 2.35.20.</span>
+<span class="c1"># Generated Wed Nov  3 12:30:32 2021 by generateDS.py version 2.35.20.</span>
 <span class="c1"># Python 3.6.9 (default, Jan 26 2021, 15:33:00)  [GCC 8.4.0]</span>
 <span class="c1">#</span>
 <span class="c1"># Command line options:</span>
@@ -60,7 +60,7 @@
 <span class="c1">#   core</span>
 <span class="c1">#</span>
 
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">re</span> <span class="k">as</span> <span class="nn">re_</span>
@@ -1265,7 +1265,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
 <div class="viewcode-block" id="PcGtsType.get_AllAlternativeImagePaths"><a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.PcGtsType.get_AllAlternativeImagePaths">[docs]</a>    <span class="k">def</span> <span class="nf">get_AllAlternativeImagePaths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">glyph</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3151,7 +3151,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pcGtsId&#39;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageFilename</span>
     <span class="c1"># pylint: disable=line-too-long,invalid-name,protected-access,missing-module-docstring</span>
     <span class="k">def</span> <span class="nf">_region_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
@@ -6354,7 +6354,7 @@
             <span class="n">rri</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">index</span>
             <span class="n">rri</span><span class="o">.</span><span class="n">regionRef</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">regionRef</span>
             <span class="n">cleaned</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rri</span><span class="p">)</span>
-        <span class="c1"># remove emtpy groups and replace with RegionRefIndexedType</span>
+        <span class="c1"># remove empty groups and replace with RegionRefIndexedType</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AllIndexed</span><span class="p">():</span>
             <span class="c1"># pylint: disable=undefined-variable</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="p">(</span><span class="n">OrderedGroupIndexedType</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">get_AllIndexed</span><span class="p">():</span>
@@ -7286,7 +7286,7 @@
             <span class="n">rri</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">index</span>
             <span class="n">rri</span><span class="o">.</span><span class="n">regionRef</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">regionRef</span>
             <span class="n">cleaned</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rri</span><span class="p">)</span>
-        <span class="c1"># remove emtpy groups and replace with RegionRefIndexedType</span>
+        <span class="c1"># remove empty groups and replace with RegionRefIndexedType</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AllIndexed</span><span class="p">():</span>
             <span class="c1"># pylint: disable=undefined-variable</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="p">(</span><span class="n">OrderedGroupIndexedType</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">get_AllIndexed</span><span class="p">():</span>
@@ -14329,7 +14329,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -14351,7 +14351,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -14373,7 +14373,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

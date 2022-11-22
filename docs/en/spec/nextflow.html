@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <title>Workflow Format (Nextflow) - OCR-D</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+  <link rel="alternate" type="application/atom+xml" title="OCR-D Blog" href="/feed.xml" />
+  <link rel="stylesheet" href="/assets/bulma.css" />
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css" />
+  <link rel="stylesheet" href="/assets/syntax-highlight.css" />
+  <link rel="stylesheet" href="/assets/ocrd.css" />
+</head>
+<body>
+<script async src="https://cse.google.com/cse.js?cx=e9e3f7148e57ed66c"></script>
+
+
+<script>
+function ToggleSearchActive2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
+</script>
+
+
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/blog">News</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/about">About the OCR-D Project</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase2">Phase II: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase3">Phase III: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/community">Community</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/data">Data</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/initial-tests">Pilot Study</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_survey">User Survey</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/contact">Contacts</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/imprint">Imprint</a>
+            
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Technical Resources</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/dev-best-practice">OCR-D development best practices</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec">Specifications</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">User Guides & Info</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/setup">Setup Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_guide">User Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/workflows">Workflows</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/models">Models</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+        <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+
+      
+	 <span class="navbar-item">
+	 
+            <a href="" title="View in German"></a>
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Search
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Programmable Search Engine. 
+					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
+					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Agree, show me Google Search!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			
+	</span>
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        </span>
+
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#workflow-format-nextflow">Workflow Format (Nextflow)</a>
+    <ul>
+      <li><a href="#structure-of-the-nextflow-script">Structure of the Nextflow script</a>
+        <ul>
+          <li><a href="#dsl-and-parameters">DSL and Parameters</a></li>
+          <li><a href="#definition-of-processes">Definition of processes</a></li>
+          <li><a href="#definition-of-workflows">Definition of workflows</a></li>
+          <li><a href="#main-workflow">Main workflow</a></li>
+          <li><a href="#code-example">Code example</a></li>
+        </ul>
+      </li>
+      <li><a href="#for-users-and-developers">For users and developers:</a>
+        <ul>
+          <li><a href="#convert-the-existing-ocr-d-process-workflows-we-reference-to-nf">Convert the existing OCR-D process workflows we reference to NF</a></li>
+          <li><a href="#conventions-for-nextflow-scrips">Conventions for Nextflow scrips</a></li>
+        </ul>
+      </li>
+      <li><a href="#for-developers-nextflow-implementation-in-ocr-d-related-projects">For developers: Nextflow implementation in OCR-D related projects</a>
+        <ul>
+          <li><a href="#parallelization">Parallelization</a></li>
+          <li><a href="#interaction-with-the-processing-server">Interaction with the processing server</a></li>
+          <li><a href="#interaction-with-the-mets-server">Interaction with the METS server</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="workflow-format-nextflow">Workflow Format (Nextflow)</h1>
+
+<p>One key task in phase III of OCR-D was to define a workflow format describing sequences of OCR-D processors processing the images. Our solution is based on the open source project <a href="https://www.nextflow.io/">Nextflow (NF)</a>.
+The files (with the extension <code class="language-plaintext highlighter-rouge">.nf</code>) describing this sequence can be generated and read both by humans and algorithms and can be more compelx and flexible than the temporary solution with
+<code class="language-plaintext highlighter-rouge">ocrd process</code>.</p>
+
+<p>Nextflow is a workflow framework that allows the integration of various scripting languages into a single cohesive pipeline. 
+Nextflow also has its own Domain Specific Language (DSL) that extends Groovy (extension of Java).</p>
+
+<p>We choose it due to its rich set of features:</p>
+<ul>
+  <li>Stream oriented: Promotes programming approach extending Unix pipes model.</li>
+  <li>Fast Prototyping: Lets you write a computational pipeline from smaller tasks.</li>
+  <li>Reproducibility: Supports Docker, Singularity, and 3 other types of containers.</li>
+  <li>Portable: Can run locally, Slurm, SGE, PBS, and cloud (Google, Kubernetes, and AWS).</li>
+  <li>Continuous checkpoints: Each process in the workflow is checkpointed. It is possible to retry 
+failed workflows and start from the last checkpoint.</li>
+  <li>Supports various scripting languages including Bash, Python, Perl, and others.</li>
+  <li>Enables separation between configuration (how to do) and workflow logic (what to do).</li>
+  <li>Modularization of tasks possible via workflow, sub-workflows, and processes.</li>
+  <li>Provides detailed logs and various types of execution reports.</li>
+</ul>
+
+<h2 id="structure-of-the-nextflow-script">Structure of the Nextflow script</h2>
+<p>The NF script contains the following structures:</p>
+
+<h3 id="dsl-and-parameters">DSL and Parameters</h3>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// enables a syntax extension that allows definition of module libraries
+nextflow.enable.dsl=2
+
+// pipeline parameters
+params.venv = "\$HOME/venv37-ocrd/bin/activate"
+params.workspace = "$projectDir/ocrd-workspace/"
+params.mets = "$projectDir/ocrd-workspace/mets.xml"
+params.reads = "$projectDir/ocrd-workspace/OCR-D-IMG" // The first input directory
+params.outs = "$projectDir/ocrd-workspace/OCR-D-BIN"
+
+// nextflow run &lt;my script&gt; --foo Hello
+// Then, the parameter is accessed with: params.foo
+
+// log pipeline parameters to the console
+log.info """\
+         O P E R A N D I - T E S T   P I P E L I N E 4
+         ===========================================
+         venv          : ${params.venv}
+         ocrd-workpace : ${params.workspace}
+         mets          : ${params.mets}
+         reads         : ${params.reads}
+         outs          : ${params.outs}
+         """
+         .stripIndent()
+</code></pre></div></div>
+<h3 id="definition-of-processes">Definition of processes</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>process tesserocr_deskew {
+  maxForks 1
+	
+  input:
+    path mets_file
+    val input_dir
+    val output_dir
+	
+  output:
+    val output_dir
+	
+  script:
+  """
+  source "${params.venv}"
+  ocrd-tesserocr-deskew -I ${input_dir} -O ${output_dir} -P operation_level page
+  deactivate
+  """	
+}
+</code></pre></div></div>
+<h3 id="definition-of-workflows">Definition of workflows</h3>
+
+<h3 id="main-workflow">Main workflow</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// This is the main workflow
+workflow {
+
+  main:
+    ocr_d_img = Channel.value("OCR-D-IMG")
+    ocr_d_bin = Channel.value("OCR-D-BIN")
+    ocr_d_crop = Channel.value("OCR-D-CROP")
+    ocr_d_bin2 = Channel.value("OCR-D-BIN2")
+    ocr_d_denoise = Channel.value("OCR-D-BIN-DENOISE")
+    ocr_d_deskew = Channel.value("OCR-D-BIN-DENOISE-DESKEW")
+    ocr_d_seg = Channel.value("OCR-D-SEG")
+    ocr_d_dewarp = Channel.value("OCR-D-SEG-LINE-RESEG-DEWARP")
+    ocr_d_oc = Channel.value("OCR-D-OC")
+  
+  
+    // input_dir_ch = Channel.fromPath(params.reads, type: 'dir')
+    ocropy_binarize(params.mets, ocr_d_img, ocr_d_bin)
+    anybaseocr_crop(params.mets, ocropy_binarize.out, ocr_d_crop)
+    skimage_binarize(params.mets, anybaseocr_crop.out, ocr_d_bin2)
+    skimage_denoise(params.mets, skimage_binarize.out, ocr_d_denoise)
+    tesserocr_deskew(params.mets, skimage_denoise.out, ocr_d_deskew)
+    cis_ocropy_segment(params.mets, tesserocr_deskew.out, ocr_d_seg)
+    cis_ocropy_dewarp(params.mets, cis_ocropy_segment.out, ocr_d_dewarp)
+    calamari_recognize(params.mets, cis_ocropy_dewarp.out, ocr_d_oc)
+
+}
+</code></pre></div></div>
+
+<h3 id="code-example">Code example</h3>
+<p>Check this source code example: <a href="https://github.com/subugoe/operandi/blob/main/ExampleWorkflows/Nextflow/workflow4/seq_ocrd_wf_many.nf">seq_ocrd_wf_many.nf</a>
+TODO: We will provide more structure-related details here based on the example above.</p>
+
+<h2 id="for-users-and-developers">For users and developers:</h2>
+<p>Detailed instructions for local executions and example Nextflow workflow scripts can be found here: <a href="https://github.com/subugoe/operandi/tree/master/ExampleWorkflows/Nextflow">Nextflow</a></p>
+
+<h3 id="convert-the-existing-ocr-d-process-workflows-we-reference-to-nf">Convert the existing OCR-D process workflows we reference to NF</h3>
+<p>You can use OtoN (OCR-D to Nextflow) converter which converts basic OCR-D process workflows to Nextflow workflow scripts. Check here: <a href="https://github.com/MehmedGIT/OtoN_Converter">OtoN</a></p>
+
+<p>It is still very fresh and there are still known problems (related to the produced Nextflow scripts) and we are trying to fix them. 
+It is also not convenient to use (no proper CLI and no usage instructions yet). 
+Stay tuned for more updates.</p>
+
+<p>Most edge cases for the lexer/parser of the OCR-D process file have been tested while implementing. 
+There may be input OCR-D process files that are not handled well enough. Feel free to report any bugs, errors, or lack of errors (when an error is expected).</p>
+
+<p>The tool will probably be a part of the OCR-D software in the future when it is stable enough for general use.</p>
+
+<h3 id="conventions-for-nextflow-scrips">Conventions for Nextflow scrips</h3>
+<p>Try to stick to the structure provided in section <a href="#structure-of-the-nextflow-script">Structure of the Nextflow script</a> when writing Nextflow scripts. 
+You can also check the Nextflow examples provided in section <a href="#main-workflow">Main workflow</a>. 
+The naming conventions for variables, function names, process names, and workflow names are encouraged to follow the snake case.</p>
+
+<h2 id="for-developers-nextflow-implementation-in-ocr-d-related-projects">For developers: Nextflow implementation in OCR-D related projects</h2>
+<p>The minimally used features for local runs are the parameters, processes, process decorators, and workflows.</p>
+
+<h3 id="parallelization">Parallelization</h3>
+
+<p>A Nextflow workflow script contains several processes. Processes are executed independently and are isolated from each other (i.e. they do not have a shared memory space). 
+Communication between the processes is possible only through data channels (similar to the pipes model in Unix). These channels are basically asynchronous FIFO queues. 
+Any process can define one or more channels as input and output. 
+The order of interaction between these processes, and ultimately the order of workflow execution depends on the communication channel dependencies between processes. 
+For example, if process A writes data to channel A and process B reads data from channel A, then Nextflow knows that process A must be executed before process B.</p>
+
+<p>Check this source code example: <a href="https://github.com/subugoe/operandi/blob/master/ExampleWorkflows/Nextflow/workflow4/seq_ocrd_wf_many.nf">seq_ocrd_wf_many.nf</a></p>
+
+<p>TODO: We will provide more parallelization details here based on the example above.</p>
+
+<h3 id="interaction-with-the-processing-server">Interaction with the processing server</h3>
+<p>As of Aug 2022 the processing server implementation in OCR-D/core is not yet finished, cf. https://github.com/OCR-D/core/pull/884 and https://github.com/OCR-D/core/pull/652. 
+The interaction will most probably happen with curl through a bash script inside the Nextflow process. 
+Of course, if it is integrated inside the OCR-D core, then no direct interactions will be needed from inside the Nextflow script.</p>
+
+<h3 id="interaction-with-the-mets-server">Interaction with the METS server</h3>
+<p>As of August, 2022, the METS server implementation is still unfinished.
+The interaction will most probably happen with curl through a bash script inside the Nextflow process. 
+Of course, if it is integrated inside the OCR-D core, then no direct interactions will be needed from inside the Nextflow script.</p>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+		<a href="https://github.com/OCR-D">GitHub</a>
+		|
+		<a href="https://gitter.im/OCR-D/Lobby">Gitter</a>
+		|
+		<a href="https://twitter.com/OCR_D_community">Twitter</a>
+		|
+		<a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
+		|
+		<a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+		|
+		<a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+		|
+		<a href="/sitemap.xml">sitemap.xml</a>
+		|
+		
+			<a href="/en/imprint">Imprint</a>
+		
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

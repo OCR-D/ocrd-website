@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.processor.base &#8212; ocrd 2.25.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <title>ocrd.processor.base &#8212; ocrd 2.41.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
@@ -45,28 +45,30 @@
     <span class="s1">&#39;run_processor&#39;</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfileobj</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">io</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span><span class="p">,</span>
     <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+    <span class="n">MIME_TO_EXT</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">initLogging</span><span class="p">,</span>
     <span class="n">list_resource_candidates</span><span class="p">,</span>
+    <span class="n">pushd_popd</span><span class="p">,</span>
     <span class="n">list_all_resources</span><span class="p">,</span>
+    <span class="n">get_processor_resource_types</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span>
 <span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">MetadataItemType</span><span class="p">,</span> <span class="n">LabelType</span><span class="p">,</span> <span class="n">LabelsType</span>
-<span class="kn">from</span> <span class="nn">..resource_manager</span> <span class="kn">import</span> <span class="n">OcrdResourceManager</span>
 
 <span class="c1"># XXX imports must remain for backwards-compatibilty</span>
 <span class="kn">from</span> <span class="nn">.helpers</span> <span class="kn">import</span> <span class="n">run_cli</span><span class="p">,</span> <span class="n">run_processor</span><span class="p">,</span> <span class="n">generate_processor_help</span> <span class="c1"># pylint: disable=unused-import</span>
@@ -97,13 +99,14 @@
             <span class="n">show_help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">show_version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">dump_json</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">dump_module_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">version</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Instantiate, but do not process. Unless ``list_resources`` or</span>
 <span class="sd">        ``show_resource`` or ``show_help`` or ``show_version`` or</span>
-<span class="sd">        ``dump_json`` is true, setup for processing (parsing and</span>
-<span class="sd">        validating parameters, entering the workspace directory).</span>
+<span class="sd">        ``dump_json`` or ``dump_module_dir`` is true, setup for processing</span>
+<span class="sd">        (parsing and validating parameters, entering the workspace directory).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">             workspace (:py:class:`~ocrd.Workspace`): The workspace to process. \</span>
@@ -129,27 +132,36 @@
 <span class="sd">                 this processor&#39;s version and OCR-D version. Exit afterwards.</span>
 <span class="sd">             dump_json (boolean): If true, then instead of processing, print :py:attr:`ocrd_tool` \</span>
 <span class="sd">                 on stdout.</span>
+<span class="sd">             dump_module_dir (boolean): If true, then instead of processing, print :py:attr:`moduledir` \</span>
+<span class="sd">                 on stdout.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">ocrd_tool</span>
         <span class="k">if</span> <span class="n">parameter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">parameter</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">dump_json</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="k">return</span>
+        <span class="k">if</span> <span class="n">dump_module_dir</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="k">if</span> <span class="n">list_resources</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_all_resources</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">show_resource</span><span class="p">:</span>
-            <span class="n">res_fname</span> <span class="o">=</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span> <span class="n">show_resource</span><span class="p">,</span> <span class="n">is_file</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">res_fname</span><span class="p">:</span>
-                <span class="n">initLogging</span><span class="p">()</span>
-                <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.</span><span class="si">%s</span><span class="s1">.__init__&#39;</span> <span class="o">%</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to resolve </span><span class="si">%s</span><span class="s2"> for processor </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">show_resource</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]))</span>
+            <span class="n">initLogging</span><span class="p">()</span>
+            <span class="n">res_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_resource</span><span class="p">(</span><span class="n">show_resource</span><span class="p">)</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res_fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fpath</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+                    <span class="n">fileobj</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+                    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fileobj</span><span class="o">=</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tarball</span><span class="p">:</span>
+                        <span class="n">tarball</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                    <span class="n">fileobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">copyfileobj</span><span class="p">(</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">res_fname</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">copyfileobj</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fpath</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">ocrd_tool</span>
         <span class="k">if</span> <span class="n">show_help</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_help</span><span class="p">()</span>
             <span class="k">return</span>
@@ -235,19 +247,59 @@
         <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Resolved to absolute path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">val</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">val</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">old_pwd</span><span class="p">)</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">cand</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;old_pwd&#39;</span><span class="p">):</span>
+            <span class="n">cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_pwd</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cwd</span> <span class="o">=</span> <span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span>
+                                                         <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">,</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">)</span>
+               <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">cand</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Resolved </span><span class="si">%s</span><span class="s2"> to absolute path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not find resource &#39;</span><span class="si">%s</span><span class="s2">&#39; for executable &#39;</span><span class="si">%s</span><span class="s2">&#39;. Try &#39;ocrd resmgr download </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&#39; to download this resource.&quot;</span><span class="p">,</span>
-                <span class="n">val</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not find resource &#39;</span><span class="si">%s</span><span class="s2">&#39; for executable &#39;</span><span class="si">%s</span><span class="s2">&#39;. &quot;</span>
+                  <span class="s2">&quot;Try &#39;ocrd resmgr download </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&#39; to download this resource.&quot;</span><span class="p">,</span>
+                  <span class="n">val</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Processor.list_all_resources"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.list_all_resources">[docs]</a>    <span class="k">def</span> <span class="nf">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List all resources found in the filesystem</span>
+<span class="sd">        List all resources found in the filesystem and matching content-type by filename suffix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span></div>
+        <span class="n">mimetypes</span> <span class="o">=</span> <span class="n">get_processor_resource_types</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;*/*&#39;</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s1">&#39;text/directory&#39;</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># if we do not know all MIME types, then keep the file, otherwise require suffix match</span>
+                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MIME_TO_EXT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+                                             <span class="k">for</span> <span class="n">mime</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">):</span>
+                    <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">res</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The top-level module this processor belongs to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># find shortest prefix path that is not just a namespace package</span>
+        <span class="n">fqname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">fqname</span><span class="p">:</span>
+                <span class="n">fqname</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="n">fqname</span> <span class="o">+=</span> <span class="n">name</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">fqname</span><span class="p">]</span><span class="o">.</span><span class="vm">__file__</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fqname</span>
+        <span class="c1"># fall-back</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">moduledir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The filesystem path of the module directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">resource_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -411,7 +463,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
@@ -433,7 +485,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -455,7 +507,7 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

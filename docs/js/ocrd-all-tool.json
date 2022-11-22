@@ -1193,7 +1193,7 @@
         ],
         "parameters": {
             "model": {
-                "description": "load model or create new one (e.g. fraktur.pyrnn)",
+                "description": "load model or crate new one (e.g. fraktur.pyrnn)",
                 "type": "string"
             },
             "ntrain": {
@@ -1361,6 +1361,62 @@
         },
         "steps": [
             "recognition/evaluation"
+        ]
+    },
+    "ocrd-cor-asv-ann-join": {
+        "categories": [
+            "Text recognition and optimization"
+        ],
+        "description": "Join different textline annotations by concatenation",
+        "executable": "ocrd-cor-asv-ann-join",
+        "input_file_grp": [
+            "OCR-D-GT-SEG-LINE",
+            "OCR-D-OCR-TESS",
+            "OCR-D-OCR-KRAK",
+            "OCR-D-OCR-OCRO",
+            "OCR-D-OCR-CALA",
+            "OCR-D-OCR-ANY",
+            "OCR-D-COR-ASV"
+        ],
+        "output_file_grp": [
+            "OCR-D-OCR-MULTI"
+        ],
+        "parameters": {
+            "add-filegrp-comments": {
+                "default": false,
+                "description": "set @comments of each TextEquiv to the fileGrp it came from",
+                "type": "boolean"
+            }
+        },
+        "steps": [
+            "recognition/post-correction"
+        ]
+    },
+    "ocrd-cor-asv-ann-mark": {
+        "categories": [
+            "Text recognition and optimization"
+        ],
+        "description": "mark words not found by a spellchecker",
+        "executable": "ocrd-cor-asv-ann-mark",
+        "parameters": {
+            "command": {
+                "description": "external tool to query word forms, e.g. 'hunspell -i utf-8 -d de_DE,en_US -w'",
+                "required": true,
+                "type": "string"
+            },
+            "format": {
+                "default": "conf",
+                "description": "how unknown words should be marked; if 'conf', then writes @conf=0.123, otherwise writes that value into @comments",
+                "type": "string"
+            },
+            "normalization": {
+                "default": {},
+                "description": "mapping of characters prior to spellcheck, e.g. {'\u017f': 's', 'a\u0364': '\u00e4'}",
+                "type": "object"
+            }
+        },
+        "steps": [
+            "recognition/post-correction"
         ]
     },
     "ocrd-cor-asv-ann-process": {
@@ -1551,8 +1607,132 @@
                 "format": "uri",
                 "required": true,
                 "type": "string"
+            },
+            "operation_level": {
+                "default": "page",
+                "description": "hierarchy level which to predict and assign regions for",
+                "enum": [
+                    "page",
+                    "table"
+                ],
+                "type": "string"
             }
         },
+        "resources": [
+            {
+                "description": "TableBank via LayoutLM R152-FPN config",
+                "name": "TableBank_X152.yaml",
+                "size": 536,
+                "url": "https://layoutlm.blob.core.windows.net/tablebank/model_zoo/detection/All_X152/All_X152.yaml"
+            },
+            {
+                "description": "TableBank via LayoutLM R152-FPN weights",
+                "name": "TableBank_X152.pth",
+                "size": 1103832675,
+                "url": "https://layoutlm.blob.core.windows.net/tablebank/model_zoo/detection/All_X152/model_final.pth"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 R50-FPN config",
+                "name": "PubLayNet_R_50_FPN_3x.yaml",
+                "size": 388,
+                "url": "https://github.com/hpanwar08/detectron2/raw/master/configs/DLA_mask_rcnn_R_50_FPN_3x.yaml"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 R50-FPN weights",
+                "name": "PubLayNet_R_50_FPN_3x.pth",
+                "path_in_archive": "model_final_trimmed.pth",
+                "size": 176249992,
+                "url": "https://www.dropbox.com/sh/44ez171b2qaocd2/AAB0huidzzOXeo99QdplZRjua"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 R101-FPN config",
+                "name": "PubLayNet_R_101_FPN_3x.yaml",
+                "size": 392,
+                "url": "https://github.com/hpanwar08/detectron2/raw/master/configs/DLA_mask_rcnn_R_101_FPN_3x.yaml"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 R101-FPN weights",
+                "name": "PubLayNet_R_101_FPN_3x.pth",
+                "path_in_archive": "model_final.pth",
+                "size": 254055290,
+                "url": "https://www.dropbox.com/sh/wgt9skz67usliei/AAD9n6qbsyMz1Y3CwpZpHXCpa"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 X101-FPN config",
+                "name": "PubLayNet_X_101_32x8d_FPN_3x.yaml",
+                "size": 592,
+                "url": "https://github.com/hpanwar08/detectron2/raw/master/configs/DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml"
+            },
+            {
+                "description": "PubLayNet via hpanwar08 X101-FPN weights",
+                "name": "PubLayNet_X_101_32x8d_FPN_3x.pth",
+                "path_in_archive": "model_final_trimmed.pth",
+                "size": 431414189,
+                "url": "https://www.dropbox.com/sh/1098ym6vhad4zi6/AABe16eSdY_34KGp52W0ruwha"
+            },
+            {
+                "description": "PubLayNet via JPLeoRX R50-FPN config",
+                "name": "PubLayNet_R_50_FPN_3x_JPLeoRX.yaml",
+                "size": 192,
+                "url": "https://github.com/facebookresearch/detectron2/raw/main/configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
+            },
+            {
+                "description": "PubLayNet via JPLeoRX R50-FPN weights",
+                "name": "PubLayNet_R_50_FPN_3x_JPLeoRX.pth",
+                "size": 7692,
+                "url": "https://keybase.pub/jpleorx/detectron2-publaynet/mask_rcnn_R_50_FPN_3x/model_final.pth"
+            },
+            {
+                "description": "PubLayNet via JPLeoRX R101-FPN config",
+                "name": "PubLayNet_R_101_FPN_3x_JPLeoRX.yaml",
+                "size": 194,
+                "url": "https://github.com/facebookresearch/detectron2/raw/main/configs/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"
+            },
+            {
+                "description": "PubLayNet via JPLeoRX R101-FPN weights",
+                "name": "PubLayNet_R_101_FPN_3x_JPLeoRX.pth",
+                "size": 7696,
+                "url": "https://keybase.pub/jpleorx/detectron2-publaynet/mask_rcnn_R_101_FPN_3x/model_final.pth"
+            },
+            {
+                "description": "DocBank via LayoutLM X101-FPN config",
+                "name": "DocBank_X101.yaml",
+                "path_in_archive": "X101/X101.yaml",
+                "size": 526,
+                "url": "https://layoutlm.blob.core.windows.net/docbank/model_zoo/X101.zip"
+            },
+            {
+                "description": "DocBank via LayoutLM X101-FPN config",
+                "name": "DocBank_X101.pth",
+                "path_in_archive": "X101/model.pth",
+                "size": 835606605,
+                "url": "https://layoutlm.blob.core.windows.net/docbank/model_zoo/X101.zip"
+            },
+            {
+                "description": "NewspaperNavigator via LayoutParser R50-PanopticFPN config",
+                "name": "NewspaperNavigator_R_50_PFPN_3x.yaml",
+                "size": 5434,
+                "url": "https://www.dropbox.com/s/wnido8pk4oubyzr/config.yml&dl=1"
+            },
+            {
+                "description": "NewspaperNavigator via LayoutParser R50-PanopticFPN weights",
+                "name": "NewspaperNavigator_R_50_PFPN_3x.pth",
+                "size": 330226761,
+                "url": "https://www.dropbox.com/s/6ewh6g8rqt2ev3a/model_final.pth&dl=1"
+            },
+            {
+                "description": "MathFormulaDetection via LayoutParser R50-FPN config",
+                "name": "Math_R_50_FPN_3x.yaml",
+                "size": 5632,
+                "url": "https://www.dropbox.com/s/ld9izb95f19369w/config.yaml?dl=1"
+            },
+            {
+                "description": "MathFormulaDetection via LayoutParser R50-FPN weights",
+                "name": "Math_R_50_FPN_3x.pth",
+                "size": 330084629,
+                "url": "https://www.dropbox.com/s/7xel0i3iqpm2p8y/model_final.pth?dl=1"
+            }
+        ],
         "steps": [
             "layout/segmentation/region"
         ]
@@ -1671,6 +1851,8 @@
                 "default": "page alto",
                 "description": "Transformation scenario, see ocr-fileformat -L",
                 "enum": [
+                    "abbyy hocr",
+                    "abbyy page",
                     "alto2.0 alto3.0",
                     "alto2.0 alto3.1",
                     "alto2.0 hocr",
@@ -1680,12 +1862,16 @@
                     "alto page",
                     "alto text",
                     "gcv hocr",
+                    "gcv page",
                     "hocr alto2.0",
                     "hocr alto2.1",
+                    "hocr page",
                     "hocr text",
                     "page alto",
                     "page hocr",
-                    "page text"
+                    "page page2019",
+                    "page text",
+                    "tei hocr"
                 ],
                 "type": "string"
             },
@@ -1803,8 +1989,15 @@
         ],
         "description": "Binarize images with kraken",
         "executable": "ocrd-kraken-binarize",
-        "input_file_grp": "OCR-D-IMG",
-        "output_file_grp": "OCR-D-IMG-BIN",
+        "input_file_grp": [
+            "OCR-D-IMG",
+            "OCR-D-PRE-CROP",
+            "OCR-D-SEG-REGION",
+            "OCR-D-SEG-LINE"
+        ],
+        "output_file_grp": [
+            "OCR-D-PRE-BIN"
+        ],
         "parameters": {
             "level-of-operation": {
                 "default": "page",
@@ -1827,6 +2020,12 @@
         ],
         "description": "OCR with kraken",
         "executable": "ocrd-kraken-recognize",
+        "input_file_grp": [
+            "OCR-D-SEG-LINE"
+        ],
+        "output_file_grp": [
+            "OCR-D-OCR-KRAK"
+        ],
         "parameters": {
             "bidi_reordering": {
                 "default": true,
@@ -1853,6 +2052,50 @@
                 "type": "number"
             }
         },
+        "resources": [
+            {
+                "description": "19th and 20th century German Fraktur; https://github.com/UB-Mannheim/AustrianNewspapers/wiki/Training-with-Kraken",
+                "name": "austriannewspapers.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 16243476,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/kraken/austriannewspapers/20220520/austriannewspapers_best.mlmodel"
+            },
+            {
+                "description": "19th and 20th century German Fraktur ('Deutscher Reichsanzeiger'); https://github.com/UB-Mannheim/reichsanzeiger-gt/wiki/Training-with-Kraken",
+                "name": "reichsanzeiger.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 16358636,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/kraken/reichsanzeiger-gt/reichsanzeiger_best.mlmodel"
+            },
+            {
+                "description": "mostly 19th century German Fraktur; https://github.com/UB-Mannheim/digitue-gt/wiki/Training-with-Kraken",
+                "name": "digitue.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 16364343,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/kraken/digitue-gt/digitue_best.mlmodel"
+            },
+            {
+                "description": "16th century German Gothic; https://github.com/UB-Mannheim/digi-gt/wiki/Training",
+                "name": "luther.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 16305851,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/kraken/digi-gt/luther_best.mlmodel"
+            },
+            {
+                "description": "20th century typewriter http://idb.ub.uni-tuebingen.de/opendigi/walz_1976, pretrained on austriannewspapers.mlmodel",
+                "name": "typewriter.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 16364780,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/kraken/typewriter/typewriter.mlmodel"
+            },
+            {
+                "description": "This model has been trained on a large corpus of modern printed English text augmented with ~10000 lines of historical pages",
+                "name": "en_best.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 2930723,
+                "url": "https://zenodo.org/record/2577813/files/en_best.mlmodel?download=1"
+            }
+        ],
         "steps": [
             "recognition/text-recognition"
         ]
@@ -1863,17 +2106,68 @@
         ],
         "description": "Block segmentation with kraken",
         "executable": "ocrd-kraken-segment",
+        "input_file_grp": [
+            "OCR-D-IMG",
+            "OCR-D-PRE-CROP",
+            "OCR-D-PRE-BIN"
+        ],
+        "output_file_grp": [
+            "OCR-D-SEG-REGION",
+            "OCR-D-SEG-LINE"
+        ],
         "parameters": {
             "black_colseps": {
                 "default": false,
                 "description": "Whether column separators are assumed to be vertical black lines or not",
                 "type": "boolean"
             },
+            "blla_classes": {
+                "additionalProperties": {
+                    "enum": [
+                        "TextRegion",
+                        "ImageRegion",
+                        "LineDrawingRegion",
+                        "GraphicRegion",
+                        "TableRegion",
+                        "ChartRegion",
+                        "MapRegion",
+                        "SeparatorRegion",
+                        "MathsRegion",
+                        "ChemRegion",
+                        "MusicRegion",
+                        "AdvertRegion",
+                        "NoiseRegion",
+                        "UnknownRegion",
+                        "CustomRegion"
+                    ],
+                    "type": "string"
+                },
+                "default": {
+                    "advert": "AdvertRegion",
+                    "chart": "ChartRegion",
+                    "chem": "ChemRegion",
+                    "custom": "CustomRegion",
+                    "graphic": "GraphicRegion",
+                    "image": "ImageRegion",
+                    "line drawing": "LineDrawingRegion",
+                    "map": "MapRegion",
+                    "maths": "MathsRegion",
+                    "music": "MusicRegion",
+                    "noise": "NoiseRegion",
+                    "separator": "SeparatorRegion",
+                    "table": "TableRegion",
+                    "text": "TextRegion",
+                    "unknown": "UnknownRegion"
+                },
+                "description": "Class mapping for the region types trained into blla_model.",
+                "minProperties": 2,
+                "type": "object"
+            },
             "blla_model": {
                 "cacheable": true,
                 "content-type": "application/python-cpickle",
                 "default": "blla.mlmodel",
-                "description": "Model used for baseline detection. Use kraken-provided model if not give. Ignored if use_legacy.",
+                "description": "Model used for baseline detection and page segmentation. Ignored if use_legacy.",
                 "format": "uri",
                 "type": "string"
             },
@@ -1916,6 +2210,15 @@
                 "type": "boolean"
             }
         },
+        "resources": [
+            {
+                "description": "Pretrained baseline segmentation model",
+                "name": "blla.mlmodel",
+                "parameter_usage": "without-extension",
+                "size": 5047020,
+                "url": "https://github.com/mittagessen/kraken/raw/master/kraken/blla.mlmodel"
+            }
+        ],
         "steps": [
             "layout/segmentation/region"
         ]
@@ -2305,7 +2608,9 @@
         "output_file_grp": [],
         "parameters": {
             "model": {
-                "description": "Directory containing HDF5 models. Can be an absolute path or a path relative to the current working directory or $SBB_BINARIZE_DATA environment variable (if set)",
+                "content-type": "text/directory",
+                "description": "Directory containing HDF5 or SavedModel/ProtoBuf models. Can be an absolute path or a path relative to the OCR-D resource location, the current working directory or the $SBB_BINARIZE_DATA environment variable (if set)",
+                "format": "uri",
                 "required": true,
                 "type": "string"
             },
@@ -2319,6 +2624,24 @@
                 "type": "string"
             }
         },
+        "resources": [
+            {
+                "description": "default models provided by github.com/qurator-spk",
+                "name": "default",
+                "path_in_archive": "model_2020_01_16",
+                "size": 562917559,
+                "type": "archive",
+                "url": "https://github.com/apacha/sbb_binarization/releases/download/pre-trained-models/model_2020_01_16.zip"
+            },
+            {
+                "description": "updated default models provided by github.com/qurator-spk",
+                "name": "default-2021-03-09",
+                "path_in_archive": ".",
+                "size": 133693693,
+                "type": "archive",
+                "url": "https://github.com/apacha/sbb_binarization/releases/download/pre-trained-models/model_2021_03_09.zip"
+            }
+        ],
         "steps": [
             "preprocessing/optimization/binarization"
         ]
@@ -2338,8 +2661,9 @@
         "parameters": {
             "model": {
                 "cacheable": true,
+                "content-type": "text/directory",
                 "description": "Path to directory containing models to be used (See https://qurator-data.de/sbb_textline_detector/)",
-                "format": "file",
+                "format": "uri",
                 "type": "string"
             }
         },
@@ -2407,16 +2731,6 @@
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
                 "type": "string"
             },
-            "library-convention": {
-                "default": "none",
-                "description": "For xlsx extraction, to make line images hyperlinked, use this scheme in reconstructing presentation URLs of original pages. Libraries have different conventions in their METS files. Set to none to disable.",
-                "enum": [
-                    "slub",
-                    "sbb",
-                    "none"
-                ],
-                "type": "string"
-            },
             "mimetype": {
                 "default": "image/png",
                 "description": "File format to save extracted images in.",
@@ -2431,38 +2745,6 @@
                     "image/tiff"
                 ],
                 "type": "string"
-            },
-            "min-line-height": {
-                "default": 30,
-                "description": "Only extract lines that are at least this high (in px).",
-                "type": "number"
-            },
-            "min-line-length": {
-                "default": 5,
-                "description": "Only extract lines with at least this many characters.",
-                "type": "number"
-            },
-            "min-line-width": {
-                "default": 200,
-                "description": "Only extract lines that are at least this wide (in px).",
-                "type": "number"
-            },
-            "output-types": {
-                "default": [
-                    "text",
-                    "json",
-                    "xslx"
-                ],
-                "description": "What kind of files to extract besides the line image itself (text/json files for  each line, xlsx per page).",
-                "items": {
-                    "enum": [
-                        "text",
-                        "json",
-                        "xslx"
-                    ],
-                    "type": "string"
-                },
-                "type": "array"
             },
             "transparency": {
                 "default": true,
@@ -2493,6 +2775,16 @@
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
                 "type": "string"
             },
+            "library-convention": {
+                "default": "none",
+                "description": "For xlsx extraction, to make line images hyperlinked, use this scheme in reconstructing presentation URLs of original pages. Libraries have different conventions in their METS files. Set to none to disable.",
+                "enum": [
+                    "slub",
+                    "sbb",
+                    "none"
+                ],
+                "type": "string"
+            },
             "mimetype": {
                 "default": "image/png",
                 "description": "File format to save extracted images in.",
@@ -2507,6 +2799,44 @@
                     "image/tiff"
                 ],
                 "type": "string"
+            },
+            "min-line-height": {
+                "default": 1,
+                "description": "Only extract lines that are at least this high (in px).",
+                "format": "integer",
+                "minimum": 1,
+                "type": "number"
+            },
+            "min-line-length": {
+                "default": 0,
+                "description": "Only extract lines with at least this many characters.",
+                "format": "integer",
+                "minimum": 0,
+                "type": "number"
+            },
+            "min-line-width": {
+                "default": 1,
+                "description": "Only extract lines that are at least this wide (in px).",
+                "format": "integer",
+                "minimum": 1,
+                "type": "number"
+            },
+            "output-types": {
+                "default": [
+                    "text",
+                    "json",
+                    "xlsx"
+                ],
+                "description": "What kind of files to extract besides the line image itself (text/json files for  each line, xlsx per page).",
+                "items": {
+                    "enum": [
+                        "text",
+                        "json",
+                        "xlsx"
+                    ],
+                    "type": "string"
+                },
+                "type": "array"
             },
             "transparency": {
                 "default": true,
@@ -2665,6 +2995,47 @@
             "OCR-D-IMG-REGION"
         ],
         "parameters": {
+            "classes": {
+                "default": [
+                    "NoiseRegion",
+                    "LineDrawingRegion",
+                    "AdvertRegion",
+                    "ImageRegion",
+                    "ChartRegion",
+                    "MusicRegion",
+                    "GraphicRegion",
+                    "UnknownRegion",
+                    "CustomRegion",
+                    "SeparatorRegion",
+                    "MathsRegion",
+                    "TextRegion",
+                    "MapRegion",
+                    "ChemRegion",
+                    "TableRegion"
+                ],
+                "description": "Array of region types to extract e.g. -P classes '[\"TextRegion\", \"TableRegion\", \"ImageRegion\"]' . If empty, all regions are allowed.",
+                "items": {
+                    "enum": [
+                        "NoiseRegion",
+                        "LineDrawingRegion",
+                        "AdvertRegion",
+                        "ImageRegion",
+                        "ChartRegion",
+                        "MusicRegion",
+                        "GraphicRegion",
+                        "UnknownRegion",
+                        "CustomRegion",
+                        "SeparatorRegion",
+                        "MathsRegion",
+                        "TextRegion",
+                        "MapRegion",
+                        "ChemRegion",
+                        "TableRegion"
+                    ],
+                    "type": "string"
+                },
+                "type": "array"
+            },
             "feature_filter": {
                 "default": "",
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
@@ -2714,16 +3085,6 @@
                 "description": "Comma-separated list of forbidden image features (e.g. `binarized,despeckled`).",
                 "type": "string"
             },
-            "library-convention": {
-                "default": "none",
-                "description": "For xlsx extraction, to make line images hyperlinked, use this scheme in reconstructing presentation URLs of original pages. Libraries have different conventions in their METS files. Set to none to disable.",
-                "enum": [
-                    "slub",
-                    "sbb",
-                    "none"
-                ],
-                "type": "string"
-            },
             "mimetype": {
                 "default": "image/png",
                 "description": "File format to save extracted images in.",
@@ -2738,38 +3099,6 @@
                     "image/tiff"
                 ],
                 "type": "string"
-            },
-            "min-line-height": {
-                "default": 30,
-                "description": "Only extract lines that are at least this high (in px).",
-                "type": "number"
-            },
-            "min-line-length": {
-                "default": 5,
-                "description": "Only extract lines with at least this many characters.",
-                "type": "number"
-            },
-            "min-line-width": {
-                "default": 200,
-                "description": "Only extract lines that are at least this wide (in px).",
-                "type": "number"
-            },
-            "output-types": {
-                "default": [
-                    "text",
-                    "json",
-                    "xslx"
-                ],
-                "description": "What kind of files to extract besides the line image itself (text/json files for  each line, xlsx per page).",
-                "items": {
-                    "enum": [
-                        "text",
-                        "json",
-                        "xslx"
-                    ],
-                    "type": "string"
-                },
-                "type": "array"
             },
             "transparency": {
                 "default": true,
@@ -2894,6 +3223,7 @@
                 "description": "hierarchy level which to assign new coordinates to",
                 "enum": [
                     "page",
+                    "table",
                     "region",
                     "line",
                     "word"
@@ -2904,6 +3234,7 @@
                 "default": 10,
                 "description": "margin (in px) to extend the hull in every direction",
                 "format": "integer",
+                "minimum": 0,
                 "type": "number"
             }
         },
@@ -2934,12 +3265,28 @@
                 "default": 0.9,
                 "description": "When merging a region or line almost contained in another, require at least this ratio of area is shared with the other.",
                 "format": "float",
+                "maximum": 1.0,
+                "minimum": 0.0,
                 "type": "number"
             },
             "sanitize": {
                 "default": false,
-                "description": "Shrink/expand each text region such that its coordinates become the convex hull of its constituent text lines.",
+                "description": "Shrink each region such that its coordinates become the minimal concave hull of its binary foreground. (Assumes that a perfect binarization is available.)",
                 "type": "boolean"
+            },
+            "sanitize_padding": {
+                "default": 5,
+                "description": "When shrinking a region, enlarge the resulting hull by this amount of pixels in each direction.",
+                "format": "integer",
+                "minimum": 1,
+                "type": "number"
+            },
+            "simplify": {
+                "default": 0,
+                "description": "Distance (in px) used to simplify all segment polygons. (Avoid values larger than xheight/scale, or corners will be chopped off.) Set to 0 to disable.",
+                "format": "float",
+                "minimum": 0,
+                "type": "number"
             }
         },
         "steps": [
@@ -3005,6 +3352,23 @@
         },
         "steps": [
             "layout/analysis"
+        ]
+    },
+    "ocrd-segment-replace-text": {
+        "categories": [
+            "Text recognition and optimization"
+        ],
+        "description": "Insert text from annotations in single-segment text files",
+        "executable": "ocrd-segment-replace-text",
+        "parameters": {
+            "file_glob": {
+                "default": "*.gt.txt",
+                "description": "glob expression which expands to file names to match against page IDs and segment IDs in order to be ingested",
+                "type": "string"
+            }
+        },
+        "steps": [
+            "recognition/post-correction"
         ]
     },
     "ocrd-skimage-binarize": {
@@ -3258,6 +3622,12 @@
             "OCR-D-BIN-LINE"
         ],
         "parameters": {
+            "dpi": {
+                "default": 0,
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
+                "format": "float",
+                "type": "number"
+            },
             "operation_level": {
                 "default": "page",
                 "description": "PAGE XML hierarchy level to operate on",
@@ -3267,6 +3637,11 @@
                     "line"
                 ],
                 "type": "string"
+            },
+            "tiseg": {
+                "default": false,
+                "description": "also separate text vs image by detecting and suppressing photo+sepline mask",
+                "type": "boolean"
             }
         },
         "steps": [
@@ -3288,7 +3663,7 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3319,7 +3694,7 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3360,13 +3735,15 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
             "model": {
+                "content-type": "application/octet-stream",
                 "default": "osd",
                 "description": "tessdata model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or osd); must be an old (pre-LSTM) model",
+                "format": "uri",
                 "type": "string"
             },
             "padding": {
@@ -3429,7 +3806,7 @@
             },
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3444,7 +3821,9 @@
                 "type": "boolean"
             },
             "model": {
+                "content-type": "application/octet-stream",
                 "description": "The tessdata text recognition model to apply (an ISO 639-3 language specification or some other basename, e.g. deu-frak or Fraktur).",
+                "format": "uri",
                 "type": "string"
             },
             "oem": {
@@ -3532,8 +3911,6 @@
             }
         },
         "resource_locations": [
-            "data",
-            "system",
             "module"
         ],
         "resources": [
@@ -3552,49 +3929,56 @@
                 "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/ONB/tessdata_best/ONB_1.195_300718_989100.traineddata"
             },
             {
-                "description": "Tesseract equ model",
+                "description": "Tesseract LSTM model based on Austrian National Library newspaper data",
+                "name": "frak2021.traineddata",
+                "parameter_usage": "without-extension",
+                "size": 3421140,
+                "url": "https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/frak2021/tessdata_best/frak2021-0.905.traineddata"
+            },
+            {
+                "description": "Tesseract legacy model for mathematical equations",
                 "name": "equ.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 2251950,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/equ.traineddata"
             },
             {
-                "description": "Tesseract osd model",
+                "description": "Tesseract legacy model for orientation and script detection",
                 "name": "osd.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 10562727,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/osd.traineddata"
             },
             {
-                "description": "Tesseract eng model",
+                "description": "Tesseract LSTM model for contemporary (computer typesetting and offset printing) English",
                 "name": "eng.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 4113088,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata"
             },
             {
-                "description": "Tesseract deu model",
+                "description": "Tesseract LSTM model for contemporary (computer typesetting and offset printing) German",
                 "name": "deu.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 1525436,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/deu.traineddata"
             },
             {
-                "description": "Tesseract frk model",
+                "description": "Tesseract LSTM model for historical (Fraktur typesetting and letterpress printing) German",
                 "name": "frk.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 6423052,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/frk.traineddata"
             },
             {
-                "description": "Tesseract Fraktur model",
+                "description": "Tesseract LSTM model for historical Latin script with Fraktur typesetting",
                 "name": "Fraktur.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 10915632,
                 "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/main/script/Fraktur.traineddata"
             },
             {
-                "description": "Tesseract Latin model",
+                "description": "Tesseract LSTM model for contemporary and historical Latin script",
                 "name": "Latin.traineddata",
                 "parameter_usage": "without-extension",
                 "size": 89384811,
@@ -3637,7 +4021,7 @@
             },
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3689,7 +4073,7 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3736,7 +4120,7 @@
             },
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3792,7 +4176,7 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3833,7 +4217,7 @@
         "parameters": {
             "dpi": {
                 "default": 0,
-                "description": "pixel density in dots per inch (overrides any meta-data in the images); disabled when negative",
+                "description": "pixel density in dots per inch (overrides any meta-data in the images)",
                 "format": "float",
                 "type": "number"
             },
@@ -3871,6 +4255,23 @@
             "OCR-D-IMG-FONTS"
         ],
         "parameters": {
+            "active_classes": {
+                "default": [],
+                "description": "Restrict the set of decoded font type groups to the given list; if empty, then allow all classes (i.e. antiqua/bastarda/fraktur/gotico_antiqua/greek/hebrew/italic/rotunda/schwabacher/textura/other_font/not_a_font)",
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            },
+            "level": {
+                "default": "page",
+                "description": "The PAGE-XML hierarchy level to operate on",
+                "enum": [
+                    "page",
+                    "region"
+                ],
+                "type": "string"
+            },
             "network": {
                 "description": "The file name of the neural network to use, including sufficient path information",
                 "required": false,
