@@ -390,7 +390,9 @@ because <a href="#-p---parameter-param_json"><code class="language-plaintext hig
 
 <p><strong>NOTE</strong>: Parameters marked <strong>MULTI-VALUE</strong> cannot be repeated but can specify
 multiple values, formatted as a single string with comma-separated items (e.g.
-<code class="language-plaintext highlighter-rouge">-I group1,group2,group3</code> instead of <code class="language-plaintext highlighter-rouge">-I group1 -I group2 -I group3</code>).</p>
+<code class="language-plaintext highlighter-rouge">-I group1,group2,group3</code> instead of <code class="language-plaintext highlighter-rouge">-I group1 -I group2 -I group3</code>). Due to
+comma being used as a separator (and not allowed in METS identifiers), 
+the values themselves must not contain commas.</p>
 
 <p><strong>NOTE</strong>: Parameters marked <strong>RANGE</strong> support the numeric range operator <code class="language-plaintext highlighter-rouge">..</code> to
 generate all values between the start and end value by incrementing the numeric
@@ -398,6 +400,9 @@ part of the string.</p>
 
 <p><strong>NOTE</strong>: Parameters marked <strong>REGEX</strong> support the regular expression operator <code class="language-plaintext highlighter-rouge">//</code> to
 generate all values matching the pattern after that prefix.</p>
+
+<p><strong>NOTE</strong>: For parameters which allow for a combination of multi-value, range and/or regex,
+the operator precedence is  <strong>MULTI-VALUE</strong> &gt; <strong>REGEX</strong> &gt; <strong>RANGE</strong>.</p>
 
 <h2 id="cli-executable-name">CLI executable name</h2>
 

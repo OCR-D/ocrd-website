@@ -383,7 +383,7 @@ benefit of all OCR-D stakeholders.</p>
 <h2 id="terminology">Terminology</h2>
 
 <ul>
-  <li><em>current</em> refers to <strong>September 1, 2022</strong>, the last change of this document</li>
+  <li><em>current</em> refers to <strong>December 13, 2022</strong>, the last change of this document</li>
   <li><em>Q1-Q4</em> refers to yearly quarters</li>
   <li><em>target version</em> is the version we mainly test and develop for</li>
   <li><em>supported version</em> means that we test this version and ensure compatibility</li>
@@ -392,9 +392,9 @@ benefit of all OCR-D stakeholders.</p>
 <h2 id="general-decisions">General decisions</h2>
 
 <ul>
-  <li>[2022] We will update to Ubuntu 22.04 and Python 3.7 as soon as possible.</li>
-  <li>[2022] Switch to Slim Containers in <code class="language-plaintext highlighter-rouge">ocrd_all</code></li>
-  <li>[2022] Python API changes (Pagewise processing): <a href="https://github.com/OCR-D/zenhub/issues/2">https://github.com/OCR-D/zenhub/issues/2</a></li>
+  <li>[Q1 2023] We will update to Ubuntu 22.04 and Python 3.7 as soon as possible. <a href="https://github.com/OCR-D/core/pull/956">OCR-D/core#956</a></li>
+  <li>[Q1 2023] Switch to Slim Containers in <code class="language-plaintext highlighter-rouge">ocrd_all</code></li>
+  <li>[Q1 2023] Python API changes (Pagewise processing) <a href="https://github.com/OCR-D/core/issues/322">OCR-D/core#322</a></li>
 </ul>
 
 <h2 id="workflow-format">Workflow format</h2>
@@ -402,7 +402,7 @@ benefit of all OCR-D stakeholders.</p>
 <ul>
   <li>[Q3 2022] We use Nextflow. The whole <code class="language-plaintext highlighter-rouge">.nf</code> file (Nextflow file) as the workflow
 format workflow server and processing 
-server including web API implementation is part of the
+server including <a href="https://github.com/OCR-D/ocrd-webapi-implementation">web API implementation</a> is part of the
 <a href="phase3">implementation projects</a>.  Further details can be found <a href="spec/nextflow">in the nextflow spec</a>.</li>
 </ul>
 
@@ -416,7 +416,8 @@ Only the <a href="https://github.com/OCR-D/core/pull/884">REST API wrapper</a> o
 <h2 id="quiver">QUIVER</h2>
 
 <ul>
-  <li>[2022] We will create a web application, QUIVER (for QUalIty oVERview), in which several information about OCR-D processors are provided:
+  <li>[2022] We will create a web application, <a href="https://github.com/OCR-D/quiver-back-end">QUIVER</a> (for QUalIty oVERview), in
+which several information about OCR-D processors are provided:
     <ul>
       <li>a general overview of the projects (i.e. GitHub repositories), e.g. if their <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> is valid, when their last release has been made etc.</li>
       <li>a workflow section where we <a href="#benchmarking">benchmark</a> different workflows for different corpora.</li>
@@ -431,7 +432,7 @@ Only the <a href="https://github.com/OCR-D/core/pull/884">REST API wrapper</a> o
   <li>[2022] To execute the benchmarking, we will create several corpora with different characteristics (font, creation date, layout, …) and 
 run different workflows with these as input. The result is then displayed in the QUIVER workflow tab.
 The corpora will be publicly available for better transparency.</li>
-  <li>[2022] Relevant benchmarks for the mininum viable product (MVP) will be:
+  <li>[2022] <a href="https://github.com/OCR-D/spec/pull/225">Relevant metrics</a> for the mininum viable product (MVP) will be:
     <ul>
       <li>CER</li>
       <li>WER</li>
@@ -456,8 +457,8 @@ This might be done via CI, GitHub Actions or as a CRON job on a separate server.
 <p>The current approach to file management requires processors accessing a single
 METS file on disk, which turns file management into a bottleneck for workflows.</p>
 
-<p>To alleviate this, we will develop an HTTP server that provides asynchronous
-and parallel access to the METS in <strong>Q4 2022</strong>.</p>
+<p>To alleviate this, we <a href="https://github.com/OCR-D/core/pull/966">will develop an HTTP server</a> that provides asynchronous and
+parallel access to the METS in <strong>Q4 2022</strong>.</p>
 
 <h3 id="decentralized-resource-list">Decentralized resource list</h3>
 
@@ -467,7 +468,7 @@ and parallel access to the METS in <strong>Q4 2022</strong>.</p>
 list of resources, we have implemented mechanisms to store resource lists in a
 processor’s <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> and bundle resources in their own module directory.</p>
 
-<p>By <strong>Q4 2022</strong> we should have updated all the processors and whittled down the
+<p>By <strong>Q1 2023</strong> we should have updated all the processors and whittled down the
 central list to a mostly empty list.</p>
 
 <h3 id="page-wise-processing">Page-wise processing</h3>
@@ -475,7 +476,7 @@ central list to a mostly empty list.</p>
 <p>Currently, processors iterate through the files of a workspace by looping through
 all the files in the input file group(s) themselves.</p>
 
-<p>In <strong>Q4 2022</strong> we will refactor the processor API, deprecate the current
+<p>In <strong>Q1 2023</strong> we will refactor the processor API, deprecate the current
 approach of processors iterating in a <code class="language-plaintext highlighter-rouge">process</code> method and enable processors
 to process individual pages in a <code class="language-plaintext highlighter-rouge">process_page</code> method.</p>
 
@@ -509,9 +510,9 @@ contained.</li>
 <ul>
   <li>Our current target version for Python is <strong>3.7</strong>, we support <strong>3.6</strong> and <strong>3.7</strong> fully, later versions partially.</li>
   <li>:warning: We cannot currently upgrade beyond <strong>3.7</strong> because there are no <a href="#tensorflow">tensorflow v1.15.x</a> prebuilt images available. We need to investigate how to alleviate this until <strong>Q4 2022</strong>.</li>
-  <li>We will change the target version for Python to <strong>3.10</strong> in <strong>Q4 2022</strong> when we have solved the tensorflow problem.</li>
-  <li>Support for <strong>3.6</strong> will end <strong>Q3 2022</strong>. We will not test and include Python 3.6 after that.</li>
-  <li>We will start to support <strong>3.11</strong> in <strong>Q4 2022</strong>.</li>
+  <li>We will change the target version for Python to <strong>3.10</strong> in <strong>Q1 2023</strong> when we have solved the tensorflow problem.</li>
+  <li>Support for <strong>3.6</strong> will end <strong>Q4 2022</strong>. We will not test and include Python 3.6 after that.</li>
+  <li>We will start to support <strong>3.11</strong> in <strong>Q1 2023</strong>.</li>
   <li>We will start to support <strong>3.12</strong> in <strong>Q2 2023</strong> (:warning: won’t have distutils anymore)</li>
   <li>Support for <strong>3.7</strong> will end <strong>Q2 2023</strong>.</li>
   <li>Support for <strong>3.8</strong> will end <strong>Q3 2023</strong>.</li>
@@ -522,7 +523,8 @@ contained.</li>
 
 <ul>
   <li>Our current base image for deployment is <strong>Ubuntu 18.04</strong>, we support <strong>Ubuntu 18.04</strong>, <strong>20.04</strong> and <strong>22.04</strong>.</li>
-  <li>We will change the base image to <strong>Ubuntu 22.04</strong> in <strong>Q4 2022</strong>.</li>
+  <li>We will change the base image to <strong>Ubuntu 20.04</strong> in <strong>Q4 2022</strong>.</li>
+  <li>We will change the base image to <strong>Ubuntu 22.04</strong> in <strong>Q1 2023</strong>.</li>
   <li>Support for <strong>Ubuntu 18.04</strong> will end in <strong>Q1 2023</strong>.</li>
   <li>Support for <strong>Ubuntu 20.04</strong> will end in <strong>Q2 2024</strong>.</li>
 </ul>
@@ -534,9 +536,9 @@ contained.</li>
 <ul>
   <li>Our currently supported calamari version is <strong>1.x</strong>.</li>
   <li>
-    <p>We will switch to <strong>2.x</strong> in <strong>Q4 2022</strong>.</p>
+    <p>We will switch to <strong>2.x</strong> in <strong>Q1 2023</strong>.</p>
   </li>
-  <li>Support for <strong>1.x</strong> will end in in <strong>Q3 2022</strong></li>
+  <li>Support for <strong>1.x</strong> will end in in <strong>Q1 2022</strong></li>
 </ul>
 
 <h3 id="pillow"><a href="https://pillow.readthedocs.io/">pillow</a></h3>

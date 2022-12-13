@@ -19,7 +19,9 @@ because [`-p` is repeatable](#-p---parameter-param_json).
 
 **NOTE**: Parameters marked **MULTI-VALUE** cannot be repeated but can specify
 multiple values, formatted as a single string with comma-separated items (e.g.
-`-I group1,group2,group3` instead of `-I group1 -I group2 -I group3`).
+`-I group1,group2,group3` instead of `-I group1 -I group2 -I group3`). Due to
+comma being used as a separator (and not allowed in METS identifiers), 
+the values themselves must not contain commas.
 
 **NOTE**: Parameters marked **RANGE** support the numeric range operator `..` to
 generate all values between the start and end value by incrementing the numeric
@@ -27,6 +29,9 @@ part of the string.
 
 **NOTE**: Parameters marked **REGEX** support the regular expression operator `//` to
 generate all values matching the pattern after that prefix.
+
+**NOTE**: For parameters which allow for a combination of multi-value, range and/or regex,
+the operator precedence is  **MULTI-VALUE** > **REGEX** > **RANGE**.
 
 ## CLI executable name
 
