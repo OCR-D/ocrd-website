@@ -7,17 +7,25 @@ title: Specifications
 
 <div class="tile is-ancestor">
 
+
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="intro">Intro</a></p>
-      <p class="subtitle">Overview of OCR-D technical documentation</p>
+      <p class="title"><a href="cli">CLI</a></p>
+      <p class="subtitle">Requirements for command line tools</p>
     </article>
   </div>
 
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="cli">CLI</a></p>
-      <p class="subtitle">Command line tools provided by MP</p>
+      <p class="title"><a href="https://github.com/OCR-D/spec/blob/b6701659eae28c6fd2f08855714de8fe22b114a2/web_api.md">Web API</a></p>
+      <p class="subtitle">Information for developers using the OCR&#8209;D Web API</p>
+    </article>
+  </div>
+  
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="nextflow">Nextflow</a></p>
+      <p class="subtitle">Usage of Nextflow in OCR&#8209;D</p>
     </article>
   </div>
 
@@ -28,7 +36,7 @@ title: Specifications
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="mets">METS</a></p>
-      <p class="subtitle">OCR-D METS conventions</p>
+      <p class="subtitle">OCR&#8209;D METS conventions</p>
     </article>
   </div>
 
@@ -42,7 +50,7 @@ title: Specifications
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="ocrd_tool">ocrd-tool.json</a></p>
-      <p class="subtitle">OCR-D tool description</p>
+      <p class="subtitle">OCR&#8209;D tool description</p>
     </article>
   </div>
 
@@ -59,15 +67,13 @@ title: Specifications
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="../gt-guidelines/trans">GT Guidelines</a></p>
-      <p class="subtitle">OCR-D Ground Truth transcription guidelines</p>
+      <p class="subtitle">OCR&#8209;D Ground Truth transcription guidelines</p>
     </article>
   </div>
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="docker">Dockerfile</a></p>
-      <p class="subtitle">OCR-D Dockerfile conventions</p>
+      <p class="subtitle">OCR&#8209;D Dockerfile conventions</p>
     </article>
   </div>
-
 </div>
-
