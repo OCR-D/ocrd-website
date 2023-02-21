@@ -11,7 +11,7 @@ This section contains all information relevant for the further development of th
 * [Decision Log](/en/decisions)
 	* Recent decisions on software development
 * [OCR-D Specifications](/en/spec)
-  * OCR-D Specifications for CLI, METS, PAGE, etc.
+  * OCR-D Specifications for CLI, METS, PAGE etc.
 * [OCR-D/core API documentation](/core)
   * Python API documentation of ``core`` implementation
 * [OCR-D development best practices](/en/dev-best-practice)
