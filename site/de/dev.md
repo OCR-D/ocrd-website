@@ -9,6 +9,8 @@ title: Willkommen im Entwicklerbereich von OCR-D!
 # Willkommen im Entwicklerbereich von OCR-D!
 Dieser Bereich enthält alle Informationen, die für die Entwicklung der OCR-D-Software relevant sind, d.h. Spezifikationen, Dokumentation und Informationen zu Ground Truth. Gerne wollen wir sie auch dazu einladen unsere Entwicklungsarbeiten auf [GitHub](https://github.com/OCR-D) zu verfolgen und zu unterstützen.
 
+* [Decision Log](/de/decisions)
+	* Aktuelle Entscheidungen zur Softwareentwicklung
 * [OCR-D Spezifikationen](/de/spec)
   * Spezifikationen für CLI, METS, PAGE, etc.
 * [OCR-D/core API Dokumentation](/core)

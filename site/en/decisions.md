@@ -1,7 +1,7 @@
 ---
 layout: page
 lang: en
-lang-ref: decisions.md
+lang-ref: decisions
 toc: true
 title: Decisions in OCR-D
 ---
