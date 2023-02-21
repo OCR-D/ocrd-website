@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+  <meta charset="utf-8"/>
+  <title>Entscheidungen in OCR-D - OCR-D</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+  <link rel="alternate" type="application/atom+xml" title="OCR-D Blog" href="/feed.xml" />
+  <link rel="stylesheet" href="/assets/bulma.css" />
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css" />
+  <link rel="stylesheet" href="/assets/syntax-highlight.css" />
+  <link rel="stylesheet" href="/assets/ocrd.css" />
+</head>
+<body>
+<script async src="https://cse.google.com/cse.js?cx=15ea814b8c422e7e4"></script>
+
+
+<script>
+function ToggleSearchActive2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
+</script>
+
+
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/de/">Über</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/blog">Aktuelles</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/about">Über das OCR-D-Projekt</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/phase2">Phase II: Projekte</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/phase3">Phase III: Projekte</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/community">Community</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/publikationen">Publikationen und Vorträge</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/daten">Daten</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/teststellung">Pilotstudie</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/umfrage">Nutzer*innenumfrage</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/kontakt">Kontaktieren Sie uns!</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/de/impressum">Impressum</a>
+            
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/de/dev">Technische Dokumentation</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/decisions">Decision Log</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/gt-guidelines/trans">Ground Truth Richtlinien</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/gt-guidelines/trans/trPage">PAGE-XML Formatdokumentation</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/dev-best-practice">Best Practices für Softwareentwicklung in OCR-D</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/spec">Spezifikationen</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/core">OCR-D/core API Dokumentation</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/de/use">Nutzungsinformationen und Anleitungen</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+            
+            
+              <a class="navbar-item" href="https://translate.google.com/translate?hl=&sl=en&tl=de&u=https%3A%2F%2Focr-d.de%2Fen%2Fsetup">Setup Anleitung</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              <a class="navbar-item" href="https://translate.google.com/translate?hl=&sl=en&tl=de&u=https%3A%2F%2Focr-d.de%2Fen%2Fuser_guide">Nutzeranleitung</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              <a class="navbar-item" href="https://translate.google.com/translate?hl=&sl=en&tl=de&u=https%3A%2F%2Focr-d.de%2Fen%2Fworkflows">Workflows</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/models">Modelle</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/de/spec/glossary">Glossar</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+        <a class="navbar-item" href="/de/faq">FAQ</a>
+      
+
+      
+	 <span class="navbar-item">
+	
+			        
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Suche
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">Für diese Funktion haben wir Google Programmable Search Engine implementiert. 
+				Wenn Sie diese nutzen, beachten Sie bitte, dass Cookies gespeichert werden können und die Datenschutzbestimmungen von Google LLC gelten:
+				<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Einverstanden, zeige die Google-Suche!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			
+	</span>
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item"><a href="/en/decisions.html" title="Auf Englisch lesen">en</a>
+              
+        </span>
+
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#entscheidungen-in-ocr-d">Entscheidungen in OCR-D</a>
+    <ul>
+      <li><a href="#terminologie">Terminologie</a></li>
+      <li><a href="#allgemeine-entscheidungen">Allgemeine Entscheidungen</a></li>
+      <li><a href="#workflow-format">Workflow-Format</a></li>
+      <li><a href="#web-api">Web-API</a></li>
+      <li><a href="#quiver">QUIVER</a>
+        <ul>
+          <li><a href="#benchmarking">Benchmarking</a></li>
+        </ul>
+      </li>
+      <li><a href="#ocr-dcore">OCR-D/core</a>
+        <ul>
+          <li><a href="#mets-server">METS-Server</a></li>
+          <li><a href="#dezentrale-ressourcenliste">Dezentrale Ressourcenliste</a></li>
+          <li><a href="#seitenweise-prozessierung">Seitenweise Prozessierung</a></li>
+        </ul>
+      </li>
+      <li><a href="#ocrd_all-docker-deployment">ocrd_all Docker deployment</a></li>
+      <li><a href="#unterstützte-python-versionen">Unterstützte Python-Versionen</a></li>
+      <li><a href="#basis-os-image">Basis-OS-Image</a></li>
+      <li><a href="#software-bibliotheken">Software-Bibliotheken</a>
+        <ul>
+          <li><a href="#calamari"><a href="https://github.com/OCR-D/ocrd_calamari">calamari</a></a></li>
+          <li><a href="#pillow"><a href="https://pillow.readthedocs.io/">pillow</a></a></li>
+          <li><a href="#tensorflow"><a href="https://github.com/tensorflow/tensorflow">tensorflow</a></a></li>
+          <li><a href="#torch"><a href="https://pytorch.org/">torch</a></a></li>
+          <li><a href="#bash">[bash]</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="entscheidungen-in-ocr-d">Entscheidungen in OCR-D</h1>
+
+<p>In einem Softwareprojekt, insbesondere in einem stark verteilten Projekt wie OCR-D,
+müssen Entscheidungen getroffen werden über die verwendete Technologie, das Zusammenspiel der Schnittstellen
+und darüber, wie die Software als Ganzes konzipiert ist.</p>
+
+<p>In diesem Dokument werden solche Entscheidungen über Schlüsselaspekte von OCR-D 
+zum Nutzen aller OCR-D-Akteure diskutiert.</p>
+
+<h2 id="terminologie">Terminologie</h2>
+
+<ul>
+  <li><em>aktuell</em> bezieht sich auf den <strong>13. Dezember 2022</strong>, die letzte Änderung dieses Dokuments</li>
+  <li><em>Q1-Q4</em> bezieht sich auf die Jahresquartale</li>
+  <li><em>Zielversion</em> ist die Version, für die wir hauptsächlich testen und entwickeln</li>
+  <li><em>Unterstützte Version</em> bedeutet, dass wir diese Version testen und Kompatibilität sicherstellen</li>
+</ul>
+
+<h2 id="allgemeine-entscheidungen">Allgemeine Entscheidungen</h2>
+
+<ul>
+  <li>[Q1 2023] Wir werden so bald wie möglich auf Ubuntu 22.04 und Python 3.7 aktualisieren. <a href="https://github.com/OCR-D/core/pull/956">OCR-D/core#956</a></li>
+  <li>[Q1 2023] Wechsel zu Slim Containern in <code class="language-plaintext highlighter-rouge">ocrd_all</code>.</li>
+  <li>[Q1 2023] Python API Änderungen (seitenweise Prozessierung) <a href="https://github.com/OCR-D/core/issues/322">OCR-D/core#322</a></li>
+</ul>
+
+<h2 id="workflow-format">Workflow-Format</h2>
+
+<ul>
+  <li>[Q3 2022] Wir verwenden Nextflow. Die gesamte <code class="language-plaintext highlighter-rouge">.nf</code>-Datei (Nextflow-Datei) als Workflow-Format, Workflow-Server 
+und Verarbeitungs-Server einschließlich <a href="https://github.com/OCR-D/ocrd-webapi-implementation">Web-API-Implementierung</a> 
+ist Teil der <a href="phase3">Implementierungsprojekte</a>.  Weitere Details sind <a href="spec/nextflow">in der nextflow spec</a> zu finden.</li>
+</ul>
+
+<h2 id="web-api">Web-API</h2>
+
+<ul>
+  <li>[2022] Das OCR-D Koordinierungsprojekt stellt die <a href="spec/web_api">Web API spec</a> zur Verfügung.
+Nur der <a href="https://github.com/OCR-D/core/pull/884">REST API wrapper</a> eines einzelnen Prozessors wird von OCR-D Core bereitgestellt.</li>
+</ul>
+
+<h2 id="quiver">QUIVER</h2>
+
+<ul>
+  <li>[2022] Wir werden eine Webanwendung, <a href="https://github.com/OCR-D/quiver-back-end">QUIVER</a> (für QUalIty oVERview), 
+entwickeln, in in der verschiedene Informationen über OCR-D Prozessoren bereitgestellt werden:
+    <ul>
+      <li>eine allgemeine Übersicht über die Projekte (d.h. GitHub Repositories), z.B. ob ihre <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> gültig ist, wann ihre letzte Version gemacht wurde usw.</li>
+      <li>ein Abschnitt über Workflows, in dem wir verschiedene Workflows für verschiedene Korpora <a href="#benchmarking">benchmarken</a>.</li>
+      <li>eine allgemeine Übersicht über die verfügbaren Prozessoren</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="benchmarking">Benchmarking</h3>
+
+<ul>
+  <li>[2022] Um das Benchmarking durchzuführen, werden wir mehrere Korpora mit unterschiedlichen Eigenschaften (Schriftart, Erstellungsdatum, Layout, …) erstellen und 
+verschiedene Workflows mit diesen als Input laufen lassen. Das Ergebnis wird dann in der Registerkarte QUIVER-Workflow angezeigt.
+Die Korpora werden zur besseren Transparenz öffentlich zugänglich sein.</li>
+  <li>[2022] [Relevante Metriken] (https://github.com/OCR-D/spec/pull/225) für das Minimal Viable Product (MVP) werden sein:
+    <ul>
+      <li>CER</li>
+      <li>WER</li>
+      <li>Bag of Words</li>
+      <li>Lesereihenfolge</li>
+      <li>IoU</li>
+      <li>CPU-Zeit</li>
+      <li>Wandzeit</li>
+      <li>E/A</li>
+      <li>Speichernutzung</li>
+      <li>Festplattennutzung</li>
+    </ul>
+  </li>
+  <li>[2022] Das Benchmarking wird in regelmäßigen Abständen automatisch ausgeführt, um zu messen, ob Änderungen an den Prozessoren das Ergebnis verbessern.
+Dies kann über CI, GitHub Actions oder als CRON Job auf einem separaten Server erfolgen.</li>
+</ul>
+
+<h2 id="ocr-dcore">OCR-D/core</h2>
+
+<h3 id="mets-server">METS-Server</h3>
+
+<p>Der aktuelle Ansatz zur Dateiverwaltung erfordert Prozessoren, die auf eine einzelne
+METS-Datei auf der Festplatte zugreifen, was die Dateiverwaltung zu einem Engpass für Arbeitsabläufe macht.</p>
+
+<p>Um dieses Problem zu lösen, <a href="https://github.com/OCR-D/core/pull/966">werden wir einen HTTP-Server entwickeln</a>, der asynchronen und
+parallelen Zugriff auf das METS im <strong>Q4 2022</strong> ermöglicht.</p>
+
+<h3 id="dezentrale-ressourcenliste">Dezentrale Ressourcenliste</h3>
+
+<p>Derzeit wird eine Liste der Prozessorressourcen zentral in OCR-D/core geführt.</p>
+
+<p>In <strong>Q3 2022</strong> haben wir Mechanismen implementiert, die es Entwicklern von Prozessoren ermöglichen,
+ihre eigene, separate Ressourcenliste zu führen,
+indem Ressourcenlisten in der <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> des Prozessors gespeichert werden und die Ressourcen in ihrem eigenen Modulverzeichnis gebündelt werden.</p>
+
+<p>Bis <strong>Q1 2023</strong> sollten wir alle Prozessoren aktualisiert haben und die
+zentrale Liste auf eine weitgehend leere Liste reduziert haben.</p>
+
+<h3 id="seitenweise-prozessierung">Seitenweise Prozessierung</h3>
+
+<p>Derzeit iterieren die Prozessoren durch die Dateien eines Workspace indem sie eine Schleife durch
+alle Dateien in der/den Eingabedateigruppe(n) selbst durchführen.</p>
+
+<p>In <strong>Q1 2023</strong> werden wir die Prozessor-API überarbeiten und den derzeitigen Ansatz der
+Prozessoren, die in einer “process”-Methode iterieren, verwerfen und den Prozessoren ermöglichen,
+einzelne Seiten in einer <code class="language-plaintext highlighter-rouge">process_page</code>-Methode zu verarbeiten.</p>
+
+<!--
+   -## Prozessoren
+   -
+   -In diesem Abschnitt skizzieren wir unsere Pläne mit den verschiedenen Prozessorprojekten.
+   -
+   -**Hinweis** Derzeit nur anybaseocr als Beispiel
+   -
+   -### [ocrd_anybaseocr](https://github.com/OCR-D/ocrd_anybaseocr)
+   -
+   -`ocrd_anybaseocr` ist ein ziemlich komplexes Projekt mit mehreren Prozessoren,die an verschiedenen Problemen 
+   -mit verschiedenen Technologien arbeiten. Einige der Prozessoren sind
+   -leistungsfähig, einige sind zu experimentell, um empfohlen zu werden. Die ursprünglichen 
+   -Entwickler sind aus dem Projekt ausgestiegen, daher ist es wichtig für die Wartbarkeit durch die
+   -Community, dass wir sie überarbeiten.
+   -->
+
+<h2 id="ocrd_all-docker-deployment">ocrd_all Docker deployment</h2>
+
+<ul>
+  <li>Unser aktueller Zielcontainer ist ein <strong>fat container</strong>, mit <strong>maximum</strong>,
+<strong>medium</strong> und <strong>minimum</strong> Versionen, die eine abnehmende Anzahl von Prozessoren
+enthalten.</li>
+  <li>Wir werden Prozessorprojekte einzeln wrappen und in <strong>Q1 2023</strong> auf <strong>slim container</strong> umstellen.</li>
+</ul>
+
+<h2 id="unterstützte-python-versionen">Unterstützte Python-Versionen</h2>
+
+<ul>
+  <li>Unsere aktuelle Zielversion für Python ist <strong>3.7</strong>, wir unterstützen <strong>3.6</strong> und <strong>3.7</strong> vollständig, 
+spätere Versionen teilweise.</li>
+  <li>:Achtung: Wir können derzeit nicht über <strong>3.7</strong> hinaus aktualisieren, 
+da es keine <a href="#tensorflow">tensorflow v1.15.x</a> vorgefertigten Images gibt. 
+Wir müssen untersuchen, wie wir dieses Problem bis <strong>Q4 2022</strong> beheben können.</li>
+  <li>Wir werden die Zielversion für Python auf <strong>3.10</strong> in <strong>Q1 2023</strong> ändern, wenn wir das Tensorflow-Problem gelöst haben.</li>
+  <li>Die Unterstützung für <strong>3.6</strong> wird in <strong>Q4 2022</strong> enden. Wir werden Python 3.6 danach nicht mehr testen und einbinden.</li>
+  <li>Wir beginnen mit der Unterstützung von <strong>3.11</strong> in <strong>Q1 2023</strong>.</li>
+  <li>Wir werden <strong>3.12</strong> ab <strong>Q2 2023</strong> unterstützen (:Achtung: wird keine distutils mehr haben)</li>
+  <li>Die Unterstützung für <strong>3.7</strong> wird in <strong>Q2 2023</strong> enden.</li>
+  <li>Unterstützung für <strong>3.8</strong> wird in <strong>Q3 2023</strong> enden.</li>
+  <li>Unterstützung für <strong>3.9</strong> wird in <strong>Q4 2023</strong> enden.</li>
+</ul>
+
+<h2 id="basis-os-image">Basis-OS-Image</h2>
+
+<ul>
+  <li>Unser aktuelles Basis-Image für das Deployment ist <strong>Ubuntu 18.04</strong>, 
+wir unterstützen <strong>Ubuntu 18.04</strong>, <strong>20.04</strong> und <strong>22.04</strong>.</li>
+  <li>Wir werden das Basis-Image auf <strong>Ubuntu 20.04</strong> im <strong>Q4 2022</strong> ändern.</li>
+  <li>Wir werden das Basis-Image auf <strong>Ubuntu 22.04</strong> im <strong>Q1 2023</strong> ändern.</li>
+  <li>Der Support für <strong>Ubuntu 18.04</strong> wird im <strong>Q1 2023</strong> enden.</li>
+  <li>Der Support für <strong>Ubuntu 20.04</strong> wird im <strong>Q2 2024</strong> enden.</li>
+</ul>
+
+<h2 id="software-bibliotheken">Software-Bibliotheken</h2>
+
+<h3 id="calamari"><a href="https://github.com/OCR-D/ocrd_calamari">calamari</a></h3>
+
+<ul>
+  <li>Unsere derzeit unterstützte calamari-Version ist <strong>1.x</strong>.</li>
+  <li>
+    <p>Wir werden in <strong>Q1 2023</strong> auf <strong>2.x</strong> umsteigen.</p>
+  </li>
+  <li>Die Unterstützung für <strong>1.x</strong> wird in <strong>Q1 2022</strong> enden.</li>
+</ul>
+
+<h3 id="pillow"><a href="https://pillow.readthedocs.io/">pillow</a></h3>
+
+<ul>
+  <li>Wir unterstützen derzeit Pillow <strong>5.x</strong> bis <strong>v9.x</strong>.</li>
+</ul>
+
+<h3 id="tensorflow"><a href="https://github.com/tensorflow/tensorflow">tensorflow</a></h3>
+
+<ul>
+  <li>Unsere Zielversion ist <strong>2.5.0</strong>.</li>
+  <li>Wir unterstützen derzeit <strong>1.15.x</strong>, <strong>2.4.0</strong> und <strong>2.5.0</strong>.
+Obwohl wir die Abkehr von <strong>1.15.x</strong> dringend empfehlen, haben wir aufgrund der
+Logistik der Aktualisierung der trainierten Modelle keinen festes
+Stichtag.</li>
+</ul>
+
+<h3 id="torch"><a href="https://pytorch.org/">torch</a></h3>
+
+<ul>
+  <li>Unsere aktuelle Zielversion ist <strong>1.10.x</strong>.</li>
+</ul>
+
+<h3 id="bash">[bash]</h3>
+
+<ul>
+  <li>Wir verwenden bash-Skripte für Entwicklungsaufgaben und für die bashlib-Bibliothek in OCR-D.</li>
+  <li>Unsere derzeitige Zielversion ist <strong>4.4</strong>.</li>
+</ul>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_ger.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+		<a href="https://github.com/OCR-D">GitHub</a>
+		|
+		<a href="https://gitter.im/OCR-D/Lobby">Gitter</a>
+		|
+		<a href="https://twitter.com/OCR_D_community">Twitter</a>
+		|
+		<a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
+		|
+		<a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+		|
+		<a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+		|
+		<a href="/sitemap.xml">sitemap.xml</a>
+		|
+		
+			<a href="/de/impressum">Impressum</a>
+		
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>
