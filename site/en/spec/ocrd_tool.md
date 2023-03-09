@@ -81,7 +81,7 @@ properties:
     type: string
     pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
   git_url:
-    description: Github/Gitlab URL
+    description: GitHub/GitLab URL
     type: string
     format: url
   dockerhub:
@@ -192,9 +192,9 @@ properties:
                     description: "If parameter is reference to file: Whether the file should be cached, e.g. because it is large and won't change."
                     default: false
           description:
-            description: Concise description what the tool does
+            description: Concise description of what the tool does
           categories:
-            description: Tools belong to this categories, representing modules within the OCR-D project structure
+            description: Tools belong to these categories, representing modules within the OCR-D project structure
             type: array
             items:
               type: string
@@ -269,7 +269,7 @@ properties:
                   default: 'as-is'
                 path_in_archive:
                   type: string
-                  description: if type is archive, the resource is at this location in the archive
+                  description: If type is archive, the resource is at this location in the archive
                   default: '.'
                 version_range:
                   type: string
@@ -277,7 +277,7 @@ properties:
                   default: '>= 0.0.1'
                 size:
                   type: number
-                  description: Size of the resource in bytes
+                  description: "Size of the resource in bytes to be retrieved (for archives: size of the archive)"
 ```
 
 <!-- END-EVAL -->

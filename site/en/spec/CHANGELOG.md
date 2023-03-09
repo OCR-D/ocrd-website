@@ -14,6 +14,18 @@ Versioned according to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.22.0] - 2023-03-03
+
+Added:
+
+  * QA Spec: defining metrics for evaluation of OCR against Ground Truth, #225
+  * Web API Spec: Defining the components and interactions of the Web API, #222
+
+Fixed:
+
+  * `ocrd-tool.json`: Wording on `size` attribute of resources, #233
+
+
 ## [3.21.0] - 2022-11-30
 
 Fixed:
