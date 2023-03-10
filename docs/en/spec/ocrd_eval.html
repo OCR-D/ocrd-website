@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <title>Quality Assurance in OCR-D - OCR-D</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
+  <link href="/assets/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link rel="alternate" type="application/atom+xml" title="OCR-D Blog" href="/feed.xml" />
+  <link rel="stylesheet" href="/assets/bulma.css" />
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css" />
+  <link rel="stylesheet" href="/assets/syntax-highlight.css" />
+  <link rel="stylesheet" href="/assets/ocrd.css" />
+  <!-- for mathjax support -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['$$', '$$']],
+        processEscapes: true,
+      },
+    }
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="/assets/mathjax/es5/tex-chtml.js">
+  </script>
+</head>
+<body>
+<script async src="https://cse.google.com/cse.js?cx=e9e3f7148e57ed66c"></script>
+
+
+<script>
+function ToggleSearchActive2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
+</script>
+
+
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/blog">News</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/about">About the OCR-D Project</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase2">Phase II: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase3">Phase III: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/community">Community</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/data">Data</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/initial-tests">Pilot Study</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_survey">User Survey</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/contact">Contacts</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/imprint">Imprint</a>
+            
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Technical Resources</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/decisions">Decision Log</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/dev-best-practice">OCR-D development best practices</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec">Specifications</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">User Guides & Info</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/setup">Setup Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_guide">User Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/workflows">Workflows</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/models">Models</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+        <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+
+      
+	 <span class="navbar-item">
+	 
+            <a href="" title="View in German"></a>
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Search
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Programmable Search Engine. 
+					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
+					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Agree, show me Google Search!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			
+	</span>
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        </span>
+
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#quality-assurance-in-ocr-d">Quality Assurance in OCR-D</a>
+    <ul>
+      <li><a href="#rationale">Rationale</a></li>
+      <li><a href="#evaluation-metrics">Evaluation Metrics</a>
+        <ul>
+          <li><a href="#scope-of-these-definitions">Scope of These Definitions</a></li>
+          <li><a href="#text-evaluation">Text Evaluation</a>
+            <ul>
+              <li><a href="#characters">Characters</a>
+                <ul>
+                  <li><a href="#examples">Examples</a></li>
+                </ul>
+              </li>
+              <li><a href="#levenshtein-distance-edit-distance">Levenshtein Distance (Edit Distance)</a>
+                <ul>
+                  <li><a href="#example">Example</a></li>
+                </ul>
+              </li>
+              <li><a href="#cer-and-wer">CER and WER</a>
+                <ul>
+                  <li><a href="#character-error-rate-cer">Character Error Rate (CER)</a>
+                    <ul>
+                      <li><a href="#cer-granularity">CER Granularity</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#word-error-rate-wer">Word Error Rate (WER)</a>
+                    <ul>
+                      <li><a href="#wer-granularity">WER Granularity</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li><a href="#bag-of-words">Bag of Words</a>
+                <ul>
+                  <li><a href="#bag-of-words-error-rate">Bag-of-Words Error Rate</a>
+                    <ul>
+                      <li><a href="#example-1">Example</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#layout-evaluation">Layout Evaluation</a>
+            <ul>
+              <li><a href="#reading-order-definition">Reading Order (Definition)</a></li>
+              <li><a href="#iou-intersection-over-union">IoU (Intersection over Union)</a></li>
+            </ul>
+          </li>
+          <li><a href="#resource-utilization">Resource Utilization</a>
+            <ul>
+              <li><a href="#cpu-time">CPU Time</a></li>
+              <li><a href="#wall-time">Wall Time</a></li>
+              <li><a href="#io">I/O</a></li>
+              <li><a href="#memory-usage">Memory Usage</a></li>
+              <li><a href="#disk-usage">Disk Usage</a></li>
+            </ul>
+          </li>
+          <li><a href="#unicode-normalization">Unicode Normalization</a></li>
+          <li><a href="#metrics-not-in-use-yet">Metrics Not in Use Yet</a>
+            <ul>
+              <li><a href="#gpu-metrics">GPU Metrics</a>
+                <ul>
+                  <li><a href="#gpu-avg-memory">GPU Avg Memory</a></li>
+                  <li><a href="#gpu-peak-memory">GPU Peak Memory</a></li>
+                </ul>
+              </li>
+              <li><a href="#text-evaluation-1">Text Evaluation</a>
+                <ul>
+                  <li><a href="#letter-accuracy">Letter Accuracy</a></li>
+                  <li><a href="#flexible-character-accuracy-measure">Flexible Character Accuracy Measure</a></li>
+                </ul>
+              </li>
+              <li><a href="#layout-evalutation">Layout Evalutation</a>
+                <ul>
+                  <li><a href="#reading-order-evaluation">Reading Order Evaluation</a></li>
+                  <li><a href="#map-mean-average-precision">mAP (mean Average Precision)</a>
+                    <ul>
+                      <li><a href="#precision-and-recall">Precision and Recall</a></li>
+                      <li><a href="#prediction-score">Prediction Score</a></li>
+                      <li><a href="#iou-thresholds">IoU Thresholds</a></li>
+                      <li><a href="#precision-recall-curve">Precision-Recall Curve</a></li>
+                      <li><a href="#average-precision">Average Precision</a></li>
+                      <li><a href="#mean-average-precision">Mean Average Precision</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#scenario-driven-performance-evaluation">Scenario-Driven Performance Evaluation</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#evaluation-json-schema">Evaluation JSON schema</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#references">References</a></li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="quality-assurance-in-ocr-d">Quality Assurance in OCR-D</h1>
+
+<h2 id="rationale">Rationale</h2>
+
+<p>Evaluating the quality of OCR requires comparing the OCR results on representative <strong>ground truth</strong> (GT)
+– i.e. realistic data (images) with manual transcriptions (segmentation, text).
+OCR results can be obtained via several distinct <strong>OCR workflows</strong>.</p>
+
+<p>The comparison requires evaluation tools which themselves build on a number of established
+evaluation metrics.
+The evaluation results must be presented in a way that allows factorising and localising aberrations,
+both within documents (page types, individual pages, region types, individual regions) and across classes of similar documents.</p>
+
+<p>All this needs to  work together in a well-defined and automatically repeatable manner, so
+ users can make informed decisions about which OCR workflow works best for which material and use case.</p>
+
+<h2 id="evaluation-metrics">Evaluation Metrics</h2>
+
+<p>The evaluation of the quality (accuracy and precision) of OCR is a complex task, for which multiple methods and metrics are available.
+It needs to capture several aspects corresponding to the interdependent subtasks of an OCR workflow, viz. layout analysis and text recognition, which themselves require different methods and metrics.</p>
+
+<p>Furthermore, the time and resources required for OCR processing also have to be captured. Here we describe the metrics that were selected for use in OCR-D, how exactly they are applied, and what was the motivation.</p>
+
+<h3 id="scope-of-these-definitions">Scope of These Definitions</h3>
+
+<p>At this stage (Q3 2022) these definitions serve as a basis of common understanding for the metrics used in the benchmarking presented in OCR-D QUIVER. Further implications for evaluation tools do not yet apply.</p>
+
+<h3 id="text-evaluation">Text Evaluation</h3>
+
+<p>The most important measure to assess the quality of OCR is the accuracy of the recognized text.
+The majority of metrics for this are based on the Levenshtein distance, an algorithm to compute the distance between two strings.
+In OCR, one of these strings is generally the Ground Truth text and the other the recognized text which is the result of an OCR.
+The text is concatenated at page level from smaller constituents in reading order.</p>
+
+<h4 id="characters">Characters</h4>
+
+<p>A text consists of a set of characters that have a certain meaning.
+In OCR-D, a character is technically defined as a grapheme cluster, i.e. one or more Unicode (or Private Use Area) codepoint(s) that represents an element of a writing system in NFC (see <a href="#unicode-normalization">Unicode Normalization</a>).
+White spaces are considered as characters.</p>
+
+<p>Special codepoints like Byte-Order Marks or directional marks are ignored.</p>
+
+<h5 id="examples">Examples</h5>
+
+<ul>
+  <li>the character <code class="language-plaintext highlighter-rouge">ä</code> in the word <code class="language-plaintext highlighter-rouge">Kälte</code> is encoded by Unicode <code class="language-plaintext highlighter-rouge">U+00E4</code></li>
+  <li>the character <code class="language-plaintext highlighter-rouge">ܡܿ</code> in the word <code class="language-plaintext highlighter-rouge">ܡܿܢ</code> is encoded by Unicode <code class="language-plaintext highlighter-rouge">U+0721</code> + <code class="language-plaintext highlighter-rouge">U+073F</code></li>
+</ul>
+
+<h4 id="levenshtein-distance-edit-distance">Levenshtein Distance (Edit Distance)</h4>
+
+<p>Levenshtein distance between two strings is defined as the (minimum) number of (single-character) edit operations needed to turn the one into the other.
+Edit operations depend on the specific variant of the algorithm but for OCR, relevant operations are deletion, insertion and substitution.
+To calculate the edit distance, the two strings first have to be (optimally) aligned.</p>
+
+<p>The Levenshtein distance forms the basis for the calculation of <a href="https://pad.gwdg.de/#CERWER">CER/WER</a>.
+As there are different implementations of the edit distance available (e.g. <a href="https://maxbachmann.github.io/RapidFuzz/Usage/distance/Levenshtein.html">rapidfuzz</a>, <a href="https://jamesturk.github.io/jellyfish/functions/#levenshtein-distance">jellyfish</a>, …), the OCR-D coordination project will provide a recommendation in the final version of this document.</p>
+
+<h5 id="example">Example</h5>
+
+<p>Given a Ground truth that reads <code class="language-plaintext highlighter-rouge">ſind</code> and the recognized text <code class="language-plaintext highlighter-rouge">fmd</code>.</p>
+
+<p>The Levenshtein distance between these texts is 3, because 3 single-character edit operations are necessary to turn <code class="language-plaintext highlighter-rouge">fmd</code> into <code class="language-plaintext highlighter-rouge">ſind</code>. For example:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fmd</code> –&gt; <code class="language-plaintext highlighter-rouge">ſmd</code> (substitution)</li>
+  <li><code class="language-plaintext highlighter-rouge">ſmd</code> –&gt; <code class="language-plaintext highlighter-rouge">ſimd</code> (insertion)</li>
+  <li><code class="language-plaintext highlighter-rouge">ſimd</code> –&gt; <code class="language-plaintext highlighter-rouge">ſind</code> (substitution)</li>
+</ul>
+
+<h4 id="cer-and-wer">CER and WER</h4>
+
+<h5 id="character-error-rate-cer">Character Error Rate (CER)</h5>
+
+<p>The character error rate (CER) is defined as the quotient of the edit distance over the length
+with respect to the character string pair of GT and OCR text. It thus describes an empirical estimate
+of the probability of some random character to be misrecognised.</p>
+
+<p>Thus, CER defines a (single-character) <strong>error</strong> in terms of the above three categories of edit operations:</p>
+
+<ul>
+  <li><strong>deletion</strong>: a character that is present in the text has been deleted from the output.</li>
+</ul>
+
+<p>Example:
+<img src="https://pad.gwdg.de/uploads/d7fa6f23-7c79-4fb2-ad94-7e98084c69d6.jpg" alt="A Fraktur sample reading &quot;Sonnenfinſterniſſe:&quot;" /></p>
+
+<p>This reads <code class="language-plaintext highlighter-rouge">Sonnenfinſterniſſe:</code>. The output contains <code class="language-plaintext highlighter-rouge">Sonnenfinſterniſſe</code>, deleting <code class="language-plaintext highlighter-rouge">:</code>.</p>
+
+<ul>
+  <li><strong>substitution</strong>: a character is replaced by another character in the output.</li>
+</ul>
+
+<p>Example:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/b894049b-8d98-4fe7-ac31-71b2c9393a6c.jpg" alt="A Fraktur sample reading &quot;Die Finſterniſſe des 1801ſten Jahrs&quot;" /></p>
+
+<p>This heading reads <code class="language-plaintext highlighter-rouge">Die Finſterniſſe des 1801ſten Jahrs</code>. The output contains <code class="language-plaintext highlighter-rouge">180iſten</code>, replacing <code class="language-plaintext highlighter-rouge">1</code> with <code class="language-plaintext highlighter-rouge">i</code>.</p>
+
+<ul>
+  <li><strong>insertion</strong>: a new character is introduced in the output.</li>
+</ul>
+
+<p>Example:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/e6b6432e-d79c-4568-9aef-15a026c05b39.jpg" alt="A Fraktur sample reading &quot;diese Strahlen, und&quot;" /></p>
+
+<p>This reads <code class="language-plaintext highlighter-rouge">diese Strahlen, und</code>. The output contains <code class="language-plaintext highlighter-rouge">Strahlen ,</code>, inserting a white space before the comma.</p>
+
+<p>CER can be defined in multiple ways, depending on what exactly counts as the <strong>length</strong> of the text.</p>
+
+<p>Given $i$ as the number of insertions, $d$ the number of deletions, $s$ the number of substitutions of the OCR text,
+and $n$ the total number of characters of the GT text, the CER can be obtained by</p>
+
+<p>$CER = \frac{i + s+ d}{n}$</p>
+
+<p>If the CER value is calculated this way, it represents the percentage of characters incorrectly recognized by the OCR engine. Also, we can easily reach error rates beyond 100% when the output contains a lot of insertions.</p>
+
+<p>Sometimes, this is mitigated by defining $n$ as the maximum of both lengths, or by clipping the rate at 100%.
+Neither of these strategies yields an unbiased estimate.</p>
+
+<p>The <em>normalized</em> CER avoids this effect by considering the number of correct characters (or identity operations), $c$:</p>
+
+<p>$CER_n = \frac{i + s+ d}{i + s + d + c}$</p>
+
+<p>In OCR-D’s benchmarking we calculate the <em>normalized</em> CER where values naturally range between 0 and 100%.</p>
+
+<h6 id="cer-granularity">CER Granularity</h6>
+
+<p>In OCR-D we distinguish between the CER per <strong>page</strong> and the <strong>overall</strong> CER of a document. The reasoning behind this is that the material OCR-D mainly aims at (historical prints) is very heterogeneous: Some pages might have an almost simplistic layout while others can be highly complex and difficult to process. Providing only an overall CER would cloud these differences between pages.</p>
+
+<p>Currently we only provide CER per page; higher-level CER results might be calculated as a weighted aggregate at a later stage.</p>
+
+<h5 id="word-error-rate-wer">Word Error Rate (WER)</h5>
+
+<p>Word error rate (WER) is analogous to CER: While CER operates on (differences between) characters,
+WER measures the percentage of incorrectly recognized words in a text.</p>
+
+<p>A <strong>word</strong> in that context is usually defined as any sequence of characters between white space (including line breaks), with leading and trailing punctuation removed (according to <a href="http://unicode.org/reports/tr29/#Word_Boundaries">Unicode TR29 Word Boundary algorithm</a>).</p>
+
+<p>CER and WER share categories of errors, and the WER is similarly calculated:</p>
+
+<p>$WER = \frac{i_w + s_w + d_w}{i_w + s_w + d_w + c_w}$</p>
+
+<p>where $i_w$ is the number of inserted, $s_w$ the number of substituted, $d_w$ the number of deleted and $c_w$ the number of correct words.</p>
+
+<p>More specific cases of WER consider only the “significant” words, omitting e.g. stopwords from the calculation.</p>
+
+<h6 id="wer-granularity">WER Granularity</h6>
+
+<p>In OCR-D we distinguish between the WER per <strong>page</strong> and the <strong>overall</strong> WER of a document. The reasoning here follows the one of CER granularity.</p>
+
+<p>Currently we only provide WER per page; higher-level WER results might be calculated at a later stage.</p>
+
+<h4 id="bag-of-words">Bag of Words</h4>
+
+<p>In the “Bag of Words” (BaW) model, a text is represented as a multiset of the words (as defined in the previous section) it contains, regardless of their order.</p>
+
+<p>Example:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/4d33b422-6c77-436c-a3e6-bf27e67dc203.jpg" alt="A sample paragraph in German Fraktur" /></p>
+
+<blockquote>
+  <p>Eine Mondfinsternis ist die Himmelsbegebenheit welche sich zur Zeit des Vollmondes ereignet, wenn die Erde zwischen der Sonne und dem Monde steht, so daß die Strahlen der Sonne von der Erde aufgehalten werden, und daß man so den Schatten der Erde in dem Monde siehet. In diesem Jahre sind zwey Monfinsternisse, davon ist ebenfalls nur Eine bey uns sichtbar, und zwar am 30sten März des Morgens nach 4 Uhr, und währt bis nach 6 Uhr.</p>
+</blockquote>
+
+<p>To get the Bag of Words of this paragraph a multiset containing each word and its number of occurence is created:</p>
+
+<p>$BoW_{GT}$ =</p>
+
+<pre><code class="language-json=">{
+    "Eine": 2, "Mondfinsternis": 1, "ist": 2, "die": 2, "Himmelsbegebenheit": 1, 
+    "welche": 1, "sich": 1, "zur": 1,  "Zeit": 1, "des": 2, "Vollmondes": 1,
+    "ereignet,": 1, "wenn": 1, "Erde": 3, "zwischen": 1, "der": 4, "Sonne": 2,
+    "und": 4, "dem": 2, "Monde": 2, "steht,": 1, "so": 2, "daß": 2, 
+    "Strahlen": 1, "von": 1, "aufgehalten": 1, "werden,": 1, "man": 1, "den": 1, 
+    "Schatten": 1, "in": 1, "siehet.": 1, "In": 1, "diesem": 1, "Jahre": 1, 
+    "sind": 1, "zwey": 1, "Monfinsternisse,": 1, "davon": 1, "ebenfalls": 1, "nur": 1, 
+    "bey": 1, "uns": 1, "sichtbar,": 1, "zwar": 1, "am": 1, "30sten": 1, 
+    "März": 1, "Morgens": 1, "nach": 2, "4": 1, "Uhr,": 1, "währt": 1, 
+    "bis": 1, "6": 1, "Uhr.": 1
+}
+</code></pre>
+
+<h5 id="bag-of-words-error-rate">Bag-of-Words Error Rate</h5>
+
+<p>Based on the above concept, the Bag-of-Words Error Rate is defined as the sum over the modulus of the GT count minus OCR count of each word, divided by the sum total of words in GT and OCR.</p>
+
+<p>The BoW error therefore describes how many words are misrecognized (positively or negatively), independent of a page’s layout (order/segmentation).</p>
+
+\[BWE = \frac{|BoW_{GT} - BoW_{OCR}|}{ {n_w}_{GT} + {n_w}_{OCR} }\]
+
+<h6 id="example-1">Example</h6>
+
+<p>Given the GT text <code class="language-plaintext highlighter-rouge">der Mann steht an der Ampel</code>, recognised by OCR as <code class="language-plaintext highlighter-rouge">cer Mann fteht an der Ampel</code>:</p>
+
+\[BoW_{GT} = \{ \text{Ampel}: 1, \text{an}: 1, \text{der}: 2, \text{Mann}: 1, \text{steht}: 1 \}\]
+
+<p>and</p>
+
+\[BoW_{OCR} = \{ \text{Ampel}: 1, \text{an}: 1, \text{cer}: 1, \text{der}: 1, \text{Mann}: 1, \text{fteht}: 1 \}\]
+
+<p>results in:</p>
+
+\[BWE = \frac{|1 - 1| + |1 - 1| + |2 - 1| + |0 - 1| + |1 - 1| + |1 - 0| + |0 - 1|}{12} = \frac{0 + 0 + 1 + 1 + 0 + 1 + 1}{12} = 0.33\]
+
+<p>In this example, 66% of the words have been correctly recognized.</p>
+
+<h3 id="layout-evaluation">Layout Evaluation</h3>
+
+<p>A good text segementation is the basis for measuring text accuracy.</p>
+
+<p>An example can help to illustrate this:
+Given in a document containing two columns these two columns are detected by layout analysis as just one.
+The OCR result will then contain the text for the first lines of the first and second column, followed by the second lines of the first and second column asf. which does not correspond to the sequence of words and paragraphs given in the Ground Truth.
+Even if all characters and words may be recognized correctly, all downstream processes to measure text accuracy will be defeated.</p>
+
+<p>While the comprehensive evaluation of OCR with consideration of layout analysis is still a research topic, several established metrics can be used to capture different aspects of it.
+For pragmatic reasons we set aside errors resulting from misdetecting the reading order for the moment (though this might be implemented in the future).</p>
+
+<p>Any layout evaluation in the context of OCR-D focusses on region level which should be sufficient for most use cases.</p>
+
+<h4 id="reading-order-definition">Reading Order (Definition)</h4>
+
+<p>Reading order describes the order in which segments on a page are intended to be read. While the reading order might be easily obtained in monographs with a single column where only a few page segments exist, identifying the reading order in more complex layouts (e.g. newspapers or multi-column layouts) can be more challenging.</p>
+
+<p>Example of a simple page layout with reading order:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/bc5258cb-bf91-479e-8a91-abf5ff8bbbfa.jpg" alt="A sample page in German Fraktur with a simple page layout showing the intended reading order" /></p>
+
+<p>(<a href="http://resolver.sub.uni-goettingen.de/purl?PPN1726778096">http://resolver.sub.uni-goettingen.de/purl?PPN1726778096</a>)</p>
+
+<p>Example of a complex page layout with reading order:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/100f14c4-19b0-4810-b3e5-74c674575424.jpg" alt="A sample page in German Fraktur with a complex page layout showing the intended reading order" /></p>
+
+<p>(<a href="http://resolver.sub.uni-goettingen.de/purl?PPN1726778096">http://resolver.sub.uni-goettingen.de/purl?PPN1726778096</a>)</p>
+
+<p>See <a href="#reading-order-evaluation">Reading Order Evaluation</a> for the actual metric.</p>
+
+<h4 id="iou-intersection-over-union">IoU (Intersection over Union)</h4>
+
+<p>Intersection over Union is a term which describes the degree of overlap of two regions of a (document) image defined either by a bounding box or polygon. Example:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/62945a01-a7a7-48f3-86c2-6bb8f97d67fe.jpg" alt="A sample heading in German Fraktur illustrating a Ground Truth bounding box and a detected bounding box" /></p>
+
+<p>(where green represents the Ground Truth and red the detected bounding box)</p>
+
+<p>Given a region A with an area $area_1$, a region B with the area $area_2$, and their overlap (or intersection) $area_o$, the IoU can then be expressed as</p>
+
+<p>$IoU = \frac{area_o}{area_1+area_2-area_o}$</p>
+
+<p>where $area_1+area_2-area_o$ expresses the union of the two regions ($area_1+area_2$) while not counting the overlapping area twice.</p>
+
+<p>The IoU ranges between 0 (no overlap at all) and 1 (the two regions overlap perfectly). Users executing object detection can choose a <a href="#Threshold">threshold</a> that defines which degree of overlap must be given to define a prediction as correct. If e.g. a threshold of 0.6 is chosen, all prediction that have an IoU of 0.6 or higher are correct.</p>
+
+<p>In OCR-D we use IoU to measure how well segments on a page are recognized during the segmentation step. The area of one region represents the area identified in the Ground Truth, while the second region represents the area identified by an OCR-D processor.</p>
+
+<h3 id="resource-utilization">Resource Utilization</h3>
+
+<p>Last but not least, it is important to collect information about the resource utilization of each processing step, so that informed decisions can be made when e.g. having to decide between results quality and throughput speed.</p>
+
+<h4 id="cpu-time">CPU Time</h4>
+
+<p>CPU time is the time taken by the CPU(s) on the processors. It does not include idle time, but does grow with the number of threads/processes.</p>
+
+<h4 id="wall-time">Wall Time</h4>
+
+<p>Wall-clock time (or elapsed time) is the time taken on the processors including idle time but ignoring concurrency.</p>
+
+<h4 id="io">I/O</h4>
+
+<p>I/O (input / output) bandwith is the (average/peak) number of bytes per second read and written from disk during processing.</p>
+
+<h4 id="memory-usage">Memory Usage</h4>
+
+<p>Memory usage is the (average/peak) number of bytes the process allocates in memory (RAM), i.e. resident set size (RSS) or proportional set size (PSS).</p>
+
+<h4 id="disk-usage">Disk Usage</h4>
+
+<p>Disk usage is the total number of bytes the process reads and writes on disk.</p>
+
+<h3 id="unicode-normalization">Unicode Normalization</h3>
+
+<p>In Unicode there can be multiple ways to express characters that have multiple components, such as a base letter and an accent. For evaluation it is essential that both Ground Truth and OCR results are normalized <em>in the same way</em> before evaluation.</p>
+
+<p>For example, the letter <code class="language-plaintext highlighter-rouge">ä</code> can be expressed directly as <code class="language-plaintext highlighter-rouge">ä</code> (<code class="language-plaintext highlighter-rouge">U+00E4</code> in Unicode) or as a combination of <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">◌̈</code> (<code class="language-plaintext highlighter-rouge">U+0061 + U+0308</code>). Both encodings are semantically equivalent but technically different.</p>
+
+<p>Unicode has the notion of <em>normalization forms</em> to provide canonically normalized text. The most common forms are <em>NFC</em> (Normalization Form Canonical Composed) and <em>NFD</em> (Normalization Form Canonical Decomposed). When a Unicode string is in NFC, all decomposed codepoints are replaced with their decomposed equivalent (e.g. <code class="language-plaintext highlighter-rouge">U+0061 + U+0308</code> to <code class="language-plaintext highlighter-rouge">U+00E4</code>). In an NFD encoding, all decomposed codepoints are replaced with their composed equivalents (e.g. <code class="language-plaintext highlighter-rouge">U+00E4</code> to <code class="language-plaintext highlighter-rouge">U+0061 + U+0308</code>).</p>
+
+<!-- There's also NFKC and NFKD - necessary to explain? -->
+
+<p>In accordance with the concept of <a href="https://ocr-d.de/en/gt-guidelines/trans/trLevels.html">GT levels in OCR-D</a>, it is preferable for strings to be normalized as NFC.</p>
+
+<p>The Unicode normalization algorithms rely on data from the Unicode database on equivalence classes and other script- and language-related metadata. For graphemes from the Private Use Area (PUA), such as MUFI, this information is not readily available and can lead to inconsistent normalization. Therefore, it is essential that evaluation tools normalize PUA codepoints in addition to canonical Unicode normalization.</p>
+
+<!-- Reference to GT rules here? -->
+
+<h3 id="metrics-not-in-use-yet">Metrics Not in Use Yet</h3>
+
+<p>The following metrics are not part of the MVP (minimal viable product) and will (if ever) be implemented at a later stage.</p>
+
+<h4 id="gpu-metrics">GPU Metrics</h4>
+
+<h5 id="gpu-avg-memory">GPU Avg Memory</h5>
+
+<p>GPU avg memory refers to the average amount of memory of the GPU (in GiB) that was used during processing.</p>
+
+<h5 id="gpu-peak-memory">GPU Peak Memory</h5>
+
+<p>GPU peak memory is the maximum GPU memory allocated during the execution of a workflow in MB.</p>
+
+<h4 id="text-evaluation-1">Text Evaluation</h4>
+
+<h5 id="letter-accuracy">Letter Accuracy</h5>
+
+<p>Letter Accuracy is a metric that focusses on a pre-defined set of characters classes for evaluation while ignoring others.
+Letters in a common sense do not include white spaces and punctuations or Arabic and Indic digits.
+Furthermore, even letter capitalization might be ignored.
+The relevant character classes must be removed from both the candidate text and the ground truth before evaluation.</p>
+
+<p>Letter Accuracy can be calculated as follows:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Let $</td>
+      <td>L_{GT}</td>
+      <td>$ be the number of relevant letters in the ground truth, $</td>
+      <td>L_{r}</td>
+      <td>$ the number of recognized letters, then</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$LA = 1 - \frac{</td>
+      <td>L_{GT}</td>
+      <td>-</td>
+      <td>L_{r}</td>
+      <td>}{</td>
+      <td>L_{GT}</td>
+      <td>}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="flexible-character-accuracy-measure">Flexible Character Accuracy Measure</h5>
+
+<p>The Flexible Character Accuracy (FCA) measure has been introduced to mitigate a major drawback of CER:
+CER (if applied naively by comparing concatenated page-level texts) is heavily dependent on the reading order an OCR engine detects.
+Thus, where text blocks are rearranged or merged, no suitable text alignment can be made, so CER is very low,
+even if single characters, words and even lines have been perfectly recognized.</p>
+
+<p>FCA avoids this by splitting the recognized text and GT into lines and, if necessary, sub-line chunks,
+finding pairs that align maximally until only unmatched lines remain (which must be treated as errors),
+and measuring average CER of all pairs.</p>
+
+<p>The algorithm can be summarized as follows:</p>
+
+<blockquote>
+  <ol>
+    <li>Split both input texts into text lines</li>
+    <li>Sort the GT lines by length<br />
+  (in descending order)</li>
+    <li>For the top GT line, find the best fully or partially matching OCR line<br />
+  (by lowest edit distance and highest coverage)</li>
+    <li>If full match (i.e. full length of line)
+ a. Mark as done and remove line from both lists
+ b. Else mark matching part as done,<br />
+     then cut off unmatched part and add to respective list of text lines; resort</li>
+    <li>If any more lines available repeat step 3</li>
+    <li>Count remaining unmatched lines as insertions or deletions (depending on origin – GT or OCR)</li>
+    <li>Calculate the (micro-)average CER of all marked pairs and return as overall FCER</li>
+  </ol>
+</blockquote>
+
+<p>(paraphrase of C. Clausner, S. Pletschacher and A. Antonacopoulos / Pattern Recognition Letters 131 (2020) 390–397, p. 392)</p>
+
+<h4 id="layout-evalutation">Layout Evalutation</h4>
+
+<h5 id="reading-order-evaluation">Reading Order Evaluation</h5>
+
+<p><a href="https://www.primaresearch.org/www/assets/papers/ICDAR2013_Clausner_ReadingOrder.pdf">Clausner, Pletschacher and Antonacopoulos 2013</a> 
+propose a method to evaluate reading order by classifying relations between any two regions:
+direct or indirect successor / predecessor, unordered, undefined.</p>
+
+<p>Next, text regions on both sides, ground truth and detected reading order, are matched and assigned (depending on overlap area). 
+A GT region can have multiple corresponding detections. Then, for each pair of regions, the relation type
+on GT is compared to the relation types of the corresponding predictions. Any deviation introduces costs,
+depending both on the kind of relation (e.g. direct vs indirect, or successor vs predecessor)
+and the relative size of the overlap.</p>
+
+<p>The authors introduce a predefined penalty matrix where the cost for each misclassification is given.
+(Direct opposition is more expensive than indirect.)</p>
+
+<p>For example, if the relation given in GT is “somewhere after (but unordered group involved)”,
+but the detected relation is “directly before”, then the penalty will be lower (<code class="language-plaintext highlighter-rouge">10</code>) than
+if the GT relation is “directly after” (<code class="language-plaintext highlighter-rouge">40</code>) – because the latter is more specific than the former.</p>
+
+<p>To calculate the success measure $s$ of the detected reading order, first the costs obtained from comparing all GT to all detected relations are summed up ($e$).
+Then this error value is normalised by the hypothetical error value at 50% agreement ($e_{50}$):</p>
+
+<p>$e_{50} = p_{max} * n_{GT} / 2$</p>
+
+<p>where $p_{max}$ is the highest single penality and $n_{GT}$ is the number of regions in the ground truth.</p>
+
+<p>The success measure is then given by</p>
+
+<p>$s = \frac{1}{e * (1/e_{50}) + 1}$</p>
+
+<h5 id="map-mean-average-precision">mAP (mean Average Precision)</h5>
+
+<p>This score was originally devised for object detection in photo scenery (where overlaps are allowed and cannot conflict with text flow).
+It is not adequate for document layout for various reasons, but since it is a standard metric in the domain of neural computer vision,
+methods and tools of which are increasingly used for layout analysis as well, it is still somewhat useful for reference.</p>
+
+<p>The following paragraphs will first introduce the intermediate concepts needed to define the mAP metric itself.</p>
+
+<h6 id="precision-and-recall">Precision and Recall</h6>
+
+<p><strong>Precision</strong> describes to which degree the predictions of a model are correct.
+The higher the precision of a model, the more confidently we can assume that each prediction is correct
+(e.g. the model having identified a bicycle in an image actually depicts a bicycle).
+A precision of 1 (or 100%) indicates all predictions are correct (true positives) and no predictions are incorrect (false positives). The lower the precision value, the more false positives.</p>
+
+<p>In the context of object detection in images, it measures either</p>
+
+<ul>
+  <li>the ratio of correctly detected segments over all detected segments
+(where <em>correct</em> is defined as having sufficient overlap with some GT segment), or</li>
+  <li>the ratio of correctly segmented pixels over the image size<br />
+(assuming all predictions can be combined into some coherent segmentation).</li>
+</ul>
+
+<p><strong>Recall</strong>, on the other hand,  describes to which degree a model predicts what is actually present.
+The higher the recall of a model, the more confidently we can assume that it covers everything to be found
+(e.g. the model having identified every bicycle, car, person etc. in an image).
+A recall of 1 (or 100%) indicates that all objects have a correct prediction (true positives) and no predictions are missing or mislabelled (false negatives). The lower the recall value, the more false negatives.</p>
+
+<p>In the context of object detection in images, it measures either</p>
+
+<ul>
+  <li>the ratio of correctly detected segments over all actual segments, or</li>
+  <li>the ratio of correctly segmented pixels over the image size.</li>
+</ul>
+
+<p>Notice that both goals are naturally conflicting each other. A good predictor needs both high precision and recall.
+But the optimal trade-off depens on the application.</p>
+
+<p>For layout analysis though, the underlying notion of sufficient overlap itself is inadequate:</p>
+
+<ul>
+  <li>it does not discern oversegmentation from undersegmentation</li>
+  <li>it does not discern splits/merges that are allowable (irrelevant w.r.t. text flow) or not (break up or conflate lines)</li>
+  <li>it does not discern foreground from background, or when partial overlap starts breaking character legibility or introducing ghost characters</li>
+</ul>
+
+<h6 id="prediction-score">Prediction Score</h6>
+
+<p>Most types of model can output a confidence score alongside each predicted object,
+which represents the model’s certainty that the prediction is correct.
+For example, when a model tries to identify ornaments on a page, if it returns a segment (polygon / mask)
+with a prediction score of 0.6, the model asserts there is a 60% probability that there is an ornament at that location.
+Whether this prediction is then considered to be a positive detection, depends on the chosen threshold.</p>
+
+<h6 id="iou-thresholds">IoU Thresholds</h6>
+
+<p>For object detection, the metrics precision and recall are usually defined in terms of a threshold for the degree of overlap
+(represented by the IoU as defined <a href="#iou-intersection-over-union">above</a>), ranging between 0 and 1)
+above which pairs of detected and GT segments are qualified as matches.</p>
+
+<p>(Predictions that are non-matches across all GT objects – false positives – and GT objects that are non-matches across all predictions – false negatives – contribute indirectly in the denominator.)</p>
+
+<p>Example:
+Given a prediction threshold of 0.8, an IoU threshold of 0.6 and a model that tries to detect bicycles in an image which depicts two bicycles.
+The model returns two areas in an image that might be bicycles, one with a confidence score of 0.4 and one with 0.9. Since the prediction threshold equals 0.8, the first candidate gets immediately tossed out. The other
+is compared to both bicycles in the GT. One GT object is missed (false negative), the other intersects the remaining prediction, but the latter is twice as large.
+Therefore, the union of that pair is more than double the intersection. But since the IoU threshold equals 0.6, even the second candidate is not regarded as a match and thus also counted as false negative. Overall, both precision and recall are zero (becaue 1 kept prediction is a false positive and 2 GTs are false negatives).</p>
+
+<h6 id="precision-recall-curve">Precision-Recall Curve</h6>
+
+<p>By varying the prediction threshold (and/or the IoU threshold), the tradeoff between precision and recall can be tuned.
+When the full range of combinations has been gauged, the result can be visualised in a precision-recall curve (or receiver operator characteristic, ROC).
+Usually the optimum balance is where the product of precision and recall (i.e. area under the curve) is maximal.</p>
+
+<p>Given a dataset with 100 images in total of which 50 depict a bicycle. Also given a model trying to identify bicycles on images. The model is run 7 times using the given dataset while gradually increasing the threshold from 0.1 to 0.7.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>run</th>
+      <th>threshold</th>
+      <th>true positives</th>
+      <th>false positives</th>
+      <th>false negatives</th>
+      <th>precision</th>
+      <th>recall</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>0.1</td>
+      <td>50</td>
+      <td>25</td>
+      <td>0</td>
+      <td>0.66</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.2</td>
+      <td>45</td>
+      <td>20</td>
+      <td>5</td>
+      <td>0.69</td>
+      <td>0.9</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.3</td>
+      <td>40</td>
+      <td>15</td>
+      <td>10</td>
+      <td>0.73</td>
+      <td>0.8</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.4</td>
+      <td>35</td>
+      <td>5</td>
+      <td>15</td>
+      <td>0.88</td>
+      <td>0.7</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.5</td>
+      <td>30</td>
+      <td>3</td>
+      <td>20</td>
+      <td>0.91</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.6</td>
+      <td>20</td>
+      <td>0</td>
+      <td>30</td>
+      <td>1</td>
+      <td>0.4</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.7</td>
+      <td>10</td>
+      <td>0</td>
+      <td>40</td>
+      <td>1</td>
+      <td>0.2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For each threshold a pair of precision and recall can be computed and plotted to a curve:</p>
+
+<p><img src="https://pad.gwdg.de/uploads/2d3c62ff-cab4-4a12-8043-014fe0440459.png" alt="A sample precision/recall curve" /></p>
+
+<p>This graph is called Precision-Recall-Curve.</p>
+
+<h6 id="average-precision">Average Precision</h6>
+
+<p>Average Precision (AP) describes how well (flexible and robust) a model can detect objects in an image,
+by averaging precision over the full range (from 0 to 1) of confidence thresholds (and thus, recall results).
+It is equal to the area under the Precision-Recall Curve.</p>
+
+<p><img src="https://pad.gwdg.de/uploads/799e6a05-e64a-4956-9ede-440ac0463a3f.png" alt="A sample precision/recall curve with highlighted area under curve" /></p>
+
+<p>The Average Precision can be computed with the weighted mean of precision at each confidence threshold:</p>
+
+<p>$AP = \displaystyle\sum_{k=0}^{k=n-1}[r(k) - r(k+1)] * p(k)$</p>
+
+<p>with $n$ being the number of thresholds and $r(k)/p(k)$ being the respective recall/precision values for the current confidence threshold $k$.</p>
+
+<p>Example:
+Given the example above, we get:</p>
+
+\[\begin{array}{ll}
+AP &amp;  = \displaystyle\sum_{k=0}^{k=n-1}[r(k) - r(k+1)] * p(k) \\
+&amp; = \displaystyle\sum_{k=0}^{k=6}[r(k) - r(k+1)] * p(k) \\
+&amp; = (1-0.9) * 0.66 + (0.9-0.8) * 0.69 + \text{...} + (0.2-0) * 1\\
+&amp; = 0.878
+\end{array}\]
+
+<p>Usually, AP calculation also involves <em>smoothing</em> (i.e. clipping local minima) and <em>interpolation</em> (i.e. adding data points between the measured confidence thresholds).</p>
+
+<h6 id="mean-average-precision">Mean Average Precision</h6>
+
+<p>Mean Average Precision (mAP) is a metric used to measure the full potential of an object detector over various conditions.
+AP is merely an average over confidence thresholds. But as <a href="#iou-thresholds">stated earlier</a>, the IoU threshold can be chosen freely,
+so AP only reflects the performance under that particular choice. In general though, how accurately every object must be matched may depend on the use-case, and on the class or size of the objects.
+That’s why the mAP metric has been introduced: It is calculated by computing the AP over a range of IoU thresholds, and averaging over them:</p>
+
+<p>$mAP = \displaystyle\frac{1}{N}\sum_{i=1}^{N}AP_i$ with $N$ being the number of thresholds.</p>
+
+<p>Often, this mAP for a range of IoU thresholds gets complemented by additional mAP runs for a set of fixed values, or for various classes and object sizes only.
+The common understanding is that those different measures collectively allow drawing better conclusions and comparisons about the model’s quality.</p>
+
+<h5 id="scenario-driven-performance-evaluation">Scenario-Driven Performance Evaluation</h5>
+
+<p>Scenario-driven, layout-dedicated, text-flow informed performance evaluation as described in
+<a href="https://primaresearch.org/publications/ICDAR2011_Clausner_PerformanceEvaluation">Clausner et al., 2011</a>
+is currently the most comprehensive and sophisticated approach to evaluate the quality of layout analysis.</p>
+
+<p>It is not a single metric, but comprises a multitude of measures derived in a unified method, which considers
+the crucial effects that segmentation can have on text flow, i.e. which kinds of overlaps (merges and splits)
+amount to benign deviations (extra white-space) or pathological ones (breaking lines and words apart).
+In this approach, all the derived measures are aggregated under various sets of weights, called evaluation scenarios,
+which target specific use cases (like headline or keyword extraction, linear fulltext, newspaper or figure extraction).</p>
+
+<h2 id="evaluation-json-schema">Evaluation JSON schema</h2>
+
+<!-- normative -->
+
+<p>The results of an evaluation should be expressed in JSON according to
+the <a href="https://ocr-d.de/en/spec/ocrd-eval.schema.json"><code class="language-plaintext highlighter-rouge">ocrd-eval.json</code></a>.</p>
+
+<h2 id="tools">Tools</h2>
+
+<p>See <a href="https://ocr-d.de/en/workflows#evaluation">OCR-D workflow guide</a>.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li>CER/WER:
+    <ul>
+      <li><a href="https://sites.google.com/site/textdigitisation/qualitymeasures">https://sites.google.com/site/textdigitisation/qualitymeasures</a></li>
+      <li><a href="https://towardsdatascience.com/evaluating-ocr-output-quality-with-character-error-rate-cer-and-word-error-rate-wer-853175297510#5aec">https://towardsdatascience.com/evaluating-ocr-output-quality-with-character-error-rate-cer-and-word-error-rate-wer-853175297510#5aec</a></li>
+    </ul>
+  </li>
+  <li>IoU:
+    <ul>
+      <li><a href="https://medium.com/analytics-vidhya/iou-intersection-over-union-705a39e7acef">https://medium.com/analytics-vidhya/iou-intersection-over-union-705a39e7acef</a></li>
+    </ul>
+  </li>
+  <li>mAP:
+    <ul>
+      <li><a href="https://blog.paperspace.com/mean-average-precision/">https://blog.paperspace.com/mean-average-precision/</a></li>
+      <li><a href="https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173">https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173</a></li>
+    </ul>
+  </li>
+  <li>BoW:
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/Bag-of-words_model">https://en.wikipedia.org/wiki/Bag-of-words_model</a></li>
+    </ul>
+  </li>
+  <li>FCA:
+    <ul>
+      <li><a href="https://www.primaresearch.org/www/assets/papers/PRL_Clausner_FlexibleCharacterAccuracy.pdf">https://www.primaresearch.org/www/assets/papers/PRL_Clausner_FlexibleCharacterAccuracy.pdf</a></li>
+    </ul>
+  </li>
+  <li>Letter Accuary:
+    <ul>
+      <li><a href="https://www.o-bib.de/bib/article/view/5888/8845">https://www.o-bib.de/bib/article/view/5888/8845</a></li>
+    </ul>
+  </li>
+  <li>Reading Order Evaluation:
+    <ul>
+      <li><a href="https://www.primaresearch.org/www/assets/papers/ICDAR2013_Clausner_ReadingOrder.pdf">https://www.primaresearch.org/www/assets/papers/ICDAR2013_Clausner_ReadingOrder.pdf</a></li>
+    </ul>
+  </li>
+  <li>More background on evaluation of OCR
+    <ul>
+      <li><a href="https://doi.org/10.1145/3476887.3476888">https://doi.org/10.1145/3476887.3476888</a></li>
+      <li><a href="https://doi.org/10.1515/9783110691597-009">https://doi.org/10.1515/9783110691597-009</a></li>
+    </ul>
+  </li>
+</ul>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+		<a href="https://github.com/OCR-D">GitHub</a>
+		|
+		<a href="https://gitter.im/OCR-D/Lobby">Gitter</a>
+		|
+		<a href="https://twitter.com/OCR_D_community">Twitter</a>
+		|
+		<a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
+		|
+		<a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+		|
+		<a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+		|
+		<a href="/sitemap.xml">sitemap.xml</a>
+		|
+		
+			<a href="/en/imprint">Imprint</a>
+		
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

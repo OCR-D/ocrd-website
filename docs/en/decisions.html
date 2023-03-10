@@ -5,12 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+  <link href="/assets/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous" />
   <link rel="alternate" type="application/atom+xml" title="OCR-D Blog" href="/feed.xml" />
   <link rel="stylesheet" href="/assets/bulma.css" />
   <link rel="stylesheet" href="/assets/bulma-switch.min.css" />
   <link rel="stylesheet" href="/assets/syntax-highlight.css" />
   <link rel="stylesheet" href="/assets/ocrd.css" />
+  <!-- for mathjax support -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['$$', '$$']],
+        processEscapes: true,
+      },
+    }
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="/assets/mathjax/es5/tex-chtml.js">
+  </script>
 </head>
 <body>
 <script async src="https://cse.google.com/cse.js?cx=e9e3f7148e57ed66c"></script>
@@ -414,21 +425,26 @@ benefit of all OCR-D stakeholders.</p>
   <li>[Q3 2022] We use Nextflow. The whole <code class="language-plaintext highlighter-rouge">.nf</code> file (Nextflow file) as the workflow
 format workflow server and processing 
 server including <a href="https://github.com/OCR-D/ocrd-webapi-implementation">web API implementation</a> is part of the
-<a href="phase3">implementation projects</a>.  Further details can be found <a href="spec/nextflow">in the nextflow spec</a>.</li>
+<a href="phase3">implementation projects</a>. Further details can be found <a href="nextflow">in the nextflow spec</a>.</li>
 </ul>
 
 <h2 id="web-api">Web API</h2>
 
 <ul>
-  <li>[2022] OCR-D Coordination Project provides the <a href="spec/web_api">Web API spec</a>.
-Only the <a href="https://github.com/OCR-D/core/pull/884">REST API wrapper</a> of a single processor is provided by OCR-D Core.</li>
+  <li>[Q3 2022] Switch to the new architecture with message queue.
+    <ul>
+      <li>Processing Broker and Processing Server will be provided via OCR-D Core.</li>
+    </ul>
+  </li>
+  <li>[2022] OCR-D Coordination Project provides the <a href="web_api">Web API spec</a>. Only
+the <a href="https://github.com/OCR-D/core/pull/884">REST API wrapper</a> of a single processor is provided by OCR-D Core.</li>
 </ul>
 
 <h2 id="quiver">QUIVER</h2>
 
 <ul>
   <li>[2022] We will create a web application, <a href="https://github.com/OCR-D/quiver-back-end">QUIVER</a> (for QUalIty oVERview), in
-which several information about OCR-D processors are provided:
+which some information about OCR-D processors are provided:
     <ul>
       <li>a general overview of the projects (i.e. GitHub repositories), e.g. if their <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code> is valid, when their last release has been made etc.</li>
       <li>a workflow section where we <a href="#benchmarking">benchmark</a> different workflows for different corpora.</li>
@@ -457,7 +473,7 @@ The corpora will be publicly available for better transparency.</li>
       <li>Disc usage</li>
     </ul>
   </li>
-  <li>[2022] The benchmarking will be executed automatically in a regular intervall to measure if changes in the processors improve the result.
+  <li>[2022] The benchmarking will be executed automatically in a regular interval to measure if changes in the processors improve the result.
 This might be done via CI, GitHub Actions or as a CRON job on a separate server.</li>
 </ul>
 
@@ -501,7 +517,7 @@ to process individual pages in a <code class="language-plaintext highlighter-rou
    -### [ocrd_anybaseocr](https://github.com/OCR-D/ocrd_anybaseocr)
    -
    -`ocrd_anybaseocr` is a fairly complex project with multiple processors working
-   -on different problems with different technologies. Some of the processors are
+   -on different problems with different technologies. Some processors are
    -powerful, some are too experimental to be recommended. The original developers
    -have moved on from the projects, so it is essential for maintainability by the
    -community that we refactor it.
@@ -549,7 +565,7 @@ contained.</li>
   <li>
     <p>We will switch to <strong>2.x</strong> in <strong>Q1 2023</strong>.</p>
   </li>
-  <li>Support for <strong>1.x</strong> will end in in <strong>Q1 2022</strong></li>
+  <li>Support for <strong>1.x</strong> will end in <strong>Q1 2022</strong></li>
 </ul>
 
 <h3 id="pillow"><a href="https://pillow.readthedocs.io/">pillow</a></h3>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <title>Web API - OCR-D</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
+  <link href="/assets/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link rel="alternate" type="application/atom+xml" title="OCR-D Blog" href="/feed.xml" />
+  <link rel="stylesheet" href="/assets/bulma.css" />
+  <link rel="stylesheet" href="/assets/bulma-switch.min.css" />
+  <link rel="stylesheet" href="/assets/syntax-highlight.css" />
+  <link rel="stylesheet" href="/assets/ocrd.css" />
+  <!-- for mathjax support -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['$$', '$$']],
+        processEscapes: true,
+      },
+    }
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="/assets/mathjax/es5/tex-chtml.js">
+  </script>
+</head>
+<body>
+<script async src="https://cse.google.com/cse.js?cx=e9e3f7148e57ed66c"></script>
+
+
+<script>
+function ToggleSearchActive2() {
+    var T = document.getElementById("button-header")
+	var A = document.getElementById("google-search-header");
+    T.style.display = "none";  // <-- Set it to none
+	A.style.visibility = "visible";  // <-- Set it to visible
+}
+</script>
+
+
+<nav class="navbar is-transparent is-fixed-top">
+
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/assets/ocrd-logo-small.png" height="28"/>
+    </a>
+    <div class="navbar-burger burger" data-target="ocrd-navbar-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="ocrd-navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/">About</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/blog">News</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/about">About the OCR-D Project</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase2">Phase II: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/phase3">Phase III: Projects</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/community">Community</a>
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/publications">Publications and Presentations</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/data">Data</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/initial-tests">Pilot Study</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_survey">User Survey</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/contact">Contacts</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/imprint">Imprint</a>
+            
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/dev">Technical Resources</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/decisions">Decision Log</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans">Ground Truth Guidelines</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/gt-guidelines/trans/trPage">PAGE-XML format documentation</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/dev-best-practice">OCR-D development best practices</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec">Specifications</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/core">OCR-D/core API Documentation</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/en/use">User Guides & Info</a>
+        <div class="navbar-dropdown">
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/setup">Setup Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/user_guide">User Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
+              <a class="navbar-item" href="/en/workflows">Workflows</a>
+            
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/models">Models</a>
+
+          
+
+          
+
+          
+          
+
+            
+            <a class="navbar-item" href="/en/spec/glossary">Glossary</a>
+
+          
+
+          
+        </div>
+      </div>
+      
+
+      
+      
+        <a class="navbar-item" href="/en/faq">FAQ</a>
+      
+
+      
+	 <span class="navbar-item">
+	 
+            <a href="" title="View in German"></a>
+				<div class="navbar-item has-dropdown is-hoverable" style="padding-right:10px">Search
+				<div class="navbar-dropdown" style="font-size: 0.75em; padding:5px">For this feature, we implemented Google Programmable Search Engine. 
+					If you use it, please note that cookies may be stored and Privacy Policy by Google LLC applies: 
+					<a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a> 
+					<button onclick="ToggleSearchActive2()" id="button-header">Agree, show me Google Search!</button></div>
+				</div>
+				<div id="google-search-header" style="visibility: hidden">
+					<div class="gcse-search"></div>
+				</div>
+			
+	</span>
+    </div>
+
+    <div class="navbar-end">
+
+      <span class="navbar-item">
+        </span>
+
+
+    </div> </div> </nav>
+<div class="columns">
+      
+      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
+        <ul class="menu-list column is-one-third">
+  <li><a href="#web-api">Web API</a>
+    <ul>
+      <li><a href="#terminology">Terminology</a></li>
+      <li><a href="#why-do-we-need-a-web-api">Why do we need a Web API?</a></li>
+      <li><a href="#the-specification">The Specification</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#suggested-ocr-d-system-architecture">Suggested OCR-D System Architecture</a>
+        <ul>
+          <li><a href="#description">Description</a></li>
+          <li><a href="#processing-server">Processing Server</a></li>
+          <li><a href="#process-queue">Process Queue</a></li>
+          <li><a href="#processing-worker">Processing Worker</a></li>
+          <li><a href="#database">Database</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </aside>
+      <div id="toc-sidebar-toggle">&lt;&gt;</div>
+      
+
+      <main class="container content column is-two-thirds" aria-label="Content">
+        <h1 id="web-api">Web API</h1>
+
+<h2 id="terminology">Terminology</h2>
+
+<ul>
+  <li><strong>Processing Worker</strong>: a Processing Worker is an <a href="https://ocr-d.de/en/spec/glossary#ocr-d-processor">OCR-D Processor</a>
+running as a worker, i.e. listening to the Process Queue, pulling new jobs when available, processing them, and
+pushing the updated job statuses back to the queue if necessary.</li>
+  <li><strong>Workflow Server</strong>: a Workflow Server is a server which exposes REST endpoints in the <code class="language-plaintext highlighter-rouge">Workflow</code> section of
+the <a href="openapi.yml">Web API specification</a>. In particular, for each <code class="language-plaintext highlighter-rouge">POST /workflow/{workflow-id}</code> request, the
+corresponding Nextflow script is executed. The script comprises a chain of call to the <code class="language-plaintext highlighter-rouge">POST /processor/{executable}</code>
+endpoint in an appropriate order.</li>
+  <li><strong>Processing Server</strong>: a Processing Server is a server which exposes REST endpoints in the <code class="language-plaintext highlighter-rouge">Processing</code> section of
+the <a href="openapi.yml">Web API specification</a>. In particular, for each <code class="language-plaintext highlighter-rouge">POST /processor/{executable}</code> request,
+a Processing Message is added to the respective Job Queue.</li>
+  <li><strong>Process Queue</strong>: a Process Queue is a queueing system for workflow jobs (i.e. single processor runs on one
+workspace) to be executed by Processing Workers and to be enqueued by the Workflow Server via the Processing Server.
+In our implementation, it’s <a href="https://www.rabbitmq.com/">RabbitMQ</a>.</li>
+  <li><strong>Job queue</strong>: one or many queues in the Process Queue, which contains processing messages. Processing Workers listen
+to the job queues.</li>
+  <li><strong>Result queue</strong>: one or many queues in the Process Queue, which contains result messages. Depending on the
+configuration in the processing messages, Processing Workers might publish result messages to these queues. A
+3rd-party service can listen to these queues to get updated about the job status.</li>
+  <li><strong>Processing message</strong>: a message published to the job queue. This message contains necessary information for the
+Processing Worker to process data and perform actions after the processing has finished. These actions include <code class="language-plaintext highlighter-rouge">POST</code>
+ing the result message to the provided callback URL, or publishing the result message to the result queue. The schema
+of processing messages can be found <a href="web_api/processing-message.schema.yml">here</a>.</li>
+  <li><strong>Result message</strong>: a message published to the result queue. This message contains information about a job (ID,
+status, etc.). Depending on the configuration in the processing message, a result message can be <code class="language-plaintext highlighter-rouge">POST</code>ed to the
+callback URL, published to the result queue, or both. The schema for result messages can be
+found <a href="web_api/result-message.schema.yml">here</a>.</li>
+</ul>
+
+<h2 id="why-do-we-need-a-web-api">Why do we need a Web API?</h2>
+
+<p>After having processors running locally via the <a href="https://ocr-d.de/en/spec/cli">CLI</a>, communication over network is the
+natural extension. This feature will improve the flexibility, scalability and reliability of the system. This
+specification presents ideas behind the endpoints, how to use them, and technical details happening in the background.</p>
+
+<h2 id="the-specification">The Specification</h2>
+
+<p>The Web API specification can be found <a href="openapi.yml">here</a>. It follows
+the <a href="https://swagger.io/specification/">OpenAPI specification</a>. There are 4 parts to be implemented: discovery,
+processing, workflow, and workspace.</p>
+
+<p><strong>Discovery</strong>: The service endpoints in this section provide information about the server. They include, but are not
+limited to, hardware configuration, installed processors, and information about each processor.</p>
+
+<p><strong>Processing</strong>: Via the service endpoints in this section, one can get information about a
+specific <a href="https://ocr-d.de/en/spec/glossary#ocr-d-processor">processor</a>, trigger a processor run, and check the status
+of a running processor. By exposing these endpoints, the server can encapsulate the detailed setup of the system and
+offer users a single entry to the processors. The implementation of this section is provided
+by <a href="https://github.com/OCR-D/core">OCR-D/core</a>. Implementors do not need to implement it themselves, they can reuse
+and/or extend the reference implementation from OCR-D/core.</p>
+
+<p><strong>Workflow</strong>: Beyond single processors, one can manage
+entire <a href="https://ocr-d.de/en/spec/glossary#ocr-d-workflow">workflows</a>, i.e. a series of connected processor
+instances. In this spec, a workflow amounts to a <a href="https://www.nextflow.io/">Nextflow</a> script. Some information
+about Nextflow and how to use it in OCR-D is documented <a href="nextflow">in the Nextflow spec</a>.</p>
+
+<p><strong>Workspace</strong>: The service endpoints in this section concern data management, which in OCR-D is handled
+via <a href="https://ocr-d.de/en/spec/glossary#workspace">workspaces</a>. (A workspace is the combination of
+a <a href="https://ocr-d.de/en/spec/mets">METS</a> file and any number of referenced files already downloaded, i.e. with locations
+relative to the METS file path.) Processing (via single processors or workflows) always refers to existing workspaces,
+i.e. workspaces residing in the server’s filesystem.</p>
+
+<h2 id="usage">Usage</h2>
+
+<p>When a system implements the Web API completely, it can be used as follows:</p>
+
+<ol>
+  <li>Retrieve information about the system via endpoints in the <code class="language-plaintext highlighter-rouge">Discovery</code> section.</li>
+  <li>Create a workspace (from an <a href="https://ocr-d.de/en/spec/ocrd_zip">OCRD-ZIP</a> or METS URL) via the <code class="language-plaintext highlighter-rouge">POST /workspace</code>
+endpoint and get back a workspace ID.</li>
+  <li>Create a workflow by uploading a Nextflow script to the system via the <code class="language-plaintext highlighter-rouge">POST /workflow</code> endpoint and get back a
+workflow ID.</li>
+  <li>One can either:
+    <ul>
+      <li>Trigger a single processor on a workspace by calling the <code class="language-plaintext highlighter-rouge">POST /processor/{executable}</code> endpoint with the chosen
+processor name, workspace ID and parameters, or</li>
+      <li>Start a workflow on a workspace by calling the <code class="language-plaintext highlighter-rouge">POST /workflow/{workflow-id}</code> endpoint with the chosen workflow ID
+and workspace ID.</li>
+      <li>In both cases, a job ID is returned.</li>
+    </ul>
+  </li>
+  <li>With the given job ID, it is possible to check the job status by calling:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">GET /processor/{executable}/{job-id}</code> for a single processor, or</li>
+      <li><code class="language-plaintext highlighter-rouge">GET /workflow/{workflow-id}/{job-id}</code> for the workflow.</li>
+    </ul>
+  </li>
+  <li>Download the resulting workspace via the <code class="language-plaintext highlighter-rouge">GET /workspace/{workspace-id}</code> endpoint and get back an OCRD-ZIP.
+Set the request header to <code class="language-plaintext highlighter-rouge">Accept: application/json</code> in case you only want the meta-data of the workspace but not the
+files.</li>
+</ol>
+
+<h2 id="suggested-ocr-d-system-architecture">Suggested OCR-D System Architecture</h2>
+
+<p>There are various ways to build a system which implements this Web API. In this section, we describe a distributed
+architecture, which greatly improves the scalability, flexibility, and reliability of the system compared to
+the <a href="https://ocr-d.de/en/spec/cli">CLI</a> and the Distributed Processor REST Calls approach.</p>
+
+<figure>
+  <img src="images/web-api-distributed-queue.jpg" alt="Distributed architecture with the Web API" />
+  <figcaption align="center">
+    <b>Fig. 1:</b> OCR-D System Architecture
+  </figcaption>
+</figure>
+
+<p>In this architecture, all servers are implemented using <a href="https://fastapi.tiangolo.com/">FastAPI</a>. Behind the scene, it
+runs <a href="https://www.uvicorn.org/">Uvicorn</a>, an <a href="https://asgi.readthedocs.io/en/latest/">ASGI</a> web server implementation
+for Python. <a href="https://www.rabbitmq.com/">RabbitMQ</a> is used for the Process Queue, and <a href="https://www.mongodb.com/">MongoDB</a>
+is the database system. There are many options for a reverse proxy, such as Nginx, Apache, or HAProxy. From our side, we
+recommend using <a href="https://doc.traefik.io/traefik/">Traefik</a>.</p>
+
+<h3 id="description">Description</h3>
+
+<p>As shown in Fig. 1, each section in the <a href="#the-specification">Web API specification</a> is implemented by different servers,
+which are Discovery Server, Processing Server, Workflow Server, and Workspace Server respectively. Although each server
+in the figure is deployed on its own machine, it is completely up to the implementors to decide which machines run which
+servers. However, having each processor run on its own machine reduces the risk of version and resource conflicts.
+Furthermore, the machine can be customized to best fit the processor’s hardware requirements and throughput demand. For
+example, some processors need GPU computation, while others do not, or some need more CPU capacity while others need
+more memory.</p>
+
+<p><strong>Processing</strong>: since the <code class="language-plaintext highlighter-rouge">Processing</code> section is provided by <a href="https://github.com/OCR-D/core">OCR-D Core</a>, implementors
+do not need to implement Processing Server, Process Queue, and Processing Worker themselves, they can reuse/customize
+the existing implementation. Once a request arrives, it will be pushed to a job queue. A job queue always has the same
+name as its respective processors. For example, <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code>processors listen only to the queue
+named <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code>. A Processing Worker, which is
+an <a href="https://ocr-d.de/en/spec/glossary#ocr-d-processor">OCR-D Processor</a> running as a worker, listens to the queue, pulls
+new jobs when available, processes them, and push the job statuses back to the queue if necessary. One normally does not
+run a Processing Worker directly, but via a Processing Server. Job statuses can be pushed back to the queue, depending
+on the <a href="#process-queue">job configuration</a>, so that other services get updates and act accordingly.</p>
+
+<p><strong>Database</strong>: in this architecture, a database is required to store information such as users requests, jobs statuses,
+workspaces, etc. <a href="https://www.mongodb.com/">MongoDB</a> is required here.</p>
+
+<p><strong>Network File System</strong>: in order to avoid file transfer between different machines, it is highly recommended to have
+a <a href="https://en.wikipedia.org/wiki/Network_File_System">Network File System (NFS)</a> set up. With NFS, all Processing
+Servers(specifically processors) can work in a shared storage environment and access files as if they are local files.
+To get data into the NFS, one could use the <code class="language-plaintext highlighter-rouge">POST /workspace</code> endpoint to
+upload <a href="https://ocr-d.de/en/spec/ocrd_zip">OCRD-ZIP</a>files. However, this approach is only appropriate for testing or
+very limited data sizes. Usually, Workspace Server should be able to pull data from other storages.</p>
+
+<h3 id="processing-server">Processing Server</h3>
+
+<p>The Processing Server is a server which exposes REST endpoints in the <code class="language-plaintext highlighter-rouge">Processing</code> section of
+the <a href="openapi.yml">Web API specification</a>. In the queue-based system architecture, a Processing Server is responsible for
+deployment management and enqueueing workflow jobs. For the former, a Processing Server can deploy, re-use, and shutdown
+Processing Workers, Process Queue, and Database, depending on the configuration. For the latter, it decodes requests and
+delegates them to the Process Queue.</p>
+
+<p>To start a Processing Server, run</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ocrd processing-server <span class="nt">--address</span><span class="o">=</span>&lt;IP&gt;:&lt;PORT&gt; /path/to/config.yml
+</code></pre></div></div>
+
+<p>This command starts a Processing Server on the provided IP address and port. It accepts only one argument, which is the
+path to a configuration file. The schema of a configuration file can be found <a href="web_api/config.schema.yml">here</a>. Below
+is a small example of how the file might look like.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">process_queue</span><span class="pi">:</span>
+  <span class="na">address</span><span class="pi">:</span> <span class="s">localhost</span>
+  <span class="na">port</span><span class="pi">:</span> <span class="m">5672</span>
+  <span class="na">credentials</span><span class="pi">:</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">admin</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s">admin</span>
+  <span class="na">ssh</span><span class="pi">:</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">cloud</span>
+    <span class="na">path_to_privkey</span><span class="pi">:</span> <span class="s">/path/to/file</span>
+<span class="na">database</span><span class="pi">:</span>
+  <span class="na">address</span><span class="pi">:</span> <span class="s">localhost</span>
+  <span class="na">port</span><span class="pi">:</span> <span class="m">27017</span>
+  <span class="na">credentials</span><span class="pi">:</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">admin</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s">admin</span>
+  <span class="na">ssh</span><span class="pi">:</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">cloud</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1234"</span>
+<span class="na">hosts</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">address</span><span class="pi">:</span> <span class="s">localhost</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">cloud</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1234"</span>
+    <span class="na">workers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ocrd-cis-ocropy-binarize</span>
+        <span class="na">number_of_instance</span><span class="pi">:</span> <span class="m">2</span>
+        <span class="na">deploy_type</span><span class="pi">:</span> <span class="s">native</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ocrd-olena-binarize</span>
+        <span class="na">number_of_instance</span><span class="pi">:</span> <span class="m">1</span>
+        <span class="na">deploy_type</span><span class="pi">:</span> <span class="s">docker</span>
+
+  <span class="pi">-</span> <span class="na">address</span><span class="pi">:</span> <span class="s">134.76.1.1</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">tdoan</span>
+    <span class="na">path_to_privkey</span><span class="pi">:</span> <span class="s">/path/to/file</span>
+    <span class="na">workers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ocrd-eynollah-segment</span>
+        <span class="na">number_of_instance</span><span class="pi">:</span> <span class="m">1</span>
+        <span class="na">deploy_type</span><span class="pi">:</span> <span class="s">native</span>
+</code></pre></div></div>
+
+<p>There are three main sections in the configuration file.</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">process_queue</code>: it contains the <code class="language-plaintext highlighter-rouge">address</code> and <code class="language-plaintext highlighter-rouge">port</code>, where the Process Queue was deployed, or will be deployed with
+the specified <code class="language-plaintext highlighter-rouge">credentials</code>. If the <code class="language-plaintext highlighter-rouge">ssh</code> property is presented, the Processing Server will try to connect to
+the <code class="language-plaintext highlighter-rouge">address</code> via <code class="language-plaintext highlighter-rouge">ssh</code> with provided <code class="language-plaintext highlighter-rouge">username</code> and <code class="language-plaintext highlighter-rouge">password</code> and deploy <a href="https://www.rabbitmq.com/">RabbitMQ</a> at
+the specified <code class="language-plaintext highlighter-rouge">port</code>. The remote machine must have <a href="https://www.docker.com/">Docker</a> installed since the deployment
+is done via Docker. Make sure that the provided <code class="language-plaintext highlighter-rouge">username</code> has enough rights to run Docker commands. In case
+the <code class="language-plaintext highlighter-rouge">ssh</code> property is not presented, the Processing Server assumes that RabbitMQ was already deployed and just uses
+it.</li>
+  <li><code class="language-plaintext highlighter-rouge">database</code>: this section also contains the <code class="language-plaintext highlighter-rouge">address</code> and <code class="language-plaintext highlighter-rouge">port</code>, where the <a href="https://www.mongodb.com/">MongoDB</a> is
+running, or will run. If <code class="language-plaintext highlighter-rouge">credentials</code> is presented, it will be used when deploying and connecting to the database.
+The <code class="language-plaintext highlighter-rouge">ssh</code> section behaves exactly the same as described in the <code class="language-plaintext highlighter-rouge">process_queue</code> section above.</li>
+  <li><code class="language-plaintext highlighter-rouge">hosts</code>: this section contains a list of hosts, usually virtual machines, where Processing Workers should be
+deployed. To be able to connect to a host, an <code class="language-plaintext highlighter-rouge">address</code> and <code class="language-plaintext highlighter-rouge">username</code> are required, then comes either <code class="language-plaintext highlighter-rouge">password</code>
+or <code class="language-plaintext highlighter-rouge">path_to_privkey</code> (path to a private key). All Processing Workers, which will be deployed, must be declared under
+the <code class="language-plaintext highlighter-rouge">workers</code> property. In case <code class="language-plaintext highlighter-rouge">deploy_type</code> is <code class="language-plaintext highlighter-rouge">docker</code>, make sure that <a href="https://www.docker.com/">Docker</a> is
+installed in the target machine and the provided <code class="language-plaintext highlighter-rouge">username</code> has enough rights to execute Docker commands.</li>
+</ol>
+
+<p>Among three sections, only the <code class="language-plaintext highlighter-rouge">process_queue</code> is required. However, if <code class="language-plaintext highlighter-rouge">hosts</code> is present, <code class="language-plaintext highlighter-rouge">database</code> must be there
+as well. For more information, please check the <a href="web_api/config.schema.yml">configuration file schema</a>.</p>
+
+<h3 id="process-queue">Process Queue</h3>
+
+<p>By using a queuing system for individual per-workspace per-job processor runs, specifically as message queueing
+with <a href="https://www.rabbitmq.com/">RabbitMQ</a>, the reliability and flexibility of the Processing Server are greatly
+improved over a system directly coupling the workflow engine and distributed processor instances.</p>
+
+<p>In our implementation of the Process Queue, manual acknowledgement mode is used. This means, when a Processing Worker
+finishes successfully, it sends a positive ACK signal to RabbitMQ. In case of failure, it tries again three times before
+sending a negative ACK signal. When a negative signal is received, RabbitMQ will re-queue the message. If there is not
+any ACK signal sent for any reason (e.g. consumer crash, power outage, network problem, etc.), RabbitMQ will
+automatically re-queue the message after timeout, which is 30 minutes by default. This behavior, however, can
+be <a href="https://www.rabbitmq.com/consumers.html#acknowledgement-timeout">overridden</a> by setting another value for
+the <code class="language-plaintext highlighter-rouge">consumer_timeout</code> property in the <a href="https://www.rabbitmq.com/configure.html#config-file"><code class="language-plaintext highlighter-rouge">rabbitmq.conf</code></a> file.</p>
+
+<p>To avoid processing the same input twice (in case of re-queuing), a Processing Worker first checks
+the <a href="https://www.rabbitmq.com/confirms.html#automatic-requeueing"><code class="language-plaintext highlighter-rouge">redeliver</code></a> property to see if this message was
+re-queued. If yes, and the status of this process in the database is not <code class="language-plaintext highlighter-rouge">SUCCESS</code>, it will process the data described
+in the message again.</p>
+
+<p>When a Processing Server receives a request, it creates a message based on the request content, then push it to a
+job queue. A job queue always has the same name as its respective processors. For
+example, <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code> processors listen only to the job queue named <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code>. Below is an example
+of how a message looks like. For a detailed schema, please check
+the <a href="web_api/processing-message.schema.yml">message schema</a>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">job_id</span><span class="pi">:</span> <span class="s">uuid</span>
+<span class="na">processor_name</span><span class="pi">:</span> <span class="s">ocrd-cis-ocropy-binarize</span>
+
+<span class="na">path_to_mets</span><span class="pi">:</span> <span class="s">/path/to/mets.xml</span>
+<span class="na">input_file_grps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">OCR-D-DEFAULT</span>
+<span class="na">output_file_grps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">OCR-D-BIN</span>
+<span class="na">page_id</span><span class="pi">:</span> <span class="s">PHYS_001,PHYS_002</span>
+<span class="na">parameters</span><span class="pi">:</span>
+  <span class="na">params_1</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">params_2</span><span class="pi">:</span> <span class="m">2</span>
+
+<span class="na">result_queue_name</span><span class="pi">:</span> <span class="s">ocrd-cis-ocropy-binarize-result</span>
+<span class="na">callback_url</span><span class="pi">:</span> <span class="s">https://my.domain.com/callback</span>
+
+<span class="na">created_time</span><span class="pi">:</span> <span class="m">1668782988590</span>
+</code></pre></div></div>
+
+<p>In the message content, <code class="language-plaintext highlighter-rouge">job_id</code>, <code class="language-plaintext highlighter-rouge">processor_name</code>, and <code class="language-plaintext highlighter-rouge">created_time</code> are added by the Processing Server, while the
+rest comes from the body of the <code class="language-plaintext highlighter-rouge">POST /processor/{executable}</code> request.</p>
+
+<p>Instead of <code class="language-plaintext highlighter-rouge">path_to_mets</code>, one can also use <code class="language-plaintext highlighter-rouge">workspace_id</code> to specify a workspace. An ID of a workspace can be obtained
+from the Workspace Server.</p>
+
+<p>In case <code class="language-plaintext highlighter-rouge">result_queue_name</code> property is presented, the result of the processing will be pushed to the queue with the
+provided name. If the queue does not exist yet, it will be created on the fly. This is useful when there is another
+service waiting for the results of processing. That service can simply listen to that queue and will be immediately
+notified when the results are available. Below is a simple Python script to demonstrate how a service can listen to
+the <code class="language-plaintext highlighter-rouge">result_queue_name</code> and act accordingly.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pika</span><span class="p">,</span> <span class="n">sys</span><span class="p">,</span> <span class="n">os</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="n">PlainCredentials</span><span class="p">(</span><span class="s">'username'</span><span class="p">,</span> <span class="s">'password'</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="n">BlockingConnection</span><span class="p">(</span><span class="n">pika</span><span class="p">.</span><span class="n">ConnectionParameters</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'my.domain.name'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5672</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">))</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">connection</span><span class="p">.</span><span class="n">channel</span><span class="p">()</span>
+
+    <span class="c1"># Create the result queue, in case it does not exist yet
+</span>    <span class="n">result_queue_name</span> <span class="o">=</span> <span class="s">'ocrd-cis-ocropy-binarize-result'</span>
+    <span class="n">channel</span><span class="p">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">' [x] Received %r'</span> <span class="o">%</span> <span class="n">body</span><span class="p">)</span>
+
+    <span class="n">channel</span><span class="p">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">,</span> <span class="n">on_message_callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">auto_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">' [*] Waiting for job results.)
+    channel.start_consuming()
+</span></code></pre></div></div>
+
+<p>It is important that the result queue exists before one starts listening on it, otherwise an error is thrown. The best
+way to ensure this is trying to create the result queue in the listener service, as shown in the Python script above. In
+RabbitMQ, this action is idempotent, which means that the creation only happens if the queue doesn’t exist yet,
+otherwise nothing will happen. For more information, please check
+the <a href="https://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a>.</p>
+
+<p>If the <code class="language-plaintext highlighter-rouge">callback_url</code> in the processing message is set, a <code class="language-plaintext highlighter-rouge">POST</code> request will be made to the provided endpoint when the
+processing is finished. The body of the request is the result message described below.</p>
+
+<p>The schema for result messages can be found <a href="web_api/result-message.schema.yml">here</a>. This message is sent to the
+callback URL or to the result queue, depending on the configuration in the processing message. An example of the message
+looks like this:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">job_id</span><span class="pi">:</span> <span class="s">uuid</span>
+<span class="na">status</span><span class="pi">:</span> <span class="s">SUCCESS</span>
+<span class="na">path_to_mets</span><span class="pi">:</span> <span class="s">/path/to/mets.xml</span>
+</code></pre></div></div>
+
+<p>With the returned <code class="language-plaintext highlighter-rouge">job_id</code>, one can retrieve more information by sending a <code class="language-plaintext highlighter-rouge">GET</code> request to
+the <code class="language-plaintext highlighter-rouge">/processor/{executable}/{job_id}</code> endpoint, or to <code class="language-plaintext highlighter-rouge">/processor/{executable}/{job_id}/log</code> to get all logs of that
+job.</p>
+
+<h3 id="processing-worker">Processing Worker</h3>
+
+<p>There is normally no need to start (or stop) a Processing Worker manually, since it can be managed by a Processing
+Server via a <a href="#processing-server">configuration file</a>. However, if it is necessary to do so, there are two ways to start
+a Processing Worker:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Use ocrd CLI bundled with OCR-D/core</span>
+<span class="nv">$ </span>ocrd server &lt;processor-name&gt; <span class="nt">--type</span><span class="o">=</span>worker <span class="nt">--queue</span><span class="o">=</span>&lt;queue-address&gt; <span class="nt">--database</span><span class="o">=</span>&lt;database-address&gt;
+
+<span class="c"># 2. Use processor name</span>
+<span class="nv">$ </span>&lt;processor-name&gt; <span class="nt">--server</span> <span class="nt">--type</span><span class="o">=</span>worker <span class="nt">--queue</span><span class="o">=</span>&lt;queue-address&gt; <span class="nt">--database</span><span class="o">=</span>&lt;database-address&gt;
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--queue</code>: a <a href="https://www.rabbitmq.com/uri-spec.html">Rabbit MQ connection string</a> to a running instance.</li>
+  <li><code class="language-plaintext highlighter-rouge">--database</code>: a <a href="https://www.mongodb.com/docs/manual/reference/connection-string/">MongoDB connection string</a> to a
+running instance.</li>
+</ul>
+
+<h3 id="database">Database</h3>
+
+<p>A database is required to store necessary information such as users requests, jobs statuses, workspaces,
+etc. <a href="https://www.mongodb.com/">MongoDB</a> is used in this case. To connect to MongoDB via a Graphical User
+Interface, <a href="https://www.mongodb.com/products/compass">MongoDB Compass</a> is recommended.</p>
+
+<p>When a Processing Worker connects to the database for the first time, it will create a database called <code class="language-plaintext highlighter-rouge">ocrd</code>.
+For collections, each processor creates and works on a collection with the same name as its own. For example,
+all <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code> processors will read and write to the <code class="language-plaintext highlighter-rouge">ocrd-olena-binarize</code> collection only.</p>
+
+      </main>
+    </div><footer class="footer" style="padding: 1rem">
+    <div class="content has-text-centered">
+      <img class="footer-logo" src="/assets/dfg_logo_eng.jpg" alt="DFG logo"/>
+    </div>
+    <!-- <div class="content has-text-centered"> -->
+    <!--   <img class="footer-logo" src="/assets/logo-bbaw.png" alt="BBAW logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-hab.gif" alt="HAB logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-kit.png" alt="KIT logo"/> -->
+    <!--   <img class="footer-logo" src="/assets/logo-sbb.png" alt="SBB logo"/> -->
+    <!-- </div> -->
+    <div class="content has-text-centered">
+		<a href="https://github.com/OCR-D">GitHub</a>
+		|
+		<a href="https://gitter.im/OCR-D/Lobby">Gitter</a>
+		|
+		<a href="https://twitter.com/OCR_D_community">Twitter</a>
+		|
+		<a href="https://github.com/OCR-D/ocrd-website/wiki">Wiki</a>
+		|
+		<a href="https://hub.docker.com/u/ocrd">Docker Hub</a>
+		|
+		<a href="https://www.zotero.org/groups/418719/ocr-d">Technology Watch</a>
+		|
+		<a href="/sitemap.xml">sitemap.xml</a>
+		|
+		
+			<a href="/en/imprint">Imprint</a>
+		
+    </div>
+
+<script src="/assets/script.js"></script>
+</footer>
+</body>
+
+</html>

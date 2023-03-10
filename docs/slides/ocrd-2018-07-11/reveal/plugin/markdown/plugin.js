@@ -4,9 +4,9 @@
  * of external markdown documents.
  */
 
-import { marked } from 'marked';
+import marked from 'marked'
 
-const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n',
+const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$',
 	  DEFAULT_NOTES_SEPARATOR = 'notes?:',
 	  DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
 	  DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
@@ -206,7 +206,7 @@ const Plugin = () => {
 
 			var externalPromises = [];
 
-			[].slice.call( scope.querySelectorAll( 'section[data-markdown]:not([data-markdown-parsed])') ).forEach( function( section, i ) {
+			[].slice.call( scope.querySelectorAll( '[data-markdown]:not([data-markdown-parsed])') ).forEach( function( section, i ) {
 
 				if( section.getAttribute( 'data-markdown' ).length ) {
 
@@ -234,7 +234,7 @@ const Plugin = () => {
 					) );
 
 				}
-				else {
+				else if( section.getAttribute( 'data-separator' ) || section.getAttribute( 'data-separator-vertical' ) || section.getAttribute( 'data-separator-notes' ) ) {
 
 					section.outerHTML = slidify( getMarkdownFromSlide( section ), {
 						separator: section.getAttribute( 'data-separator' ),
@@ -243,6 +243,9 @@ const Plugin = () => {
 						attributes: getForwardedAttributes( section )
 					});
 
+				}
+				else {
+					section.innerHTML = createMarkdownSlide( getMarkdownFromSlide( section ) );
 				}
 
 			});
@@ -421,42 +424,34 @@ const Plugin = () => {
 
 			deck = reveal;
 
-			let { renderer, animateLists, ...markedOptions } = deck.getConfig().markdown || {};
+			let renderer = new marked.Renderer();
 
-			if( !renderer ) {
-				renderer = new marked.Renderer();
+			renderer.code = ( code, language ) => {
 
-				renderer.code = ( code, language ) => {
+				// Off by default
+				let lineNumbers = '';
 
-					// Off by default
-					let lineNumbers = '';
+				// Users can opt in to show line numbers and highlight
+				// specific lines.
+				// ```javascript []        show line numbers
+				// ```javascript [1,4-8]   highlights lines 1 and 4-8
+				if( CODE_LINE_NUMBER_REGEX.test( language ) ) {
+					lineNumbers = language.match( CODE_LINE_NUMBER_REGEX )[1].trim();
+					lineNumbers = `data-line-numbers="${lineNumbers}"`;
+					language = language.replace( CODE_LINE_NUMBER_REGEX, '' ).trim();
+				}
 
-					// Users can opt in to show line numbers and highlight
-					// specific lines.
-					// ```javascript []        show line numbers
-					// ```javascript [1,4-8]   highlights lines 1 and 4-8
-					if( CODE_LINE_NUMBER_REGEX.test( language ) ) {
-						lineNumbers = language.match( CODE_LINE_NUMBER_REGEX )[1].trim();
-						lineNumbers = `data-line-numbers="${lineNumbers}"`;
-						language = language.replace( CODE_LINE_NUMBER_REGEX, '' ).trim();
-					}
+				// Escape before this gets injected into the DOM to
+				// avoid having the HTML parser alter our code before
+				// highlight.js is able to read it
+				code = escapeForHTML( code );
 
-					// Escape before this gets injected into the DOM to
-					// avoid having the HTML parser alter our code before
-					// highlight.js is able to read it
-					code = escapeForHTML( code );
-
-					return `<pre><code ${lineNumbers} class="${language}">${code}</code></pre>`;
-				};
-			}
-
-			if( animateLists === true ) {
-				renderer.listitem = text => `<li class="fragment">${text}</li>`;
-			}
+				return `<pre><code ${lineNumbers} class="${language}">${code}</code></pre>`;
+			};
 
 			marked.setOptions( {
 				renderer,
-				...markedOptions
+				...deck.getConfig().markdown
 			} );
 
 			return processSlides( deck.getRevealElement() ).then( convertSlides );

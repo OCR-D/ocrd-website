@@ -88,23 +88,16 @@ export default class Progress {
 
 		event.preventDefault();
 
-		let slides = this.Reveal.getSlides();
-		let slidesTotal = slides.length;
+		let slidesTotal = this.Reveal.getHorizontalSlides().length;
 		let slideIndex = Math.floor( ( event.clientX / this.getMaxWidth() ) * slidesTotal );
 
 		if( this.Reveal.getConfig().rtl ) {
 			slideIndex = slidesTotal - slideIndex;
 		}
 
-		let targetIndices = this.Reveal.getIndices(slides[slideIndex]);
-		this.Reveal.slide( targetIndices.h, targetIndices.v );
+		this.Reveal.slide( slideIndex );
 
 	}
 
-	destroy() {
-
-		this.element.remove();
-
-	}
 
 }
