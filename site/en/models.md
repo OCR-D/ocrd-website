@@ -234,7 +234,7 @@ combined by concatenating with `+` (which generally improves accuracy but always
 
 ```sh
 # Use the deu and frk models
-ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deut+frk'
+ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deu+frk'
 # Use the Fraktur model
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 ```
