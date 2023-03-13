@@ -4,6 +4,7 @@ lang: en
 lang-ref: ocrd_eval.md
 toc: true
 title: Quality Assurance in OCR-D
+id: ocrd-eval
 ---
 
 # Quality Assurance in OCR-D
