@@ -34,9 +34,10 @@ document.addEventListener('DOMContentLoaded', fixBulmanNavbarBurgers)
  */
 const sidebarToggle = document.querySelector('#toc-sidebar-toggle')
 if (sidebarToggle) {
-  const sidebarContent = document.querySelector('#toc-sidebar-content')
+  const sidebarContent = document.querySelector('#toc-sidebar')
   const mainContent = document.querySelector('main')
   sidebarToggle.onclick = function onClickSidebarToggle () {
+    sidebarToggle.classList.toggle('closed')
     sidebarContent.classList.toggle('is-one-third')
     sidebarContent.classList.toggle('is-hidden')
     mainContent.classList.toggle('is-two-thirds')
