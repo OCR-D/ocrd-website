@@ -1,4 +1,4 @@
-const toc = document.querySelector('#toc-sidebar-content')
+const toc = document.querySelector('#toc-sidebar')
 
 // Toggle whether to show docker or native calls
 let isDocker = false
