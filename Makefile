@@ -122,6 +122,7 @@ serve:
 		--baseurl '' \
 		--host $(JEKYLL_HOST) \
 		--port 4040 \
+		--trace \
 		--watch \
 		--strict_front_matter \
 		-s '$(SRCDIR)' -d '$(DSTDIR)'
