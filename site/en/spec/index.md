@@ -17,7 +17,7 @@ title: Specifications
 
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="https://github.com/OCR-D/spec/blob/b6701659eae28c6fd2f08855714de8fe22b114a2/web_api.md">Web API</a></p>
+      <p class="title"><a href="https://ocr-d.de/en/spec/web_api">Web API</a></p>
       <p class="subtitle">Information for developers using the OCR&#8209;D Web API</p>
     </article>
   </div>
