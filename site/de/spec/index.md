@@ -15,7 +15,7 @@ lang-ref: spec
 
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="https://ocr-d.de/en/spec/web_api">Web API</a></p>
+      <p class="title"><a href="web_api">Web API</a></p>
       <p class="subtitle">Informationen zur OCR&#8209;D Web API</p>
     </article>
   </div>
