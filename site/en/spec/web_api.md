@@ -98,12 +98,14 @@ There are various ways to build a system which implements this Web API. In this 
 architecture, which greatly improves the scalability, flexibility, and reliability of the system compared to
 the [CLI](https://ocr-d.de/en/spec/cli) and the Distributed Processor REST Calls approach.
 
-<figure>
-  <img src="images/web-api-distributed-queue.jpg" alt="Distributed architecture with the Web API"/>
+<p class="figure img" style="max-height: 100%">
+	<a href="/assets/web-api-distributed-queue.jpg" style="max-height: 100%">
+		<img src="/assets/web-api-distributed-queue.jpg" alt="Distributed architecture with the Web API"/>
+	</a>
   <figcaption align="center">
     <b>Fig. 1:</b> OCR-D System Architecture
   </figcaption>
-</figure>
+</p>
 
 In this architecture, all servers are implemented using [FastAPI](https://fastapi.tiangolo.com/). Behind the scene, it
 runs [Uvicorn](https://www.uvicorn.org/), an [ASGI](https://asgi.readthedocs.io/en/latest/) web server implementation

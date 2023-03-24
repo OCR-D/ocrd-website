@@ -13,11 +13,45 @@
   <link rel="stylesheet" href="/assets/ocrd.css" />
   <!-- for mathjax support -->
   <script type="text/javascript">
+    const getSiblings = function (elem) {
+
+      // Setup siblings array and get the first sibling
+      const siblings = [];
+      let sibling = elem.parentNode.firstChild;
+
+      // Loop through each sibling and push to the array
+      while (sibling) {
+        if ((sibling.nodeType === 1 || sibling.nodeType === 3) && sibling !== elem) {
+          siblings.push(sibling);
+        }
+        sibling = sibling.nextSibling
+      }
+
+      return siblings;
+    };
+
     window.MathJax = {
       tex: {
         inlineMath: [['$','$'], ['$$', '$$']],
         processEscapes: true,
       },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          MathJax.startup.promise.then(() => {
+            const equations = document.querySelectorAll('.MathJax');
+
+            if (equations.length === 0) return;
+
+            equations.forEach(eq => {
+              const siblings = getSiblings(eq);
+              if (siblings.length === 0) {
+                eq.classList.add('is-block');
+              }
+            })
+          });
+        }
+      }
     }
   </script>
   <script type="text/javascript" id="MathJax-script" async src="/assets/mathjax/es5/tex-chtml.js">
@@ -350,19 +384,36 @@ function ToggleSearchActive2() {
 
 
     </div> </div> </nav>
-<div class="columns">
+<div class="wrapper has-toc">
       
-      <aside id="toc-sidebar-content" class="column is-one-third menu is-hidden-mobile">
-        <ul class="menu-list column is-one-third">
+      <div id="toc-sidebar-toggle">
+        <a class="button is-outlined is-link" title="
+          Toggle Table of Contents
+          
+        ">
+          <i class="fa"></i>
+        </a>
+      </div>
+      <aside id="toc-sidebar">
+        <div class="toc-wrapper">
+          <div class="toc-header">
+            <h2>
+              Table of Contents
+              
+            </h2>
+          </div>
+          <div class="toc-body">
+            <ul class="menu-list">
   <li><a href="#publications">Publications</a></li>
   <li><a href="#presentations">Presentations</a></li>
 </ul>
 
+          </div>
+        </div>
       </aside>
-      <div id="toc-sidebar-toggle">&lt;&gt;</div>
       
 
-      <main class="container content column is-two-thirds" aria-label="Content">
+      <main class="container content " aria-label="Content">
         <script>window.addEventListener('DOMContentLoaded', () => {linkifyVideosInPublications();})</script>
 
 <h2 id="publications">Publications</h2>

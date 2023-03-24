@@ -8,22 +8,25 @@
 blockquote {
     background: #f99;
 }
-/* sidebar */
-aside.menu > ul { 
-    position: fixed;
-    overflow-y: auto;
-    height: calc(100vh - 150px);
-	max-width: 500px; 
-}
-#toc-sidebar-toggle {
-    position: fixed;
-    left: 0;
 
+#toc-sidebar-toggle .button:not(:hover) {
+    background: #fff;
 }
+
 body > #swagger-ui,
-body > .columns {
+body > .wrapper {
     margin-top: 55px;
 }
+
+.wrapper {
+    display: flex;
+    margin-bottom: 0.75rem;
+}
+
+.content h1 {
+    margin-bottom: 24px;
+}
+
 h2 code, h3 code, h4 code {
     color: black;
 }
@@ -31,10 +34,106 @@ h2 code, h3 code, h4 code {
 li:not(:last-child) {
     margin-bottom: 10px;
 }
-	
+
 ul {
-	margin-left: 0px;
-	padding-left: 0px;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* sidebar */
+#toc-sidebar {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 55px;
+    width: 22%;
+    padding-top: 36px;
+    padding-left: 16px;
+    height: calc(100vh - 55px);
+}
+
+@media screen and (min-width: 1088px) {
+    #toc-sidebar {
+        display: flex;
+    }
+}
+
+#toc-sidebar .toc-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#toc-sidebar .toc-header {
+    margin-bottom: 30px;
+}
+
+#toc-sidebar .toc-header h2 {
+    padding-left: 42px;
+}
+
+#toc-sidebar .toc-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+#toc-sidebar .menu-list > li > ul {
+    margin-left: 0;
+}
+
+#toc-sidebar li:not(:last-child) {
+    margin-bottom: 0;
+}
+
+#toc-sidebar li ul {
+    margin: 0;
+    margin-left: 8px;
+}
+
+#toc-sidebar-toggle {
+    position: fixed;
+    z-index: 100;
+    top: 94px;
+    left: 16px;
+    display: none;
+}
+
+@media screen and (min-width: 1088px) {
+    #toc-sidebar-toggle {
+        display: block;
+    }
+}
+
+#toc-sidebar-toggle a {
+    border-radius: 50%;
+    border-width: 2px;
+    padding: 0 7px;
+    line-height: 1;
+    height: 30px;
+}
+
+#toc-sidebar-toggle .fa {
+    font-size: 14px;
+}
+
+#toc-sidebar-toggle .fa:before {
+    content: "\f060";
+}
+
+#toc-sidebar-toggle.closed .fa:before {
+    content: "\f061";
+}
+
+main.content {
+    padding: 35px 16px 0 16px;
+}
+
+@media screen and (min-width: 1088px) {
+    .wrapper.has-toc main.content {
+        margin: 0;
+        left: 22%;
+        padding-left: 24px;
+    }
 }
 
 /* images in tiles */
@@ -102,4 +201,11 @@ p.poster-image {
 /* Publications */
 .csl-entry {
 	max-width: 80ch;
+}
+
+/* ocrd-eval spec */
+.ocrd-eval .MathJax.is-block {
+    display: inline-block;
+    margin-top: 16px;
+    margin-bottom: 16px;
 }

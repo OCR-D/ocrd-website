@@ -13,11 +13,45 @@
   <link rel="stylesheet" href="/assets/ocrd.css" />
   <!-- for mathjax support -->
   <script type="text/javascript">
+    const getSiblings = function (elem) {
+
+      // Setup siblings array and get the first sibling
+      const siblings = [];
+      let sibling = elem.parentNode.firstChild;
+
+      // Loop through each sibling and push to the array
+      while (sibling) {
+        if ((sibling.nodeType === 1 || sibling.nodeType === 3) && sibling !== elem) {
+          siblings.push(sibling);
+        }
+        sibling = sibling.nextSibling
+      }
+
+      return siblings;
+    };
+
     window.MathJax = {
       tex: {
         inlineMath: [['$','$'], ['$$', '$$']],
         processEscapes: true,
       },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          MathJax.startup.promise.then(() => {
+            const equations = document.querySelectorAll('.MathJax');
+
+            if (equations.length === 0) return;
+
+            equations.forEach(eq => {
+              const siblings = getSiblings(eq);
+              if (siblings.length === 0) {
+                eq.classList.add('is-block');
+              }
+            })
+          });
+        }
+      }
     }
   </script>
   <script type="text/javascript" id="MathJax-script" async src="/assets/mathjax/es5/tex-chtml.js">
@@ -348,10 +382,10 @@ function ToggleSearchActive2() {
 
 
     </div> </div> </nav>
-<div class="columns">
+<div class="wrapper">
       
 
-      <main class="container content column " aria-label="Content">
+      <main class="container content " aria-label="Content">
         <p><input id="search-input" type="text" />
 <button id="search">Search</button>
 <br />
