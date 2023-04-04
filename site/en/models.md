@@ -60,7 +60,13 @@ name).
 
 The second line of each entry contains a short description of the resource.
 
-## Installing known resources
+## Installing resources
+
+For intalling resources in OCR-D, read the sections [Installing known resources](#installing-known-resources) and [Installing unknown resources](#installing-unknown-resources).
+
+**If you installed OCR-D via Docker,** read the section [Models and Docker](#models-and-docker) *additionally*. 
+
+### Installing known resources
 
 You can install resources with the `ocrd resmgr download` command. It expects
 the name of the processor as the first argument and either the name or URL of a
@@ -97,7 +103,7 @@ ocrd resmgr download '*'
 
 (In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
 
-## Installing unknown resources
+### Installing unknown resources
 
 If you need to install a resource which OCR-D doesn't know of, that can be achieved by passings its URL in combination with the `--any-url/-n` flag to `ocrd resmgr download`:
 
@@ -113,6 +119,40 @@ This will download and store the resource in the [proper location](#where-is-the
 ```
 ocrd-tesserocr-recognize -P model mymodel
 ```
+
+### Models and Docker
+
+If you are using OCR-D with Docker, we recommend keeping all downloaded resources in a persistent host directory,
+separate of the `ocrd/*` Docker container and data directory, and mounting that
+resource directory into a specific path in the container alongside the data directory.
+The host resource directory can be empty initially. Each time you run the Docker container,
+your processors will access the host directory to resolve resources, and you can download
+additional models into that location using `ocrd resmgr`.
+
+The following will assume (without loss of generality) that your host-side data
+path is under `./data`, and the host-side resource path is under `./models`:
+
+To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
+
+```sh
+docker run --user $(id -u) \
+  --volume $PWD/models:/usr/local/share/ocrd-resources \
+ocrd/all \
+ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
+ocrd resmgr download ocrd-calamari-recognize default\; \
+...
+```
+
+To run processors, as usual do:
+
+```sh
+docker run --user $(id -u) --workdir /data \
+  --volume $PWD/data:/data \
+  --volume $PWD/models:/usr/local/share/ocrd-resources \
+  ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
+```
+
+This principle applies to all `ocrd/*` Docker images, e.g. you can replace `ocrd/all` above with `ocrd/tesserocr` as well.
 
 ## List installed resources
 
@@ -239,39 +279,6 @@ ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deu+frk'
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 ```
 
-# Models and Docker
-
-We recommend keeping all downloaded resources in a persistent host directory,
-separate of the `ocrd/*` Docker container and data directory, and mounting that
-resource directory into a specific path in the container alongside the data directory.
-The host resource directory can be empty initially. Each time you run the Docker container,
-your processors will access the host directory to resolve resources, and you can download
-additional models into that location using `ocrd resmgr`.
-
-The following will assume (without loss of generality) that your host-side data
-path is under `./data`, and the host-side resource path is under `./models`:
-
-To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
-
-```sh
-docker run --user $(id -u) \
-  --volume $PWD/models:/usr/local/share/ocrd-resources \
-ocrd/all \
-ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
-ocrd resmgr download ocrd-calamari-recognize default\; \
-...
-```
-
-To run processors, as usual do:
-
-```sh
-docker run --user $(id -u) --workdir /data \
-  --volume $PWD/data:/data \
-  --volume $PWD/models:/usr/local/share/ocrd-resources \
-  ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
-```
-
-This principle applies to all `ocrd/*` Docker images, e.g. you can replace `ocrd/all` above with `ocrd/tesserocr` as well.
 
 # Model training
 
@@ -293,3 +300,7 @@ Especially if you want to use several OCR engines for your workflows or are not 
 results, this might be particularly effective for you. Just like `tesstrain` it is not included in `ocrd_all`, meaning 
 you will still have to install it, first. For information on the setup and the training process itself see the
 [Readme](https://github.com/OCR-D/okralact) in the GithHub Repository.
+
+# Further reading
+
+If you just installed OCR-D and want to know how to process your own data, please see the [user guide](/en/user_guide).
