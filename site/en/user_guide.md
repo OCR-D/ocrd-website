@@ -494,7 +494,7 @@ docker run --rm -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum [name_of_
 ```
 
 
-### Usage of models
+### Using models
 
 Several processors rely on models which have to be downloaded beforehand. An overview on the existing model repositories and short
 descriptions on the most important models can be found [in our models documentation](https://ocr-d.de/en/models).
