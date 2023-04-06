@@ -62,7 +62,9 @@ The second line of each entry contains a short description of the resource.
 
 ## Installing resources
 
-For intalling resources in OCR-D, read the sections [Installing known resources](#installing-known-resources) and [Installing unknown resources](#installing-unknown-resources).
+On installing resources in OCR-D, read the sections [Installing known resources](#installing-known-resources) and [Installing unknown resources](#installing-unknown-resources).
+
+*Known resources* are resources that are provided by processor developers [in the `ocrd-tool.json`](/en/spec/ocrd_tool#file-parameters) and are available by name to `ocrd resmgr download`, whereas *unknown* resources are models, configurations, parameter sets etc. you provide yourself or found elsewhere on the Internet, which require passing a URL to `ocrd resmgr download`.
 
 **If you installed OCR-D via Docker,** read the section [Models and Docker](#models-and-docker) *additionally*. 
 
@@ -123,7 +125,7 @@ ocrd-tesserocr-recognize -P model mymodel
 ### Models and Docker
 
 If you are using OCR-D with Docker, we recommend keeping all downloaded resources in a persistent host directory,
-separate of the `ocrd/*` Docker container and data directory, and mounting that
+separate of the OCR-D Docker container(s) and data directory, and mounting that
 resource directory into a specific path in the container alongside the data directory.
 The host resource directory can be empty initially. Each time you run the Docker container,
 your processors will access the host directory to resolve resources, and you can download
@@ -132,7 +134,7 @@ additional models into that location using `ocrd resmgr`.
 The following will assume (without loss of generality) that your host-side data
 path is under `./data`, and the host-side resource path is under `./models`:
 
-To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in Docker:
+To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in the container FS:
 
 ```sh
 docker run --user $(id -u) \
