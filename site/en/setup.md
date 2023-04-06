@@ -108,7 +108,7 @@ We encourage the use of the relatively large but complete `maximum` image.
 The `minimum` or `medium` images should only be used when certain that none but the included OCR-D 
 modules are needed. 
 
-<details>
+<details markdown=1>
   <summary>Click here for a table showing the modules included in each version</summary>
 
 | Module                      | `minimum` | `medium` | `maximum` |
@@ -144,8 +144,7 @@ modules are needed.
 | sbb_binarization            | -         | -        | ☑         |
 | cor-asv-fst                 | -         | -        | -         |
 
-
-  </details>
+</details>
   
 ### Fetch Docker image
 
