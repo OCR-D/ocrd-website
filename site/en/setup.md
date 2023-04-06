@@ -183,9 +183,6 @@ You can spin up a Docker container, mounting the current working directory like 
 docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
 ```
 
-For instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls](/en/user_guide#translating-native-commands-to-docker-calls).
-
-
 ### Updating Docker image
 
 To update the Docker image to the latest version, just run the `docker pull` command:<br> 
@@ -195,6 +192,10 @@ To update the Docker image to the latest version, just run the `docker pull` com
 docker pull ocrd/all:maximum
 ```
 
+### Further reading
+
+We recommend jumping to the [section about installing models at the bottom of this page](#installing-models) next.
+Alternatively, for instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls](/en/user_guide#translating-native-commands-to-docker-calls).
   
 ## ocrd_all natively
 
@@ -291,8 +292,6 @@ first [PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group
 ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
 ```
 
-For instructions on how to process your own data, please see the [user guide](/en/user_guide).
-
 ### Updating the software
 
 As `ocrd_all` is in [active
@@ -315,6 +314,10 @@ This will run the installation process for all submodules which have been change
 say that the last processor was installed successfully. `--version` for the processors which have been changed
 should give you its current version. 
 
+### Further reading
+
+We recommend jumping to the [section about installing models at the bottom of this page](#installing-models) next.
+For instructions on how to process your own data, please see the [user guide](/en/user_guide).
 
 ## Individual installation (experts only)
 
@@ -439,3 +442,8 @@ pip install -e .
 This way, you won't have to reinstall after making changes.
 
 Now you can [test your installation](#testing-the-native-installation).
+
+## Installing models
+
+Several processors in OCR-D need pretrained models you have to install beforehand. 
+Please consult our [instruction on models](/en/models) to get more information on how to download and install them. 
