@@ -68,6 +68,12 @@ lang-ref: spec
       <p class="subtitle">OCR-D Ground Truth Transkriptionsrichtlinien</p>
     </article>
   </div>
+   <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="/en/spec/ocrd_eval">Metriken für&nbsp;QA</a></p>
+      <p class="subtitle">Definitionen für Qualitätssicherung in OCR-D</p>
+    </article>
+  </div>
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/docker">Dockerfile</a></p>
