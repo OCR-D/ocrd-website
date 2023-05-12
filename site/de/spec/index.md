@@ -34,7 +34,7 @@ lang-ref: spec
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/mets">METS</a></p>
-      <p class="subtitle">OCR-D METS Konventionen</p>
+      <p class="subtitle">OCR&#8209;D METS Konventionen</p>
     </article>
   </div>
 
@@ -48,7 +48,7 @@ lang-ref: spec
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/ocrd_tool">ocrd-tool.json</a></p>
-      <p class="subtitle">Die Beschreibungssprache der OCR-D Werkzeuge</p>
+      <p class="subtitle">Die Beschreibungssprache der OCR&#8209;D Werkzeuge</p>
     </article>
   </div>
 
@@ -65,19 +65,19 @@ lang-ref: spec
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="../gt-guidelines/trans">GT Richtlinien</a></p>
-      <p class="subtitle">OCR-D Ground Truth Transkriptionsrichtlinien</p>
+      <p class="subtitle">OCR&#8209;D Ground Truth Transkriptionsrichtlinien</p>
     </article>
   </div>
    <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/ocrd_eval">Metriken für&nbsp;QA</a></p>
-      <p class="subtitle">Definitionen für Qualitätssicherung in OCR-D</p>
+      <p class="subtitle">Definitionen für Qualitätssicherung in OCR&#8209;D</p>
     </article>
   </div>
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/docker">Dockerfile</a></p>
-      <p class="subtitle">OCR-D Dockerfile conventions</p>
+      <p class="subtitle">OCR&#8209;D Dockerfile conventions</p>
     </article>
   </div>
 

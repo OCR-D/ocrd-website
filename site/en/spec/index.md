@@ -73,7 +73,7 @@ title: Specifications
     <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="ocrd_eval">Metrics for&nbsp;QA</a></p>
-      <p class="subtitle">Definitions for Quality Assurance used in OCR-D</p>
+      <p class="subtitle">Definitions for Quality Assurance used in OCR&#8209;D</p>
     </article>
   </div>
   <div class="tile is-parent">
