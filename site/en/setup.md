@@ -94,6 +94,29 @@ keep the software versions up-to-date and ensure that all components are at a us
     
 ## ocrd_all via Docker
 
+### Prerequisites
+
+If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
+
+After installing docker you have to set up daemon and add user to  the group 'docker'
+
+```sh
+# Start docker daemon at startup
+sudo systemctl enable docker
+# Add user to group 'docker'
+sudo usermod -aG docker $USER
+```
+
+<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> Please log out and log in again.
+
+To test access to docker try the following command:
+
+```sh
+docker images
+```
+
+Now you should see an (empty) list of available images.
+
 ### mini medi maxi
 
 There are three versions of the
@@ -166,22 +189,42 @@ made in containers back to your local Docker image.)
 
 ### Testing the Docker installation
 
-To start, download and extract a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
+To start, download and extract a document from the [OCR-D GT Repo](https://ola-hd.ocr-d.de/search?q=&fulltextsearch=false&metadatasearch=false&isGT=true&perPageRecords=30):
 
 ```sh
-wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
-unzip wundt_grundriss_1896.ocrd.zip
+wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
+sudo unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
 
-Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a 
-[PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group `OCR-D-SEG-BLOCK-DOCKER`)
-
-You can spin up a Docker container, mounting the current working directory like this:
+Now, spin up the docker container:
 
 ```sh
-docker run --user $(id -u) --workdir /data --volume $PWD:/data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
+docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
 ```
+
+Your command line should start with something similar to:
+
+```sh
+I have no name!@ade9a4692fcd:/data$
+```
+
+After spinning up the container, you can use the installation and call the processors the same way as in the native installation.
+
+Alternatively, you would have to [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls) (not recommended).
+
+Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a 
+[PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group `OCR-D-SEG-BLOCK-DOCKER`):
+
+```sh
+ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
+```
+
+When you are finished using OCR-D commands, use this command to stop using docker interactively:
+
+```sh
+exit
+``` 
 
 ### Updating Docker image
 
@@ -272,8 +315,8 @@ ocrd, version 2.13.2 # your version should be 2.13.2 or later
 For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
 
 ```sh
-wget 'https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/736a2f9a-92c6-4fe3-a457-edfa3eab1fe3/data/wundt_grundriss_1896.ocrd.zip'
-unzip wundt_grundriss_1896.ocrd.zip
+wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
+sudo unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
 
