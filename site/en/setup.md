@@ -193,7 +193,7 @@ To start, download and extract a document from the [OCR-D GT Repo](https://ola-h
 
 ```sh
 wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
-sudo unzip wundt_grundriss_1896.ocrd.zip
+unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
 
