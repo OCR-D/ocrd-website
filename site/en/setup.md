@@ -200,7 +200,7 @@ cd data
 Now, spin up the docker container:
 
 ```sh
-docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
+docker run --user $(id -u) --workdir /data --volume $PWD:/data --rm -it ocrd/all bash
 ```
 
 Your command line should start with something similar to:
