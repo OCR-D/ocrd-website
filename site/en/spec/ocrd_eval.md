@@ -382,6 +382,13 @@ The success measure is then given by
 
 $s = \frac{1}{e * (1/e_{50}) + 1}$
 
+Furthermore, in the special case where…
+- the segmentation on both sides is identical (only order differs → no matching needed)
+- order is always strictly monotonic (no unordered subgroups involved → no misclassification other than successor vs predecessor)
+
+…[Quirós and Vidal 2022](https://ieeexplore.ieee.org/document/9413256) evaluate reading order simply as rank distance,
+using the metrics _Normalized Spearman's footrule distance_ and _Kendall's Tau rank distance_.
+
 ##### mAP (mean Average Precision)
 
 This score was originally devised for object detection in photo scenery (where overlaps are allowed and cannot conflict with text flow).
@@ -550,6 +557,7 @@ See [OCR-D workflow guide](https://ocr-d.de/en/workflows#evaluation).
   * <https://www.o-bib.de/bib/article/view/5888/8845>
 * Reading Order Evaluation:
   * <https://www.primaresearch.org/www/assets/papers/ICDAR2013_Clausner_ReadingOrder.pdf>
+  * <https://ieeexplore.ieee.org/document/9413256>
 
 * More background on evaluation of OCR
   * <https://doi.org/10.1145/3476887.3476888>
