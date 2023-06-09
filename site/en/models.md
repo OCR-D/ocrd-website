@@ -36,8 +36,7 @@ of](https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml):
 ocrd resmgr list-available
 # alternatively, using Docker:
 mkdir -p $PWD/models/ocrd-tesserocr-recognize
-docker run --volume $PWD:/data --volume $PWD/models/ocrd-tesserocr-recognize:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -w /data -- ocrd/all:maximum ocrd resmgr list-available
-```
+docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share -w /data -- ocrd/all:maximum ocrd resmgr list-available```
 
 The output will look similar to this:
 
