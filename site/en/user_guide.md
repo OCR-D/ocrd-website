@@ -16,36 +16,27 @@ setup guide, you can either use the [OCR-D-Docker-solution](https://ocr-d.github
 started with OCR-D after the installation as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is
 obligatory for both Docker and Non-Docker users!
 
-Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). This guide always states native calls first and then provides the respective command for Docker users.
+Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). 
+This guide always states native calls first and then provides the respective command for Docker users.
 
-## Prerequisites and Preparations
+## Preparations
 
-### Setup docker
+### Docker installation: 
 
-If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
-
-After installing docker you have to set up daemon and add user to  the group 'docker'
-
-```sh
-# Start docker daemon at startup
-sudo systemctl enable docker
-# Add user to group 'docker'
-sudo usermod -aG docker $USER
-```
-
-<img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> Please log out and log in again.
-
-To test access to docker try the following command:
+If you are using the Installation via Docker, we recommend to run:
 
 ```sh
-docker images
+docker run --user $(id -u) --workdir /data --volume $PWD:/data --volume $PWD/models:/usr/local/share/ocrd-resources --volume $PWD/models:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -it ocrd/all bash
 ```
+<!--
+docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
+-->
 
-Now you should see an (empty) list of available images.
+After spinning up the container, you can use the installation and call the processors the same way as in the native installation.
 
-For installing docker images please refer to the [setup guide](setup.html).
+Alternatively, you would have to [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls) (not recommended).
 
-### Virtual environment (native installation)
+### Native installation: Activate virtual environment
 
 If you are using a native installation, you should activate the
 virtualenv before starting to work with the OCR-D-software. This has either been installed automatically if you installed the
@@ -66,6 +57,7 @@ your shell prompt.
 
 When you are done with your OCR-D-work, you can use `deactivate` to deactivate
 your venv.
+
 
 ### Preparing a workspace
 
@@ -457,11 +449,22 @@ docker run -u $(id -u) -v $PWD:/data -w /data -- ocrd/all:maximum ocrd-tesserocr
               (1)          (2)         (3)          (4)                            (5)
 ```
 
+<!--
+```sh
+docker run -u $(id -u) -v $PWD:/data -v $PWD/models:/usr/local/share/tessdata -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
+           \_________/ \___________/ \______________________________________/ \______/ \_________________/ \___________________________________________________________/
+              (1)          (2)         						(3)          		 (4)          (5)									(6)
+```
+-->
+
 * (1) tells Docker to run the container as the calling user instead of root
 * (2) tells Docker to bind the current working directory as the `/data` folder in the container
 * (3) tells Docker to change the container's working directory to `/data`
 * (4) tells docker which image to run
 * (5) is the unchanged call to `ocrd-tesserocr-segment-region`
+
+**Note:** Add `-v $PWD/models:/usr/local/share/tessdata` when using `ocrd-tesserocr-recognize` and/or add
+`-v $PWD/models:/usr/local/share/ocrd-resources` when using processors which need models to run in general.
 
 It can also be useful to delete the container after creation with the `--rm`
 parameter.
@@ -481,7 +484,8 @@ the existing processors, their tasks and features, see the [next section](#get-m
 
 To get all available processors you might use the autocomplete in your preferred console.
 
-**Note:** Activate virtual environment first.
+**Note:** If you installed OCR-D via Docker make sure you run the bash in the ocrd Docker image as described in the section Preparations[docker-installation].
+If you installed OCR-D natively, activate virtual environment first as described in the section Preparations[native-installation-activate-virtual-environment].
 
 Type 'ocrd-' followed by `TAB` to get a list of all available processors.
 

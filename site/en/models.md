@@ -34,6 +34,8 @@ of](https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml):
 
 ```
 ocrd resmgr list-available
+# alternatively, using Docker:
+docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -w /data -- ocrd/all:maximum ocrd resmgr list-available
 ```
 
 The output will look similar to this:
