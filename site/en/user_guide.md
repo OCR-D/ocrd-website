@@ -485,7 +485,7 @@ the existing processors, their tasks and features, see the [next section](#get-m
 To get all available processors you might use the autocomplete in your preferred console.
 
 **Note:** If you installed OCR-D via Docker make sure you run the bash in the ocrd Docker image as described in the section Preparations[docker-installation].
-If you installed OCR-D natively, activate virtual environment first as described in the section Preparations[native-installation-activate-virtual-environment].
+If you installed OCR-D natively, activate the virtual environment first as described in the section [Preparations](#native-installation-activate-virtual-environment).
 
 Type 'ocrd-' followed by `TAB` to get a list of all available processors.
 
