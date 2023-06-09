@@ -409,10 +409,10 @@ function ToggleSearchActive2() {
             <ul class="menu-list">
   <li><a href="#user-guide-for-non-it-users">User Guide for Non-IT Users</a>
     <ul>
-      <li><a href="#prerequisites-and-preparations">Prerequisites and Preparations</a>
+      <li><a href="#preparations">Preparations</a>
         <ul>
-          <li><a href="#setup-docker">Setup docker</a></li>
-          <li><a href="#virtual-environment-native-installation">Virtual environment (native installation)</a></li>
+          <li><a href="#docker-installation">Docker installation:</a></li>
+          <li><a href="#native-installation-activate-virtual-environment">Native installation: Activate virtual environment</a></li>
           <li><a href="#preparing-a-workspace">Preparing a workspace</a>
             <ul>
               <li><a href="#already-existing-mets">Already existing METS</a></li>
@@ -456,34 +456,26 @@ setup guide, you can either use the <a href="https://ocr-d.github.io/en/setup#oc
 started with OCR-D after the installation as detailed in the very next two paragraphs. The <a href="#preparing-a-workspace">third preparatory step</a> is
 obligatory for both Docker and Non-Docker users!</p>
 
-<p>Furthermore, Docker commands have a <a href="#translating-native-commands-to-docker-calls">different syntax than native calls</a>. This guide always states native calls first and then provides the respective command for Docker users.</p>
+<p>Furthermore, Docker commands have a <a href="#translating-native-commands-to-docker-calls">different syntax than native calls</a>. 
+This guide always states native calls first and then provides the respective command for Docker users.</p>
 
-<h2 id="prerequisites-and-preparations">Prerequisites and Preparations</h2>
+<h2 id="preparations">Preparations</h2>
 
-<h3 id="setup-docker">Setup docker</h3>
+<h3 id="docker-installation">Docker installation:</h3>
 
-<p>If you want to use the OCR-D-Docker-solution, <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository">Docker</a> and <a href="https://docs.docker.com/compose/install/">docker compose</a> have to be installed.</p>
+<p>If you are using the Installation via Docker, we recommend to run:</p>
 
-<p>After installing docker you have to set up daemon and add user to  the group ‘docker’</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start docker daemon at startup</span>
-<span class="nb">sudo </span>systemctl <span class="nb">enable </span>docker
-<span class="c"># Add user to group 'docker'</span>
-<span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
 </code></pre></div></div>
+<!--
+docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
+-->
 
-<p><img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> Please log out and log in again.</p>
+<p>After spinning up the container, you can use the installation and call the processors the same way as in the native installation.</p>
 
-<p>To test access to docker try the following command:</p>
+<p>Alternatively, you would have to <a href="/en/user_guide#translating-native-commands-to-docker-calls">translate each command to a docker call</a> (not recommended).</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker images
-</code></pre></div></div>
-
-<p>Now you should see an (empty) list of available images.</p>
-
-<p>For installing docker images please refer to the <a href="setup.html">setup guide</a>.</p>
-
-<h3 id="virtual-environment-native-installation">Virtual environment (native installation)</h3>
+<h3 id="native-installation-activate-virtual-environment">Native installation: Activate virtual environment</h3>
 
 <p>If you are using a native installation, you should activate the
 virtualenv before starting to work with the OCR-D-software. This has either been installed automatically if you installed the
@@ -863,6 +855,14 @@ look like this:</p>
               <span class="o">(</span>1<span class="o">)</span>          <span class="o">(</span>2<span class="o">)</span>         <span class="o">(</span>3<span class="o">)</span>          <span class="o">(</span>4<span class="o">)</span>                            <span class="o">(</span>5<span class="o">)</span>
 </code></pre></div></div>
 
+<!--
+```sh
+docker run -u $(id -u) -v $PWD:/data -v $PWD/models:/usr/local/share/tessdata -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
+           \_________/ \___________/ \______________________________________/ \______/ \_________________/ \___________________________________________________________/
+              (1)          (2)         						(3)          		 (4)          (5)									(6)
+```
+-->
+
 <ul>
   <li>(1) tells Docker to run the container as the calling user instead of root</li>
   <li>(2) tells Docker to bind the current working directory as the <code class="language-plaintext highlighter-rouge">/data</code> folder in the container</li>
@@ -870,6 +870,9 @@ look like this:</p>
   <li>(4) tells docker which image to run</li>
   <li>(5) is the unchanged call to <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-segment-region</code></li>
 </ul>
+
+<p><strong>Note:</strong> Add <code class="language-plaintext highlighter-rouge">-v $PWD/models:/usr/local/share/tessdata</code> when using <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> and/or add
+<code class="language-plaintext highlighter-rouge">-v $PWD/models:/usr/local/share/ocrd-resources</code> when using processors which need models to run in general.</p>
 
 <p>It can also be useful to delete the container after creation with the <code class="language-plaintext highlighter-rouge">--rm</code>
 parameter.</p>
@@ -886,7 +889,8 @@ the existing processors, their tasks and features, see the <a href="#get-more-in
 
 <p>To get all available processors you might use the autocomplete in your preferred console.</p>
 
-<p><strong>Note:</strong> Activate virtual environment first.</p>
+<p><strong>Note:</strong> If you installed OCR-D via Docker make sure you run the bash in the ocrd Docker image as described in the section Preparations[docker-installation].
+If you installed OCR-D natively, activate virtual environment first as described in the section Preparations[native-installation-activate-virtual-environment].</p>
 
 <p>Type ‘ocrd-‘ followed by <code class="language-plaintext highlighter-rouge">TAB</code> to get a list of all available processors.</p>
 
