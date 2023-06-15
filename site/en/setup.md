@@ -98,7 +98,7 @@ keep the software versions up-to-date and ensure that all components are at a us
 
 If you want to use the OCR-D-via-Docker solution, [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
 
-After installing docker you have to set up daemon and add user to  the group 'docker'
+After installing docker you may have to set up and start the docker daemon and add your user to the `docker` group:
 
 ```sh
 # Start docker daemon at startup

@@ -26,8 +26,10 @@ This guide always states native calls first and then provides the respective com
 If you are using the Installation via Docker, we recommend to run:
 
 ```sh
-docker run --user $(id -u) --workdir /data --volume $PWD:/data --volume $PWD/models:/usr/local/share/ocrd-resources --volume $PWD/models:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -it ocrd/all bash
+mkdir -p $PWD/models/ocrd-tesserocr-recognize
+docker run --user $(id -u) --workdir /data --volume $PWD:/data --volume $PWD/models:/usr/local/share/ocrd-resourcese $PWD/models/ocrd-tesserocr-recognize:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -it ocrd/all bash
 ```
+
 <!--
 docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
 -->
