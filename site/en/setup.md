@@ -96,9 +96,9 @@ keep the software versions up-to-date and ensure that all components are at a us
 
 ### Prerequisites
 
-If you want to use the OCR-D-Docker-solution, [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
+If you want to use the OCR-D-via-Docker solution, [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
 
-After installing docker you have to set up daemon and add user to  the group 'docker'
+After installing docker you may have to set up and start the docker daemon and add your user to the `docker` group:
 
 ```sh
 # Start docker daemon at startup
@@ -193,14 +193,14 @@ To start, download and extract a document from the [OCR-D GT Repo](https://ola-h
 
 ```sh
 wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
-sudo unzip wundt_grundriss_1896.ocrd.zip
+unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
 
 Now, spin up the docker container:
 
 ```sh
-docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
+docker run --user $(id -u) --workdir /data --volume $PWD:/data --rm -it ocrd/all bash
 ```
 
 Your command line should start with something similar to:
@@ -211,10 +211,10 @@ I have no name!@ade9a4692fcd:/data$
 
 After spinning up the container, you can use the installation and call the processors the same way as in the native installation.
 
-Alternatively, you would have to [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls) (not recommended).
+Alternatively, you can [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls).
 
 Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a 
-[PAGE-XML](https://github.com/PRImA-Research-Lab/PAGE-XML) file group `OCR-D-SEG-BLOCK-DOCKER`):
+METS file group `OCR-D-SEG-BLOCK-DOCKER`):
 
 ```sh
 ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK-DOCKER
