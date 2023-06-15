@@ -549,9 +549,9 @@ keep the software versions up-to-date and ensure that all components are at a us
 
 <h3 id="prerequisites">Prerequisites</h3>
 
-<p>If you want to use the OCR-D-Docker-solution, <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository">Docker</a> and <a href="https://docs.docker.com/compose/install/">docker compose</a> have to be installed.</p>
+<p>If you want to use the OCR-D-via-Docker solution, <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository">docker</a> and <a href="https://docs.docker.com/compose/install/">docker compose</a> have to be installed.</p>
 
-<p>After installing docker you have to set up daemon and add user to  the group ‘docker’</p>
+<p>After installing docker you may have to set up and start the docker daemon and add your user to the <code class="language-plaintext highlighter-rouge">docker</code> group:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start docker daemon at startup</span>
 <span class="nb">sudo </span>systemctl <span class="nb">enable </span>docker
@@ -804,13 +804,13 @@ made in containers back to your local Docker image.)
 <p>To start, download and extract a document from the <a href="https://ola-hd.ocr-d.de/search?q=&amp;fulltextsearch=false&amp;metadatasearch=false&amp;isGT=true&amp;perPageRecords=30">OCR-D GT Repo</a>:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="s2">"https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&amp;internalId=false"</span> <span class="nt">-O</span> wundt_grundriss_1896.ocrd.zip
-<span class="nb">sudo </span>unzip wundt_grundriss_1896.ocrd.zip
+unzip wundt_grundriss_1896.ocrd.zip
 <span class="nb">cd </span>data
 </code></pre></div></div>
 
 <p>Now, spin up the docker container:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">-it</span> ocrd/all bash
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--rm</span> <span class="nt">-it</span> ocrd/all bash
 </code></pre></div></div>
 
 <p>Your command line should start with something similar to:</p>
@@ -820,10 +820,10 @@ made in containers back to your local Docker image.)
 
 <p>After spinning up the container, you can use the installation and call the processors the same way as in the native installation.</p>
 
-<p>Alternatively, you would have to <a href="/en/user_guide#translating-native-commands-to-docker-calls">translate each command to a docker call</a> (not recommended).</p>
+<p>Alternatively, you can <a href="/en/user_guide#translating-native-commands-to-docker-calls">translate each command to a docker call</a>.</p>
 
 <p>Let’s segment the images in file group <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> from the zip file into regions, thereby creating a 
-<a href="https://github.com/PRImA-Research-Lab/PAGE-XML">PAGE-XML</a> file group <code class="language-plaintext highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>):</p>
+METS file group <code class="language-plaintext highlighter-rouge">OCR-D-SEG-BLOCK-DOCKER</code>):</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK-DOCKER
 </code></pre></div></div>

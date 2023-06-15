@@ -467,22 +467,27 @@ of</a>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr list-available
 # alternatively, using Docker:
-docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -w /data -- ocrd/all:maximum ocrd resmgr list-available
+mkdir -p $PWD/models/ocrd-tesserocr-recognize
+docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share -w /data -- ocrd/all:maximum ocrd resmgr list-available```
+
+The output will look similar to this:
+
 </code></pre></div></div>
 
-<p>The output will look similar to this:</p>
+<p>ocrd-calamari-recognize</p>
+<ul>
+  <li>qurator-gt4hist-0.3 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-07-22T15_49+0200/model.tar.xz)
+Calamari model trained with GT4HistOCR</li>
+  <li>qurator-gt4hist-1.0 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz)
+Calamari model trained with GT4HistOCR</li>
+</ul>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-ocrd-calamari-recognize
-- qurator-gt4hist-0.3 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-07-22T15_49+0200/model.tar.xz)
-  Calamari model trained with GT4HistOCR
-- qurator-gt4hist-1.0 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz)
-  Calamari model trained with GT4HistOCR
-
-ocrd-cis-ocropy-recognize
-- LatinHist.pyrnn.gz (https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz)
-  ocropy historical latin model by github.com/chreul
-</code></pre></div></div>
+<p>ocrd-cis-ocropy-recognize</p>
+<ul>
+  <li>LatinHist.pyrnn.gz (https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz)
+ocropy historical latin model by github.com/chreul
+```</li>
+</ul>
 
 <p>As you can see, resources are grouped by the processors which make use of them.</p>
 

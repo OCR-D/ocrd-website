@@ -465,8 +465,10 @@ This guide always states native calls first and then provides the respective com
 
 <p>If you are using the Installation via Docker, we recommend to run:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize
+docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resourcese <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
 </code></pre></div></div>
+
 <!--
 docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
 -->
@@ -889,8 +891,8 @@ the existing processors, their tasks and features, see the <a href="#get-more-in
 
 <p>To get all available processors you might use the autocomplete in your preferred console.</p>
 
-<p><strong>Note:</strong> If you installed OCR-D via Docker make sure you run the bash in the ocrd Docker image as described in the section Preparations[docker-installation].
-If you installed OCR-D natively, activate virtual environment first as described in the section Preparations[native-installation-activate-virtual-environment].</p>
+<p><strong>Note:</strong> If you installed OCR-D via Docker make sure you run the bash shell in the ocrd docker image as described in the section <a href="#docker-installation">Preparations</a>.
+If you installed OCR-D natively, activate the virtual environment first as described in the section <a href="#native-installation-activate-virtual-environment">Preparations</a>.</p>
 
 <p>Type ‘ocrd-‘ followed by <code class="language-plaintext highlighter-rouge">TAB</code> to get a list of all available processors.</p>
 
