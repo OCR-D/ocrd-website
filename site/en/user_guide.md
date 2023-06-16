@@ -36,7 +36,7 @@ docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
 
 After spinning up the container, you can use the installation and call the processors the same way as in the native installation.
 
-Alternatively, you would have to [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls) (not recommended).
+Alternatively, you can [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls).
 
 ### Native installation: Activate virtual environment
 
