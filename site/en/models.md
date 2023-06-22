@@ -10,33 +10,35 @@ title: Models for OCR-D processors
 
 OCR engines rely on pre-trained models for their recognition. Every engine has
 its own internal format(s) for models. Some support central storage of models
-at a specific location (tesseract, ocropy, kraken) while others require the full
-path to a model (calamari).
+at a specific location (Tesseract, Ocropy, Kraken) while others require the full
+path to a model (Calamari).
+
+Moreover, many processors provide other file resources like configuration files or presets.
 
 Since [v2.22.0](https://github.com/OCR-D/core/releases/v2.22.0), OCR-D/core
-comes with a framework for managing processor resources uniformly. This means
+comes with a framework for managing **file resources** uniformly. This means
 that processors can delegate to OCR-D/core to resolve specific file resources by name,
 looking in well-defined places in the filesystem. This also includes downloading and caching
 file parameters passed as a URL. Furthermore, OCR-D/core comes with a bundled database
 of known resources, such as models, dictionaries, configurations and other
-processor-specific data files. This means that OCR-D users should be able to
-concentrate on fine-tuning their OCR workflows and not bother with implementation
-details like "where do I get models from and where do I put them".
+processor-specific data files. Processors can add their own specifications to that.
+
+This means that OCR-D users should be able to concentrate on fine-tuning their OCR workflows
+and not bother with implementation details like "where do I get models from and where do I put them".
 In particular, users can reference file parameters by name now.
 
-All of the above mentioned functionality can be accessed using the `ocrd
-resmgr` command line tool.
+All of the above mentioned functionality can be accessed using the `ocrd resmgr` command line tool.
 
 ## What models are available?
 
-To get a list of the resources that the OCR-D/core [is aware
-of](https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml):
+To get a list of the (available or installed) file resources that OCR-D/core
+[is aware of](https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml):
 
 ```
 ocrd resmgr list-available
 # alternatively, using Docker:
-mkdir -p $PWD/models/ocrd-tesserocr-recognize
-docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share -w /data -- ocrd/all:maximum ocrd resmgr list-available```
+docker run --volume $PWD:/data --volume ocrd-models:/usr/local/share/ocrd-resources -- ocrd/all:maximum ocrd resmgr list-available
+```
 
 The output will look similar to this:
 
@@ -64,9 +66,15 @@ The second line of each entry contains a short description of the resource.
 
 ## Installing resources
 
-On installing resources in OCR-D, read the sections [Installing known resources](#installing-known-resources) and [Installing unknown resources](#installing-unknown-resources).
+On installing resources in OCR-D, read the follow-up sections
+[Installing known resources](#installing-known-resources) and
+[Installing unknown resources](#installing-unknown-resources).
 
-*Known resources* are resources that are provided by processor developers [in the `ocrd-tool.json`](/en/spec/ocrd_tool#file-parameters) and are available by name to `ocrd resmgr download`, whereas *unknown* resources are models, configurations, parameter sets etc. you provide yourself or found elsewhere on the Internet, which require passing a URL to `ocrd resmgr download`.
+*Known resources* are resources that are provided by processor developers [in the `ocrd-tool.json`](/en/spec/ocrd_tool#file-parameters)
+and are available by name to `ocrd resmgr download`. 
+
+In contrast, *unknown* resources are models, configurations, parameter sets etc. that you provide yourself
+or found elsewhere on the Internet, which require passing a URL to `ocrd resmgr download`.
 
 **If you installed OCR-D via Docker,** read the section [Models and Docker](#models-and-docker) *additionally*. 
 
@@ -126,33 +134,42 @@ ocrd-tesserocr-recognize -P model mymodel
 
 ### Models and Docker
 
-If you are using OCR-D with Docker, we recommend keeping all downloaded resources in a persistent host directory,
-separate of the OCR-D Docker container(s) and data directory, and mounting that
-resource directory into a specific path in the container alongside the data directory.
-The host resource directory can be empty initially. Each time you run the Docker container,
-your processors will access the host directory to resolve resources, and you can download
-additional models into that location using `ocrd resmgr`.
+If you are using OCR-D with Docker, we recommend keeping all downloaded resources **persistently**
+in a host directory, independent of both,
+- the OCR-D Docker container(s) internal storage (which is transient, i.e. any change over the image
+  gets lost with each new `docker run`), and
+- the data directory (which may be on a different filesystem).
+ 
+That resource directory needs to be mounted into a specific path in the container, as does the data directory:
+- `/usr/local/share/ocrd-resources`: resource files (to be mounted as a **named volume**),
+- `/data`: input/output files (to be mounted any way you like, probably a **bind mount**).
+
+Initially, (if you use a named volume, not a bind mount) the host resource directory will contain only
+those resources that have been pre-installed into the processors' module directories. Each time you run
+the Docker container, the Resource Manager and the processors will access that directory from the inside
+to resolve resources, so you can download additional models into that location using `ocrd resmgr`, and
+later use them in workflows.
 
 The following will assume (without loss of generality) that your host-side data
-path is under `./data`, and the host-side resource path is under `./models`:
+path is under `./data`, and the host-side volume is called `ocrd-models`:
 
-To download models to `./models` in the host FS and `/usr/local/share/ocrd-resources` in the container FS:
+To download models to `ocrd-models` in the host FS and `/usr/local/share/ocrd-resources` in the container FS:
 
 ```sh
 docker run --user $(id -u) \
-  --volume $PWD/models:/usr/local/share/ocrd-resources \
+  --volume ocrd-models:/usr/local/share/ocrd-resources \
 ocrd/all \
 ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
 ocrd resmgr download ocrd-calamari-recognize default\; \
 ...
 ```
 
-To run processors, as usual do:
+To run processors, then as usual do:
 
 ```sh
 docker run --user $(id -u) --workdir /data \
   --volume $PWD/data:/data \
-  --volume $PWD/models:/usr/local/share/ocrd-resources \
+  --volume ocrd-models:/usr/local/share/ocrd-resources \
   ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
 ```
 
@@ -184,19 +201,20 @@ The lookup algorithm is [defined in our specifications](https://ocr-d.de/en/spec
 
 In order of preference, a resource `<name>` for a processor `ocrd-foo` is searched at:
 
-* `$PWD/ocrd-resources/ocrd-foo/<name>`
+* `$PWD/<name>`
 * `$XDG_DATA_HOME/ocrd-resources/ocrd-foo/<name>`
 * `/usr/local/share/ocrd-resources/ocrd-foo/<name>`
-* `$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/<name>` or `$VIRTUAL_ENV/share/ocrd-foo/<name>`
+* `$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/<name>` or `$VIRTUAL_ENV/share/ocrd-foo/<name>` 
+   (or whatever the processor's internal module location is)
 
-(where `XDG_DATA_HOME` defaults to `$HOME/.local/share` if unset).
+(where `$XDG_DATA_HOME` defaults to `$HOME/.local/share` if unset).
 
 We recommend using the `$XDG_DATA_HOME` location, which is also the default. But
 you can override the location to store data with the `--location` option, which can
 be `cwd`, `data`, `system` and `module` resp.
 
 ```sh
-# will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
+# will download to $PWD/latest_net_G.pth
 ocrd resmgr download --location cwd ocrd-anybaseocr-dewarp latest_net_G.pth
 # will download to /usr/local/share/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth
 ocrd resmgr download --location system ocrd-anybaseocr-dewarp latest_net_G.pth
@@ -252,8 +270,6 @@ the `ocrd-calamari-recognize` processor, use the `checkpoint_dir` parameter:
 ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA
 # To use your own trained model
 ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -P checkpoint_dir /path/to/modeldir
-# or, to be able to control which checkpoints to use:
-ocrd-calamari-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-CALA -P checkpoint '/path/to/modeldir/*.ckpt.json'
 ```
 
 ## Tesseract / ocrd_tesserocr
@@ -262,7 +278,7 @@ Tesseract models are single files with a `.traineddata` extension.
 
 Since Tesseract only supports model lookup in a single directory, 
 and we want to share the tessdata directory with the standalone CLI,
-ocrd_tesserocr resources must be stored in the `module` location.
+`ocrd_tesserocr` resources must be stored in the `module` location.
 If the default path of that location is not the place you want to use for Tesseract models,
 then either recompile Tesseract with the `tessdata` path you had in mind,
 or use the `TESSDATA_PREFIX` environment variable to override the `module` location at runtime.
