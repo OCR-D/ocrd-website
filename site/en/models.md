@@ -95,14 +95,14 @@ This will look up the resource in the [bundled resource and user databases](#use
 unarchive (where applicable) and store it in the [proper location](#where-is-the-data).
 
 
-> **NOTE:** The special name `*` can be used instead of a resource name/url to
+> **Note**: The special name `*` can be used instead of a resource name/url to
 > download *all* known resources for this processor. To download all tesseract models:
 
 ```sh
 ocrd resmgr download ocrd-tesserocr-recognize '*'
 ```
 
-> **NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
+> **Note**: Equally, the special processor `*` can be used instead of a processor and a resource
 > to download *all* known resources for *all* installed processors:
 
 ```sh
@@ -162,10 +162,10 @@ To download models to `ocrd-models` in the host FS and `/models` in the containe
 ```sh
 docker run --user $(id -u) \
   --volume ocrd-models:/models \
-ocrd/all \
-ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
-ocrd resmgr download ocrd-calamari-recognize default\; \
-...
+  ocrd/all \
+  ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
+  ocrd resmgr download ocrd-calamari-recognize default\; \
+  ...
 ```
 
 To run processors, then as usual do:
@@ -197,7 +197,7 @@ This allows you to use the OCR-D/core resource manager mechanics, including
 lookup of known resources by name or URL, without relying (only) on the
 database maintained by the OCR-D/core developers.
 
-> **NOTE:** If you produced or found resources that are interesting for the wider
+> **Note**: If you produced or found resources that are interesting for the wider
 > OCR(-D) community, please tell us in the [OCR-D gitter chat](https://gitter.im/OCR-D/Lobby)
 > or open an issue in the respective Github repository, so we can add it to the database.
 
@@ -255,7 +255,7 @@ To use a specific model with OCR-D's ocropus wrapper in
 ocrd-cis-ocropy-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-OCRO -P model fraktur-jze.pyrnn.gz
 ```
 
-**NOTE:** Model must be downloade before with
+> **Note**: The model must have been downloaded before with
 
 ```sh
 ocrd resmgr download ocrd-cis-ocropy-recognize fraktur-jze.pyrnn.gz

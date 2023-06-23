@@ -10,14 +10,17 @@ title: User Guide for Non-IT Users
 
 # User Guide for Non-IT Users
 
-The following guide provides a detailed description on how to use the OCR-D-Software after it has been installed successfully. As explained in the
-setup guide, you can either use the [OCR-D-Docker-solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can
-[install the Software locally](https://ocr-d.github.io/en/setup#ocrd_all-natively). Note that these two options require different prerequisites to get
-started with OCR-D after the installation as detailed in the very next two paragraphs. The [third preparatory step](#preparing-a-workspace) is
-obligatory for both Docker and Non-Docker users!
+The following guide provides a detailed description on how to use the OCR-D software after it has been
+[installed](setup) successfully. As explained in the [Setup Guide](setup), you can either use the
+[OCR-D Docker solution](https://ocr-d.github.io/en/setup#ocrd_all-via-docker), or you can
+[install the Software natively](https://ocr-d.github.io/en/setup#ocrd_all-natively) on your OS.
 
-Furthermore, Docker commands have a [different syntax than native calls](#translating-native-commands-to-docker-calls). 
-This guide always states native calls first but follows up with the respective command for Docker users.
+Depending on which option you prefer, you will require different steps to run OCR-D, as detailed
+in the following two paragraphs. (The [third paragraph](#preparing-a-workspace) is obligatory
+for both Docker and native users.)
+
+Docker commands need a [extra syntax over native commands](#translating-native-commands-to-docker-calls). 
+This guide always states native calls first, but follows up with the respective command for Docker.
 
 ## Preparations
 
@@ -239,9 +242,9 @@ a fileGrp `OCR-D-IMG` referencing your local image files.
 > when copying and pasting from the sample calls provide on this website.
 
 
-## Using the OCR-D-processors
+## Using the OCR-D processors
 
-### OCR-D Syntax
+### OCR-D command-line interface syntax
 
 There are several ways for invoking the OCR-D processors. Still, all of them
 make use of the following syntax:
@@ -257,12 +260,15 @@ make use of the following syntax:
 > **Note**: For some processors, all parameters are optional, while other processors such as
 > `ocrd-tesserocr-recognize` will not work without some parameter specifications.
 
+For information on the available processors, and their respective parameters,
+see [getting more information about processors](#get-more-information-about-processors).
+
 ### Calling a single processor
-If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:
+If you just want to run a single processor, you can go into your workspace and use the following command:
 ```sh
-ocrd-{processor needed} -I {Input-Group} -O {Output-Group} [-p {parameter-file}] [-P {parameter} {value}]
+ocrd-{processor name} -I {Input-Group} -O {Output-Group} [-p {parameter-file}] [-P {parameter} {value}]
 ## alternatively, using Docker:
-docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd-{processor needed} -I {Input-Group} -O {Output-Group} [-p {parameter-file}] [-P {parameter} {value}]
+docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd-{processor name} -I {Input-Group} -O {Output-Group} [-p {parameter-file}] [-P {parameter} {value}]
 ```
 For example, your processor call command could look like this:
 ```sh
@@ -278,7 +284,7 @@ It will also add information about this processing step in the METS metadata.
 
 > **Note**: For processors using multiple input- or output fileGrps you have to use a comma-separated list.
 
-E.g.:
+For example:
 
 ```sh
 ocrd-cor-asv-ann-align  -I OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 -O OCR-D-OCR4
@@ -299,10 +305,17 @@ docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd-cor-asv-ann-a
 
 ### Calling several processors
 
+Running several processors one after another on the same data is called a **workflow**.
+For workflow processing, you need a workflow format and a workflow engine. 
+
+In the most simple case, you just write a shell script which combines single processor
+calls in a command sequence joined by `&&`. The following paragraphs will describe more
+advanced options.
+
 #### ocrd process
 
 If you quickly want to specify a particular workflow on the CLI, you can use
-`ocrd process`, which has a similar syntax as calling single processor CLIs.
+`ocrd process`, which has a similar syntax as calling single processor CLIs:
 
 ```sh
 ocrd process \
@@ -336,17 +349,14 @@ in your workspace (i.e. both as files on the filesystem and referenced in the `m
 It will also add information about this processing step in the METS metadata.
 
 The processors work on the files sequentially. So at first, all pages will be processed
-with the first processor (e.g. binarized), then all pages will be processed 
+with the first processor (e.g. binarized), then (if successful) all pages will be processed 
 by the second processor (e.g. segmented) etc. 
 
-So In the end your workspace should contain a directory (and fileGrp) with (intermediate)
+So in the end, your workspace should contain a directory (and fileGrp) with (intermediate)
 processing results for each output fileGrp specified in the workflow.
 
 > **Note**: In contrast to calling a single processor, for `ocrd process` you leave
-out the prefix `ocrd-` before the name of a particular processor.
-
-For information on the available processors see [section at the end](#get-more-information-about-processors).
-
+> out the prefix `ocrd-` before the name of a particular processor.
 
 #### ocrd-make
 
@@ -423,7 +433,7 @@ look like this …
 ocrd-tesserocr-segment -I OCR-D-IMG -O OCR-D-SEG
 ```
 
-… to run it with the [`ocrd/all:maximum`] Docker container …
+… to run it with the [`ocrd/all:maximum`](https://hub.docker.com/r/ocrd/all/tags) Docker container …
 
 ```sh
 docker run -u $(id -u) -v $PWD:/data -v ocrd-models:/models -- ocrd/all:maximum ocrd-tesserocr-segment -I OCR-D-IMG -O OCR-D-SEG
@@ -459,7 +469,7 @@ and/or processors. For an overview on the existing processors, their tasks and f
 
 
 
-### Get more Information about Processors
+### Get more information about processors
 
 To get all available processors you might use the autocomplete in your preferred console.
 
@@ -473,9 +483,9 @@ Type `ocrd-` followed by a tab character (for autocompletion proposals) to get a
 To get further information about a particular processor, call it with `--help` or `-h`:
 
 ```sh
-{processor name} --help
+ocrd-{processor name} --help
 ## alternatively, using Docker:
-docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum {processor name} --help
+docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd-{processor name} --help
 ```
 
 
@@ -483,6 +493,6 @@ docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum {processor name} -
 
 Several processors rely on models, which usually have to be downloaded beforehand.
 An overview on the existing model repositories and short descriptions on the most important models
-can be found [in our Models Guide](https://ocr-d.de/en/models).
+can be found in our [Models Guide](https://ocr-d.de/en/models).
 We strongly recommend to use the [OCR-D resource manager](https://ocr-d.de/en/models) to download the models,
 as this makes it easy to both download and use them.
