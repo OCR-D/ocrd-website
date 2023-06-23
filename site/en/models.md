@@ -37,13 +37,12 @@ To get a list of the (available or installed) file resources that OCR-D/core
 ```
 ocrd resmgr list-available
 # alternatively, using Docker:
-docker run --volume $PWD:/data --volume ocrd-models:/usr/local/share/ocrd-resources -- ocrd/all:maximum ocrd resmgr list-available
+docker run --volume ocrd-models:/models -- ocrd/all:maximum ocrd resmgr list-available
 ```
 
 The output will look similar to this:
 
 ```
-
 ocrd-calamari-recognize
 - qurator-gt4hist-0.3 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-07-22T15_49+0200/model.tar.xz)
   Calamari model trained with GT4HistOCR
@@ -70,56 +69,60 @@ On installing resources in OCR-D, read the follow-up sections
 [Installing known resources](#installing-known-resources) and
 [Installing unknown resources](#installing-unknown-resources).
 
-*Known resources* are resources that are provided by processor developers [in the `ocrd-tool.json`](/en/spec/ocrd_tool#file-parameters)
+*Known* resources are resources that are provided by processor developers [in the `ocrd-tool.json`](/en/spec/ocrd_tool#file-parameters)
 and are available by name to `ocrd resmgr download`. 
 
-In contrast, *unknown* resources are models, configurations, parameter sets etc. that you provide yourself
-or found elsewhere on the Internet, which require passing a URL to `ocrd resmgr download`.
+*Unknown* resources, in contrast, are models, configurations, parameter sets etc. that you provide yourself
+or found elsewhere on the Internet, which require passing a URL (or local path) to `ocrd resmgr download`.
 
 **If you installed OCR-D via Docker,** read the section [Models and Docker](#models-and-docker) *additionally*. 
 
 ### Installing known resources
 
 You can install resources with the `ocrd resmgr download` command. It expects
-the name of the processor as the first argument and either the name or URL of a
-resource as a second argument.
+the name of the processor as the 1st argument and the name of a resource as a 2nd argument.
 
-Although model distribution is not currently centralised within OCR-D, we
-are working towards a central model repository.
+Since model distribution is decentralised within OCR-D, every processor can advertise its
+own known resources, which the resource manager then picks up.
 
 For example, to install the `LatinHist.pyrnn.gz` resource for `ocrd-cis-ocropy-recognize`:
 
 ```
 ocrd resmgr download ocrd-cis-ocropy-recognize LatinHist.pyrnn.gz
-# or
-ocrd resmgr download ocrd-cis-ocropy-recognize https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz
 ```
 
 This will look up the resource in the [bundled resource and user databases](#user-database), download,
 unarchive (where applicable) and store it in the [proper location](#where-is-the-data).
 
 
-**NOTE:** The special name `*` can be used instead of a resource name/url to
-download *all* known resources for this processor. To download all tesseract models:
+> **NOTE:** The special name `*` can be used instead of a resource name/url to
+> download *all* known resources for this processor. To download all tesseract models:
 
 ```sh
 ocrd resmgr download ocrd-tesserocr-recognize '*'
 ```
 
-**NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
-to download *all* known resources for *all* installed processors:
+> **NOTE:** Equally, the special processor `*` can be used instead of a processor and a resource
+> to download *all* known resources for *all* installed processors:
 
 ```sh
 ocrd resmgr download '*'
 ```
 
-(In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
+> (In either case, `*` must be in quotes or escaped to avoid wildcard expansion by the shell.)
 
 ### Installing unknown resources
 
-If you need to install a resource which OCR-D doesn't know of, that can be achieved by passings its URL in combination with the `--any-url/-n` flag to `ocrd resmgr download`:
+If you need to install a resource which OCR-D does not know of, that can be achieved by passing
+its URL in combination with the `--any-url/-n` flag to `ocrd resmgr download`.
 
-To install a model for `ocrd-tesserocr-recognize` that is located at `https://my-server/mymodel.traineddata`.
+For example, to install the same model for `ocrd-cis-ocropy-recognize` as above:
+
+```
+ocrd resmgr download -n https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz ocrd-cis-ocropy-recognize LatinHist.pyrnn.gz
+```
+
+Or to install a model for `ocrd-tesserocr-recognize` that is located at `https://my-server/mymodel.traineddata`:
 
 ```
 ocrd resmgr download -n https://my-server/mymodel.traineddata ocrd-tesserocr-recognize mymodel.traineddata
@@ -135,29 +138,30 @@ ocrd-tesserocr-recognize -P model mymodel
 ### Models and Docker
 
 If you are using OCR-D with Docker, we recommend keeping all downloaded resources **persistently**
-in a host directory, independent of both,
-- the OCR-D Docker container(s) internal storage (which is transient, i.e. any change over the image
-  gets lost with each new `docker run`), and
-- the data directory (which may be on a different filesystem).
+in a host directory, independent of both:
+- the Docker container's internal storage (which is transient, i.e. any change over the image
+  gets lost with each new `docker run`),
+- the host's data directory (which may be on a different filesystem).
  
 That resource directory needs to be mounted into a specific path in the container, as does the data directory:
-- `/usr/local/share/ocrd-resources`: resource files (to be mounted as a **named volume**),
-- `/data`: input/output files (to be mounted any way you like, probably a **bind mount**).
+- `/models`: resource files (to be mounted as a **named volume**, e.g. `-v ocrd-models:/models`),
+- `/data`: input/output files (to be mounted any way you like, probably a **bind mount**, e.g. `-v $PWD:/data`),
+- `/tmp`: temporary files (ideally as **tmpfs**, e.g. `--tmpfs /tmp`)
 
-Initially, (if you use a named volume, not a bind mount) the host resource directory will contain only
-those resources that have been pre-installed into the processors' module directories. Each time you run
+Initially, (if you use a named volume, not a bind mount,) the host resource directory will contain only
+those resources that have been **pre-installed** into the processors' module directories. Each time you run
 the Docker container, the Resource Manager and the processors will access that directory from the inside
-to resolve resources, so you can download additional models into that location using `ocrd resmgr`, and
-later use them in workflows.
+to resolve resources, so you can **download additional** models into that location using `ocrd resmgr`, and
+later **use them** in workflows.
 
 The following will assume (without loss of generality) that your host-side data
 path is under `./data`, and the host-side volume is called `ocrd-models`:
 
-To download models to `ocrd-models` in the host FS and `/usr/local/share/ocrd-resources` in the container FS:
+To download models to `ocrd-models` in the host FS and `/models` in the container FS:
 
 ```sh
 docker run --user $(id -u) \
-  --volume ocrd-models:/usr/local/share/ocrd-resources \
+  --volume ocrd-models:/models \
 ocrd/all \
 ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata\; \
 ocrd resmgr download ocrd-calamari-recognize default\; \
@@ -167,9 +171,10 @@ ocrd resmgr download ocrd-calamari-recognize default\; \
 To run processors, then as usual do:
 
 ```sh
-docker run --user $(id -u) --workdir /data \
+docker run --user $(id -u) \
+  --tmpfs /tmp \
   --volume $PWD/data:/data \
-  --volume ocrd-models:/usr/local/share/ocrd-resources \
+  --volume ocrd-models:/models \
   ocrd/all ocrd-tesserocr-recognize -I IN -O OUT -P model eng
 ```
 
@@ -183,17 +188,18 @@ resources and lists URL and description if a database entry exists.
 
 ## User database
 
-Whenever the OCR-D/core resource manager encounters an unknown resource in the filesystem or when you install
-a resource with `ocrd resmgr download`, it will create a new stub entry in the user database, which is found at
-`$HOME/.config/ocrd/resources.yml` and created if it doesn't exist.
+Whenever the OCR-D/core resource manager encounters an unknown resource in the filesystem, or when you install
+a resource with `ocrd resmgr download`, it will add a new stub entry in the user database, which is found at
+`$XDG_CONFIG_HOME/ocrd/resources.yml` (where `$XDG_CONFIG_HOME` defaults to `$HOME/.config` if unset) and
+gets created if it does not exist.
 
 This allows you to use the OCR-D/core resource manager mechanics, including
 lookup of known resources by name or URL, without relying (only) on the
 database maintained by the OCR-D/core developers.
 
-**NOTE:** If you produced or found resources that are interesting for the wider
-OCR(-D) community, please tell us in the [OCR-D gitter
-chat](https://gitter.im/OCR-D/Lobby) so we can add it to the database.
+> **NOTE:** If you produced or found resources that are interesting for the wider
+> OCR(-D) community, please tell us in the [OCR-D gitter chat](https://gitter.im/OCR-D/Lobby)
+> or open an issue in the respective Github repository, so we can add it to the database.
 
 ## Where is the data
 
@@ -203,8 +209,8 @@ In order of preference, a resource `<name>` for a processor `ocrd-foo` is search
 
 * `$PWD/<name>`
 * `$XDG_DATA_HOME/ocrd-resources/ocrd-foo/<name>`
-* `/usr/local/share/ocrd-resources/ocrd-foo/<name>`
-* `$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/<name>` or `$VIRTUAL_ENV/share/ocrd-foo/<name>` 
+* `/usr/local/share/ocrd-resources/ocrd-foo/<name>`  
+* `$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/<name>` or `$VIRTUAL_ENV/share/ocrd-foo/<name>`  
    (or whatever the processor's internal module location is)
 
 (where `$XDG_DATA_HOME` defaults to `$HOME/.local/share` if unset).
@@ -212,6 +218,9 @@ In order of preference, a resource `<name>` for a processor `ocrd-foo` is search
 We recommend using the `$XDG_DATA_HOME` location, which is also the default. But
 you can override the location to store data with the `--location` option, which can
 be `cwd`, `data`, `system` and `module` resp.
+
+In Docker though, `$XDG_CONFIG_HOME=$XDG_DATA_HOME/ocrd-resources=/usr/local/share/ocrd-resources` 
+gets symlinked to `/models` for easier volume handling (and persistency).
 
 ```sh
 # will download to $PWD/latest_net_G.pth
