@@ -411,7 +411,7 @@ function ToggleSearchActive2() {
     <ul>
       <li><a href="#preparations">Preparations</a>
         <ul>
-          <li><a href="#docker-installation">Docker installation:</a></li>
+          <li><a href="#docker-installation-run-container">Docker installation: Run container</a></li>
           <li><a href="#native-installation-activate-virtual-environment">Native installation: Activate virtual environment</a></li>
           <li><a href="#preparing-a-workspace">Preparing a workspace</a>
             <ul>
@@ -421,20 +421,19 @@ function ToggleSearchActive2() {
           </li>
         </ul>
       </li>
-      <li><a href="#using-the-ocr-d-processors">Using the OCR-D-processors</a>
+      <li><a href="#using-the-ocr-d-processors">Using the OCR-D processors</a>
         <ul>
-          <li><a href="#ocr-d-syntax">OCR-D-Syntax</a></li>
+          <li><a href="#ocr-d-command-line-interface-syntax">OCR-D command-line interface syntax</a></li>
           <li><a href="#calling-a-single-processor">Calling a single processor</a></li>
           <li><a href="#calling-several-processors">Calling several processors</a>
             <ul>
-              <li><a href="#ocrd-process">ocrd-process</a></li>
-              <li><a href="#taverna">Taverna</a></li>
-              <li><a href="#workflow-configuration">workflow-configuration</a></li>
-              <li><a href="#translating-native-commands-to-docker-calls">Translating native commands to docker calls</a></li>
+              <li><a href="#ocrd-process">ocrd process</a></li>
+              <li><a href="#ocrd-make">ocrd-make</a></li>
+              <li><a href="#translating-native-commands-to-docker-calls">Translating native commands to Docker calls</a></li>
             </ul>
           </li>
-          <li><a href="#specifying-new-ocr-d-workflows">Specifying New OCR-D-Workflows</a></li>
-          <li><a href="#get-more-information-about-processors">Get more Information about Processors</a></li>
+          <li><a href="#specifying-new-ocr-d-workflows">Specifying new OCR-D workflows</a></li>
+          <li><a href="#get-more-information-about-processors">Get more information about processors</a></li>
           <li><a href="#using-models">Using models</a></li>
         </ul>
       </li>
@@ -450,63 +449,71 @@ function ToggleSearchActive2() {
       <main class="container content " aria-label="Content">
         <h1 id="user-guide-for-non-it-users">User Guide for Non-IT Users</h1>
 
-<p>The following guide provides a detailed description on how to use the OCR-D-Software after it has been installed successfully. As explained in the
-setup guide, you can either use the <a href="https://ocr-d.github.io/en/setup#ocrd_all-via-docker">OCR-D-Docker-solution</a>, or you can
-<a href="https://ocr-d.github.io/en/setup#ocrd_all-natively">install the Software locally</a>. Note that these two options require different prerequisites to get
-started with OCR-D after the installation as detailed in the very next two paragraphs. The <a href="#preparing-a-workspace">third preparatory step</a> is
-obligatory for both Docker and Non-Docker users!</p>
+<p>The following guide provides a detailed description on how to use the OCR-D software after it has been
+<a href="setup">installed</a> successfully. As explained in the <a href="setup">Setup Guide</a>, you can either use the
+<a href="https://ocr-d.github.io/en/setup#ocrd_all-via-docker">OCR-D Docker solution</a>, or you can
+<a href="https://ocr-d.github.io/en/setup#ocrd_all-natively">install the Software natively</a> on your OS.</p>
 
-<p>Furthermore, Docker commands have a <a href="#translating-native-commands-to-docker-calls">different syntax than native calls</a>. 
-This guide always states native calls first and then provides the respective command for Docker users.</p>
+<p>Depending on which option you prefer, you will require different steps to run OCR-D, as detailed
+in the following two paragraphs. (The <a href="#preparing-a-workspace">third paragraph</a> is obligatory
+for both Docker and native users.)</p>
+
+<p>Docker commands need a <a href="#translating-native-commands-to-docker-calls">extra syntax over native commands</a>. 
+This guide always states native calls first, but follows up with the respective command for Docker.</p>
 
 <h2 id="preparations">Preparations</h2>
 
-<h3 id="docker-installation">Docker installation:</h3>
+<h3 id="docker-installation-run-container">Docker installation: Run container</h3>
 
-<p>If you are using the Installation via Docker, we recommend to run:</p>
+<p>If you are using the Installation via Docker, we recommend running an interactive shell session in the container:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize
-docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resourcese <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--tmpfs</span> /tmp <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> ocrd-models:/models <span class="nt">-it</span> ocrd/all bash
 </code></pre></div></div>
 
 <!--
-docker run --user $(id -u) --workdir /data --volume $PWD:/data -it ocrd/all bash
+docker run --user $(id -u) --volume $PWD:/data -it ocrd/all bash
 -->
 
-<p>After spinning up the container, you can use the installation and call the processors the same way as in the native installation.</p>
-
-<p>Alternatively, you can <a href="/en/user_guide#translating-native-commands-to-docker-calls">translate each command to a docker call</a>.</p>
+<p>After spinning up the container, you can use the internal installation and call the processors
+the same way as in the native installation. Alternatively, you can
+<a href="/en/user_guide#translating-native-commands-to-docker-calls">translate each command to a docker call</a> separately.</p>
 
 <h3 id="native-installation-activate-virtual-environment">Native installation: Activate virtual environment</h3>
 
-<p>If you are using a native installation, you should activate the
-virtualenv before starting to work with the OCR-D-software. This has either been installed automatically if you installed the
-software via ocrd_all, or you should have <a href="https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments">installed it yourself</a> before
-installing the OCR-D-software individually. Note that you need to specify the path to your virtualenv. If you are simply using the <code class="language-plaintext highlighter-rouge">venv</code> is created
-on-demand by <code class="language-plaintext highlighter-rouge">ocrd_all</code>, it is contained in your <code class="language-plaintext highlighter-rouge">ocrd_all</code> directory</p>
+<p>If you are using a native installation, you must activate the venv before you can start
+working with the OCR-D software. It has either been created automatically if you 
+<a href="setup">installed the software via ocrd_all</a>, or you should have manually
+<a href="https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments">installed it yourself</a>
+before installing the OCR-D software.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/venv/bin/activate
+<p>To activate, you need to specify the path to your venv. In the automatic <code class="language-plaintext highlighter-rouge">ocrd_all</code> case,
+it has simply been created under <code class="language-plaintext highlighter-rouge">venv</code> in your <code class="language-plaintext highlighter-rouge">ocrd_all</code> directory:</p>
 
-<span class="c"># e.g. for your `ocrd_all` venv</span>
-habocr@ocrtest:~<span class="nv">$ </span><span class="nb">source </span>ocrd_all/venv/bin/activate
-<span class="o">(</span>venv<span class="o">)</span> habocr@ocrtest:~<span class="err">$</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># example with manually created venv:</span>
+<span class="nv">$ </span><span class="nb">source</span> ~/venv/bin/activate
+
+<span class="c"># example for automatically created venv:</span>
+<span class="nv">$ </span><span class="nb">source </span>ocrd_all/venv/bin/activate
+
+<span class="c"># when the shell loads the venv, the prompt will change:</span>
+<span class="o">(</span>venv<span class="o">)</span> <span class="err">$</span>
 </code></pre></div></div>
 
-<p>Once you have activated the virtualenv, you should see <code class="language-plaintext highlighter-rouge">(venv)</code> prepended to
-your shell prompt.</p>
+<p>Once you have activated the venv in your shell, you should see its name prepended to
+the command prompt.</p>
 
-<p>When you are done with your OCR-D-work, you can use <code class="language-plaintext highlighter-rouge">deactivate</code> to deactivate
-your venv.</p>
+<p>When you are done with your OCR-D work, you can use <code class="language-plaintext highlighter-rouge">deactivate</code> to deactivate
+the venv (or just terminate the shell).</p>
 
 <h3 id="preparing-a-workspace">Preparing a workspace</h3>
 
-<p>OCR-D processes digitized images in so-called workspaces, special directories
-which contain the images to be processed and their corresponding METS file. Any
-files generated while processing these images with the OCR-D-software will also
-be stored in this directory.</p>
+<p>OCR-D processes digitized images in so-called <a href="spec/glossary#workspace">workspaces</a>,
+i.e. special directories which contain the images to be processed and their corresponding 
+METS file. Any files generated while processing these images with the OCR-D software
+will also be stored in this directory.</p>
 
-<p>How you prepare a workspace depends on whether you already have or don’t have a
-METS file with the paths to the images you want to process. For usage within
+<p>How you prepare a workspace <strong>depends</strong> on whether or not you <strong>already</strong> have a METS file
+with the paths (or URLs) to the images you want to process. For usage within
 OCR-D your METS file should look similar to <a href="example_mets">this example</a>.</p>
 
 <h4 id="already-existing-mets">Already existing METS</h4>
@@ -514,12 +521,17 @@ OCR-D your METS file should look similar to <a href="example_mets">this example<
 <p>If you already have a METS file as indicated above, you can create a workspace
 and load the pictures to be processed with the following command:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="nt">-d</span> /path/to/workspace clone URL_OF_METS
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace clone <span class="nt">-d</span> /data URL_OF_METS
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/workspace] clone URL_OF_METS
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace clone <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] URL_OF_METS
 </code></pre></div></div>
 
-<p>This will create a directory (called workspace in OCR-D) with your specified name which contains your METS file.</p>
+<p>(Where <code class="language-plaintext highlighter-rouge">path/to/your/workspace</code> is but an example. You can <strong>omit
+the directory argument</strong> if you want to use the current working directory
+as target. For repeated use, we recommend a <code class="language-plaintext highlighter-rouge">cd path/to/your/workspace</code> once,
+so in subsequent operations, the argument can be omitted.)</p>
+
+<p>This will create a file <code class="language-plaintext highlighter-rouge">mets.xml</code> within the target directory.</p>
 
 <p>In most cases, METS files indicate several picture formats. For OCR-D you will
 only need one format. We strongly recommend using the format with the highest
@@ -528,284 +540,284 @@ resolution. Optionally, you can specify to only load the file group needed:</p>
 <p>List all existing groups:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> /path/to/your/workspace] list-group
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="nt">-d</span> /data list-group
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] list-group
 </code></pre></div></div>
 
-<p>This will provide you with the names of all the different file groups in your METS, e.g. THUMBNAILS,
-PRESENTATION, MAX.</p>
+<p>This will provide you with the names of all the different file groups in your METS, e.g. <code class="language-plaintext highlighter-rouge">THUMBNAILS</code>,
+<code class="language-plaintext highlighter-rouge">PRESENTATION</code>, <code class="language-plaintext highlighter-rouge">MAX</code>.</p>
 
-<p>Download all files of one group:</p>
+<p>Download all files of one file group:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> /path/to/your/workspace] find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="nt">-d</span> /data find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] find <span class="nt">--file-grp</span> <span class="o">[</span>selected file group] <span class="nt">--download</span>
 </code></pre></div></div>
 
-<p>This will download all images in the specified file group and save them in a folder named accordingly
+<p>This will download all images in the specified file group and save them in a directory named accordingly
 in your workspace. You are now ready to start processing your images with OCR-D.</p>
 
 <h4 id="non-existing-mets">Non-existing METS</h4>
 
-<p>If you don’t have a METS file or it doesn’t suffice the OCR-D-requirements you
-can generate it with the following commands. First, you have to create a
+<p>If you don’t have a METS file or it does not comply with the OCR-D requirements,
+then you can generate one with the following commands. First, create an empty
 workspace:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> /path/to/your/workspace] init <span class="c"># omit `-d` for current directory</span>
-<span class="c">## alternatively using docker</span>
-<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="o">[</span>/path/to/your/workspace]
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/workspace]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="nt">-d</span> /data init
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] init
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] init
 </code></pre></div></div>
 
-<p>This should create a directory (called workspace in OCR-D) which contains a <code class="language-plaintext highlighter-rouge">mets.xml</code>.</p>
+<p>(Where <code class="language-plaintext highlighter-rouge">path/to/your/workspace</code> is but an example. You can <strong>omit
+the directory argument</strong> if you want to use the current working directory
+as target. For repeated use, we recommend a <code class="language-plaintext highlighter-rouge">cd path/to/your/workspace</code> once,
+so in subsequent operations, the argument can be omitted.)</p>
 
-<p>Then you can change into your workspace directory and set a unique ID</p>
+<p>This will <strong>create</strong> a file <code class="language-plaintext highlighter-rouge">mets.xml</code> within the target directory.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /path/to/your/workspace <span class="c"># if not already there</span>
-ocrd workspace set-id <span class="s1">'unique ID'</span>
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/workspace]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace set-id <span class="s1">'unique ID'</span>
+<p>Then you can set a unique <code class="language-plaintext highlighter-rouge">mods:identifier</code> …</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] set-id <span class="s1">'unique ID'</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] set-id <span class="s1">'unique ID'</span>
 </code></pre></div></div>
 
-<p>and copy the folder containing your pictures to be processed into the workspace:</p>
+<p>… and copy or symlink the directory containing the images to be processed into the workspace directory:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-r</span> <span class="o">[</span>/path/to/your/pictures] <span class="nb">.</span>
-</code></pre></div></div>
-<p><strong>Note:</strong> All pictures must have the same format (tif, jpg, …)</p>
-
-<p>In OCR-D we  name the image folder OCR-D-IMG, which is used throughout the documentation. Naming your image folder differently is
-certainly possible, but you should be aware that you need to adapt the name of the image folder if copy and paste the sample
-calls provided on this website.</p>
-
-<p>You should now have a workspace which contains the aforementioned <code class="language-plaintext highlighter-rouge">mets.xml</code> and a folder OCR-D-IMG with your images.</p>
-
-<p>Now you can add your pictures to the METS. When creating the workspace, a blank
-METS file was created, too, to which you can add the pictures to be processed.</p>
-
-<p>You can do this manually with the following command:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace add <span class="nt">-g</span> <span class="o">[</span>ID of the physical page, has to start with a letter] <span class="nt">-G</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace] <span class="nt">-i</span> <span class="o">[</span>ID of the scanned page, has to start with a letter] <span class="nt">-m</span> image/[format of your picture] <span class="o">[</span>/path/to/your/picture/in/workspace]
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/workspace]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-g</span> <span class="o">[</span>ID of the physical page, has to start with a letter] <span class="nt">-G</span> <span class="o">[</span>name of picture folder <span class="k">in </span>your workspace] <span class="nt">-i</span> <span class="o">[</span>ID of the scanned page, has to start with a letter] <span class="nt">-m</span> image/[format of your picture] <span class="o">[</span>relative/path/to/your/picture/in/workspace]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-r</span> path/to/your/images <span class="o">[</span>path/to/your/workspace/].
+<span class="nb">ln</span> <span class="nt">-s</span> path/to/your/images <span class="o">[</span>path/to/your/workspace/].
 </code></pre></div></div>
 
-<p>Your command could e.g. look like this:</p>
+<p>Now you can add those images to the empty METS created above,
+by <strong>adding references</strong> for their path names. You can do this in a number of ways.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace add <span class="nt">-g</span> P_00001 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00001 <span class="nt">-m</span> image/tif OCR-D-IMG/00001.tif
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-g</span> P_00001 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00001 <span class="nt">-m</span> image/tif OCR-D-IMG/00001.tif
+<p>Either with the following simple command:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] add <span class="nt">-g</span> <span class="o">{</span>ID of the physical page<span class="o">}</span> <span class="nt">-G</span> <span class="o">{</span>name of image fileGrp<span class="o">}</span> <span class="nt">-i</span> <span class="o">{</span>ID of the image file<span class="o">}</span> <span class="nt">-m</span> image/<span class="o">{</span>MIME format of that image<span class="o">}</span> <span class="o">{</span>path/to/that/image/file/in/workspace<span class="o">}</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace <span class="o">[</span><span class="nt">-d</span> path/to/your/workspace] add <span class="nt">-g</span> <span class="o">{</span>ID of the physical page<span class="o">}</span> <span class="nt">-G</span> <span class="o">{</span>name of image fileGrp<span class="o">}</span> <span class="nt">-i</span> <span class="o">{</span>ID of the image file<span class="o">}</span> <span class="nt">-m</span> image/<span class="o">{</span>MIME format of that image<span class="o">}</span> <span class="o">{</span>path/to/that/image/file/in/workspace<span class="o">}</span>
 </code></pre></div></div>
 
-<p>If you have many pictures to be added to the METS, you can do this automatically with a for-loop:</p>
+<blockquote>
+  <p><strong>Note</strong>: Identifiers in XML must always <a href="https://www.w3.org/TR/REC-xml/#NT-Names">start with a letter</a>.</p>
+</blockquote>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">FILEGRP</span><span class="o">=</span><span class="s2">"YOUR-FILEGRP-NAME"</span>
+<p>For example, your simple commands could look like this:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd workspace add <span class="nt">-g</span> P_00001 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00001 <span class="nt">-m</span> image/tiff images/00001.tif
+ocrd workspace add <span class="nt">-g</span> P_00002 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00001 <span class="nt">-m</span> image/tiff images/00002.tif
+...
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-g</span> P_00001 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00001 <span class="nt">-m</span> image/tiff images/00001.tif
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-g</span> P_00002 <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_00002 <span class="nt">-m</span> image/tiff images/00002.tif
+...
+</code></pre></div></div>
+
+<p>Or, if you have lots of images to be added to the METS, you can do this automatically with a <code class="language-plaintext highlighter-rouge">for</code> loop:</p>
+<blockquote>
+  <p><strong>Note</strong>: For this method, all images must have the same format (tiff, jpeg, …)</p>
+</blockquote>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">FILEGRP</span><span class="o">=</span><span class="s2">"OCR-D-IMG"</span> <span class="c"># name of fileGrp to use</span>
 <span class="nv">EXT</span><span class="o">=</span><span class="s2">".tif"</span>  <span class="c"># the actual extension of the image files</span>
-<span class="nv">MEDIATYPE</span><span class="o">=</span><span class="s1">'image/tiff'</span>  <span class="c"># the actual media type of the image files</span>
-<span class="c">## using local ocrd CLI</span>
-<span class="k">for </span>i <span class="k">in</span> /path/to/your/picture/folder/in/workspace/<span class="k">*</span><span class="nv">$EXT</span><span class="p">;</span> <span class="k">do
-  </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
-  ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span>
-<span class="k">done</span>
-<span class="c">## alternatively using docker</span>
-<span class="k">for </span>i <span class="k">in</span> /path/to/your/picture/folder/in/workspace/<span class="k">*</span><span class="nv">$EXT</span><span class="p">;</span> <span class="k">do
-  </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
-  docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span>
+<span class="nv">MEDIATYPE</span><span class="o">=</span><span class="s2">"image/tiff"</span>  <span class="c"># the actual MIME type of the images</span>
+<span class="nb">cd </span>path/to/your/workspace
+<span class="k">for </span>path <span class="k">in </span>images/<span class="k">*</span><span class="nv">$EXT</span><span class="p">;</span> <span class="k">do
+  </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="nv">$path</span> <span class="nv">$EXT</span><span class="sb">`</span><span class="p">;</span>
+  <span class="c">## using local ocrd CLI:</span>
+  ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="nv">$base</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="nv">$path</span>
+  <span class="c">## alternatively, using Docker:</span>
+  docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-G</span> <span class="nv">$FILEGRP</span> <span class="nt">-i</span> <span class="k">${</span><span class="nv">FILEGRP</span><span class="k">}</span>_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="nv">$base</span> <span class="nt">-m</span> <span class="nv">$MEDIATYPE</span> <span class="nv">$path</span>
 <span class="k">done</span>
 </code></pre></div></div>
 
-<p><img src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" alt="warning" style="zoom:33%;" /> If the file names of the images start with a number, at least one of the following characters must be placed in front of its name for parameter ‘i’: [a-z,A-Z,<em>,-] (e.g.: ‘OCR-D-IMG</em>_’)</p>
+<p>For example, your <code class="language-plaintext highlighter-rouge">for</code> loop could look like this:</p>
 
-<p>Your for-loop could e.g. look like this:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in </span>OCR-D-IMG/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .tif<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/tif <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
-<span class="c">## alternatively using docker</span>
-<span class="k">for </span>i <span class="k">in </span>OCR-D-IMG/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span> .tif<span class="sb">`</span><span class="p">;</span>docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-g</span> P_<span class="k">${</span><span class="nv">base</span><span class="k">}</span> <span class="nt">-m</span> image/tif <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="p">;</span> <span class="k">done</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>path <span class="k">in </span>images/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="nv">$path</span> .tif<span class="sb">`</span><span class="p">;</span> ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_<span class="nv">$base</span> <span class="nt">-g</span> P_<span class="nv">$base</span> <span class="nt">-m</span> image/tiff <span class="nv">$path</span><span class="p">;</span> <span class="k">done</span>
+<span class="c">## alternatively, using Docker:</span>
+<span class="k">for </span>path <span class="k">in </span>images/<span class="k">*</span>.tif<span class="p">;</span> <span class="k">do </span><span class="nv">base</span><span class="o">=</span><span class="sb">`</span><span class="nb">basename</span> <span class="nv">$path</span> .tif<span class="sb">`</span><span class="p">;</span> docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd workspace add <span class="nt">-G</span> OCR-D-IMG <span class="nt">-i</span> OCR-D-IMG_<span class="nv">$base</span> <span class="nt">-g</span> P_<span class="nv">$base</span> <span class="nt">-m</span> image/tiff <span class="nv">$path</span><span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<p>The log information should inform you about every image which was added to the <code class="language-plaintext highlighter-rouge">mets.xml</code>.
-In the end, your METS file should look like this <a href="example_mets">example METS</a>. You are now ready to start processing your images with OCR-D.</p>
+<p>The log information should inform you about every image which was added to the METS file.
+In the end, your <code class="language-plaintext highlighter-rouge">mets.xml</code> should look like this <a href="example_mets">example METS</a>. 
+You are now ready to start processing your images with OCR-D.</p>
 
-<p>Alternatively, <code class="language-plaintext highlighter-rouge">ocrd-import</code> from <a href="#workflow-configuration">workflow-configuration</a> is a shell script which does all of the above (and can also convert arbitrary image formats) automatically. For usage options, see:</p>
+<p>Finally, the shell script <code class="language-plaintext highlighter-rouge">ocrd-import</code> from <a href="https://github.com/bertsky/workflow-configuration">workflow-configuration</a>
+is a tool which does all of the above (and can also convert arbitrary image formats and extract from PDFs)
+automatically. For usage options, see:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-import <span class="nt">-h</span>
 </code></pre></div></div>
 
-<p>For example, to search for all files under <code class="language-plaintext highlighter-rouge">path/to/your/pictures/</code> recursively, and add all image files under file group <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code>, keeping their filename stem as page ID, and converting all unaccepted image file formats like JPEG2000, XPS or PDF (the latter rendered to bitmap at 300 DPI) to TIFF on the fly, and also add any PAGE-XML file of the same filename stem under file group <code class="language-plaintext highlighter-rouge">OCR-D-SEG-PAGE</code>, while ignoring other files, and finally write everything to <code class="language-plaintext highlighter-rouge">path/to/your/pictures/mets.xml</code>, do:</p>
+<p>For example, to search for all files under <code class="language-plaintext highlighter-rouge">path/to/your/images/</code> recursively, 
+and add all image files under fileGrp <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code>, keeping their filename stem as page ID,
+while converting all unsupported image file formats like JPEG2000, XPS or PDF 
+(the latter rendered to bitmap at 300 DPI) to TIFF on the fly, 
+and also add any PAGE-XML file of the same filename stem under fileGrp <code class="language-plaintext highlighter-rouge">OCR-D-SEG-PAGE</code>,
+while ignoring other files, and finally write everything to <code class="language-plaintext highlighter-rouge">path/to/your/images/mets.xml</code>, do:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-import <span class="nt">--nonnum-ids</span> <span class="nt">--ignore</span> <span class="nt">--render</span> 300 path/to/your/pictures
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="o">[</span>/path/to/your/data]:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-import <span class="nt">-P</span> <span class="nt">-i</span> <span class="nt">-r</span> 300 path/to/your/pictures
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-import <span class="nt">--nonnum-ids</span> <span class="nt">--ignore</span> <span class="nt">--render</span> 300 path/to/your/images
+<span class="c">## alternatively using Docker</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-import <span class="nt">-P</span> <span class="nt">-i</span> <span class="nt">-r</span> 300 path/to/your/images
 </code></pre></div></div>
 
-<h2 id="using-the-ocr-d-processors">Using the OCR-D-processors</h2>
+<p>You should now have a workspace which contains the aforementioned <code class="language-plaintext highlighter-rouge">mets.xml</code> that has
+a fileGrp <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code> referencing your local image files.</p>
 
-<h3 id="ocr-d-syntax">OCR-D-Syntax</h3>
+<blockquote>
+  <p><strong>Note</strong>: In OCR-D, we typically name the image fileGrp <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code>, which is used
+throughout the documentation. Naming your image fileGrp differently is of course possible,
+but you should be aware that you then need to adapt the name of the image or input fileGrp
+when copying and pasting from the sample calls provide on this website.</p>
+</blockquote>
 
-<p>There are several ways for invoking the OCR-D-processors. However, all of those
-ways make use of the following syntax:</p>
+<h2 id="using-the-ocr-d-processors">Using the OCR-D processors</h2>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-I</span> Input-Group    <span class="c"># folder of the files to be processed</span>
-<span class="nt">-O</span> Output-Group   <span class="c"># folder for the output of your processor</span>
-<span class="nt">-P</span> parameter      <span class="c"># indication of parameters for a particular processor</span>
+<h3 id="ocr-d-command-line-interface-syntax">OCR-D command-line interface syntax</h3>
+
+<p>There are several ways for invoking the OCR-D processors. Still, all of them
+make use of the following syntax:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-I</span> Input-Group      <span class="c"># fileGrp of the files to be processed</span>
+<span class="nt">-O</span> Output-Group     <span class="c"># fileGrp of the files results</span>
+<span class="nt">-P</span> parameter value  <span class="c"># (direct assignment of parameters for a particular processor)</span>
+<span class="nt">-p</span> parameter-file   <span class="c"># (file-based assignment of parameters for a particular processor)</span>
+<span class="nt">-g</span> page-range       <span class="c"># (range of physical pages to be processed)</span>
 </code></pre></div></div>
 
-<p><strong>Note:</strong> The <code class="language-plaintext highlighter-rouge">-P</code> option accepts a parameter name and a parameter value. When we write <code class="language-plaintext highlighter-rouge">-P parameter</code>, we mean that <code class="language-plaintext highlighter-rouge">parameter</code> consists of
-<code class="language-plaintext highlighter-rouge">parameter name</code> and <code class="language-plaintext highlighter-rouge">parameter value</code>.
-For some processors parameters are purely optional, other processors as e.g. <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> won’t work without one or several parameters.</p>
+<blockquote>
+  <p><strong>Note</strong>: For some processors, all parameters are optional, while other processors such as
+<code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> will not work without some parameter specifications.</p>
+</blockquote>
+
+<p>For information on the available processors, and their respective parameters,
+see <a href="#get-more-information-about-processors">getting more information about processors</a>.</p>
 
 <h3 id="calling-a-single-processor">Calling a single processor</h3>
-<p>If you just want to call a single processor, e.g. for testing purposes, you can go into your workspace and use the following command:</p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-P</span> <span class="o">[</span>parameter]
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-[processor needed] <span class="nt">-I</span> <span class="o">[</span>Input-Group] <span class="nt">-O</span> <span class="o">[</span>Output-Group] <span class="nt">-P</span> <span class="o">[</span>parameter]<span class="s1">'
-</span></code></pre></div></div>
-<p>Your command could e.g. look like this:</p>
+<p>If you just want to run a single processor, you can go into your workspace and use the following command:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-<span class="o">{</span>processor name<span class="o">}</span> <span class="nt">-I</span> <span class="o">{</span>Input-Group<span class="o">}</span> <span class="nt">-O</span> <span class="o">{</span>Output-Group<span class="o">}</span> <span class="o">[</span><span class="nt">-p</span> <span class="o">{</span>parameter-file<span class="o">}]</span> <span class="o">[</span><span class="nt">-P</span> <span class="o">{</span>parameter<span class="o">}</span> <span class="o">{</span>value<span class="o">}]</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-<span class="o">{</span>processor name<span class="o">}</span> <span class="nt">-I</span> <span class="o">{</span>Input-Group<span class="o">}</span> <span class="nt">-O</span> <span class="o">{</span>Output-Group<span class="o">}</span> <span class="o">[</span><span class="nt">-p</span> <span class="o">{</span>parameter-file<span class="o">}]</span> <span class="o">[</span><span class="nt">-P</span> <span class="o">{</span>parameter<span class="o">}</span> <span class="o">{</span>value<span class="o">}]</span>
+</code></pre></div></div>
+<p>For example, your processor call command could look like this:</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-olena-binarize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-BIN <span class="nt">-P</span> impl sauvola
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-olena-binarize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-BIN <span class="nt">-P</span> impl sauvola
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-olena-binarize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-BIN <span class="nt">-P</span> impl sauvola
 </code></pre></div></div>
 
-<p>The specified processor will take the files in your Input-Group <code class="language-plaintext highlighter-rouge">-I</code>, process them and save the results in your Ouput-Group <code class="language-plaintext highlighter-rouge">-O</code>. It will also add
-the information about this processing step and its results to METS file in your workspace.</p>
+<p>The specified processor will read the files in fileGrp <code class="language-plaintext highlighter-rouge">Input-Group</code>,
+binarize them and write the results in fileGrp <code class="language-plaintext highlighter-rouge">Ouput-Group</code> in your workspace
+(i.e. both as files on the filesystem and referenced in the <code class="language-plaintext highlighter-rouge">mets.xml</code>). 
+It will also add information about this processing step in the METS metadata.</p>
 
-<p><strong>Note:</strong> For processors using multiple input-, or output groups you have to use a comma separated list.</p>
+<blockquote>
+  <p><strong>Note</strong>: For processors using multiple input- or output fileGrps you have to use a comma-separated list.</p>
+</blockquote>
 
-<p>E.g.:</p>
+<p>For example:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-anybaseocr-crop  <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-CROP,OCR-D-IMG-CROP
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-anybaseocr-crop  <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-CROP,OCR-D-IMG-CROP
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-cor-asv-ann-align  <span class="nt">-I</span> OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 <span class="nt">-O</span> OCR-D-OCR4
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-cor-asv-ann-align  <span class="nt">-I</span> OCR-D-OCR1,OCR-D-OCR2,OCR-D-OCR3 <span class="nt">-O</span> OCR-D-OCR4
 </code></pre></div></div>
 
-<p><strong>Note:</strong> If multiple parameter key-value pairs are necessary, each of them has to be preceded by <code class="language-plaintext highlighter-rouge">-P</code></p>
+<blockquote>
+  <p><strong>Note</strong>: If multiple parameter key-value pairs are necessary, each of them has to be preceded by <code class="language-plaintext highlighter-rouge">-P</code> as in</p>
+  <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>... <span class="nt">-P</span> param1 value1 <span class="nt">-P</span> param2 value2 <span class="nt">-P</span> param3 value3
+</code></pre></div>  </div>
+</blockquote>
 
-<p>E.g.:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param1 value1 <span class="nt">-P</span> param2 value2 <span class="nt">-P</span> param3 value3
-</code></pre></div></div>
-
-<p><strong>Note:</strong> If a value consists of several words with whitespaces, they have to be enclosed in quotation marks</p>
-
-<p>E.g.:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param <span class="s2">"value value"</span>
-</code></pre></div></div>
+<blockquote>
+  <p><strong>Note</strong>: If a value consists of several words with whitespaces, they have to be enclosed in quotation marks
+(to prevent the shell from splitting them up) as in</p>
+  <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-P</span> param <span class="s2">"value value"</span>
+</code></pre></div>  </div>
+</blockquote>
 
 <h3 id="calling-several-processors">Calling several processors</h3>
 
-<h4 id="ocrd-process">ocrd-process</h4>
+<p>Running several processors one after another on the same data is called a <strong>workflow</strong>.
+For workflow processing, you need a workflow format and a workflow engine.</p>
+
+<p>In the most simple case, you just write a shell script which combines single processor
+calls in a command sequence joined by <code class="language-plaintext highlighter-rouge">&amp;&amp;</code>. The following paragraphs will describe more
+advanced options.</p>
+
+<h4 id="ocrd-process">ocrd process</h4>
 
 <p>If you quickly want to specify a particular workflow on the CLI, you can use
-ocrd-process, which has a similar syntax as calling single processors.</p>
+<code class="language-plaintext highlighter-rouge">ocrd process</code>, which has a similar syntax as calling single processor CLIs:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group]'</span> <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -P [parameter]'</span>
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group]'</span> <span class="se">\</span>
-  <span class="s1">'[processor needed without prefix '</span>ocrd-<span class="s1">'] -I [Input-Group] -O [Output-Group] -P [parameter]'</span>
+  <span class="s1">'{processor needed without prefix '</span>ocrd-<span class="s1">'} -I {Input-Group} -O {Output-Group}'</span> <span class="se">\</span>
+  <span class="s1">'{processor needed without prefix '</span>ocrd-<span class="s1">'} -I {Input-Group} -O {Output-Group} -P {parameter} {value}'</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
+  <span class="s1">'{processor needed without prefix '</span>ocrd-<span class="s1">'} -I {Input-Group} -O {Output-Group}'</span> <span class="se">\</span>
+  <span class="s1">'{processor needed without prefix '</span>ocrd-<span class="s1">'} -I {Input-Group} -O {Output-Group} -P {parameter} {value}'</span>
 </code></pre></div></div>
 
-<p>Your command could e.g. look like this:</p>
+<p>For example, your command could look like this:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
   <span class="s1">'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'</span>
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd process <span class="se">\</span>
   <span class="s1">'cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-SEG-PAGE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-region -I OCR-D-SEG-PAGE -O OCR-D-SEG-BLOCK'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-segment-line -I OCR-D-SEG-BLOCK -O OCR-D-SEG-LINE'</span> <span class="se">\</span>
   <span class="s1">'tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESSEROCR -P model Fraktur'</span>
 </code></pre></div></div>
 
-<p>Each specified processor will take all the files in your files in the respective Input-Group <code class="language-plaintext highlighter-rouge">-I</code>, process them and save the
-results in the respective Ouput-Group <code class="language-plaintext highlighter-rouge">-O</code>. It will also add the information about this processing step and its results to the METS file in your workspace.
-The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files
-will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
-in your workflow, which contains the (intermediate) processing results.</p>
+<p>Each specified processor will read the files in the respective fileGrp <code class="language-plaintext highlighter-rouge">Input-Group</code>,
+process them accordingly, and write the results in the respective fileGrp <code class="language-plaintext highlighter-rouge">Ouput-Group</code>
+in your workspace (i.e. both as files on the filesystem and referenced in the <code class="language-plaintext highlighter-rouge">mets.xml</code>). 
+It will also add information about this processing step in the METS metadata.</p>
 
-<p><strong>Note:</strong> In contrast to calling a single processor, for <code class="language-plaintext highlighter-rouge">ocrd process</code> you leave
+<p>The processors work on the files sequentially. So at first, all pages will be processed
+with the first processor (e.g. binarized), then (if successful) all pages will be processed 
+by the second processor (e.g. segmented) etc.</p>
+
+<p>So in the end, your workspace should contain a directory (and fileGrp) with (intermediate)
+processing results for each output fileGrp specified in the workflow.</p>
+
+<blockquote>
+  <p><strong>Note</strong>: In contrast to calling a single processor, for <code class="language-plaintext highlighter-rouge">ocrd process</code> you leave
 out the prefix <code class="language-plaintext highlighter-rouge">ocrd-</code> before the name of a particular processor.</p>
+</blockquote>
 
-<h4 id="taverna">Taverna</h4>
+<h4 id="ocrd-make">ocrd-make</h4>
 
-<p>Taverna is a more sophisticated workflow-software which allows you to specify a
-particular workflow in a file and call this workflow, or rather its file, on
-several workspaces.</p>
+<p><code class="language-plaintext highlighter-rouge">ocrd-make</code> from <a href="https://github.com/bertsky/workflow-configuration">workflow-configuration</a>
+is another tool for specifying OCR-D workflows and running them. It combines GNU <code class="language-plaintext highlighter-rouge">parallel</code> with GNU <code class="language-plaintext highlighter-rouge">make</code>
+as workflow engine, treating document processing like software builds (including incremental and parallel
+computation). Configurations are just makefiles, workspaces and their file groups are just targets.</p>
 
-<p>Note that Taverna is not included in your <a href="https:/github.com/OCR-D/ocrd_all"><code class="language-plaintext highlighter-rouge">ocrd_all</code></a> installation. Therefore, you still might have to install it following this <a href="setup.md">setup guide</a>.</p>
+<p>It is included in <a href="https://github.com/OCR-D/ocrd_all">ocrd_all</a>, therefore you most likely already
+<a href="setup">installed it</a> along with the other OCR-D processors.</p>
 
-<p>Taverna comes with several predefined workflows which can help you getting started. These are stored in the <code class="language-plaintext highlighter-rouge">/conf</code> directory.</p>
+<blockquote>
+  <p><strong>Note</strong>: The <code class="language-plaintext highlighter-rouge">workflow-configuration</code> distribution contains several example workflows, which were tested
+against the Ground Truth provided by OCR-D. For CER results of those workflows in our tests see
+<a href="https://github.com/bertsky/workflow-configuration#usage">the table on GitHub</a>. However, most workflows
+are configured for GT data, i.e. they expect preprocessed images which were already segmented
+at least down to line level. If you want to run them on naked images, you have to add some preprocessing
+and segmentation steps first, otherwise they will fail.</p>
+</blockquote>
 
-<ol>
-  <li>parameters.txt  (best results without gpu)</li>
-  <li>parameters_fast.txt (good results for slower computers)</li>
-  <li>parameters_gpu.txt (best results with gpu)</li>
-</ol>
+<p>In order to run a workflow, change into your data directory (which contains the workspaces) and call
+the desired configuration file on your workspace(s):</p>
 
-<p><strong>Note:</strong> Those workflows are only tested with a limited set of pages of the 17./18. century. Results may be worse for other prints.</p>
-
-<p>For every workflow at least two files are needed: A <code class="language-plaintext highlighter-rouge">workflow_configuration</code> file contains a particular workflow which is invoked by a <code class="language-plaintext highlighter-rouge">parameters</code> file. For calling a workflow via Taverna, change into the <code class="language-plaintext highlighter-rouge">Taverna</code> folder and use the following command:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bash startWorkflow.sh <span class="o">[</span>particular parameters.txt] <span class="o">[</span>/path/to/your/workspace]
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">--network</span><span class="o">=</span><span class="s2">"host"</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/taverna process <span class="o">[</span>particular parameters.txt] <span class="o">[</span>relative/path/to/your/workspace]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-make <span class="nt">-f</span> <span class="o">{</span>name_of_your_workflow.mk<span class="o">}</span> <span class="o">[</span>/path/to/your/workspace1] <span class="o">[</span>/path/to/your/workspace2] ...
 </code></pre></div></div>
 
-<p>The images in your indicated workspace will be processed and the respective
-output will be saved into the same workspace.</p>
-
-<p>When you want to adjust a workflow for better results on your particular
-images, you should start off by copying the original <code class="language-plaintext highlighter-rouge">workflow_configuration</code>
-and <code class="language-plaintext highlighter-rouge">parameters</code> files. To this end, change to the <code class="language-plaintext highlighter-rouge">/conf</code> subdirectory of
-<code class="language-plaintext highlighter-rouge">Taverna</code> and use the following commands:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conf<span class="nv">$ </span><span class="nb">cp </span>workflow_configuration.txt <span class="o">[</span>name of your new workflow_configuration.txt]
-conf<span class="nv">$ </span><span class="nb">cp </span>parameters.txt <span class="o">[</span>name of your new parameters.txt]
-</code></pre></div></div>
-
-<p>Open the new <code class="language-plaintext highlighter-rouge">parameters.txt</code> file with an editor like e.g. Nano and change the
-name of the old <code class="language-plaintext highlighter-rouge">workflow_configuration.txt</code> specified in this file to the name
-of your new <code class="language-plaintext highlighter-rouge">workflow_configuration.txt</code> file:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano <span class="o">[</span>name of your new workflow_configuration.txt]
-</code></pre></div></div>
-
-<p>Then open your new <code class="language-plaintext highlighter-rouge">workflow_configuration.txt</code> file respectively and adjust it to your needs by exchanging or adding the specified processors of parameters. The first column contains the name of the processor, the following two columns indicate the names of the input and the output filegroups. The forth column for group-ID can be left blank. In the last column you can indicate the log level.</p>
-
-<p>If your processor requires a parameter, it has to be specified in the fith column. As with parameters when calling processors directly on the CLI, there are two ways how to specify them. You can either call a <code class="language-plaintext highlighter-rouge">json</code> file which should be stored in Taverna’s subdirectory <code class="language-plaintext highlighter-rouge">models</code>. See <a href="TODO">Calling a single processor</a> on how to create <code class="language-plaintext highlighter-rouge">json</code> files. Alternatively, you can directly write down the parameter needed using the following syntax:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span><span class="se">\"</span><span class="o">[</span>param1]<span class="se">\"</span>:<span class="se">\"</span><span class="o">[</span>value1]<span class="se">\"</span>,<span class="se">\"</span><span class="o">[</span>param2]<span class="se">\"</span>:<span class="se">\"</span><span class="o">[</span>value2]<span class="se">\"</span>,<span class="se">\"</span><span class="o">[</span>param3]<span class="se">\"</span>:<span class="se">\"</span><span class="o">[</span>value3]<span class="se">\"</span><span class="o">}</span>
-e.g.
-<span class="o">{</span><span class="se">\"</span>level-of-operation<span class="se">\"</span>:<span class="se">\"</span>page<span class="se">\"</span><span class="o">}</span>
-</code></pre></div></div>
-
-<p><strong>Note:</strong> Avoid white spaces and escape double quotes with backslash.</p>
-
-<p>For information on the available processors see <a href="#get-more-information-about-processors">section at the end</a>.</p>
-
-<h4 id="workflow-configuration">workflow-configuration</h4>
-
-<p>workflow-configuration is another tool for specifying OCR-D workflows and running them. It uses GNU make as workflow engine, treating document processing like software builds (including incremental and parallel computation). Configurations are just makefiles, targets are workspaces and their file groups.</p>
-
-<p>In contrast to Taverna it is included in ocrd_all, therefore you most likely already installed it with the other OCR-D-processors.</p>
-
-<p>The <code class="language-plaintext highlighter-rouge">workflow-configuration</code> directory already contains several workflows, which were tested against the Ground Truth provided by OCR-D. For the CER of those workflows in our tests see <a href="https://github.com/bertsky/workflow-configuration#usage">the table on GitHub</a>.</p>
-
-<p><strong>Note:</strong> Most workflows are configured for GT data, i.e. they expect preprocessed images which were already segmented at least down to line level. If you want to run them on raw images, you have to add some preprocessing and segmentation steps first. Otherwise they will fail.</p>
-
-<p>In order to run a workflow, change into your data directory (that contains the workspaces) and call the desired configuration file on your workspace(s):</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-make <span class="nt">-f</span> <span class="o">[</span>name_of_your_workflow.mk] <span class="o">[</span>/path/to/your/workspace1] <span class="o">[</span>/path/to/your/workspace2]
-</code></pre></div></div>
-
-<p>As indicated in the command above, you can run a workflow on several workspaces by listing them after one another. Or use the special target <code class="language-plaintext highlighter-rouge">all</code> for all the workspaces in the current directory.
-The documents in those workspaces will be processed and the respective
-output along with the log files will be saved into the same workspace(s).</p>
+<p>As indicated in the command above, you can run a workflow on several workspaces by listing them after one another.
+Or use the special target <code class="language-plaintext highlighter-rouge">all</code> for all the workspaces in the current directory.
+The documents in those workspaces will be processed and the respective output 
+along with the log files will be saved into the same workspace(s).</p>
 
 <p>For an overview of all available targets and workspaces:</p>
 
@@ -820,95 +832,105 @@ output along with the log files will be saved into the same workspace(s).</p>
 images, you should start off by copying the original <code class="language-plaintext highlighter-rouge">workflow.mk</code>
 file:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>workflow.mk <span class="o">[</span>name_of_your_new_workflow_configuration.mk]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>workflow.mk <span class="o">{</span>name_of_your_new_workflow_configuration.mk<span class="o">}</span>
 </code></pre></div></div>
 
-<p>Then open the new file with an editor which understands <code class="language-plaintext highlighter-rouge">make</code> syntax like e.g. <code class="language-plaintext highlighter-rouge">nano</code>, and exchange or add the processors or parameters to your needs:</p>
+<p>Then open the new file with an editor which understands <code class="language-plaintext highlighter-rouge">make</code> syntax like e.g. <code class="language-plaintext highlighter-rouge">nano</code>,
+and exchange or add the processors or parameters to your needs:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano <span class="o">[</span>name_of_your_new_workflow_configuration.mk]
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano <span class="o">{</span>name_of_your_new_workflow_configuration.mk<span class="o">}</span>
 </code></pre></div></div>
 
-<p>You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax. The first target defined must be the default goal that builds the very last file group for that configuration. Alternatively a variable <code class="language-plaintext highlighter-rouge">.DEFAULT_GOAL</code> pointing to that target can be set anywhere in the makefile.</p>
+<p>You can write new rules by using file groups as prerequisites/targets in the normal GNU make syntax.
+The first target defined must be the default goal that builds the very last file group for that configuration.
+Alternatively, a variable <code class="language-plaintext highlighter-rouge">.DEFAULT_GOAL</code> pointing to that target can be set anywhere in the makefile.</p>
 
-<p><strong>Note:</strong> Also see the <a href="https://bertsky.github.io/workflow-configuration">extensive Readme of workflow-configuration</a> on how to adjust the preconfigured workflows to your needs.</p>
+<blockquote>
+  <p><strong>Note</strong>: Also see the <a href="https://bertsky.github.io/workflow-configuration">extensive Readme of workflow-configuration</a>
+on how to write workflows or adjust the preconfigured workflows to your needs.</p>
+</blockquote>
 
-<p>Each specified processor will take all the files in your files in the respective Input-Group <code class="language-plaintext highlighter-rouge">-I</code>, process them and save the
-results in the respective Ouput-Group <code class="language-plaintext highlighter-rouge">-O</code>. It will also add the information about this processing step and its results to the METS file in your workspace.
-The processors work on the files sequentially. So at first all files will be processed with the first processor (e.g. binarized), then all files
-will be processed by the second processor (e.g. segmented) etc. In the end your workspace should contain a folder for each Output-Group -O specified
-in your workflow, which contains the (intermediate) processing results.</p>
-
-<h4 id="translating-native-commands-to-docker-calls">Translating native commands to docker calls</h4>
-<p>The native calls presented above are simple to translate to commands based on the
-docker images by prepending the boilerplate telling Docker which image to use,
+<h4 id="translating-native-commands-to-docker-calls">Translating native commands to Docker calls</h4>
+<p>The command calls presented above are easy to translate for use in our
+Docker images – simply by prepending the boilerplate telling Docker which image to use,
 which user to run as, which files to bind to a container path etc.</p>
 
 <p>For example a call to
-<a href="https://github.com/OCR-D/tesserocr"><code class="language-plaintext highlighter-rouge">ocrd-tesserocr-binarize</code></a> might natively
-look like this:</p>
+<a href="https://github.com/OCR-D/ocrd_tesserocr"><code class="language-plaintext highlighter-rouge">ocrd-tesserocr-segment</code></a> might natively
+look like this …</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-segment <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG
 </code></pre></div></div>
 
-<p>To run it with the [<code class="language-plaintext highlighter-rouge">ocrd/all:maximum</code>] Docker container:</p>
+<p>… to run it with the <a href="https://hub.docker.com/r/ocrd/all/tags"><code class="language-plaintext highlighter-rouge">ocrd/all:maximum</code></a> Docker container …</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment-region <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG-BLOCK
-           <span class="se">\_</span>________/ <span class="se">\_</span>__________/ <span class="se">\_</span>_____/ <span class="se">\_</span>________________/ <span class="se">\_</span>__________________________________________________________/
-              <span class="o">(</span>1<span class="o">)</span>          <span class="o">(</span>2<span class="o">)</span>         <span class="o">(</span>3<span class="o">)</span>          <span class="o">(</span>4<span class="o">)</span>                            <span class="o">(</span>5<span class="o">)</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-v</span> ocrd-models:/models <span class="nt">--</span> ocrd/all:maximum ocrd-tesserocr-segment <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-SEG
+           <span class="se">\_</span>________/ <span class="se">\_</span>__________/ <span class="se">\_</span>____________________/ <span class="se">\_</span>_______________/ <span class="se">\_</span>_____________________________________________/
+               <span class="o">(</span>1<span class="o">)</span>          <span class="o">(</span>2<span class="o">)</span>             <span class="o">(</span>3<span class="o">)</span>                        <span class="o">(</span>4<span class="o">)</span>                         <span class="o">(</span>5<span class="o">)</span>
 </code></pre></div></div>
-
-<!--
-```sh
-docker run -u $(id -u) -v $PWD:/data -v $PWD/models:/usr/local/share/tessdata -w /data -- ocrd/all:maximum ocrd-tesserocr-segment-region -I OCR-D-IMG -O OCR-D-SEG-BLOCK
-           \_________/ \___________/ \______________________________________/ \______/ \_________________/ \___________________________________________________________/
-              (1)          (2)         						(3)          		 (4)          (5)									(6)
-```
--->
 
 <ul>
-  <li>(1) tells Docker to run the container as the calling user instead of root</li>
-  <li>(2) tells Docker to bind the current working directory as the <code class="language-plaintext highlighter-rouge">/data</code> folder in the container</li>
-  <li>(3) tells Docker to change the container’s working directory to <code class="language-plaintext highlighter-rouge">/data</code></li>
-  <li>(4) tells docker which image to run</li>
-  <li>(5) is the unchanged call to <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-segment-region</code></li>
+  <li>(1) tells Docker to run the container as the calling user (who should have write access to the CWD) instead of root</li>
+  <li>(2) tells Docker to bind-mount the current working directory (CWD) under <code class="language-plaintext highlighter-rouge">/data</code> in the container</li>
+  <li>(3) tells Docker to mount <code class="language-plaintext highlighter-rouge">/models</code> in the container (i.e. the location for all models) under the <strong>named volume</strong> <code class="language-plaintext highlighter-rouge">ocrd-models</code></li>
+  <li>(4) tells Docker which image to spawn a container for</li>
+  <li>(5) is the unchanged call to the processor</li>
 </ul>
 
-<p><strong>Note:</strong> Add <code class="language-plaintext highlighter-rouge">-v $PWD/models:/usr/local/share/tessdata</code> when using <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> and/or add
-<code class="language-plaintext highlighter-rouge">-v $PWD/models:/usr/local/share/ocrd-resources</code> when using processors which need models to run in general.</p>
+<blockquote>
+  <p><strong>Note</strong>: You can replace the host-side path in (2) with any absolute directory path.</p>
+</blockquote>
 
-<p>It can also be useful to delete the container after creation with the <code class="language-plaintext highlighter-rouge">--rm</code>
-parameter.</p>
+<blockquote>
+  <p><strong>Note</strong>: Make sure to keep re-using the same named volume for models and other file resources under (3).
+For details, see <a href="models#models-and-docker">models and Docker</a></p>
+</blockquote>
 
-<h3 id="specifying-new-ocr-d-workflows">Specifying New OCR-D-Workflows</h3>
+<blockquote>
+  <p><strong>Note</strong>: It can also be useful to have Docker automatically delete the container after termination
+by adding the <code class="language-plaintext highlighter-rouge">--rm</code> option.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Note</strong>: It can also be useful to have Docker mount <code class="language-plaintext highlighter-rouge">/tmp</code> in the container to faster memory,
+which can be done via <code class="language-plaintext highlighter-rouge">--tmpfs /tmp</code> (for a RAM disk) or something like <code class="language-plaintext highlighter-rouge">-v /nvram:/tmp</code>.</p>
+</blockquote>
+
+<h3 id="specifying-new-ocr-d-workflows">Specifying new OCR-D workflows</h3>
 
 <p>When you want to specify a new workflow adapted to the features of particular
-images, we recommend using an existing workflow as specified in <code class="language-plaintext highlighter-rouge">Taverna</code> or
-<code class="language-plaintext highlighter-rouge">workflow-configuration</code> as starting point. You can adjust it to your needs by
-exchanging or adding the specified processors of parameters. For an overview on
-the existing processors, their tasks and features, see the <a href="#get-more-information-about-processors">next section</a> and our <a href="workflows.html">workflow guide</a>.</p>
+images, we recommend using an existing workflow as specified in the <a href="workflows">Workflow Guide</a>
+as starting point. You can adjust it to your needs by exchanging or adding the specified parameters
+and/or processors. For an overview on the existing processors, their tasks and features, see the 
+<a href="#get-more-information-about-processors">next section</a> and our <a href="workflows.html">workflow guide</a>.</p>
 
-<h3 id="get-more-information-about-processors">Get more Information about Processors</h3>
+<h3 id="get-more-information-about-processors">Get more information about processors</h3>
 
 <p>To get all available processors you might use the autocomplete in your preferred console.</p>
 
-<p><strong>Note:</strong> If you installed OCR-D via Docker make sure you run the bash shell in the ocrd docker image as described in the section <a href="#docker-installation">Preparations</a>.
-If you installed OCR-D natively, activate the virtual environment first as described in the section <a href="#native-installation-activate-virtual-environment">Preparations</a>.</p>
+<blockquote>
+  <p><strong>Note</strong>: If you installed OCR-D via Docker, make sure you run the interactive bash shell
+on the ocrd/all Docker image as described in the section <a href="#docker-installation-run-container">Preparations</a>.
+If you installed OCR-D natively, activate the virtual environment first as described in the section
+<a href="#native-installation-activate-virtual-environment">Preparations</a>.</p>
+</blockquote>
 
-<p>Type ‘ocrd-‘ followed by <code class="language-plaintext highlighter-rouge">TAB</code> to get a list of all available processors.</p>
+<p>Type <code class="language-plaintext highlighter-rouge">ocrd-</code> followed by a tab character (for autocompletion proposals) to get a list of all available processors.</p>
 
-<p>To get further information about a particular processor, you can call <code class="language-plaintext highlighter-rouge">--help</code></p>
+<p>To get further information about a particular processor, call it with <code class="language-plaintext highlighter-rouge">--help</code> or <code class="language-plaintext highlighter-rouge">-h</code>:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>name_of_selected_processor] <span class="nt">--help</span>
-<span class="c">## alternatively using docker</span>
-docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">-w</span> /data <span class="nt">--</span> ocrd/all:maximum <span class="o">[</span>name_of_selected_processor] <span class="nt">--help</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-<span class="o">{</span>processor name<span class="o">}</span> <span class="nt">--help</span>
+<span class="c">## alternatively, using Docker:</span>
+docker run <span class="nt">--rm</span> <span class="nt">-u</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">-v</span> <span class="nv">$PWD</span>:/data <span class="nt">--</span> ocrd/all:maximum ocrd-<span class="o">{</span>processor name<span class="o">}</span> <span class="nt">--help</span>
 </code></pre></div></div>
 
 <h3 id="using-models">Using models</h3>
 
-<p>Several processors rely on models which have to be downloaded beforehand. An overview on the existing model repositories and short
-descriptions on the most important models can be found <a href="https://ocr-d.de/en/models">in our models documentation</a>.
-We strongly recommend to use the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a> to download the models, as this makes it
-easier to both download and use them.</p>
+<p>Several processors rely on models, which usually have to be downloaded beforehand.
+An overview on the existing model repositories and short descriptions on the most important models
+can be found in our <a href="https://ocr-d.de/en/models">Models Guide</a>.
+We strongly recommend to use the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a> to download the models,
+as this makes it easy to both download and use them.</p>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">

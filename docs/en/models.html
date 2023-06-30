@@ -443,51 +443,47 @@ function ToggleSearchActive2() {
 
 <p>OCR engines rely on pre-trained models for their recognition. Every engine has
 its own internal format(s) for models. Some support central storage of models
-at a specific location (tesseract, ocropy, kraken) while others require the full
-path to a model (calamari).</p>
+at a specific location (Tesseract, Ocropy, Kraken) while others require the full
+path to a model (Calamari).</p>
+
+<p>Moreover, many processors provide other file resources like configuration files or presets.</p>
 
 <p>Since <a href="https://github.com/OCR-D/core/releases/v2.22.0">v2.22.0</a>, OCR-D/core
-comes with a framework for managing processor resources uniformly. This means
+comes with a framework for managing <strong>file resources</strong> uniformly. This means
 that processors can delegate to OCR-D/core to resolve specific file resources by name,
 looking in well-defined places in the filesystem. This also includes downloading and caching
 file parameters passed as a URL. Furthermore, OCR-D/core comes with a bundled database
 of known resources, such as models, dictionaries, configurations and other
-processor-specific data files. This means that OCR-D users should be able to
-concentrate on fine-tuning their OCR workflows and not bother with implementation
-details like “where do I get models from and where do I put them”.
+processor-specific data files. Processors can add their own specifications to that.</p>
+
+<p>This means that OCR-D users should be able to concentrate on fine-tuning their OCR workflows
+and not bother with implementation details like “where do I get models from and where do I put them”.
 In particular, users can reference file parameters by name now.</p>
 
-<p>All of the above mentioned functionality can be accessed using the <code class="language-plaintext highlighter-rouge">ocrd
-resmgr</code> command line tool.</p>
+<p>All of the above mentioned functionality can be accessed using the <code class="language-plaintext highlighter-rouge">ocrd resmgr</code> command line tool.</p>
 
 <h2 id="what-models-are-available">What models are available?</h2>
 
-<p>To get a list of the resources that the OCR-D/core <a href="https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml">is aware
-of</a>:</p>
+<p>To get a list of the (available or installed) file resources that OCR-D/core
+<a href="https://github.com/OCR-D/core/blob/master/ocrd/ocrd/resource_list.yml">is aware of</a>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr list-available
 # alternatively, using Docker:
-mkdir -p $PWD/models/ocrd-tesserocr-recognize
-docker run --volume $PWD:/data --volume $PWD/models:/usr/local/share -w /data -- ocrd/all:maximum ocrd resmgr list-available```
-
-The output will look similar to this:
-
+docker run --volume ocrd-models:/models -- ocrd/all:maximum ocrd resmgr list-available
 </code></pre></div></div>
 
-<p>ocrd-calamari-recognize</p>
-<ul>
-  <li>qurator-gt4hist-0.3 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-07-22T15_49+0200/model.tar.xz)
-Calamari model trained with GT4HistOCR</li>
-  <li>qurator-gt4hist-1.0 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz)
-Calamari model trained with GT4HistOCR</li>
-</ul>
+<p>The output will look similar to this:</p>
 
-<p>ocrd-cis-ocropy-recognize</p>
-<ul>
-  <li>LatinHist.pyrnn.gz (https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz)
-ocropy historical latin model by github.com/chreul
-```</li>
-</ul>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-calamari-recognize
+- qurator-gt4hist-0.3 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-07-22T15_49+0200/model.tar.xz)
+  Calamari model trained with GT4HistOCR
+- qurator-gt4hist-1.0 (https://qurator-data.de/calamari-models/GT4HistOCR/2019-12-11T11_10+0100/model.tar.xz)
+  Calamari model trained with GT4HistOCR
+
+ocrd-cis-ocropy-recognize
+- LatinHist.pyrnn.gz (https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz)
+  ocropy historical latin model by github.com/chreul
+</code></pre></div></div>
 
 <p>As you can see, resources are grouped by the processors which make use of them.</p>
 
@@ -500,50 +496,65 @@ name).</p>
 
 <h2 id="installing-resources">Installing resources</h2>
 
-<p>On installing resources in OCR-D, read the sections <a href="#installing-known-resources">Installing known resources</a> and <a href="#installing-unknown-resources">Installing unknown resources</a>.</p>
+<p>On installing resources in OCR-D, read the follow-up sections
+<a href="#installing-known-resources">Installing known resources</a> and
+<a href="#installing-unknown-resources">Installing unknown resources</a>.</p>
 
-<p><em>Known resources</em> are resources that are provided by processor developers <a href="/en/spec/ocrd_tool#file-parameters">in the <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></a> and are available by name to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>, whereas <em>unknown</em> resources are models, configurations, parameter sets etc. you provide yourself or found elsewhere on the Internet, which require passing a URL to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>.</p>
+<p><em>Known</em> resources are resources that are provided by processor developers <a href="/en/spec/ocrd_tool#file-parameters">in the <code class="language-plaintext highlighter-rouge">ocrd-tool.json</code></a>
+and are available by name to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>.</p>
+
+<p><em>Unknown</em> resources, in contrast, are models, configurations, parameter sets etc. that you provide yourself
+or found elsewhere on the Internet, which require passing a URL (or local path) to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>.</p>
 
 <p><strong>If you installed OCR-D via Docker,</strong> read the section <a href="#models-and-docker">Models and Docker</a> <em>additionally</em>.</p>
 
 <h3 id="installing-known-resources">Installing known resources</h3>
 
 <p>You can install resources with the <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code> command. It expects
-the name of the processor as the first argument and either the name or URL of a
-resource as a second argument.</p>
+the name of the processor as the 1st argument and the name of a resource as a 2nd argument.</p>
 
-<p>Although model distribution is not currently centralised within OCR-D, we
-are working towards a central model repository.</p>
+<p>Since model distribution is decentralised within OCR-D, every processor can advertise its
+own known resources, which the resource manager then picks up.</p>
 
 <p>For example, to install the <code class="language-plaintext highlighter-rouge">LatinHist.pyrnn.gz</code> resource for <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-recognize</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download ocrd-cis-ocropy-recognize LatinHist.pyrnn.gz
-# or
-ocrd resmgr download ocrd-cis-ocropy-recognize https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz
 </code></pre></div></div>
 
 <p>This will look up the resource in the <a href="#user-database">bundled resource and user databases</a>, download,
 unarchive (where applicable) and store it in the <a href="#where-is-the-data">proper location</a>.</p>
 
-<p><strong>NOTE:</strong> The special name <code class="language-plaintext highlighter-rouge">*</code> can be used instead of a resource name/url to
+<blockquote>
+  <p><strong>Note</strong>: The special name <code class="language-plaintext highlighter-rouge">*</code> can be used instead of a resource name/url to
 download <em>all</em> known resources for this processor. To download all tesseract models:</p>
+</blockquote>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download ocrd-tesserocr-recognize <span class="s1">'*'</span>
 </code></pre></div></div>
 
-<p><strong>NOTE:</strong> Equally, the special processor <code class="language-plaintext highlighter-rouge">*</code> can be used instead of a processor and a resource
+<blockquote>
+  <p><strong>Note</strong>: Equally, the special processor <code class="language-plaintext highlighter-rouge">*</code> can be used instead of a processor and a resource
 to download <em>all</em> known resources for <em>all</em> installed processors:</p>
+</blockquote>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download <span class="s1">'*'</span>
 </code></pre></div></div>
 
-<p>(In either case, <code class="language-plaintext highlighter-rouge">*</code> must be in quotes or escaped to avoid wildcard expansion by the shell.)</p>
+<blockquote>
+  <p>(In either case, <code class="language-plaintext highlighter-rouge">*</code> must be in quotes or escaped to avoid wildcard expansion by the shell.)</p>
+</blockquote>
 
 <h3 id="installing-unknown-resources">Installing unknown resources</h3>
 
-<p>If you need to install a resource which OCR-D doesn’t know of, that can be achieved by passings its URL in combination with the <code class="language-plaintext highlighter-rouge">--any-url/-n</code> flag to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>:</p>
+<p>If you need to install a resource which OCR-D does not know of, that can be achieved by passing
+its URL in combination with the <code class="language-plaintext highlighter-rouge">--any-url/-n</code> flag to <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>.</p>
 
-<p>To install a model for <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> that is located at <code class="language-plaintext highlighter-rouge">https://my-server/mymodel.traineddata</code>.</p>
+<p>For example, to install the same model for <code class="language-plaintext highlighter-rouge">ocrd-cis-ocropy-recognize</code> as above:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download -n https://github.com/chreul/OCR_Testdata_EarlyPrintedBooks/raw/master/LatinHist-98000.pyrnn.gz ocrd-cis-ocropy-recognize LatinHist.pyrnn.gz
+</code></pre></div></div>
+
+<p>Or to install a model for <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> that is located at <code class="language-plaintext highlighter-rouge">https://my-server/mymodel.traineddata</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download -n https://my-server/mymodel.traineddata ocrd-tesserocr-recognize mymodel.traineddata
 </code></pre></div></div>
@@ -556,31 +567,46 @@ to download <em>all</em> known resources for <em>all</em> installed processors:<
 
 <h3 id="models-and-docker">Models and Docker</h3>
 
-<p>If you are using OCR-D with Docker, we recommend keeping all downloaded resources in a persistent host directory,
-separate of the OCR-D Docker container(s) and data directory, and mounting that
-resource directory into a specific path in the container alongside the data directory.
-The host resource directory can be empty initially. Each time you run the Docker container,
-your processors will access the host directory to resolve resources, and you can download
-additional models into that location using <code class="language-plaintext highlighter-rouge">ocrd resmgr</code>.</p>
+<p>If you are using OCR-D with Docker, we recommend keeping all downloaded resources <strong>persistently</strong>
+in a host directory, independent of both:</p>
+<ul>
+  <li>the Docker container’s internal storage (which is transient, i.e. any change over the image
+gets lost with each new <code class="language-plaintext highlighter-rouge">docker run</code>),</li>
+  <li>the host’s data directory (which may be on a different filesystem).</li>
+</ul>
+
+<p>That resource directory needs to be mounted into a specific path in the container, as does the data directory:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/models</code>: resource files (to be mounted as a <strong>named volume</strong>, e.g. <code class="language-plaintext highlighter-rouge">-v ocrd-models:/models</code>),</li>
+  <li><code class="language-plaintext highlighter-rouge">/data</code>: input/output files (to be mounted any way you like, probably a <strong>bind mount</strong>, e.g. <code class="language-plaintext highlighter-rouge">-v $PWD:/data</code>),</li>
+  <li><code class="language-plaintext highlighter-rouge">/tmp</code>: temporary files (ideally as <strong>tmpfs</strong>, e.g. <code class="language-plaintext highlighter-rouge">--tmpfs /tmp</code>)</li>
+</ul>
+
+<p>Initially, (if you use a named volume, not a bind mount,) the host resource directory will contain only
+those resources that have been <strong>pre-installed</strong> into the processors’ module directories. Each time you run
+the Docker container, the Resource Manager and the processors will access that directory from the inside
+to resolve resources, so you can <strong>download additional</strong> models into that location using <code class="language-plaintext highlighter-rouge">ocrd resmgr</code>, and
+later <strong>use them</strong> in workflows.</p>
 
 <p>The following will assume (without loss of generality) that your host-side data
-path is under <code class="language-plaintext highlighter-rouge">./data</code>, and the host-side resource path is under <code class="language-plaintext highlighter-rouge">./models</code>:</p>
+path is under <code class="language-plaintext highlighter-rouge">./data</code>, and the host-side volume is called <code class="language-plaintext highlighter-rouge">ocrd-models</code>:</p>
 
-<p>To download models to <code class="language-plaintext highlighter-rouge">./models</code> in the host FS and <code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources</code> in the container FS:</p>
+<p>To download models to <code class="language-plaintext highlighter-rouge">ocrd-models</code> in the host FS and <code class="language-plaintext highlighter-rouge">/models</code> in the container FS:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="se">\</span>
-  <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="se">\</span>
-ocrd/all <span class="se">\</span>
-ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata<span class="se">\;</span> <span class="se">\</span>
-ocrd resmgr download ocrd-calamari-recognize default<span class="se">\;</span> <span class="se">\</span>
-...
+  <span class="nt">--volume</span> ocrd-models:/models <span class="se">\</span>
+  ocrd/all <span class="se">\</span>
+  ocrd resmgr download ocrd-tesserocr-recognize eng.traineddata<span class="se">\;</span> <span class="se">\</span>
+  ocrd resmgr download ocrd-calamari-recognize default<span class="se">\;</span> <span class="se">\</span>
+  ...
 </code></pre></div></div>
 
-<p>To run processors, as usual do:</p>
+<p>To run processors, then as usual do:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="nt">--workdir</span> /data <span class="se">\</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--user</span> <span class="si">$(</span><span class="nb">id</span> <span class="nt">-u</span><span class="si">)</span> <span class="se">\</span>
+  <span class="nt">--tmpfs</span> /tmp <span class="se">\</span>
   <span class="nt">--volume</span> <span class="nv">$PWD</span>/data:/data <span class="se">\</span>
-  <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="se">\</span>
+  <span class="nt">--volume</span> ocrd-models:/models <span class="se">\</span>
   ocrd/all ocrd-tesserocr-recognize <span class="nt">-I</span> IN <span class="nt">-O</span> OUT <span class="nt">-P</span> model eng
 </code></pre></div></div>
 
@@ -594,17 +620,20 @@ resources and lists URL and description if a database entry exists.</p>
 
 <h2 id="user-database">User database</h2>
 
-<p>Whenever the OCR-D/core resource manager encounters an unknown resource in the filesystem or when you install
-a resource with <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>, it will create a new stub entry in the user database, which is found at
-<code class="language-plaintext highlighter-rouge">$HOME/.config/ocrd/resources.yml</code> and created if it doesn’t exist.</p>
+<p>Whenever the OCR-D/core resource manager encounters an unknown resource in the filesystem, or when you install
+a resource with <code class="language-plaintext highlighter-rouge">ocrd resmgr download</code>, it will add a new stub entry in the user database, which is found at
+<code class="language-plaintext highlighter-rouge">$XDG_CONFIG_HOME/ocrd/resources.yml</code> (where <code class="language-plaintext highlighter-rouge">$XDG_CONFIG_HOME</code> defaults to <code class="language-plaintext highlighter-rouge">$HOME/.config</code> if unset) and
+gets created if it does not exist.</p>
 
 <p>This allows you to use the OCR-D/core resource manager mechanics, including
 lookup of known resources by name or URL, without relying (only) on the
 database maintained by the OCR-D/core developers.</p>
 
-<p><strong>NOTE:</strong> If you produced or found resources that are interesting for the wider
-OCR(-D) community, please tell us in the <a href="https://gitter.im/OCR-D/Lobby">OCR-D gitter
-chat</a> so we can add it to the database.</p>
+<blockquote>
+  <p><strong>Note</strong>: If you produced or found resources that are interesting for the wider
+OCR(-D) community, please tell us in the <a href="https://gitter.im/OCR-D/Lobby">OCR-D gitter chat</a>
+or open an issue in the respective Github repository, so we can add it to the database.</p>
+</blockquote>
 
 <h2 id="where-is-the-data">Where is the data</h2>
 
@@ -613,19 +642,23 @@ chat</a> so we can add it to the database.</p>
 <p>In order of preference, a resource <code class="language-plaintext highlighter-rouge">&lt;name&gt;</code> for a processor <code class="language-plaintext highlighter-rouge">ocrd-foo</code> is searched at:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">$PWD/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">$PWD/&lt;name&gt;</code></li>
   <li><code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
   <li><code class="language-plaintext highlighter-rouge">/usr/local/share/ocrd-resources/ocrd-foo/&lt;name&gt;</code></li>
-  <li><code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/&lt;name&gt;</code> or <code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/share/ocrd-foo/&lt;name&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/lib/python3.6/site-packages/ocrd-foo/&lt;name&gt;</code> or <code class="language-plaintext highlighter-rouge">$VIRTUAL_ENV/share/ocrd-foo/&lt;name&gt;</code><br />
+ (or whatever the processor’s internal module location is)</li>
 </ul>
 
-<p>(where <code class="language-plaintext highlighter-rouge">XDG_DATA_HOME</code> defaults to <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> if unset).</p>
+<p>(where <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> defaults to <code class="language-plaintext highlighter-rouge">$HOME/.local/share</code> if unset).</p>
 
 <p>We recommend using the <code class="language-plaintext highlighter-rouge">$XDG_DATA_HOME</code> location, which is also the default. But
 you can override the location to store data with the <code class="language-plaintext highlighter-rouge">--location</code> option, which can
 be <code class="language-plaintext highlighter-rouge">cwd</code>, <code class="language-plaintext highlighter-rouge">data</code>, <code class="language-plaintext highlighter-rouge">system</code> and <code class="language-plaintext highlighter-rouge">module</code> resp.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># will download to $PWD/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth</span>
+<p>In Docker though, <code class="language-plaintext highlighter-rouge">$XDG_CONFIG_HOME=$XDG_DATA_HOME/ocrd-resources=/usr/local/share/ocrd-resources</code> 
+gets symlinked to <code class="language-plaintext highlighter-rouge">/models</code> for easier volume handling (and persistency).</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># will download to $PWD/latest_net_G.pth</span>
 ocrd resmgr download <span class="nt">--location</span> cwd ocrd-anybaseocr-dewarp latest_net_G.pth
 <span class="c"># will download to /usr/local/share/ocrd-resources/ocrd-anybaseocr-dewarp/latest_net_G.pth</span>
 ocrd resmgr download <span class="nt">--location</span> system ocrd-anybaseocr-dewarp latest_net_G.pth
@@ -656,7 +689,9 @@ extension and can be used as such, no need to unarchive.</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-cis-ocropy-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-OCRO <span class="nt">-P</span> model fraktur-jze.pyrnn.gz
 </code></pre></div></div>
 
-<p><strong>NOTE:</strong> Model must be downloade before with</p>
+<blockquote>
+  <p><strong>Note</strong>: The model must have been downloaded before with</p>
+</blockquote>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download ocrd-cis-ocropy-recognize fraktur-jze.pyrnn.gz
 </code></pre></div></div>
@@ -678,8 +713,6 @@ the <code class="language-plaintext highlighter-rouge">ocrd-calamari-recognize</
 ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-CALA
 <span class="c"># To use your own trained model</span>
 ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-CALA <span class="nt">-P</span> checkpoint_dir /path/to/modeldir
-<span class="c"># or, to be able to control which checkpoints to use:</span>
-ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="nt">-O</span> OCR-D-OCR-CALA <span class="nt">-P</span> checkpoint <span class="s1">'/path/to/modeldir/*.ckpt.json'</span>
 </code></pre></div></div>
 
 <h2 id="tesseract--ocrd_tesserocr">Tesseract / ocrd_tesserocr</h2>
@@ -688,7 +721,7 @@ ocrd-calamari-recognize <span class="nt">-I</span> OCR-D-SEG-LINE <span class="n
 
 <p>Since Tesseract only supports model lookup in a single directory, 
 and we want to share the tessdata directory with the standalone CLI,
-ocrd_tesserocr resources must be stored in the <code class="language-plaintext highlighter-rouge">module</code> location.
+<code class="language-plaintext highlighter-rouge">ocrd_tesserocr</code> resources must be stored in the <code class="language-plaintext highlighter-rouge">module</code> location.
 If the default path of that location is not the place you want to use for Tesseract models,
 then either recompile Tesseract with the <code class="language-plaintext highlighter-rouge">tessdata</code> path you had in mind,
 or use the <code class="language-plaintext highlighter-rouge">TESSDATA_PREFIX</code> environment variable to override the <code class="language-plaintext highlighter-rouge">module</code> location at runtime.</p>
