@@ -184,6 +184,7 @@ spec:
 	cp -t $(SRCDIR)/de/spec repo/spec/bagit-profile.json
 	cp -t $(SRCDIR)/de/spec repo/spec/ocrd_tool.schema.json
 	cp -t $(SRCDIR)/de/spec repo/spec/openapi.yml
+	cp -t $(SRCDIR)/assets repo/spec/assets/*
 
 
 .PHONY: workflows
