@@ -39,7 +39,7 @@ Minimum system requirements
 </details>
 <details>
 <summary> Operating system: Ubuntu 18.04 (or Docker)</summary>
-  - For installation on Windows 10 (WSL) and macOS see the setup guides in the [OCR-D-Wiki](https://github.com/OCR-D/ocrd-website/wiki).
+  - For installation on Windows 10 (WSL) and macOS see the setup guides in the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D Wiki</a>
   - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
   - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
@@ -96,7 +96,7 @@ keep the software versions up-to-date and ensure that all components are at a us
 
 ### Prerequisites
 
-If you want to use the OCR-D-via-Docker solution, [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) and [docker compose](https://docs.docker.com/compose/install/) have to be installed.
+If you want to use the OCR-D-via-Docker solution, [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) has to be installed.
 
 After installing docker you may have to set up and start the docker daemon and add your user to the `docker` group:
 
@@ -488,5 +488,5 @@ Now you can [test your installation](#testing-the-native-installation).
 
 ## Installing models
 
-Several processors in OCR-D need pretrained models you have to install beforehand. 
+Several processors in OCR-D need pretrained models you have to install beforehand.
 Please consult our [instruction on models](/en/models) to get more information on how to download and install them. 
