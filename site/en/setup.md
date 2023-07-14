@@ -200,13 +200,13 @@ cd data
 Now, spin up the docker container:
 
 ```sh
-docker run --user $(id -u) --workdir /data --volume $PWD:/data --rm -it ocrd/all bash
+docker run --workdir /data --volume $PWD:/data --rm -it ocrd/all bash
 ```
 
 Your command line should start with something similar to:
 
 ```sh
-I have no name!@ade9a4692fcd:/data$
+root@c5d94e852de0:/data#
 ```
 
 After spinning up the container, you can use the installation and call the processors the same way as in the native installation.
