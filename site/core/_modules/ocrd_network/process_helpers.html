@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.process_helpers &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/process_helpers.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.process_helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
+
+<span class="kn">from</span> <span class="nn">ocrd.processor.helpers</span> <span class="kn">import</span> <span class="n">run_cli</span><span class="p">,</span> <span class="n">run_processor</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">get_ocrd_workspace_instance</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">redirect_stderr_and_stdout_to_file</span><span class="p">,</span> <span class="n">initLogging</span>
+
+
+<span class="c1"># A wrapper for run_processor() and run_cli()</span>
+<div class="viewcode-block" id="invoke_processor"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.process_helpers.html#ocrd_network.process_helpers.invoke_processor">[docs]</a><span class="k">def</span> <span class="nf">invoke_processor</span><span class="p">(</span>
+        <span class="n">processor_class</span><span class="p">,</span>
+        <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">abs_path_to_mets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">input_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">mets_server_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">processor_class</span> <span class="ow">or</span> <span class="n">executable</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Missing processor class and executable&#39;</span><span class="p">)</span>
+    <span class="n">input_file_grps_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">input_file_grps</span><span class="p">)</span>
+    <span class="n">output_file_grps_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_file_grps</span><span class="p">)</span>
+
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">get_ocrd_workspace_instance</span><span class="p">(</span>
+        <span class="n">mets_path</span><span class="o">=</span><span class="n">abs_path_to_mets</span><span class="p">,</span>
+        <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">processor_class</span><span class="p">:</span>
+        <span class="n">ctx_mgr</span> <span class="o">=</span> <span class="n">redirect_stderr_and_stdout_to_file</span><span class="p">(</span><span class="n">log_filename</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_filename</span> <span class="k">else</span> <span class="n">nullcontext</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">ctx_mgr</span><span class="p">:</span>
+            <span class="n">initLogging</span><span class="p">(</span><span class="n">force_reinit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">run_processor</span><span class="p">(</span>
+                    <span class="n">processorClass</span><span class="o">=</span><span class="n">processor_class</span><span class="p">,</span>
+                    <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+                    <span class="n">input_file_grp</span><span class="o">=</span><span class="n">input_file_grps_str</span><span class="p">,</span>
+                    <span class="n">output_file_grp</span><span class="o">=</span><span class="n">output_file_grps_str</span><span class="p">,</span>
+                    <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+                    <span class="n">parameter</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                    <span class="n">instance_caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">,</span>
+                    <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Python executable &#39;</span><span class="si">{</span><span class="n">processor_class</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&#39; exited with: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">return_code</span> <span class="o">=</span> <span class="n">run_cli</span><span class="p">(</span>
+            <span class="n">executable</span><span class="o">=</span><span class="n">executable</span><span class="p">,</span>
+            <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+            <span class="n">mets_url</span><span class="o">=</span><span class="n">abs_path_to_mets</span><span class="p">,</span>
+            <span class="n">input_file_grp</span><span class="o">=</span><span class="n">input_file_grps_str</span><span class="p">,</span>
+            <span class="n">output_file_grp</span><span class="o">=</span><span class="n">output_file_grps_str</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">parameters</span><span class="p">),</span>
+            <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">,</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span>
+            <span class="n">log_filename</span><span class="o">=</span><span class="n">log_filename</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI executable &#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s2">&#39; exited with: </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.database &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/database.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.database</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; The database is used to store information regarding jobs and workspaces.</span>
+
+<span class="sd">Jobs: for every process-request a job is inserted into the database with an uuid, status and</span>
+<span class="sd">information about the process like parameters and file groups. It is mainly used to track the status</span>
+<span class="sd">(`ocrd_network.models.job.StateEnum`) of a job so that the state of a job can be queried. Finished</span>
+<span class="sd">jobs are not deleted from the database.</span>
+
+<span class="sd">Workspaces: A job or a processor always runs on a workspace. So a processor needs the information</span>
+<span class="sd">where the workspace is available. This information can be set with providing an absolute path or a</span>
+<span class="sd">workspace_id. With the latter, the database is used to convert the workspace_id to a path.</span>
+
+<span class="sd">XXX: Currently the information is not preserved after the processing-server shuts down as the</span>
+<span class="sd">database (runs in docker) currently has no volume set.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">beanie</span> <span class="kn">import</span> <span class="n">init_beanie</span>
+<span class="kn">from</span> <span class="nn">beanie.operators</span> <span class="kn">import</span> <span class="n">In</span>
+<span class="kn">from</span> <span class="nn">motor.motor_asyncio</span> <span class="kn">import</span> <span class="n">AsyncIOMotorClient</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DBProcessorJob</span><span class="p">,</span>
+    <span class="n">DBWorkflowJob</span><span class="p">,</span>
+    <span class="n">DBWorkspace</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">call_sync</span>
+
+
+<div class="viewcode-block" id="initiate_database"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.initiate_database">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">initiate_database</span><span class="p">(</span><span class="n">db_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncIOMotorClient</span><span class="p">(</span><span class="n">db_url</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">init_beanie</span><span class="p">(</span>
+        <span class="n">database</span><span class="o">=</span><span class="n">client</span><span class="o">.</span><span class="n">get_default_database</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;ocrd&#39;</span><span class="p">),</span>
+        <span class="n">document_models</span><span class="o">=</span><span class="p">[</span><span class="n">DBProcessorJob</span><span class="p">,</span> <span class="n">DBWorkflowJob</span><span class="p">,</span> <span class="n">DBWorkspace</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sync_initiate_database"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_initiate_database">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_initiate_database</span><span class="p">(</span><span class="n">db_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">initiate_database</span><span class="p">(</span><span class="n">db_url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_create_workspace"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_create_workspace">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_create_workspace</span><span class="p">(</span><span class="n">mets_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a workspace-database entry only from a mets-path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot create DB workspace entry, `</span><span class="si">{</span><span class="n">mets_path</span><span class="si">}</span><span class="s1">` does not exist!&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">mets_path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">workspace_db</span> <span class="o">=</span> <span class="n">DBWorkspace</span><span class="p">(</span>
+            <span class="n">workspace_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">workspace_path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">mets_path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+            <span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">mets_path</span><span class="p">,</span>
+            <span class="n">ocrd_identifier</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">bagit_profile_identifier</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="n">workspace_db</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">workspace_db</span></div>
+
+
+<div class="viewcode-block" id="db_get_workspace"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_get_workspace">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">workspace_mets_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Either `workspace_id` or `workspace_mets_path` field must be used as a search key&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_id</span><span class="p">:</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+            <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">==</span> <span class="n">workspace_id</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Workspace with id &quot;</span><span class="si">{</span><span class="n">workspace_id</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_mets_path</span><span class="p">:</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+            <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">workspace_mets_path</span> <span class="o">==</span> <span class="n">workspace_mets_path</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Workspace with path &quot;</span><span class="si">{</span><span class="n">workspace_mets_path</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">workspace</span></div>
+
+
+<div class="viewcode-block" id="sync_db_get_workspace"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_get_workspace">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">workspace_mets_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_update_workspace"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_update_workspace">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_update_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">workspace_mets_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Either `workspace_id` or `workspace_mets_path` field must be used as a search key&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_id</span><span class="p">:</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+            <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">==</span> <span class="n">workspace_id</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Workspace with id &quot;</span><span class="si">{</span><span class="n">workspace_id</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_mets_path</span><span class="p">:</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+            <span class="n">DBWorkspace</span><span class="o">.</span><span class="n">workspace_mets_path</span> <span class="o">==</span> <span class="n">workspace_mets_path</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Workspace with path &quot;</span><span class="si">{</span><span class="n">workspace_mets_path</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+
+    <span class="n">job_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not available.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;workspace_id&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;workspace_mets_path&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">workspace_mets_path</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ocrd_identifier&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">ocrd_identifier</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;bagit_profile_identifier&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">bagit_profile_identifier</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ocrd_base_version_checksum&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">ocrd_base_version_checksum</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ocrd_mets&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">ocrd_mets</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;bag_info_adds&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">bag_info_adds</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;deleted&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">deleted</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;mets_server_url&#39;</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">mets_server_url</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not updatable.&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">workspace</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">workspace</span></div>
+
+
+<div class="viewcode-block" id="sync_db_update_workspace"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_update_workspace">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_update_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_update_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">workspace_mets_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_get_processing_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_get_processing_job">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_get_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBProcessorJob</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+        <span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">job_id</span> <span class="o">==</span> <span class="n">job_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">job</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing job with id &quot;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">job</span></div>
+
+
+<div class="viewcode-block" id="sync_db_get_processing_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_get_processing_job">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_get_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBProcessorJob</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_get_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_update_processing_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_update_processing_job">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_update_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBProcessorJob</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+        <span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">job_id</span> <span class="o">==</span> <span class="n">job_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">job</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing job with id &quot;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+
+    <span class="n">job_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not available.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;start_time&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;end_time&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;path_to_mets&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;exec_time&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">exec_time</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;log_file_path&#39;</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">log_file_path</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not updatable.&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">job</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">job</span></div>
+
+
+<div class="viewcode-block" id="sync_db_update_processing_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_update_processing_job">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_update_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBProcessorJob</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_update_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_get_workflow_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_get_workflow_job">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_get_workflow_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkflowJob</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBWorkflowJob</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span><span class="n">DBWorkflowJob</span><span class="o">.</span><span class="n">job_id</span> <span class="o">==</span> <span class="n">job_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">job</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Workflow job with id &quot;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&quot; not in the DB.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">job</span></div>
+
+
+<div class="viewcode-block" id="sync_db_get_workflow_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_get_workflow_job">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_get_workflow_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkflowJob</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_get_workflow_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="db_get_processing_jobs"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.db_get_processing_jobs">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">db_get_processing_jobs</span><span class="p">(</span><span class="n">job_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">DBProcessorJob</span><span class="p">]:</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">In</span><span class="p">(</span><span class="n">DBProcessorJob</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span> <span class="n">job_ids</span><span class="p">))</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jobs</span></div>
+
+
+<div class="viewcode-block" id="sync_db_get_processing_jobs"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.database.html#ocrd_network.database.sync_db_get_processing_jobs">[docs]</a><span class="nd">@call_sync</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">sync_db_get_processing_jobs</span><span class="p">(</span><span class="n">job_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">DBProcessorJob</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">db_get_processing_jobs</span><span class="p">(</span><span class="n">job_ids</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

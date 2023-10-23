@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_utils.config &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_utils/config.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_utils.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Most behavior of OCR-D is controlled via command-line flags or keyword args.</span>
+<span class="sd">Some behavior is global or too cumbersome to handle via explicit code and</span>
+<span class="sd">better solved by using environment variables.</span>
+
+<span class="sd">OcrdEnvConfig is a base class to make this more streamlined, to be subclassed</span>
+<span class="sd">in the `ocrd` package for the actual values</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">gettempdir</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">fill</span><span class="p">,</span> <span class="n">indent</span>
+
+
+<div class="viewcode-block" id="OcrdEnvVariable"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvVariable">[docs]</a><span class="k">class</span> <span class="nc">OcrdEnvVariable</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An environment variable for use in OCR-D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Name of the environment vairable</span>
+<span class="sd">            description (str): Description of what the variable is used for.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            parser (callable): Function to transform the raw (string) value to whatever is needed.</span>
+<span class="sd">            validator (callable): Function to validate that the raw (string) value is parseable.</span>
+<span class="sd">            default (tuple(bool, any)): 2-tuple, first element is a bool whether there is a default</span>
+<span class="sd">                value defined and second element contains that default value, which can be a callable</span>
+<span class="sd">                for defered evaluation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_default</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="OcrdEnvVariable.describe"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvVariable.describe">[docs]</a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrap_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent_text</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_default</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
+            <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; (Default: &quot;</span><span class="si">{</span><span class="n">default</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">ret</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">wrap_text</span><span class="p">:</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indent_text</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="s1">&#39;    &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span> <span class="o">+</span> <span class="n">desc</span></div></div>
+
+<div class="viewcode-block" id="OcrdEnvConfig"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig">[docs]</a><span class="k">class</span> <span class="nc">OcrdEnvConfig</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="OcrdEnvConfig.add"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">OcrdEnvVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OcrdEnvConfig.has_default"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.has_default">[docs]</a>    <span class="k">def</span> <span class="nf">has_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">has_default</span></div>
+
+<div class="viewcode-block" id="OcrdEnvConfig.describe"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.describe">[docs]</a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">var_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">raw_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_value</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var_obj</span><span class="o">.</span><span class="n">has_default</span><span class="p">:</span>
+                <span class="n">raw_value</span> <span class="o">=</span> <span class="n">var_obj</span><span class="o">.</span><span class="n">default</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">var_obj</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">else</span> <span class="n">var_obj</span><span class="o">.</span><span class="n">default</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">var_obj</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="n">raw_value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; set to invalid value &#39;</span><span class="si">{</span><span class="n">raw_value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">var_obj</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OcrdEnvConfig.is_set"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.is_set">[docs]</a>    <span class="k">def</span> <span class="nf">is_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">environ</span></div>
+
+<div class="viewcode-block" id="OcrdEnvConfig.raw_value"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.raw_value">[docs]</a>    <span class="k">def</span> <span class="nf">raw_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">environ</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div></div>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">OcrdEnvConfig</span><span class="p">()</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_METS_CACHING&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;If set to `true`, access to the METS file is cached, speeding in-memory search and modification.&#39;</span><span class="p">,</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span>
+    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_MAX_PROCESSOR_CACHE&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of processor instances (for each set of parameters) to be kept in memory (including loaded models) for processing workers or processor servers.&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_PROFILE&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">Whether to enable gathering runtime statistics</span>
+<span class="s2">on the `ocrd.profile` logger (comma-separated):</span>
+<span class="s2">- `CPU`: yields CPU and wall-time,</span>
+<span class="s2">- `RSS`: also yields peak memory (resident set size)</span>
+<span class="s2">- `PSS`: also yields peak memory (proportional set size)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+  <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span> <span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;CPU&#39;</span><span class="p">,</span> <span class="s1">&#39;RSS&#39;</span><span class="p">,</span> <span class="s1">&#39;PSS&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)),</span>
+  <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_PROFILE_FILE&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If set, then the CPU profile is written to this file for later peruse with a analysis tools like snakeviz&quot;</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_DOWNLOAD_RETRIES&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of times to retry failed attempts for downloads of workspace files.&quot;</span><span class="p">,</span>
+    <span class="n">validator</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_ocrd_download_timeout_parser</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="n">timeout</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timeout</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">timeout</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_DOWNLOAD_TIMEOUT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timeout in seconds for connecting or reading (comma-separated) when downloading.&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="n">_ocrd_download_timeout_parser</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_SERVER_ADDR_PROCESSING&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default address of Processing Server to connect to (for `ocrd network client processing`).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_SERVER_ADDR_WORKFLOW&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default address of Workflow Server to connect to (for `ocrd network client workflow`).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_SERVER_ADDR_WORKSPACE&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default address of Workspace Server to connect to (for `ocrd network client workspace`).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_WORKER_QUEUE_CONNECT_ATTEMPTS&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of attempts for a worker to create its queue. Helpfull if the rabbitmq-server needs time to be fully started&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OCRD_NETWORK_SOCKETS_ROOT_DIR&quot;</span><span class="p">,</span>
+           <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The root directory where all mets server related socket files are created&quot;</span><span class="p">,</span>
+           <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">val</span><span class="p">),</span>
+           <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">gettempdir</span><span class="p">(),</span> <span class="s2">&quot;ocrd_network_sockets&quot;</span><span class="p">)))</span>
+<span class="n">config</span><span class="o">.</span><span class="n">OCRD_NETWORK_SOCKETS_ROOT_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OCRD_NETWORK_LOGS_ROOT_DIR&quot;</span><span class="p">,</span>
+           <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The root directory where all ocrd_network related file logs are stored&quot;</span><span class="p">,</span>
+           <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">val</span><span class="p">),</span>
+           <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">gettempdir</span><span class="p">(),</span> <span class="s2">&quot;ocrd_network_logs&quot;</span><span class="p">)))</span>
+<span class="n">config</span><span class="o">.</span><span class="n">OCRD_NETWORK_LOGS_ROOT_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Directory to look for `ocrd_logging.conf`, fallback for unset XDG variables.&quot;</span><span class="p">,</span>
+    <span class="c1"># description=&quot;HOME directory, cf. https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html&quot;,</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">(),</span>
+    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">val</span><span class="p">),</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;XDG_DATA_HOME&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Directory to look for `./ocrd/resources.yml` (i.e. `ocrd resmgr` user database)&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">HOME</span><span class="p">,</span> <span class="s1">&#39;.local/share&#39;</span><span class="p">)))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;XDG_CONFIG_HOME&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Directory to look for `./ocrd-resources/*` (i.e. `ocrd resmgr` data location)&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">HOME</span><span class="p">,</span> <span class="s1">&#39;.config&#39;</span><span class="p">)))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_LOGGING_DEBUG&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Print information about the logging setup to STDERR&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span>
+    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span>  <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
