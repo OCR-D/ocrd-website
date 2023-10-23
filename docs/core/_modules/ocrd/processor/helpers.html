@@ -1,18 +1,16 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.processor.helpers &#8212; ocrd 2.41.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/ocrd-custom.js"></script>
+    <title>ocrd.processor.helpers &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -37,13 +35,18 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Helper methods for running and documenting processors</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">chdir</span><span class="p">,</span> <span class="n">getcwd</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span><span class="p">,</span> <span class="n">process_time</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">click</span> <span class="kn">import</span> <span class="n">wrap_text</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">ocrd.workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">freeze_args</span><span class="p">,</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">setOverrideLogLevel</span><span class="p">,</span> <span class="n">getLevelName</span>
+
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;generate_processor_help&#39;</span><span class="p">,</span>
@@ -51,23 +54,23 @@
     <span class="s1">&#39;run_processor&#39;</span>
 <span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">_get_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">_get_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">workspace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">resolver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to pass a resolver to create a workspace&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mets_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to pass mets_url to create a workspace&quot;</span><span class="p">)</span>
-        <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">dst_dir</span><span class="o">=</span><span class="n">working_dir</span><span class="p">)</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">dst_dir</span><span class="o">=</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">workspace</span>
 
 <div class="viewcode-block" id="run_processor"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.helpers.html#ocrd.processor.base.run_processor">[docs]</a><span class="k">def</span> <span class="nf">run_processor</span><span class="p">(</span>
         <span class="n">processorClass</span><span class="p">,</span>
-        <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">mets_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">resolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>         <span class="c1"># TODO actually use this!</span>
+        <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -75,8 +78,10 @@
         <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">parameter_override</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">instance_caching</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span> <span class="c1"># pylint: disable=too-many-locals</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Instantiate a Pythonic processor, open a workspace, run the processor and save the workspace.</span>
 
 <span class="sd">    If :py:attr:`workspace` is not none, reuse that. Otherwise, instantiate an</span>
@@ -85,11 +90,13 @@
 
 <span class="sd">    Instantiate a Python object for :py:attr:`processorClass`, passing:</span>
 <span class="sd">    - the workspace,</span>
-<span class="sd">    - :py:attr:`ocrd_tool`</span>
 <span class="sd">    - :py:attr:`page_id`</span>
 <span class="sd">    - :py:attr:`input_file_grp`</span>
 <span class="sd">    - :py:attr:`output_file_grp`</span>
 <span class="sd">    - :py:attr:`parameter` (after applying any :py:attr:`parameter_override` settings)</span>
+
+<span class="sd">    Warning: Avoid setting the `instance_caching` flag to True. It may have unexpected side effects.</span>
+<span class="sd">    This flag is used for an experimental feature we would like to adopt in future.</span>
 
 <span class="sd">    Run the processor on the workspace (creating output files in the filesystem).</span>
 
@@ -98,22 +105,31 @@
 <span class="sd">    Args:</span>
 <span class="sd">        processorClass (object): Python class of the module processor.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">log_level</span><span class="p">:</span>
+        <span class="n">setOverrideLogLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
     <span class="n">workspace</span> <span class="o">=</span> <span class="n">_get_workspace</span><span class="p">(</span>
         <span class="n">workspace</span><span class="p">,</span>
         <span class="n">resolver</span><span class="p">,</span>
         <span class="n">mets_url</span><span class="p">,</span>
-        <span class="n">working_dir</span>
+        <span class="n">working_dir</span><span class="p">,</span>
+        <span class="n">mets_server_url</span>
     <span class="p">)</span>
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.helpers.run_processor&#39;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running processor </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">processorClass</span><span class="p">)</span>
-    <span class="n">processor</span> <span class="o">=</span> <span class="n">processorClass</span><span class="p">(</span>
-        <span class="n">workspace</span><span class="p">,</span>
-        <span class="n">ocrd_tool</span><span class="o">=</span><span class="n">ocrd_tool</span><span class="p">,</span>
+
+    <span class="n">old_cwd</span> <span class="o">=</span> <span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">get_processor</span><span class="p">(</span>
+        <span class="n">processor_class</span><span class="o">=</span><span class="n">processorClass</span><span class="p">,</span>
+        <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span>
+        <span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
         <span class="n">input_file_grp</span><span class="o">=</span><span class="n">input_file_grp</span><span class="p">,</span>
         <span class="n">output_file_grp</span><span class="o">=</span><span class="n">output_file_grp</span><span class="p">,</span>
-        <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span>
+        <span class="n">instance_caching</span><span class="o">=</span><span class="n">instance_caching</span>
     <span class="p">)</span>
+    <span class="n">processor</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">workspace</span>
+    <span class="n">chdir</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+
     <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">ocrd_tool</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> v</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span> <span class="n">processor</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
     <span class="n">otherrole</span> <span class="o">=</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -121,17 +137,48 @@
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processor instance </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2"> doing </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">processor</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">otherrole</span><span class="p">)</span>
     <span class="n">t0_wall</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
     <span class="n">t0_cpu</span> <span class="o">=</span> <span class="n">process_time</span><span class="p">()</span>
-    <span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_PROFILE</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RSS&#39;</span><span class="p">,</span> <span class="s1">&#39;PSS&#39;</span><span class="p">]):</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;psutil_pss&#39;</span> <span class="k">if</span> <span class="s1">&#39;PSS&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_PROFILE</span> <span class="k">else</span> <span class="s1">&#39;psutil&#39;</span>
+        <span class="kn">from</span> <span class="nn">memory_profiler</span> <span class="kn">import</span> <span class="n">memory_usage</span>
+        <span class="kn">from</span> <span class="nn">sparklines</span> <span class="kn">import</span> <span class="n">sparklines</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mem_usage</span> <span class="o">=</span> <span class="n">memory_usage</span><span class="p">(</span><span class="n">proc</span><span class="o">=</span><span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
+                                     <span class="c1"># only run process once</span>
+                                     <span class="n">max_iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">interval</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timestamps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="c1"># include sub-processes</span>
+                                     <span class="n">multiprocess</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_children</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="c1"># get proportional set size instead of RSS</span>
+                                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failure in processor &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">err</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">chdir</span><span class="p">(</span><span class="n">old_cwd</span><span class="p">)</span>
+        <span class="n">mem_usage_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">mem</span> <span class="k">for</span> <span class="n">mem</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">mem_usage</span><span class="p">]</span>
+        <span class="n">mem_output</span> <span class="o">=</span> <span class="s1">&#39;memory consumption: &#39;</span>
+        <span class="n">mem_output</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sparklines</span><span class="p">(</span><span class="n">mem_usage_values</span><span class="p">))</span>
+        <span class="n">mem_output</span> <span class="o">+=</span> <span class="s1">&#39; max: </span><span class="si">%.2f</span><span class="s1"> MiB min: </span><span class="si">%.2f</span><span class="s1"> MiB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">mem_usage_values</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">mem_usage_values</span><span class="p">))</span>
+        <span class="n">logProfile</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">mem_output</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failure in processor &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">err</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">chdir</span><span class="p">(</span><span class="n">old_cwd</span><span class="p">)</span>
+
     <span class="n">t1_wall</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0_wall</span>
     <span class="n">t1_cpu</span> <span class="o">=</span> <span class="n">process_time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0_cpu</span>
     <span class="n">logProfile</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing processor &#39;</span><span class="si">%s</span><span class="s2">&#39; took </span><span class="si">%f</span><span class="s2">s (wall) </span><span class="si">%f</span><span class="s2">s (CPU)( [--input-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --output-file-grp=&#39;</span><span class="si">%s</span><span class="s2">&#39; --parameter=&#39;</span><span class="si">%s</span><span class="s2">&#39; --page-id=&#39;</span><span class="si">%s</span><span class="s2">&#39;]&quot;</span> <span class="o">%</span> <span class="p">(</span>
         <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
         <span class="n">t1_wall</span><span class="p">,</span>
         <span class="n">t1_cpu</span><span class="p">,</span>
-        <span class="n">input_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">output_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">page_id</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">input_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">output_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">parameter</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">page_id</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
     <span class="p">))</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
@@ -139,13 +186,14 @@
         <span class="n">othertype</span><span class="o">=</span><span class="s1">&#39;SOFTWARE&#39;</span><span class="p">,</span>
         <span class="n">role</span><span class="o">=</span><span class="s1">&#39;OTHER&#39;</span><span class="p">,</span>
         <span class="n">otherrole</span><span class="o">=</span><span class="n">otherrole</span><span class="p">,</span>
-        <span class="n">notes</span><span class="o">=</span><span class="p">[({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;input-file-grp&#39;</span><span class="p">},</span> <span class="n">input_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
-               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;output-file-grp&#39;</span><span class="p">},</span> <span class="n">output_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
-               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;parameter&#39;</span><span class="p">},</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">parameter</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span>
-               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;page-id&#39;</span><span class="p">},</span> <span class="n">page_id</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
+        <span class="n">notes</span><span class="o">=</span><span class="p">[({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;input-file-grp&#39;</span><span class="p">},</span> <span class="n">processor</span><span class="o">.</span><span class="n">input_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;output-file-grp&#39;</span><span class="p">},</span> <span class="n">processor</span><span class="o">.</span><span class="n">output_file_grp</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;parameter&#39;</span><span class="p">},</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">parameter</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span>
+               <span class="p">({</span><span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="s1">&#39;page-id&#39;</span><span class="p">},</span> <span class="n">processor</span><span class="o">.</span><span class="n">page_id</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
     <span class="p">)</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">processor</span></div>
+
 
 <div class="viewcode-block" id="run_cli"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.helpers.html#ocrd.processor.base.run_cli">[docs]</a><span class="k">def</span> <span class="nf">run_cli</span><span class="p">(</span>
         <span class="n">executable</span><span class="p">,</span>
@@ -155,12 +203,14 @@
         <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">working_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Open a workspace and run a processor on the command line.</span>
 
 <span class="sd">    If :py:attr:`workspace` is not none, reuse that. Otherwise, instantiate an</span>
@@ -183,7 +233,7 @@
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--working-dir&#39;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">]</span>
     <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--mets&#39;</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">log_level</span><span class="p">:</span>
-        <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--log-level&#39;</span><span class="p">,</span> <span class="n">log_level</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--log-level&#39;</span><span class="p">,</span> <span class="n">log_level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">getLevelName</span><span class="p">(</span><span class="n">log_level</span><span class="p">)]</span>
     <span class="k">if</span> <span class="n">page_id</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--page-id&#39;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">input_file_grp</span><span class="p">:</span>
@@ -194,19 +244,95 @@
         <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--parameter&#39;</span><span class="p">,</span> <span class="n">parameter</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--overwrite&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mets_server_url</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;--mets-server-url&#39;</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="p">]</span>
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.helpers.run_cli&#39;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running subprocess &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">log_filename</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_desc</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">file_desc</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">file_desc</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span></div>
 
-<div class="viewcode-block" id="generate_processor_help"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.helpers.html#ocrd.processor.base.generate_processor_help">[docs]</a><span class="k">def</span> <span class="nf">generate_processor_help</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate a string describing the full CLI of this processor including params.</span>
-<span class="sd">    </span>
+
+<div class="viewcode-block" id="generate_processor_help"><a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.helpers.html#ocrd.processor.base.generate_processor_help">[docs]</a><span class="k">def</span> <span class="nf">generate_processor_help</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subcommand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a string describing the full CLI of this processor including params.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">         ocrd_tool (dict): this processor&#39;s ``tools`` section of the module&#39;s ``ocrd-tool.json``</span>
 <span class="sd">         processor_instance (object, optional): the processor implementation</span>
 <span class="sd">             (for adding any module/class/function docstrings)</span>
+<span class="sd">        subcommand (string): &#39;worker&#39; or &#39;server&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">doc_help</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">processor_instance</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">processor_instance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">processor_instance</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">processor_instance</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">processor_instance</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">processor_instance</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">doc_help</span><span class="p">:</span>
+            <span class="n">doc_help</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">wrap_text</span><span class="p">(</span><span class="n">doc_help</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span>
+                                          <span class="n">initial_indent</span><span class="o">=</span><span class="s1">&#39;  &gt; &#39;</span><span class="p">,</span>
+                                          <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;  &gt; &#39;</span><span class="p">,</span>
+                                          <span class="n">preserve_paragraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subcommands</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">    worker      Start a processing worker rather than do local processing</span>
+<span class="s1">    server      Start a processor server rather than do local processing</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="n">processing_worker_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">  --queue                         The RabbitMQ server address in format</span>
+<span class="s1">                                  &quot;amqp://</span><span class="si">{user}</span><span class="s1">:</span><span class="si">{pass}</span><span class="s1">@</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">/</span><span class="si">{vhost}</span><span class="s1">&quot;</span>
+<span class="s1">                                  [amqp://admin:admin@localhost:5672]</span>
+<span class="s1">  --database                      The MongoDB server address in format</span>
+<span class="s1">                                  &quot;mongodb://</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">&quot;</span>
+<span class="s1">                                  [mongodb://localhost:27018]</span>
+<span class="s1">  --log-filename                  Filename to redirect STDOUT/STDERR to,</span>
+<span class="s1">                                  if specified.</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="n">processing_server_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">  --address                       The Processor server address in format</span>
+<span class="s1">                                  &quot;</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">&quot;</span>
+<span class="s1">  --database                      The MongoDB server address in format</span>
+<span class="s1">                                  &quot;mongodb://</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">&quot;</span>
+<span class="s1">                                  [mongodb://localhost:27018]</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="n">processing_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">  -m, --mets URL-PATH             URL or file path of METS to process [./mets.xml]</span>
+<span class="s1">  -w, --working-dir PATH          Working directory of local workspace [dirname(URL-PATH)]</span>
+<span class="s1">  -I, --input-file-grp USE        File group(s) used as input</span>
+<span class="s1">  -O, --output-file-grp USE       File group(s) used as output</span>
+<span class="s1">  -g, --page-id ID                Physical page ID(s) to process instead of full document []</span>
+<span class="s1">  --overwrite                     Remove existing output pages/images</span>
+<span class="s1">                                  (with &quot;--page-id&quot;, remove only those)</span>
+<span class="s1">  --profile                       Enable profiling</span>
+<span class="s1">  --profile-file PROF-PATH        Write cProfile stats to PROF-PATH. Implies &quot;--profile&quot;</span>
+<span class="s1">  -p, --parameter JSON-PATH       Parameters, either verbatim JSON string</span>
+<span class="s1">                                  or JSON file path</span>
+<span class="s1">  -P, --param-override KEY VAL    Override a single JSON object key-value pair,</span>
+<span class="s1">                                  taking precedence over --parameter</span>
+<span class="s1">  -U, --mets-server-url URL       URL of a METS Server for parallel incremental access to METS</span>
+<span class="s1">                                  If URL starts with http:// start an HTTP server there,</span>
+<span class="s1">                                  otherwise URL is a path to an on-demand-created unix socket</span>
+<span class="s1">  -l, --log-level [OFF|ERROR|WARN|INFO|DEBUG|TRACE]</span>
+<span class="s1">                                  Override log level globally [INFO]</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="n">information_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">  -C, --show-resource RESNAME     Dump the content of processor resource RESNAME</span>
+<span class="s1">  -L, --list-resources            List names of processor resources</span>
+<span class="s1">  -J, --dump-json                 Dump tool description as JSON</span>
+<span class="s1">  -D, --dump-module-dir           Show the &#39;module&#39; resource location path for this processor</span>
+<span class="s1">  -h, --help                      Show this message</span>
+<span class="s1">  -V, --version                   Show version</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
     <span class="n">parameter_help</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">if</span> <span class="s1">&#39;parameters&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ocrd_tool</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]:</span>
         <span class="n">parameter_help</span> <span class="o">=</span> <span class="s1">&#39;  NONE</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -225,61 +351,96 @@
             <span class="k">if</span> <span class="s1">&#39;enum&#39;</span> <span class="ow">in</span> <span class="n">param</span><span class="p">:</span>
                 <span class="n">parameter_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span> <span class="o">+</span> <span class="n">wrap</span><span class="p">(</span><span class="s1">&#39;Possible values: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s1">&#39;enum&#39;</span><span class="p">]))</span>
             <span class="n">parameter_help</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">doc_help</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">processor_instance</span><span class="p">:</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">processor_instance</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">module</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">processor_instance</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">processor_instance</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">processor_instance</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-            <span class="n">doc_help</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">processor_instance</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">doc_help</span><span class="p">:</span>
-            <span class="n">doc_help</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">wrap_text</span><span class="p">(</span><span class="n">doc_help</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span>
-                                          <span class="n">initial_indent</span><span class="o">=</span><span class="s1">&#39;  &gt; &#39;</span><span class="p">,</span>
-                                          <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;  &gt; &#39;</span><span class="p">,</span>
-                                          <span class="n">preserve_paragraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">Usage: </span><span class="si">%s</span><span class="s1"> [OPTIONS]</span>
 
-<span class="s1">  </span><span class="si">%s%s</span><span class="s1"></span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">subcommand</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">Usage: </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> [worker|server] [OPTIONS]</span>
+
+<span class="s1">  </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">doc_help</span><span class="si">}</span>
+
+<span class="s1">Subcommands:</span>
+<span class="si">{</span><span class="n">subcommands</span><span class="si">}</span>
+<span class="s1">Options for processing:</span>
+<span class="si">{</span><span class="n">processing_options</span><span class="si">}</span>
+<span class="s1">Options for information:</span>
+<span class="si">{</span><span class="n">information_options</span><span class="si">}</span>
+<span class="s1">Parameters:</span>
+<span class="si">{</span><span class="n">parameter_help</span><span class="si">}</span>
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;worker&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">Usage: </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> worker [OPTIONS]</span>
+
+<span class="s1">  Run </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> as a processing worker.</span>
+
+<span class="s1">  </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">doc_help</span><span class="si">}</span>
 
 <span class="s1">Options:</span>
-<span class="s1">  -I, --input-file-grp USE        File group(s) used as input</span>
-<span class="s1">  -O, --output-file-grp USE       File group(s) used as output</span>
-<span class="s1">  -g, --page-id ID                Physical page ID(s) to process</span>
-<span class="s1">  --overwrite                     Remove existing output pages/images</span>
-<span class="s1">                                  (with --page-id, remove only those)</span>
-<span class="s1">  --profile                       Enable profiling</span>
-<span class="s1">  --profile-file                  Write cProfile stats to this file. Implies --profile</span>
-<span class="s1">  -p, --parameter JSON-PATH       Parameters, either verbatim JSON string</span>
-<span class="s1">                                  or JSON file path</span>
-<span class="s1">  -P, --param-override KEY VAL    Override a single JSON object key-value pair,</span>
-<span class="s1">                                  taking precedence over --parameter</span>
-<span class="s1">  -m, --mets URL-PATH             URL or file path of METS to process</span>
-<span class="s1">  -w, --working-dir PATH          Working directory of local workspace</span>
-<span class="s1">  -l, --log-level [OFF|ERROR|WARN|INFO|DEBUG|TRACE]</span>
-<span class="s1">                                  Log level</span>
-<span class="s1">  -C, --show-resource RESNAME     Dump the content of processor resource RESNAME</span>
-<span class="s1">  -L, --list-resources            List names of processor resources</span>
-<span class="s1">  -J, --dump-json                 Dump tool description as JSON and exit</span>
-<span class="s1">  -D, --dump-module-dir           Output the &#39;module&#39; directory with resources for this processor</span>
-<span class="s1">  -h, --help                      This help message</span>
-<span class="s1">  -V, --version                   Show version</span>
+<span class="si">{</span><span class="n">processing_worker_options</span><span class="si">}</span>
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;server&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">Usage: </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> server [OPTIONS]</span>
 
-<span class="s1">Parameters:</span>
-<span class="si">%s</span><span class="s1"></span>
-<span class="s1">Default Wiring:</span>
-<span class="s1">  </span><span class="si">%s</span><span class="s1"> -&gt; </span><span class="si">%s</span><span class="s1"></span>
+<span class="s1">  Run </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> as a processor sever.</span>
 
-<span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span>
-    <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
-    <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
-    <span class="n">doc_help</span><span class="p">,</span>
-    <span class="n">parameter_help</span><span class="p">,</span>
-    <span class="n">ocrd_tool</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">),</span>
-    <span class="n">ocrd_tool</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
-<span class="p">)</span></div>
+<span class="s1">  </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">doc_help</span><span class="si">}</span>
+
+<span class="s1">Options:</span>
+<span class="si">{</span><span class="n">processing_server_options</span><span class="si">}</span>
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<span class="c1"># Taken from https://github.com/OCR-D/core/pull/884</span>
+<span class="nd">@freeze_args</span>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_PROCESSOR_CACHE</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_cached_processor</span><span class="p">(</span><span class="n">parameter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">processor_class</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call this function to get back an instance of a processor.</span>
+<span class="sd">    The results are cached based on the parameters.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        parameter (dict): a dictionary of parameters.</span>
+<span class="sd">        processor_class: the concrete `:py:class:~ocrd.Processor` class.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        When the concrete class of the processor is unknown, `None` is returned.</span>
+<span class="sd">        Otherwise, an instance of the `:py:class:~ocrd.Processor` is returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">processor_class</span><span class="p">:</span>
+        <span class="n">dict_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="k">if</span> <span class="n">parameter</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">processor_class</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">dict_params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">get_processor</span><span class="p">(</span>
+        <span class="n">processor_class</span><span class="p">,</span>
+        <span class="n">parameter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">workspace</span><span class="p">:</span> <span class="n">Workspace</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">input_file_grp</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output_file_grp</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">instance_caching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">processor_class</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">instance_caching</span><span class="p">:</span>
+            <span class="n">cached_processor</span> <span class="o">=</span> <span class="n">get_cached_processor</span><span class="p">(</span>
+                <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span>
+                <span class="n">processor_class</span><span class="o">=</span><span class="n">processor_class</span>
+            <span class="p">)</span>
+            <span class="n">cached_processor</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">workspace</span>
+            <span class="n">cached_processor</span><span class="o">.</span><span class="n">page_id</span> <span class="o">=</span> <span class="n">page_id</span>
+            <span class="n">cached_processor</span><span class="o">.</span><span class="n">input_file_grp</span> <span class="o">=</span> <span class="n">input_file_grp</span>
+            <span class="n">cached_processor</span><span class="o">.</span><span class="n">output_file_grp</span> <span class="o">=</span> <span class="n">output_file_grp</span>
+            <span class="k">return</span> <span class="n">cached_processor</span>
+        <span class="k">return</span> <span class="n">processor_class</span><span class="p">(</span>
+            <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+            <span class="n">input_file_grp</span><span class="o">=</span><span class="n">input_file_grp</span><span class="p">,</span>
+            <span class="n">output_file_grp</span><span class="o">=</span><span class="n">output_file_grp</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span>
+        <span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Processor class is not known&quot;</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -332,7 +493,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -349,8 +510,8 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

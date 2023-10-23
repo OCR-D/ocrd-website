@@ -1,18 +1,16 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_validators.workspace_validator &#8212; ocrd 2.41.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/ocrd-custom.js"></script>
+    <title>ocrd_validators.workspace_validator &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -55,13 +53,13 @@
 <span class="c1">#</span>
 
 <div class="viewcode-block" id="WorkspaceValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator">[docs]</a><span class="k">class</span> <span class="nc">WorkspaceValidator</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validates an OCR-D/METS workspace against the specs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validator for `OcrdMets &lt;../ocrd_models/ocrd_models.ocrd_mets.html&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="WorkspaceValidator.check_file_grp"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator.check_file_grp">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a report on whether input_file_grp is/are in workspace.mets and output_file_grp is/are not.</span>
 <span class="sd">        To be run before processing</span>
 
@@ -99,7 +97,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">src_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">page_strictness</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="n">page_coordinate_consistency</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new WorkspaceValidator.</span>
 
 <span class="sd">        Args:</span>
@@ -108,8 +106,14 @@
 <span class="sd">            src_dir (string):</span>
 <span class="sd">            skip (list):</span>
 <span class="sd">            download (boolean):</span>
-<span class="sd">            page_strictness (&quot;strict&quot;|&quot;lax&quot;|&quot;fix&quot;|&quot;off&quot;):</span>
-<span class="sd">            page_coordinate_consistency (&quot;poly&quot;|&quot;baseline&quot;|&quot;both&quot;|&quot;off&quot;):</span>
+<span class="sd">            page_strictness (&quot;strict&quot;|&quot;lax&quot;|&quot;fix&quot;|&quot;off&quot;): how strict to check</span>
+<span class="sd">                multi-level TextEquiv consistency of PAGE XML files</span>
+<span class="sd">            page_coordinate_consistency (&quot;poly&quot;|&quot;baseline&quot;|&quot;both&quot;|&quot;off&quot;): check whether each</span>
+<span class="sd">                segment&#39;s coords are fully contained within its parent&#39;s:</span>
+<span class="sd">                 * `&quot;poly&quot;`: *Region/TextLine/Word/Glyph in Border/*Region/TextLine/Word</span>
+<span class="sd">                 * `&quot;baseline&quot;`: Baseline in TextLine</span>
+<span class="sd">                 * `&quot;both&quot;`: both `poly` and `baseline` checks</span>
+<span class="sd">                 * `&quot;off&quot;`: no coordinate checks</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span> <span class="k">if</span> <span class="n">skip</span> <span class="k">else</span> <span class="p">[]</span>
@@ -122,6 +126,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">download</span> <span class="o">=</span> <span class="n">download</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">page_strictness</span> <span class="o">=</span> <span class="n">page_strictness</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">page_coordinate_consistency</span> <span class="o">=</span> <span class="n">page_coordinate_consistency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_checks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># there will be more options to come</span>
+        <span class="k">if</span> <span class="s1">&#39;mets_fileid_page_pcgtsid&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">page_checks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pcgtsid&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">src_dir</span> <span class="o">=</span> <span class="n">src_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="kc">None</span>
@@ -129,15 +137,20 @@
 
 <div class="viewcode-block" id="WorkspaceValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.workspace_validator.html#ocrd_validators.WorkspaceValidator.validate">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validates the workspace of a METS URL against the specs</span>
 
 <span class="sd">        Arguments:</span>
 <span class="sd">            resolver (:class:`ocrd.Resolver`): Resolver</span>
 <span class="sd">            mets_url (string): URL of the METS file</span>
 <span class="sd">            src_dir (string, None): Directory containing mets file</span>
-<span class="sd">            skip (list): Tests to skip. One or more of &#39;mets_unique_identifier&#39;, &#39;mets_file_group_names&#39;, &#39;mets_files&#39;, &#39;pixel_density&#39;, &#39;dimension&#39;, &#39;url&#39;</span>
-<span class="sd">            download (boolean): Whether to download files</span>
+<span class="sd">            skip (list): Validation checks to omit. One or more of </span>
+<span class="sd">                &#39;mets_unique_identifier&#39;, &#39;mets_file_group_names&#39;, </span>
+<span class="sd">                &#39;mets_files&#39;, &#39;pixel_density&#39;, &#39;dimension&#39;, &#39;url&#39;,</span>
+<span class="sd">                &#39;multipage&#39;, &#39;page&#39;, &#39;page_xsd&#39;, &#39;mets_xsd&#39;, </span>
+<span class="sd">                &#39;mets_fileid_page_pcgtsid&#39;</span>
+<span class="sd">            download (boolean): Whether to download remote file references</span>
+<span class="sd">                temporarily during validation (like a processor would)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            report (:class:`ValidationReport`) Report on the validity</span>
@@ -146,7 +159,7 @@
         <span class="k">return</span> <span class="n">validator</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span> <span class="c1"># pylint: disable=protected-access</span></div>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Actual validation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -182,16 +195,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span>
 
     <span class="k">def</span> <span class="nf">_resolve_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clone workspace from mets_url unless workspace was provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_resolve_workspace&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">src_dir</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">src_dir</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span>
 
     <span class="k">def</span> <span class="nf">_validate_mets_unique_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate METS unique identifier exists.</span>
 
 <span class="sd">        See `spec &lt;https://ocr-d.github.io/mets#unique-id-for-the-document-processed&gt;`_.</span>
@@ -201,31 +214,32 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;METS has no unique identifier&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_imagefilename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate that the imageFilename is correctly set to a filename relative to the workspace</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_imagefilename&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Won&#39;t download remote PAGE XML &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">page</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span>
             <span class="n">imageFilename</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">imageFilename</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">imageFilename</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;PAGE-XML </span><span class="si">%s</span><span class="s2"> : imageFilename &#39;</span><span class="si">%s</span><span class="s2">&#39; not found in METS&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">imageFilename</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;PAGE-XML </span><span class="si">%s</span><span class="s2"> : imageFilename &#39;</span><span class="si">%s</span><span class="s2">&#39; not found in METS&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">imageFilename</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">imageFilename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">imageFilename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span><span class="s2">&quot;PAGE-XML </span><span class="si">%s</span><span class="s2"> : imageFilename &#39;</span><span class="si">%s</span><span class="s2">&#39; points to non-existent local file&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">imageFilename</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span><span class="s2">&quot;PAGE-XML </span><span class="si">%s</span><span class="s2"> : imageFilename &#39;</span><span class="si">%s</span><span class="s2">&#39; points to non-existent local file&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">imageFilename</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate image height and PAGE imageHeight match</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_validate_dimension&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;_validate_dimension: Not executed because --download wasn&#39;t set and PAGE might reference remote (Alternative)Images &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                 <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">page</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">image_from_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">pageId</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">page</span><span class="o">.</span><span class="n">imageHeight</span> <span class="o">!=</span> <span class="n">exif</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
@@ -234,43 +248,45 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;PAGE &#39;</span><span class="si">%s</span><span class="s2">&#39;: @imageWidth != image&#39;s actual width (</span><span class="si">%s</span><span class="s2"> != </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">page</span><span class="o">.</span><span class="n">imageWidth</span><span class="p">,</span> <span class="n">exif</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_multipage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate the number of images per file is 1 (TIFF allows multi-page images)</span>
 
 <span class="sd">        See `spec &lt;https://ocr-d.github.io/mets#no-multi-page-images&gt;`_.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_multipage&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">mimetype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/&#39;</span><span class="p">)]:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Won&#39;t download remote image &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;//image/.*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                 <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+                <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: More than 1 frame: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">exif</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: Could not retrieve </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: Could not retrieve </span><span class="si">%s</span><span class="s2"> (local_filename=</span><span class="si">%s</span><span class="s2">, url=</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
                 <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">_validate_pixel_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate image pixel density</span>
 
 <span class="sd">        See `spec &lt;https://ocr-d.github.io/mets#pixel-density-of-images-must-be-explicit-and-high-enough&gt;`_.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_pixel_density&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">mimetype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/&#39;</span><span class="p">)]:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Won&#39;t download remote image &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;//image/.*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">resolve_image_exif</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;xResolution&#39;</span><span class="p">,</span> <span class="s1">&#39;yResolution&#39;</span><span class="p">]:</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">exif</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">72</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Image </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2"> pixels per </span><span class="si">%s</span><span class="s2">) is suspiciously low&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">exif</span><span class="o">.</span><span class="n">resolutionUnit</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_mets_file_group_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ensure ``USE`` attributes of ``mets:fileGrp`` conform to OCR-D naming schema..</span>
 
 <span class="sd">        See `spec &lt;https://ocr-d.github.io/mets#file-group-use-syntax&gt;`_.</span>
@@ -295,7 +311,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;Invalid USE name &#39;</span><span class="si">%s</span><span class="s2">&#39; in fileGrp &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_mets_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate ``mets:file`` URLs are sane.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_mets_files&#39;</span><span class="p">)</span>
@@ -306,12 +322,10 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GROUPID&#39;</span><span class="p">):</span> <span class="c1"># pylint: disable=protected-access</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_notice</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; has GROUPID attribute - document might need an update&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">pageId</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; does not manifest any physical page.&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; has no mets:Flocat/@xlink:href&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; has neither mets:Flocat[@LOCTYPE=&#39;URL&#39;]/@xlink:href nor mets:FLocat[@LOCTYPE=&#39;OTHER&#39;][@OTHERLOCTYPE=&#39;FILE&#39;]/xlink:href&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="s1">&#39;url&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="ow">and</span> <span class="s1">&#39;:/&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span> <span class="ow">and</span> <span class="s1">&#39;url&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^file:/[^/]&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; has an invalid (Java-specific) file URL &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
                 <span class="n">scheme</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)]</span>
@@ -319,34 +333,40 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span><span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39; has non-HTTP, non-file URL &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run PageValidator on the PAGE-XML documents referenced in the METS.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_page&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ocrd_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span>
-            <span class="n">page_report</span> <span class="o">=</span> <span class="n">PageValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">=</span><span class="n">ocrd_file</span><span class="p">,</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">page_report</span> <span class="o">=</span> <span class="n">PageValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
                                                  <span class="n">page_textequiv_consistency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_strictness</span><span class="p">,</span>
                                                  <span class="n">check_coords</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_coordinate_consistency</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">],</span>
                                                  <span class="n">check_baseline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_coordinate_consistency</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">])</span>
-            <span class="n">pg</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">pg</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="o">!=</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
-                <span class="n">page_report</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span><span class="s1">&#39;pc:PcGts/@pcGtsId differs from mets:file/@ID: &quot;</span><span class="si">%s</span><span class="s1">&quot; !== &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="n">pg</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;pcgtsid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_checks</span> <span class="ow">and</span> <span class="n">pg</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="o">!=</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="n">page_report</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span><span class="s1">&#39;pc:PcGts/@pcGtsId differs from mets:file/@ID: &quot;</span><span class="si">%s</span><span class="s1">&quot; !== &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">pcGtsId</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">ID</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">merge_report</span><span class="p">(</span><span class="n">page_report</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_page_xsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate all PAGE-XML files against PAGE XSD schema</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_page_xsd&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ocrd_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">XsdPageValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">))</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished alidating all PAGE-XML files against XSD&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local_filename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not available locally and &#39;download&#39; is not set: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">XsdPageValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">))</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished validating all PAGE-XML files against XSD&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_mets_xsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate METS against METS XSD schema</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_validate_mets_xsd&#39;</span><span class="p">)</span>
@@ -406,7 +426,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -423,8 +443,8 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

@@ -1,18 +1,16 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_validators.ocrd_zip_validator &#8212; ocrd 2.41.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/ocrd-custom.js"></script>
+    <title>ocrd_validators.ocrd_zip_validator &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -55,7 +53,7 @@
 <span class="c1">#</span>
 
 <div class="viewcode-block" id="OcrdZipValidator"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.ocrd_zip_validator.html#ocrd_validators.OcrdZipValidator">[docs]</a><span class="k">class</span> <span class="nc">OcrdZipValidator</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate conformance with BagIt and OCR-D bagit profile.</span>
 
 <span class="sd">    See:</span>
@@ -65,7 +63,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">path_to_zip</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arguments:</span>
 <span class="sd">            resolver (Resolver): resolver</span>
 <span class="sd">            path_to_zip (string): Path to the OCRD-ZIP file</span>
@@ -76,14 +74,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_validator</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">OCRD_BAGIT_PROFILE_URL</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">OCRD_BAGIT_PROFILE</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate against OCRD BagIt profile (bag-info fields, algos etc)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">bag</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_validator</span><span class="o">.</span><span class="n">report</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_bag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate BagIt (checksums, payload.oxum etc)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="kc">None</span>
@@ -101,7 +99,7 @@
             <span class="k">raise</span> <span class="n">BagValidationError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">failed</span><span class="p">)</span>
 
 <div class="viewcode-block" id="OcrdZipValidator.validate"><a class="viewcode-back" href="../../api/ocrd_validators/ocrd_validators.ocrd_zip_validator.html#ocrd_validators.OcrdZipValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_checksums</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_bag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate an OCRD-ZIP file for profile, bag and workspace conformance</span>
 
 <span class="sd">        Arguments:</span>
@@ -190,7 +188,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -207,8 +205,8 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

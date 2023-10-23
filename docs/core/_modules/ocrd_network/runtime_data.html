@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.runtime_data &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/runtime_data.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.runtime_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">.deployment_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_docker_client</span><span class="p">,</span>
+    <span class="n">create_ssh_client</span><span class="p">,</span>
+    <span class="n">DeployType</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;DataHost&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DataMongoDB&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DataProcessingWorker&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DataProcessorServer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DataRabbitMQ&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="DataHost"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataHost">[docs]</a><span class="k">class</span> <span class="nc">DataHost</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypath</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path_to_privkey&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># These flags are used to track whether a connection</span>
+        <span class="c1"># of the specified type will be required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_ssh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_docker</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docker_client</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># TODO: Not sure this is DS is ideal, seems off</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_workers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DataProcessingWorker</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_servers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DataProcessorServer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;workers&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">worker</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">worker</span><span class="p">[</span><span class="s1">&#39;number_of_instance&#39;</span><span class="p">]</span>
+            <span class="n">deploy_type</span> <span class="o">=</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span> <span class="k">if</span> <span class="n">worker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deploy_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;docker&#39;</span> <span class="k">else</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_ssh</span> <span class="ow">and</span> <span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">needs_ssh</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_docker</span> <span class="ow">and</span> <span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">needs_docker</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_workers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataProcessingWorker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;servers&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">server</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">server</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">]</span>
+            <span class="n">deploy_type</span> <span class="o">=</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span> <span class="k">if</span> <span class="n">server</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deploy_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;docker&#39;</span> <span class="k">else</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_ssh</span> <span class="ow">and</span> <span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">needs_ssh</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_docker</span> <span class="ow">and</span> <span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">needs_docker</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_servers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataProcessorServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Key: processor_name, Value: list of ports</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_ports</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="DataHost.create_client"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataHost.create_client">[docs]</a>    <span class="k">def</span> <span class="nf">create_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">client_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;docker&#39;</span><span class="p">,</span> <span class="s1">&#39;ssh&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Host client type cannot be of type: </span><span class="si">{</span><span class="n">client_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">client_type</span> <span class="o">==</span> <span class="s1">&#39;ssh&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_client</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ssh_client</span> <span class="o">=</span> <span class="n">create_ssh_client</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keypath</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_client</span>
+        <span class="k">if</span> <span class="n">client_type</span> <span class="o">==</span> <span class="s1">&#39;docker&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker_client</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">docker_client</span> <span class="o">=</span> <span class="n">create_docker_client</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keypath</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker_client</span></div></div>
+
+
+<div class="viewcode-block" id="DataProcessingWorker"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataProcessingWorker">[docs]</a><span class="k">class</span> <span class="nc">DataProcessingWorker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">:</span> <span class="n">DeployType</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">=</span> <span class="n">deploy_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="n">processor_name</span>
+        <span class="c1"># Assigned when deployed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DataProcessorServer"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataProcessorServer">[docs]</a><span class="k">class</span> <span class="nc">DataProcessorServer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">:</span> <span class="n">DeployType</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">=</span> <span class="n">deploy_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="n">processor_name</span>
+        <span class="c1"># Assigned when deployed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DataMongoDB"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataMongoDB">[docs]</a><span class="k">class</span> <span class="nc">DataMongoDB</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;ssh&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_keypath</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path_to_privkey&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_username</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_keypath</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_password</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s1">&#39;credentials&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mongodb://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mongodb://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_deployment</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skip_deployment&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Assigned when deployed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DataRabbitMQ"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.runtime_data.html#ocrd_network.runtime_data.DataRabbitMQ">[docs]</a><span class="k">class</span> <span class="nc">DataRabbitMQ</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;ssh&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_keypath</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path_to_privkey&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_username</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_keypath</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssh_password</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;amqp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">vhost</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_deployment</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skip_deployment&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Assigned when deployed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,18 +1,16 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.resolver &#8212; ocrd 2.41.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/ocrd-custom.js"></script>
+    <title>ocrd.resolver &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -39,9 +37,11 @@
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span><span class="p">,</span> <span class="n">Retry</span>
 
 <span class="kn">from</span> <span class="nn">ocrd.constants</span> <span class="kn">import</span> <span class="n">TMP_PREFIX</span>
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">config</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">is_local_filename</span><span class="p">,</span>
     <span class="n">get_local_filename</span><span class="p">,</span>
@@ -55,28 +55,37 @@
 <span class="kn">from</span> <span class="nn">ocrd_models.utils</span> <span class="kn">import</span> <span class="n">handle_oai_response</span>
 
 <div class="viewcode-block" id="Resolver"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver">[docs]</a><span class="k">class</span> <span class="nc">Resolver</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handle uploads, downloads, repository access, and manage temporary directories</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Resolver.download_to_directory"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.download_to_directory">[docs]</a>    <span class="k">def</span> <span class="nf">download_to_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Download a file to a directory.</span>
+<div class="viewcode-block" id="Resolver.download_to_directory"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.download_to_directory">[docs]</a>    <span class="k">def</span> <span class="nf">download_to_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download a URL ``url`` to a local file in ``directory``.</span>
 
-<span class="sd">        Early Shortcut: If `url` is a local file and that file is already in the directory, keep it there.</span>
+<span class="sd">        If ``url`` looks like a file path, check whether that exists.</span>
+<span class="sd">        If it does exist and is within ``directory` already, return early.</span>
+<span class="sd">        If it does exist but is outside of ``directory``. copy it.</span>
+<span class="sd">        If ``url` does not appear to be a file path, try downloading via HTTP, retrying ``retries`` times with timeout ``timeout`` between calls.</span>
 
-<span class="sd">        If `basename` is not given but subdir is, assume user knows what she&#39;s doing and</span>
-<span class="sd">        use last URL segment as the basename.</span>
+<span class="sd">        If ``basename`` is not given but ``subdir`` is, set ``basename`` to the last path segment of ``url``.</span>
 
-<span class="sd">        If `basename` is not given and no subdir is given, use the alnum characters in the URL as the basename.</span>
+<span class="sd">        If the target file already exists within ``directory``, behavior depends on ``if_exists``:</span>
+<span class="sd">            - ``skip`` (default): do nothing and return early. Note that this</span>
+<span class="sd">            - ``overwrite``: overwrite the existing file</span>
+<span class="sd">            - ``raise``: raise a ``FileExistsError``</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            directory (string): Directory to download files to</span>
-<span class="sd">            basename (string, None): basename part of the filename on disk.</span>
 <span class="sd">            url (string): URL to download from</span>
-<span class="sd">            if_exists (string, &quot;skip&quot;): What to do if target file already exists. \</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            basename (string, None): basename part of the filename on disk. Defaults to last path segment of ``url`` if unset.</span>
+<span class="sd">            if_exists (string, &quot;skip&quot;): What to do if target file already exists.</span>
 <span class="sd">                One of ``skip`` (default), ``overwrite`` or ``raise``</span>
-<span class="sd">            subdir (string, None): Subdirectory to create within the directory. Think ``mets:fileGrp``.</span>
+<span class="sd">            subdir (string, None): Subdirectory to create within the directory. Think ``mets:fileGrp[@USE]``.</span>
+<span class="sd">            retries (int, None): Number of retries to attempt on network failure.</span>
+<span class="sd">            timeout (tuple, None): Timeout in seconds for establishing a connection and reading next chunk of data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Local filename string, *relative* to directory</span>
@@ -85,67 +94,106 @@
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;directory=|</span><span class="si">%s</span><span class="s2">| url=|</span><span class="si">%s</span><span class="s2">| basename=|</span><span class="si">%s</span><span class="s2">| if_exists=|</span><span class="si">%s</span><span class="s2">| subdir=|</span><span class="si">%s</span><span class="s2">|&quot;</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="p">,</span> <span class="n">subdir</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;url&#39; must be a string&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;url&#39; must be a non-empty string, not &#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="c1"># actually Path also ok</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">directory</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;directory&#39; must be a string&quot;</span><span class="p">)</span>  <span class="c1"># actually Path would also work</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;directory&#39; must be a non-empty string, not &#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>  <span class="c1"># actually Path would also work</span>
 
+        <span class="n">url</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
         <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 
         <span class="n">subdir_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">subdir</span> <span class="k">if</span> <span class="n">subdir</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">basename_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">basename</span> <span class="k">if</span> <span class="n">basename</span> <span class="k">else</span> <span class="n">nth_url_segment</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">subdir_path</span><span class="p">,</span> <span class="n">basename_path</span><span class="p">))</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">subdir_path</span><span class="p">,</span> <span class="n">basename_path</span><span class="p">)</span>
         <span class="n">dst_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
 
-        <span class="c1">#  log.info(&quot;\n\tdst_path=&#39;%s \n\turl=%s&quot;, dst_path, url)</span>
-        <span class="c1">#  print(&#39;url=%s&#39;, url)</span>
-        <span class="c1">#  print(&#39;directory=%s&#39;, directory)</span>
-        <span class="c1">#  print(&#39;subdir_path=%s&#39;, subdir_path)</span>
-        <span class="c1">#  print(&#39;basename_path=%s&#39;, basename_path)</span>
-        <span class="c1">#  print(&#39;ret=%s&#39;, ret)</span>
-        <span class="c1">#  print(&#39;dst_path=%s&#39;, dst_path)</span>
+        <span class="c1"># log.info(&quot;\n\tdst_path=&#39;%s \n\turl=%s&quot;, dst_path, url)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; url={url}&#39;)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; directory={directory}&#39;)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; subdir_path={subdir_path}&#39;)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; basename_path={basename_path}&#39;)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; dst_path={dst_path}&#39;)</span>
+        <span class="c1"># print(f&#39;&gt;&gt;&gt; ret={ret}&#39;)</span>
 
         <span class="n">src_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">is_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># XXX this raises FNFE in Python 3.5 if src_path doesn&#39;t exist but not 3.6+</span>
                 <span class="n">src_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to resolve URL locally: </span><span class="si">%s</span><span class="s2"> --&gt; &#39;</span><span class="si">%s</span><span class="s2">&#39; which does not exist&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">src_path</span><span class="p">))</span>
                 <span class="k">raise</span> <span class="n">e</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">src_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File path passed as &#39;url&#39; to download_to_directory does not exist: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File path passed as &#39;url&#39; to download_to_directory does not exist: &#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">src_path</span> <span class="o">==</span> <span class="n">dst_path</span><span class="p">:</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stop early, src_path and dst_path are the same: &#39;</span><span class="si">%s</span><span class="s2">&#39; (url: &#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
-                <span class="k">return</span> <span class="n">ret</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
         <span class="c1"># Respect &#39;if_exists&#39; arg</span>
         <span class="k">if</span> <span class="n">dst_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">if_exists</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ret</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">if_exists</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="s2">&quot;File already exists and if_exists == &#39;raise&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dst_path</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists and if_exists == &#39;raise&#39;: </span><span class="si">{</span><span class="n">dst_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Create dst_path parent dir</span>
         <span class="n">dst_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Copy files or download remote assets</span>
         <span class="k">if</span> <span class="n">src_path</span><span class="p">:</span>
+            <span class="c1"># src_path set, so it is a file source, we can copy directly</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Copying file &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">)</span>
             <span class="n">dst_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">src_path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># src_path not set, it&#39;s an http URL, try to download</span>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading URL &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">)</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;HTTP request failed: </span><span class="si">%s</span><span class="s2"> (HTTP </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">retries</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">is_set</span><span class="p">(</span><span class="s1">&#39;OCRD_DOWNLOAD_RETRIES&#39;</span><span class="p">):</span>
+                <span class="n">retries</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_DOWNLOAD_RETRIES</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">is_set</span><span class="p">(</span><span class="s1">&#39;OCRD_DOWNLOAD_TIMEOUT&#39;</span><span class="p">):</span>
+                <span class="n">timeout</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_DOWNLOAD_TIMEOUT</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+            <span class="n">retries</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">retries</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span>
+                                <span class="c1"># probably too wide (only transient failures):</span>
+                                <span class="mi">408</span><span class="p">,</span> <span class="c1"># Request Timeout</span>
+                                <span class="mi">409</span><span class="p">,</span> <span class="c1"># Conflict</span>
+                                <span class="mi">412</span><span class="p">,</span> <span class="c1"># Precondition Failed</span>
+                                <span class="mi">417</span><span class="p">,</span> <span class="c1"># Expectation Failed</span>
+                                <span class="mi">423</span><span class="p">,</span> <span class="c1"># Locked</span>
+                                <span class="mi">424</span><span class="p">,</span> <span class="c1"># Fail</span>
+                                <span class="mi">425</span><span class="p">,</span> <span class="c1"># Too Early</span>
+                                <span class="mi">426</span><span class="p">,</span> <span class="c1"># Upgrade Required</span>
+                                <span class="mi">428</span><span class="p">,</span> <span class="c1"># Precondition Required</span>
+                                <span class="mi">429</span><span class="p">,</span> <span class="c1"># Too Many Requests</span>
+                                <span class="mi">440</span><span class="p">,</span> <span class="c1"># Login Timeout</span>
+                                <span class="mi">500</span><span class="p">,</span> <span class="c1"># Internal Server Error</span>
+                                <span class="mi">503</span><span class="p">,</span> <span class="c1"># Service Unavailable</span>
+                                <span class="mi">504</span><span class="p">,</span> <span class="c1"># Gateway Timeout</span>
+                                <span class="mi">509</span><span class="p">,</span> <span class="c1"># Bandwidth Limit Exceeded</span>
+                                <span class="mi">529</span><span class="p">,</span> <span class="c1"># Site Overloaded</span>
+                                <span class="mi">598</span><span class="p">,</span> <span class="c1"># Proxy Read Timeout</span>
+                                <span class="mi">599</span><span class="p">,</span> <span class="c1"># Proxy Connect Timeout</span>
+                    <span class="p">])</span>
+            <span class="n">adapter</span> <span class="o">=</span> <span class="n">HTTPAdapter</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="n">retries</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
             <span class="n">contents</span> <span class="o">=</span> <span class="n">handle_oai_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
             <span class="n">dst_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ret</span></div>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Resolver.workspace_from_url"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_url">[docs]</a>    <span class="k">def</span> <span class="nf">workspace_from_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">dst_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Resolver.workspace_from_url"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_url">[docs]</a>    <span class="k">def</span> <span class="nf">workspace_from_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mets_url</span><span class="p">,</span>
+        <span class="n">dst_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">clobber_mets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">mets_basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">src_baseurl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a workspace from a METS by URL (i.e. clone if :py:attr:`mets_url` is remote or :py:attr:`dst_dir` is given).</span>
 
 <span class="sd">        Arguments:</span>
@@ -198,10 +246,9 @@
 
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;workspace_from_url</span><span class="se">\n</span><span class="s2">mets_basename=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">mets_url=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">src_baseurl=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">dst_dir=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;overwrite&#39;</span> <span class="k">if</span> <span class="n">clobber_mets</span> <span class="k">else</span> <span class="s1">&#39;skip&#39;</span><span class="p">)</span>
 
-        <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="n">src_baseurl</span><span class="p">)</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="n">src_baseurl</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">():</span>
@@ -210,7 +257,7 @@
         <span class="k">return</span> <span class="n">workspace</span></div>
 
 <div class="viewcode-block" id="Resolver.workspace_from_nothing"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_nothing">[docs]</a>    <span class="k">def</span> <span class="nf">workspace_from_nothing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="s1">&#39;mets.xml&#39;</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an empty workspace.</span>
 
 <span class="sd">        Arguments:</span>
@@ -237,12 +284,14 @@
 
         <span class="k">return</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Resolver.resolve_mets_arguments"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.resolve_mets_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_mets_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Resolve the ``--mets``, ``--mets-basename`` and `--directory`` argument</span>
-<span class="sd">        into a coherent set of arguments according to https://github.com/OCR-D/core/issues/517</span>
+<div class="viewcode-block" id="Resolver.resolve_mets_arguments"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.resolve_mets_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_mets_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the ``--mets``, ``--mets-basename``, `--directory``,</span>
+<span class="sd">        ``--mets-server-url``, arguments into a coherent set of arguments</span>
+<span class="sd">        according to https://github.com/OCR-D/core/issues/517</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.resolver.resolve_mets_arguments&#39;</span><span class="p">)</span>
+
         <span class="n">mets_is_remote</span> <span class="o">=</span> <span class="n">mets_url</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mets_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mets_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">))</span>
 
         <span class="c1"># XXX we might want to be more strict like this but it might break # legacy code</span>
@@ -285,7 +334,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_file_in_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;--mets &#39;</span><span class="si">%s</span><span class="s2">&#39; has a directory part inconsistent with --directory &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">directory</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_url</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_basename</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_url</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_basename</span><span class="p">),</span> <span class="n">mets_server_url</span></div></div>
 
 
 </pre></div>
@@ -340,7 +389,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -357,8 +406,8 @@
       &copy;2018-2021, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

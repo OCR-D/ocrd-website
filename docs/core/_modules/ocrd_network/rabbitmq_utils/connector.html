@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.rabbitmq_utils.connector &#8212; ocrd 2.58.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c89f9379"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/rabbitmq_utils/connector.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.rabbitmq_utils.connector</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The source code in this file is adapted by reusing</span>
+<span class="sd">some part of the source code from the official</span>
+<span class="sd">RabbitMQ documentation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pika</span> <span class="kn">import</span> <span class="n">BasicProperties</span><span class="p">,</span> <span class="n">BlockingConnection</span><span class="p">,</span> <span class="n">ConnectionParameters</span><span class="p">,</span> <span class="n">PlainCredentials</span>
+<span class="kn">from</span> <span class="nn">pika.adapters.blocking_connection</span> <span class="kn">import</span> <span class="n">BlockingChannel</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_EXCHANGER_NAME</span><span class="p">,</span>
+    <span class="n">DEFAULT_EXCHANGER_TYPE</span><span class="p">,</span>
+    <span class="n">DEFAULT_QUEUE</span><span class="p">,</span>
+    <span class="n">DEFAULT_ROUTER</span><span class="p">,</span>
+    <span class="n">RABBIT_MQ_HOST</span> <span class="k">as</span> <span class="n">HOST</span><span class="p">,</span>
+    <span class="n">RABBIT_MQ_PORT</span> <span class="k">as</span> <span class="n">PORT</span><span class="p">,</span>
+    <span class="n">RABBIT_MQ_VHOST</span> <span class="k">as</span> <span class="n">VHOST</span><span class="p">,</span>
+    <span class="n">PREFETCH_COUNT</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="RMQConnector"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector">[docs]</a><span class="k">class</span> <span class="nc">RMQConnector</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">HOST</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PORT</span><span class="p">,</span> <span class="n">vhost</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">VHOST</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vhost</span> <span class="o">=</span> <span class="n">vhost</span>
+
+        <span class="c1"># According to the documentation, Pika blocking</span>
+        <span class="c1"># connections are not thread-safe!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Should try reconnecting again</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_try_reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># If the module has been stopped with a</span>
+        <span class="c1"># keyboard interruption, i.e., CTRL + C</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gracefully_stopped</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="RMQConnector.declare_and_bind_defaults"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.declare_and_bind_defaults">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">declare_and_bind_defaults</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">BlockingConnection</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">connection</span> <span class="ow">and</span> <span class="n">connection</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+                <span class="c1"># Declare the default exchange agent</span>
+                <span class="n">RMQConnector</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span>
+                    <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="n">exchange_name</span><span class="o">=</span><span class="n">DEFAULT_EXCHANGER_NAME</span><span class="p">,</span>
+                    <span class="n">exchange_type</span><span class="o">=</span><span class="n">DEFAULT_EXCHANGER_TYPE</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="c1"># Declare the default queue</span>
+                <span class="n">RMQConnector</span><span class="o">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">queue_name</span><span class="o">=</span><span class="n">DEFAULT_QUEUE</span><span class="p">)</span>
+                <span class="c1"># Bind the default queue to the default exchange</span>
+                <span class="n">RMQConnector</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span>
+                    <span class="n">channel</span><span class="p">,</span>
+                    <span class="n">queue_name</span><span class="o">=</span><span class="n">DEFAULT_QUEUE</span><span class="p">,</span>
+                    <span class="n">exchange_name</span><span class="o">=</span><span class="n">DEFAULT_EXCHANGER_NAME</span><span class="p">,</span>
+                    <span class="n">routing_key</span><span class="o">=</span><span class="n">DEFAULT_ROUTER</span>
+                <span class="p">)</span></div>
+
+    <span class="c1"># Connection related methods</span>
+<div class="viewcode-block" id="RMQConnector.open_blocking_connection"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.open_blocking_connection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">open_blocking_connection</span><span class="p">(</span>
+            <span class="n">credentials</span><span class="p">:</span> <span class="n">PlainCredentials</span><span class="p">,</span>
+            <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">HOST</span><span class="p">,</span>
+            <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PORT</span><span class="p">,</span>
+            <span class="n">vhost</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">VHOST</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockingConnection</span><span class="p">:</span>
+        <span class="n">blocking_connection</span> <span class="o">=</span> <span class="n">BlockingConnection</span><span class="p">(</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">ConnectionParameters</span><span class="p">(</span>
+                <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+                <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">virtual_host</span><span class="o">=</span><span class="n">vhost</span><span class="p">,</span>
+                <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span>
+                <span class="c1"># TODO: The heartbeat should not be disabled (0)!</span>
+                <span class="n">heartbeat</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">blocking_connection</span></div>
+
+<div class="viewcode-block" id="RMQConnector.open_blocking_channel"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.open_blocking_channel">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">open_blocking_channel</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">BlockingConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BlockingChannel</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">connection</span> <span class="ow">and</span> <span class="n">connection</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">channel</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RMQConnector.exchange_bind"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.exchange_bind">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exchange_bind</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">destination_exchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">source_exchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">exchange_bind</span><span class="p">(</span>
+                <span class="n">destination</span><span class="o">=</span><span class="n">destination_exchange</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">source_exchange</span><span class="p">,</span>
+                <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span>
+                <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.exchange_declare"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.exchange_declare">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exchange_declare</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">exchange_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">exchange_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">passive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">durable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">auto_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">internal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">exchange</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span>
+                <span class="n">exchange</span><span class="o">=</span><span class="n">exchange_name</span><span class="p">,</span>
+                <span class="n">exchange_type</span><span class="o">=</span><span class="n">exchange_type</span><span class="p">,</span>
+                <span class="c1"># Only check to see if the exchange exists</span>
+                <span class="n">passive</span><span class="o">=</span><span class="n">passive</span><span class="p">,</span>
+                <span class="c1"># Survive a reboot of RabbitMQ</span>
+                <span class="n">durable</span><span class="o">=</span><span class="n">durable</span><span class="p">,</span>
+                <span class="c1"># Remove when no more queues are bound to it</span>
+                <span class="n">auto_delete</span><span class="o">=</span><span class="n">auto_delete</span><span class="p">,</span>
+                <span class="c1"># Can only be published to by other exchanges</span>
+                <span class="n">internal</span><span class="o">=</span><span class="n">internal</span><span class="p">,</span>
+                <span class="c1"># Custom key/value pair arguments for the exchange</span>
+                <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">exchange</span></div>
+
+<div class="viewcode-block" id="RMQConnector.exchange_delete"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.exchange_delete">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exchange_delete</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">exchange_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">if_unused</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Deletes queue only if unused</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">exchange_delete</span><span class="p">(</span><span class="n">exchange</span><span class="o">=</span><span class="n">exchange_name</span><span class="p">,</span> <span class="n">if_unused</span><span class="o">=</span><span class="n">if_unused</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.exchange_unbind"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.exchange_unbind">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exchange_unbind</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">destination_exchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">source_exchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">exchange_unbind</span><span class="p">(</span>
+                <span class="n">destination</span><span class="o">=</span><span class="n">destination_exchange</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">source_exchange</span><span class="p">,</span>
+                <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span>
+                <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.queue_bind"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.queue_bind">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">queue_bind</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">queue_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">exchange_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">queue_name</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="n">exchange_name</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.queue_declare"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.queue_declare">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">queue_declare</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">queue_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">passive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">durable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">auto_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">queue_declare</span><span class="p">(</span>
+                <span class="n">queue</span><span class="o">=</span><span class="n">queue_name</span><span class="p">,</span>
+                <span class="c1"># Only check to see if the queue exists and</span>
+                <span class="c1"># raise ChannelClosed exception if it does not</span>
+                <span class="n">passive</span><span class="o">=</span><span class="n">passive</span><span class="p">,</span>
+                <span class="c1"># Survive reboots of the server</span>
+                <span class="n">durable</span><span class="o">=</span><span class="n">durable</span><span class="p">,</span>
+                <span class="c1"># Only allow access by the current connection</span>
+                <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">,</span>
+                <span class="c1"># Delete after consumer cancels or disconnects</span>
+                <span class="n">auto_delete</span><span class="o">=</span><span class="n">auto_delete</span><span class="p">,</span>
+                <span class="c1"># Custom key/value pair arguments for the queue</span>
+                <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">queue</span></div>
+
+<div class="viewcode-block" id="RMQConnector.queue_delete"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.queue_delete">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">queue_delete</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">queue_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">if_unused</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">if_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">queue_delete</span><span class="p">(</span>
+                <span class="n">queue</span><span class="o">=</span><span class="n">queue_name</span><span class="p">,</span>
+                <span class="c1"># Only delete if the queue is unused</span>
+                <span class="n">if_unused</span><span class="o">=</span><span class="n">if_unused</span><span class="p">,</span>
+                <span class="c1"># Only delete if the queue is empty</span>
+                <span class="n">if_empty</span><span class="o">=</span><span class="n">if_empty</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.queue_purge"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.queue_purge">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">queue_purge</span><span class="p">(</span><span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span> <span class="n">queue_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">queue_purge</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">queue_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.queue_unbind"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.queue_unbind">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">queue_unbind</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">queue_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">exchange_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">queue_unbind</span><span class="p">(</span>
+                <span class="n">queue</span><span class="o">=</span><span class="n">queue_name</span><span class="p">,</span>
+                <span class="n">exchange</span><span class="o">=</span><span class="n">exchange_name</span><span class="p">,</span>
+                <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span>
+                <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.set_qos"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.set_qos">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_qos</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">prefetch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">prefetch_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PREFETCH_COUNT</span><span class="p">,</span>
+            <span class="n">global_qos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">basic_qos</span><span class="p">(</span>
+                <span class="c1"># No specific limit if set to 0</span>
+                <span class="n">prefetch_size</span><span class="o">=</span><span class="n">prefetch_size</span><span class="p">,</span>
+                <span class="n">prefetch_count</span><span class="o">=</span><span class="n">prefetch_count</span><span class="p">,</span>
+                <span class="c1"># Should the qos apply to all channels of the connection</span>
+                <span class="n">global_qos</span><span class="o">=</span><span class="n">global_qos</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMQConnector.confirm_delivery"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.confirm_delivery">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">confirm_delivery</span><span class="p">(</span><span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">confirm_delivery</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RMQConnector.basic_publish"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.connector.html#ocrd_network.rabbitmq_utils.RMQConnector.basic_publish">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">basic_publish</span><span class="p">(</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+            <span class="n">exchange_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">message_body</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+            <span class="n">properties</span><span class="p">:</span> <span class="n">BasicProperties</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">basic_publish</span><span class="p">(</span>
+                <span class="n">exchange</span><span class="o">=</span><span class="n">exchange_name</span><span class="p">,</span>
+                <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span>
+                <span class="n">body</span><span class="o">=</span><span class="n">message_body</span><span class="p">,</span>
+                <span class="n">properties</span><span class="o">=</span><span class="n">properties</span>
+            <span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2021, OCR-D.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
