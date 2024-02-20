@@ -63,8 +63,8 @@ Run `make help` to see a list of commands.
     JEKYLL           Which jekyll binary to use. Default 'jekyll'
     DSTDIR           Where to build site. Default '/home/kba/build/github.com/OCR-D/monorepo/ocrd-website/docs'
     SRCDIR           Where site is stored. Default '/home/kba/build/github.com/OCR-D/monorepo/ocrd-website/site'
-    GTDIR            Repositories mit dne DITA Quelltexten. Default: /home/kba/build/github.com/OCR-D/monorepo/ocrd-website/repo/gt-guidelines
-    JEKYLL_HOST      host to serve from. Default: 10.46.3.57
+    GTDIR            Repositories with DITA source texts. Default: /home/kba/build/github.com/OCR-D/monorepo/ocrd-website/repo/gt-guidelines
+    JEKYLL_HOST      Host to serve from. Default: 10.46.3.57
     KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: /home/kba/build/github.com/OCR-D/monorepo/ocrd-website/kwalitee.yml
     LANGS            Languages to build. Default: 'de en'
     LANGS_DST        Guideline langs to build. Default: 
@@ -163,7 +163,7 @@ is only available in one language.
 
 ## Updating workflows
 
-The [workflows](https://ocr-d.de/en/workflows) page is built from pages on inidividual steps in the [OCR-D wiki](https://github.com/OCR-D/ocrd-website.wiki).
+The [workflows](https://ocr-d.de/en/workflows) page is built from pages on individual steps in the [OCR-D wiki](https://github.com/OCR-D/ocrd-website.wiki).
 
 To automate this, you need to have [shinclude](https://github.com/kba/shinclude) installed with `make shinclude`.
 
@@ -188,5 +188,5 @@ make build-site deploy
 
 To add a shortcut to use the `https://ocr-d.de/goto/foo` mechanism:
 
-* Add a line consisting of the shortcut name, a space charater and the URL to `shortcuts.txt`
+* Add a line consisting of the shortcut name, a space character and the URL to `shortcuts.txt`
 * `make shortcuts`
