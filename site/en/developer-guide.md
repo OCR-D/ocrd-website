@@ -30,7 +30,7 @@ Lines in code examples
   * starting with `$ ` are typed shell input (everything after `$ ` is);
   * are output otherwise.
 
-Words in ALL CAPS with a preprended `$` are variable names:
+Words in ALL CAPS with a prepended `$` are variable names:
 
   * `$METS_URL`: URL or file path to a `mets.xml` file, e.g.
      * `https://github.com/OCR-D/assets/raw/master/data/kant_aufklaerung_1784/mets.xml`
