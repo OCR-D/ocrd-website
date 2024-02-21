@@ -160,7 +160,7 @@ Example:
 
 > Eine Mondfinsternis ist die Himmelsbegebenheit welche sich zur Zeit des Vollmondes ereignet, wenn die Erde zwischen der Sonne und dem Monde steht, so daß die Strahlen der Sonne von der Erde aufgehalten werden, und daß man so den Schatten der Erde in dem Monde siehet. In diesem Jahre sind zwey Monfinsternisse, davon ist ebenfalls nur Eine bey uns sichtbar, und zwar am 30sten März des Morgens nach 4 Uhr, und währt bis nach 6 Uhr.
 
-To get the Bag of Words of this paragraph a multiset containing each word and its number of occurence is created:
+To get the Bag of Words of this paragraph a multiset containing each word and its number of occurrences is created:
 
 $BoW_{GT}$ =
 
@@ -205,7 +205,7 @@ In this example, 66% of the words have been correctly recognized.
 
 ### Layout Evaluation
 
-A good text segementation is the basis for measuring text accuracy.
+A good text segmentation is the basis for measuring text accuracy.
 
 An example can help to illustrate this:
 Given in a document containing two columns these two columns are detected by layout analysis as just one.
@@ -215,7 +215,7 @@ Even if all characters and words may be recognized correctly, all downstream pro
 While the comprehensive evaluation of OCR with consideration of layout analysis is still a research topic, several established metrics can be used to capture different aspects of it.
 For pragmatic reasons we set aside errors resulting from misdetecting the reading order for the moment (though this might be implemented in the future).
 
-Any layout evaluation in the context of OCR-D focusses on region level which should be sufficient for most use cases.
+Any layout evaluation in the context of OCR-D focuses on region level which should be sufficient for most use cases.
 
 #### Reading Order (Definition)
 
@@ -267,7 +267,7 @@ Wall-clock time (or elapsed time) is the time taken on the processors including 
 
 #### I/O
 
-I/O (input / output) bandwith is the (average/peak) number of bytes per second read and written from disk during processing.
+I/O (input / output) bandwidth is the (average/peak) number of bytes per second read and written from disk during processing.
 
 #### Memory Usage
 
@@ -311,7 +311,7 @@ GPU peak memory is the maximum GPU memory allocated during the execution of a wo
 
 ##### Letter Accuracy
 
-Letter Accuracy is a metric that focusses on a pre-defined set of characters classes for evaluation while ignoring others.
+Letter Accuracy is a metric that focuses on a pre-defined set of characters classes for evaluation while ignoring others.
 Letters in a common sense do not include white spaces and punctuations or Arabic and Indic digits.
 Furthermore, even letter capitalization might be ignored.
 The relevant character classes must be removed from both the candidate text and the ground truth before evaluation.
@@ -350,7 +350,7 @@ The algorithm can be summarized as follows:
 
 (paraphrase of C. Clausner, S. Pletschacher and A. Antonacopoulos / Pattern Recognition Letters 131 (2020) 390–397, p. 392)
 
-#### Layout Evalutation
+#### Layout Evaluation
 
 ##### Reading Order Evaluation
 
@@ -376,7 +376,7 @@ Then this error value is normalised by the hypothetical error value at 50% agree
 
 $e_{50} = p_{max} * n_{GT} / 2$
 
-where $p_{max}$ is the highest single penality and $n_{GT}$ is the number of regions in the ground truth.
+where $p_{max}$ is the highest single penalty and $n_{GT}$ is the number of regions in the ground truth.
 
 The success measure is then given by
 
@@ -443,7 +443,7 @@ Example:
 Given a prediction threshold of 0.8, an IoU threshold of 0.6 and a model that tries to detect bicycles in an image which depicts two bicycles.
 The model returns two areas in an image that might be bicycles, one with a confidence score of 0.4 and one with 0.9. Since the prediction threshold equals 0.8, the first candidate gets immediately tossed out. The other
 is compared to both bicycles in the GT. One GT object is missed (false negative), the other intersects the remaining prediction, but the latter is twice as large.
-Therefore, the union of that pair is more than double the intersection. But since the IoU threshold equals 0.6, even the second candidate is not regarded as a match and thus also counted as false negative. Overall, both precision and recall are zero (becaue 1 kept prediction is a false positive and 2 GTs are false negatives).
+Therefore, the union of that pair is more than double the intersection. But since the IoU threshold equals 0.6, even the second candidate is not regarded as a match and thus also counted as false negative. Overall, both precision and recall are zero (because 1 kept prediction is a false positive and 2 GTs are false negatives).
 
 ###### Precision-Recall Curve
 

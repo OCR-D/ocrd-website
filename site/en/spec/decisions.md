@@ -55,7 +55,7 @@ benefit of all OCR-D stakeholders.
 * [2022] To execute the benchmarking, we will create several corpora with different characteristics (font, creation date, layout, …) and 
 run different workflows with these as input. The result is then displayed in the QUIVER workflow tab.
 The corpora will be publicly available for better transparency.
-* [2022] [Relevant metrics](https://github.com/OCR-D/spec/pull/225) for the mininum viable product (MVP) will be:
+* [2022] [Relevant metrics](https://github.com/OCR-D/spec/pull/225) for the minimum viable product (MVP) will be:
   * CER
   * WER
   * Bag of Words

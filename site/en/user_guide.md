@@ -278,7 +278,7 @@ docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd-olena-binariz
 ```
 
 The specified processor will read the files in fileGrp `Input-Group`,
-binarize them and write the results in fileGrp `Ouput-Group` in your workspace
+binarize them and write the results in fileGrp `Output-Group` in your workspace
 (i.e. both as files on the filesystem and referenced in the `mets.xml`). 
 It will also add information about this processing step in the METS metadata.
 
@@ -344,7 +344,7 @@ docker run --rm -u $(id -u) -v $PWD:/data -- ocrd/all:maximum ocrd process \
 ```
 
 Each specified processor will read the files in the respective fileGrp `Input-Group`,
-process them accordingly, and write the results in the respective fileGrp `Ouput-Group`
+process them accordingly, and write the results in the respective fileGrp `Output-Group`
 in your workspace (i.e. both as files on the filesystem and referenced in the `mets.xml`). 
 It will also add information about this processing step in the METS metadata.
 
