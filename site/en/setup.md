@@ -17,25 +17,25 @@ to achieve the workflow best suited for OCRing your content.
 Minimum system requirements
 <details>
 <summary> 8 GB RAM (more recommended)</summary>
-  
+
   - The more RAM is available, the more concurrent processes can be run<br>
   - Exceedingly large images (newspapers, folio-size books...) require a lot of RAM
-  
+
 </details>
 <details>
 <summary> 20 GB free disk space for local installation (more recommended)</summary>
-  
-  - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself 
+
+  - How much disk space is needed depends mainly on the individual purposes of the installation. In addition to the installation itself
   you will need space for various <a href="https://ocr-d.de/en/models">pretrained models</a>, training and evaluation data for training, and data to process.
-  
+
 </details>
 <details>
 <summary> Python 3.6 or 3.7</summary>
-  
+
   - OCR-D's target Python version is currently Python 3.6 which we will continue to support until at least Q3 2022<br>
   - Python 3.7 is also tested and supported<br>
   - Python 3.8 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and <2 and other related software. We expect to unconditionally support Python 3.8 once all processors and models are upgraded to work with a more recent Tensorflow.
-  
+
 </details>
 <details>
 <summary> Operating system: Ubuntu 18.04 (or Docker)</summary>
@@ -45,20 +45,20 @@ Minimum system requirements
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
   - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
   - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
-  
+
 </details>
 
 ## Installation
 
 ### ocrd_all
 
-`ocrd_all` is the main way to distribute and install the OCR-D software. 
-If you want to produce OCR output from image data, 
+`ocrd_all` is the main way to distribute and install the OCR-D software.
+If you want to produce OCR output from image data,
 this is what you need.
-  
+
   <details>
     <summary>Tell me more about ocrd_all</summary>
-    
+
 The [`ocrd_all`](https://github.com/OCR-D/ocrd_all) project is an effort by the
 OCR-D community, now maintained by the OCR-D coordination team. It streamlines
 the native installation of OCR-D modules with a versatile Makefile approach.
@@ -67,19 +67,19 @@ it is also the base for the [`ocrd/all`](https://hub.docker.com/r/ocrd/all)
 Docker images available from DockerHub that contain the full stack (or certain subsets)
 of OCR-D modules ready for deployment.
 
-Technically, [`ocrd_all`](https://github.com/OCR-D/ocrd_all) is a Git repository 
-that keeps all the necessary software as Git submodules at specific revisions. 
-This way, the software tools are known to be at a stable version and guaranteed to 
+Technically, [`ocrd_all`](https://github.com/OCR-D/ocrd_all) is a Git repository
+that keeps all the necessary software as Git submodules at specific revisions.
+This way, the software tools are known to be at a stable version and guaranteed to
 be interoperable with one another.
-    
+
   </details>
 
-### Installation: Docker or Native  
-  
+### Installation: Docker or Native
+
 There are two methods to install OCR-D:
 
- 1. **[Docker Installation of OCR-D](#ocrd_all-via-docker)** using the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)    
- 2. **[Native Installation of OCR-D](#ocrd_all-natively)** using the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively  
+ 1. **[Docker Installation of OCR-D](#ocrd_all-via-docker)** using the prebuilt `ocrd/all` [Docker images](https://hub.docker.com/r/ocrd/all) to install a module collection (**recommended**)
+ 2. **[Native Installation of OCR-D](#ocrd_all-natively)** using the `ocrd_all` [git repository](https://github.com/OCR-D/ocrd_all) to install selected modules natively
 
 We recommend using the prebuilt Docker images, since this does not require any changes to
 the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
@@ -87,11 +87,11 @@ the host system besides [installing Docker](https://hub.docker.com/r/ocrd/all).
   <details>
     <summary>Installation of individual OCR-D modules</summary>
 Sometimes it can be useful to [install the modules individually](#individual-installation-experts-only), either via Docker or natively.
-Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies, 
+Beware that we do not recommend installing modules individually, as it can be difficult to catch all dependencies,
 keep the software versions up-to-date and ensure that all components are at a usable and interoperable state.
 
   </details>
-    
+
 ## ocrd_all via Docker
 
 ### Prerequisites
@@ -122,14 +122,14 @@ Now you should see an (empty) list of available images.
 There are three versions of the
 [`ocrd/all`](https://hub.docker.com/r/ocrd/all) Docker image:
 `minimum`, `medium` and `maximum`. They differ in which modules are included
-and hence the size of the image:  
-* `minimum` is comprised of the essential OCR-D components, with Tesseract and OCRopus as OCR engines.  
-* `medium` adds the Calamari OCR engine, as well as extra segmentation, pre- and postprocessing options.   
-* `maximum` includes all modules for best performance and full flexibility, but requires the most disk space. 
+and hence the size of the image:
+* `minimum` is comprised of the essential OCR-D components, with Tesseract and OCRopus as OCR engines.
+* `medium` adds the Calamari OCR engine, as well as extra segmentation, pre- and postprocessing options.
+* `maximum` includes all modules for best performance and full flexibility, but requires the most disk space.
 
-We encourage the use of the relatively large but complete `maximum` image. 
-The `minimum` or `medium` images should only be used when certain that none but the included OCR-D 
-modules are needed. 
+We encourage the use of the relatively large but complete `maximum` image.
+The `minimum` or `medium` images should only be used when certain that none but the included OCR-D
+modules are needed.
 
 <details markdown=1>
   <summary>Click here for a table showing the modules included in each version</summary>
@@ -168,10 +168,10 @@ modules are needed.
 | cor-asv-fst                 | -         | -        | -         |
 
 </details>
-  
+
 ### Fetch Docker image
 
-To fetch the `maximum` version of the `ocrd/all` Docker image:<br> 
+To fetch the `maximum` version of the `ocrd/all` Docker image:<br>
 (replace `maximum` accordingly if you want the `minimum` or `medium` version)
 
 ```sh
@@ -180,10 +180,10 @@ docker pull ocrd/all:maximum
 
   <details>
     <summary>Docker and git images</summary>
-If you want to keep the modules' git repos inside the Docker images – so you can keep making 
-fast updates, without waiting for a new pre-built image, but also without building an image yourself – 
-then add the suffix `-git` to the image version, e.g. `maximum-git`. This will behave like the native installation, 
-only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/) 
+If you want to keep the modules' git repos inside the Docker images – so you can keep making
+fast updates, without waiting for a new pre-built image, but also without building an image yourself –
+then add the suffix `-git` to the image version, e.g. `maximum-git`. This will behave like the native installation,
+only inside the container. Yes, you can also [commit changes](https://rollout.io/blog/using-docker-commit-to-create-and-change-an-image/)
 made in containers back to your local Docker image.)
   </details>
 
@@ -192,7 +192,7 @@ made in containers back to your local Docker image.)
 To start, download and extract a document from the [OCR-D GT Repo](https://ola-hd.ocr-d.de/search?q=&fulltextsearch=false&metadatasearch=false&isGT=true&perPageRecords=30):
 
 ```sh
-wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
+wget "https://ola-hd.ocr-d.de/api/export?id=21.11156/BFBAD520-65F4-430A-B4B2-C81A296C9E09&internalId=false" -O wundt_grundriss_1896.ocrd.zip
 unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
@@ -213,7 +213,7 @@ After spinning up the container, you can use the installation and call the proce
 
 Alternatively, you can [translate each command to a docker call](/en/user_guide#translating-native-commands-to-docker-calls).
 
-Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a 
+Let's segment the images in file group `OCR-D-IMG` from the zip file into regions, thereby creating a
 METS file group `OCR-D-SEG-BLOCK-DOCKER`):
 
 ```sh
@@ -224,11 +224,11 @@ When you are finished using OCR-D commands, use this command to stop using docke
 
 ```sh
 exit
-``` 
+```
 
 ### Updating Docker image
 
-To update the Docker image to the latest version, just run the `docker pull` command:<br> 
+To update the Docker image to the latest version, just run the `docker pull` command:<br>
 (replace `maximum` accordingly if you use the `minimum` or `medium` version)
 
 ```sh
@@ -239,7 +239,7 @@ docker pull ocrd/all:maximum
 
 We recommend jumping to the [section about installing models at the bottom of this page](#installing-models) next.
 Alternatively, for instructions on how to proceed further with the processing of your data, please see the [user guide](/en/user_guide). Make sure to also read [the notes on translating native command line calls to docker calls](/en/user_guide#translating-native-commands-to-docker-calls).
-  
+
 ## ocrd_all natively
 
 The `ocrd_all` project contains a sophisticated Makefile to install or compile
@@ -308,14 +308,14 @@ Activate the virtual Python environment, which was created in the directory `ven
 source venv/bin/activate
 ocrd --version
 ocrd, version 2.13.2 # your version should be 2.13.2 or later
-``` 
+```
 
 ### Testing the native installation
 
 For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
 
 ```sh
-wget "https://ola-hd.ocr-d.de/api/export?id=21.T11998/0000-001C-F82E-8&internalId=false" -O wundt_grundriss_1896.ocrd.zip
+wget "https://ola-hd.ocr-d.de/api/export?id=21.11156/BFBAD520-65F4-430A-B4B2-C81A296C9E09&internalId=false" -O wundt_grundriss_1896.ocrd.zip
 sudo unzip wundt_grundriss_1896.ocrd.zip
 cd data
 ```
@@ -342,7 +342,7 @@ development](https://github.com/OCR-D/ocrd_all/commits/master), it is wise to
 regularly update the repository and its submodules:
 
 ```sh
-git pull 
+git pull
 ```
 
 This will refresh the local clone of ocrd_all with the changes in the official ocrd_all GitHub repository.
@@ -350,12 +350,12 @@ This will refresh the local clone of ocrd_all with the changes in the official o
 Now you can install the changes with
 
 ```sh
-make all 
+make all
 ```
 
 This will run the installation process for all submodules which have been changed. In the end, it should
 say that the last processor was installed successfully. `--version` for the processors which have been changed
-should give you its current version. 
+should give you its current version.
 
 ### Further reading
 
@@ -364,7 +364,7 @@ For instructions on how to process your own data, please see the [user guide](/e
 
 ## Individual installation (experts only)
 
-For developing purposes it might be useful to install modules individually, either with Docker or natively. 
+For developing purposes it might be useful to install modules individually, either with Docker or natively.
 With all variants of individual module installation, it will be up to you to
 keep the repositories up-to-date and installed. We therefore discourage
 individual installation of modules and recommend using ocrd_all as outlined above..
@@ -396,26 +396,26 @@ Now you can [test your installation](#testing-the-docker-installation).
 ### Native installation
 
 Installing each module into your system natively requires you to know and install all its _dependencies_ first.
-That can be _system packages_ (or even system package repositories) or _Python packages_. 
+That can be _system packages_ (or even system package repositories) or _Python packages_.
 
 To learn about system dependencies, consult the module's README files. In contrast, Python dependencies should
 be resolved automatically by using the Python package manager `pip`.
 
 > **NOTE**
-> 
+>
 > ocrd_tesserocr requires **tesseract-ocr >= 4.1.0**. But the Tesseract packages
 > bundled with **Ubuntu < 19.10** are too old. If you are on Ubuntu 18.04 LTS,
 > please enable [Alexander Pozdnyakov PPA](https://launchpad.net/~alex-p/+archive/ubuntu/tesseract-ocr),
 > which has up-to-date builds of tesseract and its dependencies:
-> 
+>
 > ```sh
 > sudo add-apt-repository ppa:alex-p/tesseract-ocr
 > sudo apt-get update
 > ```
 
 Next subsections:
-- For Python you also first need [virtualenv](#virtualenv). Then you have two options: 
-- installing [via PyPI](#from-pypi) or 
+- For Python you also first need [virtualenv](#virtualenv). Then you have two options:
+- installing [via PyPI](#from-pypi) or
 - installing [via local git clone](#from-git).
 
 #### virtualenv
@@ -464,7 +464,7 @@ sudo make deps-ubuntu
 Now you can [test your installation](#testing-the-native-installation).
 
 
-#### From git 
+#### From git
 
 This is the best option if you want to change the source code or install the latest, unpublished changes.
 
@@ -488,5 +488,5 @@ Now you can [test your installation](#testing-the-native-installation).
 
 ## Installing models
 
-Several processors in OCR-D need pretrained models you have to install beforehand. 
-Please consult our [instruction on models](/en/models) to get more information on how to download and install them. 
+Several processors in OCR-D need pretrained models you have to install beforehand.
+Please consult our [instruction on models](/en/models) to get more information on how to download and install them.
