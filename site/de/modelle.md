@@ -46,7 +46,7 @@ Die folgenden Modelle für Tesseract gibt es:
 
   * `deu_frak` Älteres Sprachmodell für deutsche Fraktur. Dieses Modell war mit Tesseract 3 gebräuchlich, ist aber heute nicht mehr zu empfehlen.
   * `deu` Sprachmodell für deutsche Antiqua, das aber auch etwas Fraktur erkennen kann.
-  * `frk` Sprachmodell für deutsche Fraktur, das aber auch etwas Antiqua erkennen kann.
+  * `deu_latf` (ehem. `frk`) Sprachmodell für deutsche Fraktur, das aber auch etwas Antiqua erkennen kann.
   * `Latin` Schriftmodell für lateinische Antiqua-Schriften, das aber auch etwas Fraktur erkennen kann.
   * `Fraktur` Schriftmodell für Fraktur-Schriften, das aber auch Antiqua-Schriften ganz gut erkennt. Fehler beim
     Erzeugen dieses Modells haben zur Folge, dass es kein Paragraphzeichen kennt und die Ligaturen `ch` und `ck`

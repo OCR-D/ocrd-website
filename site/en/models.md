@@ -302,8 +302,8 @@ model(s) to be provided as the `model` parameter. Multiple models can be
 combined by concatenating with `+` (which generally improves accuracy but always slows processing):
 
 ```sh
-# Use the deu and frk models
-ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deu+frk'
+# Use the deu and deu_latf models
+ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P model 'deu+deu_latf'
 # Use the Fraktur model
 ocrd-tesserocr-recognize -I OCR-D-SEG-LINE -O OCR-D-OCR-TESS -P Fraktur
 ```
