@@ -12,12 +12,10 @@ title: Das OCR-D-Team
 
 ### Ansprechpartnerin:
 
-#### Lena Hinrichsen
-Projektkoordinatorin OCR-D
+#### Leonie Eckert
 
 Herzog August Bibliothek Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20via%20OCR-D.de)
-
+[eckert[at]hab.de](mailto:eckert@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Stellvertreter*innen:
 
@@ -111,6 +109,12 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 [jonas.schrewe[at]gwdg.de](mailto:jonas.schrewe@gwdg.de?subject=Anfrage%20via%20OCR-D.de)
 
 ## Ehemalige Projektbeteiligte
+
+#### Lena Hinrichsen
+Projektkoordinatorin OCR-D
+
+Herzog August Bibliothek Wolfenbüttel
+[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Rainer Stotzka
 Karlsruhe Institute of Technology
