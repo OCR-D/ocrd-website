@@ -12,11 +12,11 @@ title: OCR-D is you and me
 
 ### Contact person:
 
-#### Lena Hinrichsen
+#### Leonie Eckert
 Project coordination OCR-D
 
-Duke August Library Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Request%20via%20OCR-D.de)
+Herzog August Library Wolfenbüttel
+[eckert[at]hab.de](mailto:eckert@hab.de?subject=Request%20via%20OCR-D.de)
 
 
 ### Substitution:
