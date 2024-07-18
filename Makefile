@@ -66,7 +66,8 @@ deps-ubuntu:
 
 # Install jekyll dependencies
 jekyll:
-	bundle install --path vendor/bundle
+	bundle config set --local path 'vendor/bundle'
+	bundle install
 
 # Install shinclude
 shinclude:
