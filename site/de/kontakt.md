@@ -59,11 +59,11 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 
 ## Projektmitarbeitende
 
-### Lena Hinrichsen
+### Leonie Eckert
 
 Projektkoordinatorin
 Herzog August Bibliothek Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
+[eckert[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
 ### Matthias Boenig
 
@@ -111,10 +111,7 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 ## Ehemalige Projektbeteiligte
 
 #### Lena Hinrichsen
-Projektkoordinatorin OCR-D
-
 Herzog August Bibliothek Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20via%20OCR-D.de)
 
 ### Rainer Stotzka
 Karlsruhe Institute of Technology
