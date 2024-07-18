@@ -63,7 +63,7 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 
 Projektkoordinatorin
 Herzog August Bibliothek Wolfenbüttel
-[eckert[at]hab.de](mailto:hinrichsen@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
+[eckert[at]hab.de](mailto:eckert@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
 ### Matthias Boenig
 
