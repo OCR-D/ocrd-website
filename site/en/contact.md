@@ -60,11 +60,11 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 
 ## Staff
 
-### Lena Hinrichsen
-Project Coordinator
+### Leonie Eckert
+Project coordination
 
-Duke August Library Wolfenbüttel
-[hinrichsen[at]hab.de](mailto:hinrichsen@hab.de?subject=Request%20via%20OCR-D.de)
+Herzog August Library Wolfenbüttel
+[eckert[at]hab.de](mailto:eckert@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### Matthias Boenig
 Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
@@ -118,6 +118,9 @@ Duke August Library Wolfenbüttel
 Bavarian State Library Munich
 
 ## Former staff
+
+### Lena Hinrichsen
+Herzog August Library Wolfenbüttel
 
 ### Elisabeth Engl
 Duke August Library Wolfenbüttel
