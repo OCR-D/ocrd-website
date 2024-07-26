@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
   <meta charset="utf-8"/>
-  <title>Web Api - OCR-D</title>
+  <title> - OCR-D</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="shortcut icon" href="https://avatars0.githubusercontent.com/u/26362587?s=200&amp;v=4" />
@@ -379,6 +379,10 @@ function ToggleSearchActive2() {
     <div class="navbar-end">
 
       <span class="navbar-item">
+        
+          <a href="https://translate.google.com/translate?hl=&sl=en&tl=de&u=https%3A%2F%2Focr-d.de%2Fen%2Fstart" title="View in German">
+            de
+          </a>
         </span>
 
 
@@ -403,31 +407,16 @@ function ToggleSearchActive2() {
           </div>
           <div class="toc-body">
             <ul class="menu-list">
-  <li><a href="#web-api">Web API</a>
+  <li><a href="#ocr-d-quick-start-guide">OCR-D Quick Start Guide</a>
     <ul>
-      <li><a href="#what-the-web-api-is">What the Web API is</a></li>
-      <li><a href="#why-we-need-a-web-api">Why we need a Web API</a></li>
-      <li><a href="#basic-architecture">Basic Architecture</a></li>
-    </ul>
-  </li>
-  <li><a href="#workflows">Workflows</a>
-    <ul>
-      <li><a href="#what-is-nf-and-why-did-we-choose-it">What is NF and why did we choose it?</a></li>
-      <li><a href="#how-is-the-nf-script-structured">How is the NF script structured?</a>
+      <li><a href="#open-your-ubuntu-terminal">Open your Ubuntu Terminal</a></li>
+      <li><a href="#install-and-set-up-docker">Install and set up Docker</a></li>
+      <li><a href="#further-requisites">Further Requisites</a></li>
+      <li><a href="#first-minimal-workflow-with-ocr-d">First minimal workflow with OCR-D</a>
         <ul>
-          <li><a href="#dsl-and-parameters">DSL and Parameters</a></li>
-          <li><a href="#definition-of-processes">Definition of processes</a></li>
-          <li><a href="#definition-of-workflows">Definition of workflows</a></li>
-          <li><a href="#main-workflow">Main workflow</a></li>
+          <li><a href="#explanation">Explanation</a></li>
         </ul>
       </li>
-      <li><a href="#which-features-of-nf-do-we-use-ie-what-features-have-to-be-implemented-in-potential-implementations">Which features of NF do we use, i.e. what features have to be implemented in potential implementations?</a></li>
-      <li><a href="#how-does-parallelization-work-both-within-works-and-across-works">How does parallelization work, both within works and across works?</a></li>
-      <li><a href="#how-does-the-nf-script-interact-with-the-processing-server">How does the NF script interact with the processing server?</a></li>
-      <li><a href="#how-does-the-nf-script-interact-with-the-mets-server">How does the NF script interact with the METS server?</a></li>
-      <li><a href="#how-to-convert-the-existing-ocr-d-process-workflows-we-reference-to-nf">How to convert the existing OCR-D process workflows we reference to NF?</a></li>
-      <li><a href="#how-should-nf-scripts-be-written-tested-deployed-and-evaluated">How should NF scripts be written, tested, deployed, and evaluated?</a></li>
-      <li><a href="#what-conventions-do-we-encourage-naming-structure-documentation-etc">What conventions do we encourage, naming, structure, documentation, etc.?</a></li>
     </ul>
   </li>
 </ul>
@@ -438,82 +427,95 @@ function ToggleSearchActive2() {
       
 
       <main class="container content " aria-label="Content">
-        <h1 id="web-api">Web API</h1>
+        <h1 id="ocr-d-quick-start-guide">OCR-D Quick Start Guide</h1>
 
-<h2 id="what-the-web-api-is">What the Web API is</h2>
+<h2 id="open-your-ubuntu-terminal">Open your Ubuntu Terminal</h2>
 
-<h2 id="why-we-need-a-web-api">Why we need a Web API</h2>
+<p><strong>On Ubuntu</strong>, open your Terminal.<br />
+<strong>On Windows</strong>, install WSL, Ubuntu and Docker Desktop by following these steps:</p>
 
-<p>The Web API is an important increment for implementers to be able to base their outward-facing HTTP 
-interfaces on a common API definition, so that the different implementations are interoperable on this level.</p>
+<ol>
+  <li>Install WSL 2 by opening the PowerShell and running:
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl <span class="nt">--install</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><a href="https://www.microsoft.com/store/productId/9PN20MSR04DW">Download and install Ubuntu 22.04.2 LTS from Microsoft App Store.</a></p>
+  </li>
+  <li>
+    <p>Open Ubuntu 22.04.2 LTS and follow the instructions.</p>
+  </li>
+  <li>
+    <p><a href="https://docs.docker.com/desktop/wsl/">Install Docker Desktop and set it up for WSL 2</a>.</p>
+  </li>
+  <li>Make sure, Docker Desktop is running.</li>
+</ol>
 
-<h2 id="basic-architecture">Basic Architecture</h2>
+<h2 id="install-and-set-up-docker">Install and set up Docker</h2>
 
-<h1 id="workflows">Workflows</h1>
+<p>In the Ubuntu shell, run:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker ps
+</code></pre></div></div>
+<p>If the command is not found, you may need to 
+<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository">install Docker</a> first.</p>
 
-<h2 id="what-is-nf-and-why-did-we-choose-it">What is NF and why did we choose it?</h2>
+<h2 id="further-requisites">Further Requisites</h2>
 
-<p>Nextflow is a workflow framework that allows the integration of various scripting languages into a single cohesive pipeline. Nextflow also has its own Domain Specific Language (DSL) that extends Groovy (extension of Java).</p>
+<ol>
+  <li>Install OCR-D via Docker and download example data from Github:
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:maximum
+mk <span class="nb">dir </span>ocr-d
+<span class="nb">cd </span>ocr-d
+git clone https://github.com/OCR-D/assets
+<span class="nb">mkdir </span>workspace
+<span class="nb">cp</span> <span class="nt">-r</span> assets/data/kant_aufklaerung_1784 workspace/kant_aufklaerung_1784
+<span class="nb">cd </span>workspace/kant_aufklaerung_1784
+</code></pre></div>    </div>
+  </li>
+  <li>Set up Docker :
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl <span class="nb">enable </span>docker
+<span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span>
+docker run <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>/.config:/.config <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
+</code></pre></div>    </div>
+  </li>
+  <li>Download some models:
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize
+<span class="nb">sudo mkdir</span> <span class="nt">-p</span> /usr/local/share/ocrd-resources/ocrd-tesserocr-recognize/configs
+<span class="nb">cd </span>data
+ocrd resmgr download <span class="s1">'*'</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
 
-<p>We choose it due to its rich set of features:</p>
-<ul>
-  <li>Stream oriented: Promotes programming approach extending Unix pipes model.</li>
-  <li>Fast Prototyping: Let’s you write a computational pipeline from smaller tasks.</li>
-  <li>Reproducibility: Supports Docker, Singularity, and 3 other types of containers.</li>
-  <li>Portable: Can run locally, Slurm, SGE, PBS, and cloud (Google, Kubernetes, and AWS).</li>
-  <li>Continuous checkpoints: Each process in the workflow is checkpointed. It is possible to retry 
-failed workflows and start from the last checkpoint.</li>
-  <li>Supports various scripting languages including Bash, Python, Perl, and others.</li>
-  <li>Enables separation between configuration (how to do) and workflow logic (what to do).</li>
-  <li>Modularization of tasks possible via workflow, sub-workflows, and processes.</li>
-  <li>Provides detailed logs and various types of execution reports.</li>
-</ul>
+<h2 id="first-minimal-workflow-with-ocr-d">First minimal workflow with OCR-D</h2>
 
-<h2 id="how-is-the-nf-script-structured">How is the NF script structured?</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-TESSOCR <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> textequiv_level word <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-TESSOCR <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> textequiv_level word <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model Fraktur_GT4HistOCR
+</code></pre></div></div>
 
-<p>The NF script contains the following structures:</p>
-<h3 id="dsl-and-parameters">DSL and Parameters</h3>
-<h3 id="definition-of-processes">Definition of processes</h3>
-<h3 id="definition-of-workflows">Definition of workflows</h3>
-<h3 id="main-workflow">Main workflow</h3>
+<p>Congratulations! You ran your first (minimal) OCR-D Workflow. 
+<br />
+You will find the results in the directory
+<code class="language-plaintext highlighter-rouge">workspace/kant_aufklaerung_1784</code> under <code class="language-plaintext highlighter-rouge">data</code>.
+<br />
+Consult the <a href="/en/setup">Setup Guide</a> for more details and other installation methods or jump into the 
+<a href="/en/user_guide">User Guide</a> to learn more about OCR‑D. Below you find a short explanation for the <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> command.
+<br /></p>
 
-<p>Check this source code example: <a href="https://github.com/MehmedGIT/OPERANDI_TestRepo/blob/master/ExampleWorkflows/Nextflow/workflow4/seq_ocrd_wf_many.nf">seq_ocrd_wf_many.nf</a></p>
+<h3 id="explanation">Explanation</h3>
 
-<h2 id="which-features-of-nf-do-we-use-ie-what-features-have-to-be-implemented-in-potential-implementations">Which features of NF do we use, i.e. what features have to be implemented in potential implementations?</h2>
-<p>The minimally used features for local runs are the parameters, processes, process decorators, and workflows. I will provide further answers to any following questions related to this main question. I am not sure what else to cover here for now.</p>
-
-<h2 id="how-does-parallelization-work-both-within-works-and-across-works">How does parallelization work, both within works and across works?</h2>
-
-<p>A Nextflow workflow script contains several processes. Processes are executed independently and are isolated from each other (i.e. they do not have a shared memory space). Communication between the processes is possible only through data channels (similar to the pipes model in Unix). These channels are basically asynchronous FIFO queues. Any process can define one or more channels as input and output. The order of interaction between these processes, and ultimately the order of workflow execution depends on the communication channel dependencies between processes. For example, if process A writes data to channel A and process B reads data from channel A, then Nextflow knows that process A must be executed before process B.</p>
-
-<p>Check this source code example: <a href="https://github.com/MehmedGIT/OPERANDI_TestRepo/blob/master/ExampleWorkflows/Nextflow/workflow4/seq_ocrd_wf_many.nf">seq_ocrd_wf_many.nf</a></p>
-
-<p>TODO: I will provide more parallelization details here based on the example above.</p>
-
-<h2 id="how-does-the-nf-script-interact-with-the-processing-server">How does the NF script interact with the processing server?</h2>
-<p>There is still no running processing server. More details will be announced once there is more to talk about. The interaction will most probably happen with curl through a bash script inside the Nextflow process. Of course, if it is integrated inside the OCR-D core, then no direct interactions will be needed from inside the Nextflow script.</p>
-
-<h2 id="how-does-the-nf-script-interact-with-the-mets-server">How does the NF script interact with the METS server?</h2>
-<p>There is still no running METS server. More details will be announced once there is more to talk about. The interaction will most probably happen with curl through a bash script inside the Nextflow process. Of course, if it is integrated inside the OCR-D core, then no direct interactions will be needed from inside the Nextflow script.</p>
-
-<h2 id="how-to-convert-the-existing-ocr-d-process-workflows-we-reference-to-nf">How to convert the existing OCR-D process workflows we reference to NF?</h2>
-<p>I have written an OtoN (OCR-D to Nextflow) converter which converts basic OCR-D process workflows to Nextflow workflow scripts. Check here: <a href="https://github.com/MehmedGIT/OtoN_Converter">OtoN</a></p>
-
-<p>Keep in mind that I have just started working on the converter. It is still very fresh and there are still known problems (related to the produced Nextflow scripts) and I am trying to fix them. It is also not convenient to use (no proper CLI). Neither it has usage instructions. Stay tuned for more updates.</p>
-
-<p>I have tested most edge cases for the lexer/parser of the OCR-D process file while implementing. There may be 
-input OCR-D process files that are not handled well enough. Feel free to report any bugs, errors, or lack of errors (when an error is expected).</p>
-
-<p>The tool will probably be a part of the OCR-D software in the future when it is stable enough for general use.</p>
-
-<h2 id="how-should-nf-scripts-be-written-tested-deployed-and-evaluated">How should NF scripts be written, tested, deployed, and evaluated?</h2>
-<p>Depends on the use case. Detailed instructions for local executions and example Nextflow workflow scripts can be found here: <a href="https://github.com/MehmedGIT/OPERANDI_TestRepo/tree/master/ExampleWorkflows/Nextflow">Nextflow</a></p>
-
-<p>I will provide further answers to any following questions related to this main question.</p>
-
-<h2 id="what-conventions-do-we-encourage-naming-structure-documentation-etc">What conventions do we encourage, naming, structure, documentation, etc.?</h2>
-<p>Try to stick to the structure provided in point 2 when writing Nextflow scripts. You can also check the Nextflow examples provided in point 8. The naming conventions for variables, function names, process names, and workflow names are encouraged to follow the snake case. I will provide further answers to any following questions related to this main question.</p>
-
+<p>The command<code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-TESSOCR -P segmentation_level region -P textequiv_level word -P find_tables true -P model Fraktur_GT4HistOCR</code>
+for the recognition contains the following parameters:
+<br /><br /></p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> is the processor used.</li>
+  <li><code class="language-plaintext highlighter-rouge">-I</code> is followed by the name of the input folder, here images.</li>
+  <li><code class="language-plaintext highlighter-rouge">-O</code> is followed by the name of the output folder where you will find the results (here binarised images and mets files with the recognised text.</li>
+  <li><code class="language-plaintext highlighter-rouge">-P segmentation_level region</code> is a parameter for the processor which tells tesserocr to start the segmentation on the level of regions.</li>
+  <li><code class="language-plaintext highlighter-rouge">-P textequiv_level word</code> is a parameter for the processor which tells tesserocr to stop the segmentation on the level of words (meaning glyphs will not be segmented here).</li>
+  <li><code class="language-plaintext highlighter-rouge">-P find_tables true</code> is a parameter for the processor which tells tesserocr to recognise tables.</li>
+  <li><code class="language-plaintext highlighter-rouge">-P model Fraktur_GT4HistOCR</code> is a parameter for the processor which tells tesserocr to use the model <code class="language-plaintext highlighter-rouge">Fraktur_GT4HistOCR</code> 
+for recognition.</li>
+</ol>
 
       </main>
     </div><footer class="footer" style="padding: 1rem">
