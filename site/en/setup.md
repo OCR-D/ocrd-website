@@ -33,7 +33,7 @@ Minimum system requirements
 <summary> Python 3.7</summary>
   
   - OCR-D's target Python version is currently Python 3.7. Python < 3.7 is not supported.<br>
-  - Python 3.8 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and <2 and other related software. We expect to unconditionally support Python 3.8 once all processors and models are upgraded to work with a more recent Tensorflow.
+  - Python 3.9 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and <2 and other related software. We expect to unconditionally support Python 3.9 once all processors and models are upgraded to work with a more recent Tensorflow.
   
 </details>
 <details>
