@@ -13,7 +13,7 @@ DSTDIR := $(REPODIR)/docs
 # Where site is stored. Default '$(SRCDIR)'
 SRCDIR := $(REPODIR)/site
 
-# Repositories with DITA source texts. Default: $(GTDIR)
+# Repository with DITA source texts. Default: $(GTDIR)
 GTDIR := $(REPODIR)/repo/gt-guidelines
 
 # Host to serve from. Default: $(JEKYLL_HOST)
@@ -51,7 +51,7 @@ help:
 	@echo "    JEKYLL           Which jekyll binary to use. Default '$(JEKYLL)'"
 	@echo "    DSTDIR           Where to build site. Default '$(DSTDIR)'"
 	@echo "    SRCDIR           Where site is stored. Default '$(SRCDIR)'"
-	@echo "    GTDIR            Repositories with DITA source texts. Default: $(GTDIR)"
+	@echo "    GTDIR            Repository with DITA source texts. Default: $(GTDIR)"
 	@echo "    JEKYLL_HOST      Host to serve from. Default: $(JEKYLL_HOST)"
 	@echo "    KWALITEE_CONFIG  Configuration file for ocrd-kwalitee. Default: $(KWALITEE_CONFIG)"
 	@echo "    LANGS            Languages to build. Default: '$(LANGS)'"
