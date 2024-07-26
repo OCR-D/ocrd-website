@@ -1061,7 +1061,7 @@ models](https://github.com/tesseract-ocr/tessdata/commit/4592b8d453889181e01982d
 replaced them, usually under the same name. (Thus, `deu.traineddata` used to be
 a rule-based model but now is an LSTM model. `deu-frak.traineddata` is still
 only available as rule-based model and was complemented by the new LSTM models
-`frk.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the
+`deu_latf.traineddata` and `script/Fraktur.traineddata`.) If you do need one of the
 models that was replaced completely, then you should at least rename the old
 one (e.g. to `deu3.traineddata`).
 
