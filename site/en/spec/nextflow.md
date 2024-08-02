@@ -9,7 +9,7 @@ title: Workflow Format (Nextflow)
 # Workflow Format (Nextflow)
 
 One key task in phase III of OCR-D was to define a workflow format describing sequences of OCR-D processors processing the images. Our solution is based on the open source project [Nextflow (NF)](https://www.nextflow.io/).
-The files (with the extension ```.nf```) describing this sequence can be generated and read both by humans and algorithms and can be more complex and flexible than the temporary solution with 
+The files (with the extension ```.nf```) describing this sequence can be generated and read both by humans and algorithms and can be more complex and flexible than the temporary solution with
 ```ocrd process```.
 
 Nextflow is a workflow framework that allows the integration of various scripting languages into a single cohesive pipeline. 
@@ -134,7 +134,7 @@ There may be input OCR-D process files that are not handled well enough. Feel fr
 
 The tool will probably be a part of the OCR-D software in the future when it is stable enough for general use.
 
-### Conventions for Nextflow scrips
+### Conventions for Nextflow scripts
 Try to stick to the structure provided in section [Structure of the Nextflow script](#structure-of-the-nextflow-script) when writing Nextflow scripts. 
 You can also check the Nextflow examples provided in section [Main workflow](#main-workflow). 
 The naming conventions for variables, function names, process names, and workflow names are encouraged to follow the snake case.

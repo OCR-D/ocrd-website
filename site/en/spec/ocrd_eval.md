@@ -160,7 +160,7 @@ Example:
 
 > Eine Mondfinsternis ist die Himmelsbegebenheit welche sich zur Zeit des Vollmondes ereignet, wenn die Erde zwischen der Sonne und dem Monde steht, so daß die Strahlen der Sonne von der Erde aufgehalten werden, und daß man so den Schatten der Erde in dem Monde siehet. In diesem Jahre sind zwey Monfinsternisse, davon ist ebenfalls nur Eine bey uns sichtbar, und zwar am 30sten März des Morgens nach 4 Uhr, und währt bis nach 6 Uhr.
 
-To get the Bag of Words of this paragraph a multiset containing each word and its number of occurrences is created:
+To get the Bag of Words of this paragraph a multiset containing each word and its number of occurrence is created:
 
 $BoW_{GT}$ =
 
