@@ -110,7 +110,7 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 
 ## Ehemalige Projektbeteiligte
 
-#### Lena Hinrichsen
+### Lena Hinrichsen
 Herzog August Bibliothek Wolfenbüttel
 
 ### Rainer Stotzka
