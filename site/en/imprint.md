@@ -14,8 +14,7 @@ identification as well as legal information on the Internet presence of the OCR-
 Information according to § 5 TMG
 
 ## Provider
-The provider of this internet presence in the legal sense is the Duke August Library
-Wolfenbüttel.
+The provider of this internet presence in the legal sense is the Herzog August Bibliothek Wolfenbüttel.
 
 Duke August Library,
 Lessingplatz 1,
