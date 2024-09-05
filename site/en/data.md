@@ -45,7 +45,7 @@ The special corpora contain:
 
 The image data were first subjected to a layout analysis (text region and line recognition) using [Transkribus](https://transkribus.eu/Transkribus/) and then segmented automatically. The automatically recognized text as well as the lines and text regions were corrected manually. Finally the data in form of PAGE files, digital images and METS files were zipped as a BagIt file.
 
-**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: [hinrichsen[at]hab.de](mailto:hinrichsen@hab.de)**
+**If you are interested in further Ground Truth data (e.g. for binarization) please contact us: [eckert[at]hab.de](mailto:eckert@hab.de)**
 
 The data are subject to a CC-BY-SA license, for the use of the image data
 different licenses may exist. Please [contact the project](contact) and/or the owning library.
@@ -56,4 +56,4 @@ The OCR-D research data repository collects all versions of documents and (inter
 # OCR-D Ground Truth Repository
 Similarly, there is a publicly available OCR-D repository, which contains all ground truth data provided by OCR-D. 
 * For further information about the metadata format, see [https://github.com/OCR-D/gt-labelling](https://github.com/OCR-D/gt-labelling)
-* The repository itself is available at [https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/search](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/search)
+* The repository itself is available at [https://github.com/OCR-D/gt_structure_text/releases](https://github.com/OCR-D/gt_structure_text/releases)
