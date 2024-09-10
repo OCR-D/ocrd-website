@@ -16,5 +16,7 @@ This section contains all information relevant for using the OCR-D-software in l
   * Steps of an OCR-D-workflow with sample workflows
 * [Models](/en/models)
   * Overview of models for different OCR-engines
+* [QUIVER](https://ocr-d.de/quiver-frontend/#/workflows)
+  * Quality management
 * [Glossary](/en/spec/glossary)
   * Glossary of technical terms used in OCR-D
