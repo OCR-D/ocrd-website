@@ -51,7 +51,7 @@ which are mostly open to the professional public to read and participate.
 					<p class="title title-image-header">Platforms</p>	
 					<ul>
 						<li><b>Gitter</b> – Follow up on our discussions and ask your own questions: We use the chat platform Gitter for short-term and low-threshold communication with each other:
-<a href="[https://app.gitter.im/#/room/#OCR-D_Lobby:gitter.im]">https://gitter.im/OCR-D/Lobby</a>
+<a href="https://app.gitter.im/#/room/#OCR-D_Lobby:gitter.im">https://gitter.im/OCR-D/Lobby</a>
 						</li>
 						<li> 
 						<b>GitHub</b> – Try it out yourself: On GitHub you can find the latest status of our developmental work on the OCR-D framework and the module projects. In case of problems, open an issue or participate directly with pull requests! <a href="https://github.com/OCR-D">https://github.com/OCR-D</a>
