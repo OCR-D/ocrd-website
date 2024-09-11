@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.runtime_data.network_agents &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/runtime_data/network_agents.html" />
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.runtime_data.network_agents</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">AgentType</span><span class="p">,</span> <span class="n">DeployType</span>
+
+
+<span class="c1"># TODO: Find appropriate replacement for the hack</span>
+<div class="viewcode-block" id="deploy_agent_native_get_pid_hack">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.deploy_agent_native_get_pid_hack">[docs]</a>
+<span class="k">def</span> <span class="nf">deploy_agent_native_get_pid_hack</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">ssh_client</span><span class="o">.</span><span class="n">invoke_shell</span><span class="p">()</span>
+    <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">makefile</span><span class="p">(</span><span class="s2">&quot;wb&quot;</span><span class="p">),</span> <span class="n">channel</span><span class="o">.</span><span class="n">makefile</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing command: </span><span class="si">{</span><span class="n">start_cmd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># TODO: This hack should still be fixed</span>
+    <span class="c1">#   Note left from @joschrew</span>
+    <span class="c1">#   the only way (I could find) to make it work to start a process in the background and</span>
+    <span class="c1">#   return early is this construction. The pid of the last started background process is</span>
+    <span class="c1">#   printed with `echo $!` but it is printed between other output. Because of that I added</span>
+    <span class="c1">#   `xyz` before and after the code to easily be able to filter out the pid via regex when</span>
+    <span class="c1">#   returning from the function</span>
+
+    <span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start_cmd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;echo xyz$!xyz </span><span class="se">\n</span><span class="s2"> exit </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">re_search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;xyz([0-9]+)xyz&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+
+
+
+<span class="c1"># TODO: Implement the actual method that is missing</span>
+<div class="viewcode-block" id="deploy_agent_docker_template">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.deploy_agent_docker_template">[docs]</a>
+<span class="k">def</span> <span class="nf">deploy_agent_docker_template</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logger.debug(f&quot;Executing command: {start_cmd}&quot;)</span>
+<span class="sd">    res = docker_client.containers.run(&quot;debian&quot;, &quot;sleep 500s&quot;, detach=True, remove=True)</span>
+<span class="sd">    assert res and res.id, f&quot;Starting docker network agent has failed with command: {start_cmd}&quot;</span>
+<span class="sd">    return res.id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Deploying docker type agents is not supported yet!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DataNetworkAgent">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.DataNetworkAgent">[docs]</a>
+<span class="k">class</span> <span class="nc">DataNetworkAgent</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">:</span> <span class="n">DeployType</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentType</span><span class="p">,</span>
+        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">init_by_config</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">pid</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="n">processor_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">=</span> <span class="n">deploy_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deployed_by_config</span> <span class="o">=</span> <span class="n">init_by_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span> <span class="o">=</span> <span class="n">agent_type</span>
+        <span class="c1"># The id is assigned when the agent is deployed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">pid</span>
+
+    <span class="k">def</span> <span class="nf">_start_native_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">!=</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mismatch of deploy type when starting network agent: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">agent_pid</span> <span class="o">=</span> <span class="n">deploy_agent_native_get_pid_hack</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="n">ssh_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="o">=</span><span class="n">start_cmd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">agent_pid</span>
+
+    <span class="k">def</span> <span class="nf">_start_docker_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">!=</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mismatch of deploy type when starting network agent: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">agent_pid</span> <span class="o">=</span> <span class="n">deploy_agent_docker_template</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">docker_client</span><span class="o">=</span><span class="n">docker_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="o">=</span><span class="n">start_cmd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">agent_pid</span></div>
+
+
+
+<div class="viewcode-block" id="DataProcessingWorker">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.DataProcessingWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">DataProcessingWorker</span><span class="p">(</span><span class="n">DataNetworkAgent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">:</span> <span class="n">DeployType</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">init_by_config</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">pid</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">processor_name</span><span class="o">=</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">deploy_type</span><span class="o">=</span><span class="n">deploy_type</span><span class="p">,</span> <span class="n">agent_type</span><span class="o">=</span><span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSING_WORKER</span><span class="p">,</span>
+            <span class="n">init_by_config</span><span class="o">=</span><span class="n">init_by_config</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="n">pid</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="DataProcessingWorker.deploy_network_agent">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.DataProcessingWorker.deploy_network_agent">[docs]</a>
+    <span class="k">def</span> <span class="nf">deploy_network_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">database_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">queue_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span><span class="p">:</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="si">}</span><span class="s2"> --database </span><span class="si">{</span><span class="n">database_url</span><span class="si">}</span><span class="s2"> --queue </span><span class="si">{</span><span class="n">queue_url</span><span class="si">}</span><span class="s2"> &amp;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_native_instance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span><span class="p">:</span>
+            <span class="c1"># TODO: add real command to start processing worker in docker here</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_docker_instance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown deploy type of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DataProcessorServer">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.DataProcessorServer">[docs]</a>
+<span class="k">class</span> <span class="nc">DataProcessorServer</span><span class="p">(</span><span class="n">DataNetworkAgent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deploy_type</span><span class="p">:</span> <span class="n">DeployType</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">init_by_config</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">pid</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">processor_name</span><span class="o">=</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">deploy_type</span><span class="o">=</span><span class="n">deploy_type</span><span class="p">,</span> <span class="n">agent_type</span><span class="o">=</span><span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSOR_SERVER</span><span class="p">,</span>
+            <span class="n">init_by_config</span><span class="o">=</span><span class="n">init_by_config</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="n">pid</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+
+<div class="viewcode-block" id="DataProcessorServer.deploy_network_agent">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.runtime_data.network_agents.html#ocrd_network.runtime_data.DataProcessorServer.deploy_network_agent">[docs]</a>
+    <span class="k">def</span> <span class="nf">deploy_network_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">database_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">agent_address</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">NATIVE</span><span class="p">:</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="si">}</span><span class="s2"> --address </span><span class="si">{</span><span class="n">agent_address</span><span class="si">}</span><span class="s2"> --database </span><span class="si">{</span><span class="n">database_url</span><span class="si">}</span><span class="s2"> &amp;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_native_instance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_type</span> <span class="o">==</span> <span class="n">DeployType</span><span class="o">.</span><span class="n">DOCKER</span><span class="p">:</span>
+            <span class="c1"># TODO: add real command to start processor server in docker here</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_docker_instance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">connector_client</span><span class="p">,</span> <span class="n">start_cmd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown deploy type of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2018-2024, OCR-D.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.processor_server &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.processor_server &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/processor_server.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/processor_server.html" />
+  
 
   </head><body>
   
@@ -33,65 +35,61 @@
             
   <h1>Source code for ocrd_network.processor_server</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">FileHandler</span><span class="p">,</span> <span class="n">Formatter</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getpid</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
-<span class="kn">import</span> <span class="nn">uvicorn</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span> <span class="k">as</span> <span class="n">subprocess_run</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">uvicorn</span> <span class="kn">import</span> <span class="n">run</span>
 
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">BackgroundTasks</span><span class="p">,</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">status</span>
 <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">FileResponse</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">initLogging</span><span class="p">,</span>
     <span class="n">get_ocrd_tool_json</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
-    <span class="n">LOG_FORMAT</span><span class="p">,</span>
     <span class="n">parse_json_string_with_comments</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">JobState</span><span class="p">,</span> <span class="n">ServerApiTags</span>
 <span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DBProcessorJob</span><span class="p">,</span>
     <span class="n">db_get_workspace</span><span class="p">,</span>
     <span class="n">db_update_processing_job</span><span class="p">,</span>
+    <span class="n">db_get_processing_job</span><span class="p">,</span>
     <span class="n">initiate_database</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="n">get_processor_server_logging_file_path</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">PYJobInput</span><span class="p">,</span>
-    <span class="n">PYJobOutput</span><span class="p">,</span>
-    <span class="n">PYOcrdTool</span><span class="p">,</span>
-    <span class="n">StateEnum</span>
+<span class="kn">from</span> <span class="nn">.logging_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">configure_file_handler_with_formatter</span><span class="p">,</span>
+    <span class="n">get_processor_server_logging_file_path</span><span class="p">,</span>
+    <span class="n">get_processing_job_logging_file_path</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">PYJobOutput</span><span class="p">,</span> <span class="n">PYOcrdTool</span>
 <span class="kn">from</span> <span class="nn">.process_helpers</span> <span class="kn">import</span> <span class="n">invoke_processor</span>
 <span class="kn">from</span> <span class="nn">.rabbitmq_utils</span> <span class="kn">import</span> <span class="n">OcrdResultMessage</span>
 <span class="kn">from</span> <span class="nn">.server_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_get_processor_job</span><span class="p">,</span>
     <span class="n">_get_processor_job_log</span><span class="p">,</span>
+    <span class="n">raise_http_exception</span><span class="p">,</span>
     <span class="n">validate_and_return_mets_path</span><span class="p">,</span>
     <span class="n">validate_job_input</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">calculate_execution_time</span><span class="p">,</span>
-    <span class="n">post_to_callback_url</span><span class="p">,</span>
-    <span class="n">generate_id</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">calculate_execution_time</span><span class="p">,</span> <span class="n">post_to_callback_url</span><span class="p">,</span> <span class="n">generate_id</span>
 
 
-<div class="viewcode-block" id="ProcessorServer"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer">[docs]</a><span class="k">class</span> <span class="nc">ProcessorServer</span><span class="p">(</span><span class="n">FastAPI</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessorServer">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer">[docs]</a>
+<span class="k">class</span> <span class="nc">ProcessorServer</span><span class="p">(</span><span class="n">FastAPI</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mongodb_addr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">processor_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">processor_name</span> <span class="ow">or</span> <span class="n">processor_class</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either &quot;processor_name&quot; or &quot;processor_class&quot; must be provided&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either &#39;processor_name&#39; or &#39;processor_class&#39; must be provided&quot;</span><span class="p">)</span>
         <span class="n">initLogging</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">on_startup</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">],</span>
             <span class="n">on_shutdown</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">],</span>
-            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;OCR-D Processor Server&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;OCR-D Processor Server&#39;</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Network agent - Processor Server&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Network agent - Processor Server&quot;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd_network.processor_server&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;ocrd_network.processor_server&quot;</span><span class="p">)</span>
         <span class="n">log_file</span> <span class="o">=</span> <span class="n">get_processor_server_logging_file_path</span><span class="p">(</span><span class="n">processor_name</span><span class="o">=</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="n">getpid</span><span class="p">())</span>
-        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-        <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">(</span><span class="n">LOG_FORMAT</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+        <span class="n">configure_file_handler_with_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">db_url</span> <span class="o">=</span> <span class="n">mongodb_addr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="n">processor_name</span>
@@ -106,78 +104,89 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The ocrd_tool is empty or missing&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s2">&quot;executable&quot;</span><span class="p">]</span>
 
-        <span class="c1"># Create routes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_info</span><span class="p">,</span>
-            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Processing&#39;</span><span class="p">],</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
-            <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get information about this processor.&#39;</span><span class="p">,</span>
-            <span class="n">response_model</span><span class="o">=</span><span class="n">PYOcrdTool</span><span class="p">,</span>
-            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_api_routes_processing</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_processor_task</span><span class="p">,</span>
-            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Processing&#39;</span><span class="p">],</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_202_ACCEPTED</span><span class="p">,</span>
-            <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Submit a job to this processor.&#39;</span><span class="p">,</span>
-            <span class="n">response_model</span><span class="o">=</span><span class="n">PYJobOutput</span><span class="p">,</span>
-            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/</span><span class="si">{job_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_job</span><span class="p">,</span>
-            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Processing&#39;</span><span class="p">],</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
-            <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get information about a job based on its ID&#39;</span><span class="p">,</span>
-            <span class="n">response_model</span><span class="o">=</span><span class="n">PYJobOutput</span><span class="p">,</span>
-            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/</span><span class="si">{job_id}</span><span class="s1">/log&#39;</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_job_log</span><span class="p">,</span>
-            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;processing&#39;</span><span class="p">],</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
-            <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the log file of a job id&#39;</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="ProcessorServer.on_startup"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.on_startup">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessorServer.on_startup">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.on_startup">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">initiate_database</span><span class="p">(</span><span class="n">db_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_url</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.on_shutdown"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.on_shutdown">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ProcessorServer.on_shutdown">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.on_shutdown">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        TODO: Perform graceful shutdown operations here</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.get_processor_info"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_info">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ProcessorServer.add_api_routes_processing">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.add_api_routes_processing">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_api_routes_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">processing_router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+        <span class="n">processing_router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/info&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_info</span><span class="p">,</span>
+            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="n">ServerApiTags</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">],</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get information about this processor.&quot;</span><span class="p">,</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">PYOcrdTool</span><span class="p">,</span>
+            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">processing_router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/run&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_processor_task</span><span class="p">,</span>
+            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="n">ServerApiTags</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">],</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_202_ACCEPTED</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Submit a job to this processor.&quot;</span><span class="p">,</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">PYJobOutput</span><span class="p">,</span>
+            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">processing_router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/job/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_job</span><span class="p">,</span>
+            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="n">ServerApiTags</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">],</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get information about a job based on its ID&quot;</span><span class="p">,</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">PYJobOutput</span><span class="p">,</span>
+            <span class="n">response_model_exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">processing_router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/log/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_processor_job_log</span><span class="p">,</span>
+            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="n">ServerApiTags</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">],</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get the log file of a job id&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProcessorServer.get_processor_info">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_info">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-                <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
-                <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Empty or missing ocrd_tool&#39;</span>
-            <span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Empty or missing ocrd tool json.&quot;</span>
+            <span class="n">raise_http_exception</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span></div>
+
 
     <span class="c1"># Note: The Processing server pushes to a queue, while</span>
     <span class="c1">#  the Processor Server creates (pushes to) a background task</span>
-<div class="viewcode-block" id="ProcessorServer.create_processor_task"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.create_processor_task">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">create_processor_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessorServer.create_processor_task">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.create_processor_task">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">create_processor_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">background_tasks</span><span class="p">:</span> <span class="n">BackgroundTasks</span><span class="p">):</span>
         <span class="n">validate_job_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">job_input</span><span class="p">)</span>
         <span class="n">job_input</span><span class="o">.</span><span class="n">path_to_mets</span> <span class="o">=</span> <span class="k">await</span> <span class="n">validate_and_return_mets_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">job_input</span><span class="p">)</span>
 
-        <span class="n">job</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># The request is not forwarded from the Processing Server, assign a job_id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">job_input</span><span class="o">.</span><span class="n">job_id</span><span class="p">:</span>
             <span class="n">job_id</span> <span class="o">=</span> <span class="n">generate_id</span><span class="p">()</span>
@@ -186,22 +195,30 @@
                 <span class="o">**</span><span class="n">job_input</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
                 <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
                 <span class="n">processor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span>
-                <span class="n">state</span><span class="o">=</span><span class="n">StateEnum</span><span class="o">.</span><span class="n">queued</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">JobState</span><span class="o">.</span><span class="n">queued</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="n">job</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_processor_task</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_processing_job</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="c1"># await self.run_processor_task(job=job)</span>
+        <span class="n">background_tasks</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_processor_task</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">job</span><span class="o">.</span><span class="n">to_job_output</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.run_processor_task"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.run_processor_task">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_processor_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">DBProcessorJob</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ProcessorServer.run_processor_task">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.run_processor_task">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_processor_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">DBProcessorJob</span><span class="p">):</span>
         <span class="n">execution_failed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">job_log_file</span> <span class="o">=</span> <span class="n">get_processing_job_logging_file_path</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">db_update_processing_job</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
-            <span class="n">state</span><span class="o">=</span><span class="n">StateEnum</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
-            <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span>
+            <span class="n">state</span><span class="o">=</span><span class="n">JobState</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+            <span class="n">log_file_path</span><span class="o">=</span><span class="n">job_log_file</span>
         <span class="p">)</span>
 
-        <span class="n">mets_server_url</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">)</span><span class="o">.</span><span class="n">mets_server_url</span>
+        <span class="n">mets_server_url</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">))</span><span class="o">.</span><span class="n">mets_server_url</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">invoke_processor</span><span class="p">(</span>
                 <span class="n">processor_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_class</span><span class="p">,</span>
@@ -211,7 +228,8 @@
                 <span class="n">output_file_grps</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span>
                 <span class="n">page_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
-                <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span>
+                <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">,</span>
+                <span class="n">log_filename</span><span class="o">=</span><span class="n">job_log_file</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;processor_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, path_to_mets: </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -221,21 +239,21 @@
             <span class="n">execution_failed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">exec_duration</span> <span class="o">=</span> <span class="n">calculate_execution_time</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
-        <span class="n">job_state</span> <span class="o">=</span> <span class="n">StateEnum</span><span class="o">.</span><span class="n">success</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">execution_failed</span> <span class="k">else</span> <span class="n">StateEnum</span><span class="o">.</span><span class="n">failed</span>
+        <span class="n">job_state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">success</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">execution_failed</span> <span class="k">else</span> <span class="n">JobState</span><span class="o">.</span><span class="n">failed</span>
         <span class="k">await</span> <span class="n">db_update_processing_job</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">job_state</span><span class="p">,</span>
             <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
-            <span class="n">exec_time</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exec_duration</span><span class="si">}</span><span class="s1"> ms&#39;</span>
+            <span class="n">exec_time</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exec_duration</span><span class="si">}</span><span class="s2"> ms&quot;</span>
         <span class="p">)</span>
         <span class="n">result_message</span> <span class="o">=</span> <span class="n">OcrdResultMessage</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">job_state</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
             <span class="n">path_to_mets</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">,</span>
             <span class="c1"># May not be always available</span>
-            <span class="n">workspace_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">workspace_id</span>
+            <span class="n">workspace_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">workspace_id</span> <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">workspace_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Result message: </span><span class="si">{</span><span class="n">result_message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result message: </span><span class="si">{</span><span class="n">result_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">callback_url</span><span class="p">:</span>
             <span class="c1"># If the callback_url field is set,</span>
             <span class="c1"># post the result message (callback to a user defined endpoint)</span>
@@ -245,15 +263,18 @@
             <span class="c1"># post the result message (callback to Processing Server endpoint)</span>
             <span class="n">post_to_callback_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">internal_callback_url</span><span class="p">,</span> <span class="n">result_message</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.get_ocrd_tool"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_ocrd_tool">[docs]</a>    <span class="k">def</span> <span class="nf">get_ocrd_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ProcessorServer.get_ocrd_tool">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_ocrd_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ocrd_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_class</span><span class="p">:</span>
             <span class="c1"># The way of accessing ocrd tool like in the line below may be problematic</span>
             <span class="c1"># ocrd_tool = self.processor_class(workspace=None, version=True).ocrd_tool</span>
             <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">parse_json_string_with_comments</span><span class="p">(</span>
-                <span class="n">run</span><span class="p">(</span>
-                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">],</span>
+                <span class="n">subprocess_run</span><span class="p">(</span>
+                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="s2">&quot;--dump-json&quot;</span><span class="p">],</span>
                     <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
                     <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span>
@@ -263,32 +284,46 @@
             <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">get_ocrd_tool_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ocrd_tool</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.get_version"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ProcessorServer.get_version">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_version">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span>
 
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        if self.processor_class:</span>
 <span class="sd">            # The way of accessing the version like in the line below may be problematic</span>
 <span class="sd">            # version_str = self.processor_class(workspace=None, version=True).version</span>
 <span class="sd">            return version_str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">version_str</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">],</span>
+        <span class="n">version_str</span> <span class="o">=</span> <span class="n">subprocess_run</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">],</span>
             <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
             <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
         <span class="k">return</span> <span class="n">version_str</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.run_server"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.run_server">[docs]</a>    <span class="k">def</span> <span class="nf">run_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-        <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.get_processor_job"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_job">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="n">_get_processor_job</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ProcessorServer.run_server">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.run_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessorServer.get_processor_job_log"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_job_log">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_job_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span><span class="p">:</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="n">_get_processor_job_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="ProcessorServer.get_processor_job">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_job">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">_get_processor_job</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProcessorServer.get_processor_job_log">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processor_server.html#ocrd_network.processor_server.ProcessorServer.get_processor_job_log">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_processor_job_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">_get_processor_job_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -299,7 +334,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -321,7 +358,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -333,7 +369,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -341,7 +377,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -356,11 +392,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

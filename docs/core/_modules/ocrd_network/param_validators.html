@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.param_validators &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.param_validators &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/param_validators.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/param_validators.html" />
+  
 
   </head><body>
   
@@ -34,49 +36,68 @@
   <h1>Source code for ocrd_network.param_validators</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">click</span> <span class="kn">import</span> <span class="n">ParamType</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">verify_database_uri</span><span class="p">,</span>
-    <span class="n">verify_and_parse_mq_uri</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">verify_database_uri</span>
+<span class="kn">from</span> <span class="nn">.rabbitmq_utils</span> <span class="kn">import</span> <span class="n">verify_and_parse_mq_uri</span>
 
 
-<div class="viewcode-block" id="ServerAddressParamType"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.ServerAddressParamType">[docs]</a><span class="k">class</span> <span class="nc">ServerAddressParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Server address string format&#39;</span>
-    <span class="n">expected_format</span> <span class="o">=</span> <span class="s1">&#39;host:port&#39;</span>
+<div class="viewcode-block" id="ServerAddressParamType">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.ServerAddressParamType">[docs]</a>
+<span class="k">class</span> <span class="nc">ServerAddressParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Server address string format&quot;</span>
+    <span class="n">expected_format</span> <span class="o">=</span> <span class="s2">&quot;host:port&quot;</span>
 
-<div class="viewcode-block" id="ServerAddressParamType.convert"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.ServerAddressParamType.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+<div class="viewcode-block" id="ServerAddressParamType.convert">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.ServerAddressParamType.convert">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The processing server address is in wrong format&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The processing server address is in wrong format&quot;</span><span class="p">)</span>
             <span class="nb">int</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># validate port</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">, expected format: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_format</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">value</span></div></div>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Expected format: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_format</span><span class="si">}</span><span class="s2">, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+</div>
 
 
-<div class="viewcode-block" id="QueueServerParamType"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.QueueServerParamType">[docs]</a><span class="k">class</span> <span class="nc">QueueServerParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Message queue server string format&#39;</span>
 
-<div class="viewcode-block" id="QueueServerParamType.convert"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.QueueServerParamType.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+<div class="viewcode-block" id="QueueServerParamType">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.QueueServerParamType">[docs]</a>
+<span class="k">class</span> <span class="nc">QueueServerParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Message queue server string format&quot;</span>
+
+<div class="viewcode-block" id="QueueServerParamType.convert">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.QueueServerParamType.convert">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># perform validation check only</span>
             <span class="n">verify_and_parse_mq_uri</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">value</span></div></div>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to validate the RabbitMQ address, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DatabaseParamType"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.DatabaseParamType">[docs]</a><span class="k">class</span> <span class="nc">DatabaseParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Database string format&#39;</span>
 
-<div class="viewcode-block" id="DatabaseParamType.convert"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.DatabaseParamType.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+<div class="viewcode-block" id="DatabaseParamType">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.DatabaseParamType">[docs]</a>
+<span class="k">class</span> <span class="nc">DatabaseParamType</span><span class="p">(</span><span class="n">ParamType</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Database string format&quot;</span>
+
+<div class="viewcode-block" id="DatabaseParamType.convert">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.param_validators.html#ocrd_network.param_validators.DatabaseParamType.convert">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># perform validation check only</span>
             <span class="n">verify_database_uri</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">value</span></div></div>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to validate the MongoDB address, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -87,7 +108,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -109,7 +132,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -121,7 +143,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -129,7 +151,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -144,11 +166,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

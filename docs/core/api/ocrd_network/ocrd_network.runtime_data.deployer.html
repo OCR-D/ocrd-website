@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ocrd_network.runtime_data.deployer module &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+    <link rel="canonical" href="https://ocr-d.deapi/ocrd_network/ocrd_network.runtime_data.deployer.html" />
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-ocrd_network.runtime_data.deployer">
+<span id="ocrd-network-runtime-data-deployer-module"></span><h1>ocrd_network.runtime_data.deployer module<a class="headerlink" href="#module-ocrd_network.runtime_data.deployer" title="Link to this heading">¶</a></h1>
+<p>Abstraction of the deployment functionality for processors.</p>
+<p>The Processing Server provides the configuration parameters to the Deployer agent.
+The Deployer agent runs the RabbitMQ Server, MongoDB and the Processing Hosts.
+Each Processing Host may have several Processing Workers.
+Each Processing Worker is an instance of an OCR-D processor.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocrd_network.runtime_data.deployer.</span></span><span class="sig-name descname"><span class="pre">Deployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.find_matching_network_agents">
+<span class="sig-name descname"><span class="pre">find_matching_network_agents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">worker_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_names_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.find_matching_network_agents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.find_matching_network_agents" title="Link to this definition">¶</a></dt>
+<dd><p>Finds and returns a list of matching data objects of type:
+<cite>DataProcessingWorker</cite> and <cite>DataProcessorServer</cite>.</p>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">worker_only</span></code> match only worker network agents (DataProcessingWorker)
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">server_only</span></code> match only server network agents (DataProcessorServer)
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">docker_only</span></code> match only docker network agents (DataProcessingWorker and DataProcessorServer)
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">native_only</span></code> match only native network agents (DataProcessingWorker and DataProcessorServer)
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">str_names_only</span></code> returns the processor_name filed instead of the Data* object
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">unique_only</span></code> remove duplicate names from the matches
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">sort</span></code> sort the result</p>
+<p><cite>worker_only</cite> and <cite>server_only</cite> are mutually exclusive to each other
+<cite>docker_only</cite> and <cite>native_only</cite> are mutually exclusive to each other
+<cite>unique_only</cite> is allowed only together with <cite>str_names_only</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.resolve_processor_server_url">
+<span class="sig-name descname"><span class="pre">resolve_processor_server_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processor_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.resolve_processor_server_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.resolve_processor_server_url" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.deploy_network_agents">
+<span class="sig-name descname"><span class="pre">deploy_network_agents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mongodb_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rabbitmq_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.deploy_network_agents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.deploy_network_agents" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.stop_network_agents">
+<span class="sig-name descname"><span class="pre">stop_network_agents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.stop_network_agents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.stop_network_agents" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.deploy_rabbitmq">
+<span class="sig-name descname"><span class="pre">deploy_rabbitmq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.deploy_rabbitmq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.deploy_rabbitmq" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.stop_rabbitmq">
+<span class="sig-name descname"><span class="pre">stop_rabbitmq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.stop_rabbitmq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.stop_rabbitmq" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.deploy_mongodb">
+<span class="sig-name descname"><span class="pre">deploy_mongodb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.deploy_mongodb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.deploy_mongodb" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.stop_mongodb">
+<span class="sig-name descname"><span class="pre">stop_mongodb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.stop_mongodb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.stop_mongodb" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.stop_all">
+<span class="sig-name descname"><span class="pre">stop_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.stop_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.stop_all" title="Link to this definition">¶</a></dt>
+<dd><p>The order of stopping is important to optimize graceful shutdown in the future.
+If RabbitMQ server is stopped before stopping Processing Workers that may have
+a bad outcome and leave Processing Workers in an unpredictable state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.start_uds_mets_server">
+<span class="sig-name descname"><span class="pre">start_uds_mets_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws_dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.start_uds_mets_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.start_uds_mets_server" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocrd_network.runtime_data.deployer.Deployer.stop_uds_mets_server">
+<span class="sig-name descname"><span class="pre">stop_uds_mets_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mets_server_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_with_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/ocrd_network/runtime_data/deployer.html#Deployer.stop_uds_mets_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_network.runtime_data.deployer.Deployer.stop_uds_mets_server" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2018-2024, OCR-D.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/api/ocrd_network/ocrd_network.runtime_data.deployer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
