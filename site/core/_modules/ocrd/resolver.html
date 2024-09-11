@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.resolver &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd.resolver &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/resolver.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/resolver.html" />
+  
 
   </head><body>
   
@@ -42,6 +44,7 @@
 <span class="kn">from</span> <span class="nn">ocrd.constants</span> <span class="kn">import</span> <span class="n">TMP_PREFIX</span>
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">config</span><span class="p">,</span>
+    <span class="n">DEFAULT_METS_BASENAME</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">is_local_filename</span><span class="p">,</span>
     <span class="n">get_local_filename</span><span class="p">,</span>
@@ -54,12 +57,16 @@
 <span class="kn">from</span> <span class="nn">ocrd_models.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span> <span class="k">as</span> <span class="n">NS</span>
 <span class="kn">from</span> <span class="nn">ocrd_models.utils</span> <span class="kn">import</span> <span class="n">handle_oai_response</span>
 
-<div class="viewcode-block" id="Resolver"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver">[docs]</a><span class="k">class</span> <span class="nc">Resolver</span><span class="p">():</span>
+<div class="viewcode-block" id="Resolver">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver">[docs]</a>
+<span class="k">class</span> <span class="nc">Resolver</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handle uploads, downloads, repository access, and manage temporary directories</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Resolver.download_to_directory"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.download_to_directory">[docs]</a>    <span class="k">def</span> <span class="nf">download_to_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Resolver.download_to_directory">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.download_to_directory">[docs]</a>
+    <span class="k">def</span> <span class="nf">download_to_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download a URL ``url`` to a local file in ``directory``.</span>
 
@@ -128,12 +135,15 @@
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stop early, src_path and dst_path are the same: &#39;</span><span class="si">%s</span><span class="s2">&#39; (url: &#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
                 <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
-        <span class="c1"># Respect &#39;if_exists&#39; arg</span>
+        <span class="c1"># Respect &#39;if_exists&#39; kwarg</span>
         <span class="k">if</span> <span class="n">dst_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">if_exists</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists but if_exists == </span><span class="si">{</span><span class="n">if_exists</span><span class="si">}</span><span class="s2">, skipping.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">if_exists</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists and if_exists == &#39;raise&#39;: </span><span class="si">{</span><span class="n">dst_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">if_exists</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists and if_exists == &#39;</span><span class="si">{</span><span class="n">if_exists</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">dst_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists but if_exists == </span><span class="si">{</span><span class="n">if_exists</span><span class="si">}</span><span class="s2">, overwriting.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Create dst_path parent dir</span>
         <span class="n">dst_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -183,7 +193,10 @@
 
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Resolver.workspace_from_url"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_url">[docs]</a>    <span class="k">def</span> <span class="nf">workspace_from_url</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Resolver.workspace_from_url">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_url">[docs]</a>
+    <span class="k">def</span> <span class="nf">workspace_from_url</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mets_url</span><span class="p">,</span>
         <span class="n">dst_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -192,6 +205,7 @@
         <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">src_baseurl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a workspace from a METS by URL (i.e. clone if :py:attr:`mets_url` is remote or :py:attr:`dst_dir` is given).</span>
@@ -206,6 +220,10 @@
 <span class="sd">                By default existing ``mets.xml`` will raise an exception.</span>
 <span class="sd">            download (boolean, False): Whether to also download all the files referenced by the METS</span>
 <span class="sd">            src_baseurl (string, None): Base URL for resolving relative file locations</span>
+<span class="sd">            mets_server_url (string, None): URI of TCP or local path of UDS for METS server handling</span>
+<span class="sd">                the `OcrdMets` of the workspace. By default the METS will be read from and written to</span>
+<span class="sd">                the filesystem directly.</span>
+<span class="sd">            **kwargs (): Passed on to ``OcrdMets.find_files`` if download == True</span>
 
 <span class="sd">        Download (clone) :py:attr:`mets_url` to ``mets.xml`` in :py:attr:`dst_dir`, unless </span>
 <span class="sd">        the former is already local and the latter is ``none`` or already identical to its directory name.</span>
@@ -246,17 +264,20 @@
 
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;workspace_from_url</span><span class="se">\n</span><span class="s2">mets_basename=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">mets_url=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">src_baseurl=&#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">dst_dir=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">src_baseurl</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;overwrite&#39;</span> <span class="k">if</span> <span class="n">clobber_mets</span> <span class="k">else</span> <span class="s1">&#39;skip&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_to_directory</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;overwrite&#39;</span> <span class="k">if</span> <span class="n">clobber_mets</span> <span class="k">else</span> <span class="s1">&#39;raise&#39;</span><span class="p">)</span>
 
         <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">baseurl</span><span class="o">=</span><span class="n">src_baseurl</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">workspace</span></div>
 
-<div class="viewcode-block" id="Resolver.workspace_from_nothing"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_nothing">[docs]</a>    <span class="k">def</span> <span class="nf">workspace_from_nothing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="s1">&#39;mets.xml&#39;</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Resolver.workspace_from_nothing">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.workspace_from_nothing">[docs]</a>
+    <span class="k">def</span> <span class="nf">workspace_from_nothing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">DEFAULT_METS_BASENAME</span><span class="p">,</span> <span class="n">clobber_mets</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an empty workspace.</span>
 
@@ -284,7 +305,10 @@
 
         <span class="k">return</span> <span class="n">Workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">mets_basename</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Resolver.resolve_mets_arguments"><a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.resolve_mets_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_mets_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Resolver.resolve_mets_arguments">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.resolver.html#ocrd.resolver.Resolver.resolve_mets_arguments">[docs]</a>
+    <span class="k">def</span> <span class="nf">resolve_mets_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">DEFAULT_METS_BASENAME</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve the ``--mets``, ``--mets-basename``, `--directory``,</span>
 <span class="sd">        ``--mets-server-url``, arguments into a coherent set of arguments</span>
@@ -307,7 +331,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mets_basename</span> <span class="ow">and</span> <span class="n">mets_url</span><span class="p">:</span>
             <span class="n">mets_basename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_url</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">mets_basename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">mets_url</span><span class="p">:</span>
-            <span class="n">mets_basename</span> <span class="o">=</span> <span class="s1">&#39;mets.xml&#39;</span>
+            <span class="n">mets_basename</span> <span class="o">=</span> <span class="n">DEFAULT_METS_BASENAME</span>
         <span class="k">elif</span> <span class="n">mets_basename</span> <span class="ow">and</span> <span class="n">mets_url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Use either --mets or --mets-basename, not both&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -334,7 +358,9 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_file_in_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;--mets &#39;</span><span class="si">%s</span><span class="s2">&#39; has a directory part inconsistent with --directory &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mets_url</span><span class="p">,</span> <span class="n">directory</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_url</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_basename</span><span class="p">),</span> <span class="n">mets_server_url</span></div></div>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_url</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mets_basename</span><span class="p">),</span> <span class="n">mets_server_url</span></div>
+</div>
+
 
 
 </pre></div>
@@ -347,7 +373,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -369,7 +397,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -381,7 +408,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -389,7 +416,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -404,11 +431,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

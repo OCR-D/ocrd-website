@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.server_cache &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.server_cache &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/server_cache.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/server_cache.html" />
+  
 
   </head><body>
   
@@ -34,29 +36,26 @@
   <h1>Source code for ocrd_network.server_cache</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">FileHandler</span><span class="p">,</span> <span class="n">Formatter</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">LOG_FORMAT</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">JobState</span><span class="p">,</span> <span class="n">SERVER_ALL_PAGES_PLACEHOLDER</span>
 <span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">db_get_processing_job</span><span class="p">,</span> <span class="n">db_update_processing_job</span>
-<span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.logging_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">configure_file_handler_with_formatter</span><span class="p">,</span>
     <span class="n">get_cache_locked_pages_logging_file_path</span><span class="p">,</span>
     <span class="n">get_cache_processing_requests_logging_file_path</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">StateEnum</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;CacheLockedPages&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CacheProcessingRequests&#39;</span>
-<span class="p">]</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PYJobInput</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">call_sync</span>
 
 
-<div class="viewcode-block" id="CacheLockedPages"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages">[docs]</a><span class="k">class</span> <span class="nc">CacheLockedPages</span><span class="p">:</span>
+<div class="viewcode-block" id="CacheLockedPages">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages">[docs]</a>
+<span class="k">class</span> <span class="nc">CacheLockedPages</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;ocrd_network.server_cache.locked_pages&quot;</span><span class="p">)</span>
         <span class="n">log_file</span> <span class="o">=</span> <span class="n">get_cache_locked_pages_logging_file_path</span><span class="p">()</span>
-        <span class="n">log_fh</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-        <span class="n">log_fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">(</span><span class="n">LOG_FORMAT</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">log_fh</span><span class="p">)</span>
+        <span class="n">configure_file_handler_with_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
         <span class="c1"># Used for keeping track of locked pages for a workspace</span>
         <span class="c1"># Key: `path_to_mets` if already resolved else `workspace_id`</span>
@@ -64,93 +63,90 @@
         <span class="c1"># and the values are list of strings representing the locked pages</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># Used as a placeholder to lock all pages when no page_id is specified</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all_pages&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SERVER_ALL_PAGES_PLACEHOLDER</span>
 
-<div class="viewcode-block" id="CacheLockedPages.check_if_locked_pages_for_output_file_grps"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.check_if_locked_pages_for_output_file_grps">[docs]</a>    <span class="k">def</span> <span class="nf">check_if_locked_pages_for_output_file_grps</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-            <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<div class="viewcode-block" id="CacheLockedPages.check_if_locked_pages_for_output_file_grps">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.check_if_locked_pages_for_output_file_grps">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_if_locked_pages_for_output_file_grps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No entry found in the locked pages cache for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">output_fileGrp</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">output_fileGrp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Caching the received request due to locked output file grp pages&quot;</span><span class="p">)</span>
+        <span class="n">debug_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Caching the received request due to locked output file grp pages.&quot;</span>
+        <span class="k">for</span> <span class="n">file_group</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">debug_message</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">True</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">])</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">page_ids</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Caching the received request due to locked output file grp pages&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">])</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">page_ids</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">debug_message</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="CacheLockedPages.get_locked_pages"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.get_locked_pages">[docs]</a>    <span class="k">def</span> <span class="nf">get_locked_pages</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+
+<div class="viewcode-block" id="CacheLockedPages.get_locked_pages">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.get_locked_pages">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_locked_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No locked pages available for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CacheLockedPages.lock_pages"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.lock_pages">[docs]</a>    <span class="k">def</span> <span class="nf">lock_pages</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-            <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheLockedPages.lock_pages">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.lock_pages">[docs]</a>
+    <span class="k">def</span> <span class="nf">lock_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No entry found in the locked pages cache for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating an entry in the locked pages cache for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">output_fileGrp</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">output_fileGrp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating an empty list for output file grp: </span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">file_group</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating an empty list for output file grp: </span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="c1"># The page id list is not empty - only some pages are in the request</span>
             <span class="k">if</span> <span class="n">page_ids</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locking pages for `</span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">`: </span><span class="si">{</span><span class="n">page_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">page_ids</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locked pages of `</span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">`: &quot;</span>
-                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locking pages for &#39;</span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">page_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">page_ids</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locked pages of &#39;</span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Lock all pages with a single value</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locking pages for `</span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">`: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locking pages for &#39;</span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CacheLockedPages.unlock_pages"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.unlock_pages">[docs]</a>    <span class="k">def</span> <span class="nf">unlock_pages</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-            <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheLockedPages.unlock_pages">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheLockedPages.unlock_pages">[docs]</a>
+    <span class="k">def</span> <span class="nf">unlock_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">page_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No entry found in the locked pages cache for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">for</span> <span class="n">output_fileGrp</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">output_fileGrp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">file_group</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">page_ids</span><span class="p">:</span>
                     <span class="c1"># Unlock the previously locked pages</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unlocking pages of `</span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">`: </span><span class="si">{</span><span class="n">page_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span> <span class="o">=</span> \
-                        <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">page_ids</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remaining locked pages of `</span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">`: &quot;</span>
-                                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unlocking pages of &#39;</span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">page_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">page_ids</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remaining locked pages of &#39;</span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Remove the single variable used to indicate all pages are locked</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unlocking all pages for: </span><span class="si">{</span><span class="n">output_fileGrp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">output_fileGrp</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">)</span></div></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unlocking all pages for: </span><span class="si">{</span><span class="n">file_group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">locked_pages</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">][</span><span class="n">file_group</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder_all_pages</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="CacheProcessingRequests"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests">[docs]</a><span class="k">class</span> <span class="nc">CacheProcessingRequests</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests">[docs]</a>
+<span class="k">class</span> <span class="nc">CacheProcessingRequests</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;ocrd_network.server_cache.processing_requests&quot;</span><span class="p">)</span>
         <span class="n">log_file</span> <span class="o">=</span> <span class="n">get_cache_processing_requests_logging_file_path</span><span class="p">()</span>
-        <span class="n">log_fh</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-        <span class="n">log_fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">(</span><span class="n">LOG_FORMAT</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">log_fh</span><span class="p">)</span>
+        <span class="n">configure_file_handler_with_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
         <span class="c1"># Used for buffering/caching processing requests in the Processing Server</span>
         <span class="c1"># Key: `path_to_mets` if already resolved else `workspace_id`</span>
@@ -162,7 +158,7 @@
         <span class="c1"># Key: `path_to_mets` if already resolved else `workspace_id`</span>
         <span class="c1"># Value: integer which holds the amount of jobs pushed to the RabbitMQ</span>
         <span class="c1"># but no internal callback was yet invoked</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">__check_if_job_deps_met</span><span class="p">(</span><span class="n">dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -170,20 +166,30 @@
         <span class="k">for</span> <span class="n">dependency_job_id</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">dependency_job_state</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">db_get_processing_job</span><span class="p">(</span><span class="n">dependency_job_id</span><span class="p">))</span><span class="o">.</span><span class="n">state</span>
+                <span class="c1"># Found a dependent job whose state is not success</span>
+                <span class="k">if</span> <span class="n">dependency_job_state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="c1"># job_id not (yet) in db. Dependency not met</span>
                 <span class="k">return</span> <span class="kc">False</span>
-            <span class="c1"># Found a dependent job whose state is not success</span>
-            <span class="k">if</span> <span class="n">dependency_job_state</span> <span class="o">!=</span> <span class="n">StateEnum</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="CacheProcessingRequests.consume_cached_requests"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.consume_cached_requests">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">consume_cached_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">__print_job_input_debug_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">):</span>
+        <span class="n">debug_message</span> <span class="o">=</span> <span class="s2">&quot;Processing job input&quot;</span>
+        <span class="n">debug_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, processor: </span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">debug_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, page ids: </span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">debug_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, job id: </span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">debug_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, job depends on: </span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">depends_on</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">debug_message</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.consume_cached_requests">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.consume_cached_requests">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">consume_cached_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_workspace_cached_requests</span><span class="p">(</span><span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No jobs to be consumed for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="n">found_consume_requests</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">current_element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">current_element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]:</span>
             <span class="c1"># Request has other job dependencies</span>
             <span class="k">if</span> <span class="n">current_element</span><span class="o">.</span><span class="n">depends_on</span><span class="p">:</span>
                 <span class="n">satisfied_dependencies</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_job_deps_met</span><span class="p">(</span><span class="n">current_element</span><span class="o">.</span><span class="n">depends_on</span><span class="p">)</span>
@@ -195,39 +201,52 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">])</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">found_element</span><span class="p">)</span>
                 <span class="c1"># self.log.debug(f&quot;Found cached request to be processed: {found_request}&quot;)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found cached request: </span><span class="si">{</span><span class="n">found_element</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">found_element</span><span class="o">.</span><span class="n">page_id</span><span class="si">}</span><span class="s2">, &quot;</span>
-                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">found_element</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">, depends_on: </span><span class="si">{</span><span class="n">found_element</span><span class="o">.</span><span class="n">depends_on</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__print_job_input_debug_message</span><span class="p">(</span><span class="n">job_input</span><span class="o">=</span><span class="n">found_element</span><span class="p">)</span>
                 <span class="n">found_requests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">found_element</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="c1"># The ValueError is not an issue since the</span>
-                <span class="c1"># element was removed by another instance</span>
+                <span class="c1"># The ValueError is not an issue since the element was removed by another instance</span>
                 <span class="k">continue</span>
         <span class="k">return</span> <span class="n">found_requests</span></div>
 
-<div class="viewcode-block" id="CacheProcessingRequests.update_request_counter"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.update_request_counter">[docs]</a>    <span class="k">def</span> <span class="nf">update_request_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.sync_consume_cached_requests">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.sync_consume_cached_requests">[docs]</a>
+    <span class="nd">@call_sync</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sync_consume_cached_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">consume_cached_requests</span><span class="p">(</span><span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CacheProcessingRequests.update_request_counter">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.update_request_counter">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_request_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A method used to increase/decrease the internal counter of some workspace_key by `by_value`.</span>
 <span class="sd">        Returns the value of the updated counter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If a record counter of this workspace key does not exist</span>
         <span class="c1"># in the requests counter cache yet, create one and assign 0</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating an internal request counter for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">+</span> <span class="n">by_value</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">+</span> <span class="n">by_value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_counter</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CacheProcessingRequests.cache_request"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.cache_request">[docs]</a>    <span class="k">def</span> <span class="nf">cache_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.cache_request">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.cache_request">[docs]</a>
+    <span class="k">def</span> <span class="nf">cache_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">):</span>
         <span class="c1"># If a record queue of this workspace key does not exist in the requests cache</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating an internal request queue for workspace_key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Caching request: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">page_id</span><span class="si">}</span><span class="s2">, &quot;</span>
-                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">, depends_on: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">depends_on</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__print_job_input_debug_message</span><span class="p">(</span><span class="n">job_input</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># Add the processing request to the end of the internal queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CacheProcessingRequests.cancel_dependent_jobs"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.cancel_dependent_jobs">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">cancel_dependent_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.cancel_dependent_jobs">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.cancel_dependent_jobs">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">cancel_dependent_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_workspace_cached_requests</span><span class="p">(</span><span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No jobs to be cancelled for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -240,40 +259,59 @@
         <span class="k">for</span> <span class="n">cancel_element</span> <span class="ow">in</span> <span class="n">found_cancel_requests</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cancel_element</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;For job id: `</span><span class="si">{</span><span class="n">processing_job_id</span><span class="si">}</span><span class="s2">`, &quot;</span>
-                               <span class="sa">f</span><span class="s2">&quot;cancelling: </span><span class="si">{</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;For job id: &#39;</span><span class="si">{</span><span class="n">processing_job_id</span><span class="si">}</span><span class="s2">&#39;, cancelling job id: &#39;</span><span class="si">{</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
                 <span class="n">cancelled_jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cancel_element</span><span class="p">)</span>
-                <span class="k">await</span> <span class="n">db_update_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">StateEnum</span><span class="o">.</span><span class="n">cancelled</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">db_update_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">JobState</span><span class="o">.</span><span class="n">cancelled</span><span class="p">)</span>
                 <span class="c1"># Recursively cancel dependent jobs for the cancelled job</span>
                 <span class="n">recursively_cancelled</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_dependent_jobs</span><span class="p">(</span>
-                    <span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">,</span>
-                    <span class="n">processing_job_id</span><span class="o">=</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span>
+                    <span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="o">=</span><span class="n">cancel_element</span><span class="o">.</span><span class="n">job_id</span>
                 <span class="p">)</span>
                 <span class="c1"># Add the recursively cancelled jobs to the main list of cancelled jobs</span>
                 <span class="n">cancelled_jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">recursively_cancelled</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="c1"># The ValueError is not an issue since the</span>
-                <span class="c1"># element was removed by another instance</span>
+                <span class="c1"># The ValueError is not an issue since the element was removed by another instance</span>
                 <span class="k">continue</span>
         <span class="k">return</span> <span class="n">cancelled_jobs</span></div>
 
-<div class="viewcode-block" id="CacheProcessingRequests.is_caching_required"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.is_caching_required">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">is_caching_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.sync_cancel_dependent_jobs">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.sync_cancel_dependent_jobs">[docs]</a>
+    <span class="nd">@call_sync</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sync_cancel_dependent_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PYJobInput</span><span class="p">]:</span>
+        <span class="c1"># A synchronous wrapper around the async method</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_dependent_jobs</span><span class="p">(</span><span class="n">workspace_key</span><span class="o">=</span><span class="n">workspace_key</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="o">=</span><span class="n">processing_job_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CacheProcessingRequests.is_caching_required">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.is_caching_required">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">is_caching_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">job_dependencies</span><span class="p">):</span>
-            <span class="c1"># no dependencies found</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># no dependencies found</span>
         <span class="k">if</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_job_deps_met</span><span class="p">(</span><span class="n">job_dependencies</span><span class="p">):</span>
-            <span class="c1"># all dependencies are met</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># all dependencies are met</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="CacheProcessingRequests.has_workspace_cached_requests"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.has_workspace_cached_requests">[docs]</a>    <span class="k">def</span> <span class="nf">has_workspace_cached_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CacheProcessingRequests.sync_is_caching_required">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.sync_is_caching_required">[docs]</a>
+    <span class="nd">@call_sync</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sync_is_caching_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># A synchronous wrapper around the async method</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_caching_required</span><span class="p">(</span><span class="n">job_dependencies</span><span class="o">=</span><span class="n">job_dependencies</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CacheProcessingRequests.has_workspace_cached_requests">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_cache.html#ocrd_network.server_cache.CacheProcessingRequests.has_workspace_cached_requests">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_workspace_cached_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In processing requests cache, no workspace key found: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_requests</span><span class="p">[</span><span class="n">workspace_key</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The processing requests cache is empty for workspace key: </span><span class="si">{</span><span class="n">workspace_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div></div>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -284,7 +322,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -306,7 +346,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -318,7 +357,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -326,7 +365,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -341,11 +380,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

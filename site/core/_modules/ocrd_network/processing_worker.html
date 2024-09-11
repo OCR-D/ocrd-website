@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.processing_worker &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.processing_worker &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/processing_worker.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/processing_worker.html" />
+  
 
   </head><body>
   
@@ -43,60 +45,46 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">FileHandler</span><span class="p">,</span> <span class="n">Formatter</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getpid</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-<span class="kn">import</span> <span class="nn">pika.spec</span>
-<span class="kn">import</span> <span class="nn">pika.adapters.blocking_connection</span>
-<span class="kn">from</span> <span class="nn">pika.exceptions</span> <span class="kn">import</span> <span class="n">AMQPConnectionError</span>
+<span class="kn">from</span> <span class="nn">pika</span> <span class="kn">import</span> <span class="n">BasicProperties</span>
+<span class="kn">from</span> <span class="nn">pika.adapters.blocking_connection</span> <span class="kn">import</span> <span class="n">BlockingChannel</span>
+<span class="kn">from</span> <span class="nn">pika.spec</span> <span class="kn">import</span> <span class="n">Basic</span>
 
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">LOG_FORMAT</span>
-<span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">sync_initiate_database</span><span class="p">,</span>
-    <span class="n">sync_db_get_workspace</span><span class="p">,</span>
-    <span class="n">sync_db_update_processing_job</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">JobState</span>
+<span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">sync_initiate_database</span><span class="p">,</span> <span class="n">sync_db_get_workspace</span><span class="p">,</span> <span class="n">sync_db_update_processing_job</span><span class="p">,</span> <span class="n">verify_database_uri</span>
+<span class="kn">from</span> <span class="nn">.logging_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">configure_file_handler_with_formatter</span><span class="p">,</span>
     <span class="n">get_processing_job_logging_file_path</span><span class="p">,</span>
-    <span class="n">get_processing_worker_logging_file_path</span>
+    <span class="n">get_processing_worker_logging_file_path</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">StateEnum</span>
 <span class="kn">from</span> <span class="nn">.process_helpers</span> <span class="kn">import</span> <span class="n">invoke_processor</span>
 <span class="kn">from</span> <span class="nn">.rabbitmq_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">connect_rabbitmq_consumer</span><span class="p">,</span>
+    <span class="n">connect_rabbitmq_publisher</span><span class="p">,</span>
     <span class="n">OcrdProcessingMessage</span><span class="p">,</span>
     <span class="n">OcrdResultMessage</span><span class="p">,</span>
-    <span class="n">RMQConsumer</span><span class="p">,</span>
-    <span class="n">RMQPublisher</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">calculate_execution_time</span><span class="p">,</span>
-    <span class="n">post_to_callback_url</span><span class="p">,</span>
-    <span class="n">verify_database_uri</span><span class="p">,</span>
     <span class="n">verify_and_parse_mq_uri</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">calculate_execution_time</span><span class="p">,</span> <span class="n">post_to_callback_url</span>
 
 
-<div class="viewcode-block" id="ProcessingWorker"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker">[docs]</a><span class="k">class</span> <span class="nc">ProcessingWorker</span><span class="p">:</span>
+<div class="viewcode-block" id="ProcessingWorker">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">ProcessingWorker</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rabbitmq_addr</span><span class="p">,</span> <span class="n">mongodb_addr</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">processor_class</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ocrd_network.processing_worker&#39;</span><span class="p">)</span>
         <span class="n">log_file</span> <span class="o">=</span> <span class="n">get_processing_worker_logging_file_path</span><span class="p">(</span><span class="n">processor_name</span><span class="o">=</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="n">getpid</span><span class="p">())</span>
-        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-        <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">(</span><span class="n">LOG_FORMAT</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+        <span class="n">configure_file_handler_with_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">verify_database_uri</span><span class="p">(</span><span class="n">mongodb_addr</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verified MongoDB URL: </span><span class="si">{</span><span class="n">mongodb_addr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">rmq_data</span> <span class="o">=</span> <span class="n">verify_and_parse_mq_uri</span><span class="p">(</span><span class="n">rabbitmq_addr</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s1">&#39;vhost&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verified RabbitMQ Credentials: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verified RabbitMQ Server URL: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_data</span> <span class="o">=</span> <span class="n">verify_and_parse_mq_uri</span><span class="p">(</span><span class="n">rabbitmq_addr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to parse data, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="n">sync_initiate_database</span><span class="p">(</span><span class="n">mongodb_addr</span><span class="p">)</span>  <span class="c1"># Database client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">ocrd_tool</span>
@@ -109,107 +97,109 @@
         <span class="c1"># Used to consume OcrdProcessingMessage from the queue with name {processor_name}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Gets assigned when the `connect_publisher` is called on the worker object</span>
-        <span class="c1"># The publisher is connected when the `result_queue` field of the OcrdProcessingMessage is set for first time</span>
         <span class="c1"># Used to publish OcrdResultMessage type message to the queue with name {processor_name}-result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ProcessingWorker.connect_consumer">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.connect_consumer">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect_consumer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span> <span class="o">=</span> <span class="n">connect_rabbitmq_consumer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_data</span><span class="p">)</span>
         <span class="c1"># Always create a queue (idempotent)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span><span class="o">.</span><span class="n">create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessingWorker.connect_consumer"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.connect_consumer">[docs]</a>    <span class="k">def</span> <span class="nf">connect_consumer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting RMQConsumer to RabbitMQ server: &#39;</span>
-                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span> <span class="o">=</span> <span class="n">RMQConsumer</span><span class="p">(</span>
-            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span><span class="p">,</span>
-            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span><span class="p">,</span>
-            <span class="n">vhost</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;RMQConsumer authenticates with username: &#39;</span>
-                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span><span class="si">}</span><span class="s1">, password: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span><span class="o">.</span><span class="n">authenticate_and_connect</span><span class="p">(</span>
-            <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span><span class="p">,</span>
-            <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully connected RMQConsumer.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessingWorker.connect_publisher"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.connect_publisher">[docs]</a>    <span class="k">def</span> <span class="nf">connect_publisher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable_acks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting RMQPublisher to RabbitMQ server: &#39;</span>
-                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span> <span class="o">=</span> <span class="n">RMQPublisher</span><span class="p">(</span>
-            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_host</span><span class="p">,</span>
-            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_port</span><span class="p">,</span>
-            <span class="n">vhost</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_vhost</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;RMQPublisher authenticates with username: &#39;</span>
-                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span><span class="si">}</span><span class="s1">, password: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">authenticate_and_connect</span><span class="p">(</span>
-            <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_username</span><span class="p">,</span>
-            <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rmq_password</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">enable_acks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">enable_delivery_confirmations</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Delivery confirmations are enabled&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Successfully connected RMQPublisher.&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ProcessingWorker.connect_publisher">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.connect_publisher">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect_publisher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable_acks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span> <span class="o">=</span> <span class="n">connect_rabbitmq_publisher</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_data</span><span class="p">,</span> <span class="n">enable_acks</span><span class="o">=</span><span class="n">enable_acks</span><span class="p">)</span></div>
+
 
     <span class="c1"># Define what happens every time a message is consumed</span>
     <span class="c1"># from the queue with name self.processor_name</span>
-<div class="viewcode-block" id="ProcessingWorker.on_consumed_message"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.on_consumed_message">[docs]</a>    <span class="k">def</span> <span class="nf">on_consumed_message</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">channel</span><span class="p">:</span> <span class="n">pika</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">blocking_connection</span><span class="o">.</span><span class="n">BlockingChannel</span><span class="p">,</span>
-            <span class="n">delivery</span><span class="p">:</span> <span class="n">pika</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">Basic</span><span class="o">.</span><span class="n">Deliver</span><span class="p">,</span>
-            <span class="n">properties</span><span class="p">:</span> <span class="n">pika</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">BasicProperties</span><span class="p">,</span>
-            <span class="n">body</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProcessingWorker.on_consumed_message">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.on_consumed_message">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_consumed_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="n">BlockingChannel</span><span class="p">,</span>
+        <span class="n">delivery</span><span class="p">:</span> <span class="n">Basic</span><span class="o">.</span><span class="n">Deliver</span><span class="p">,</span>
+        <span class="n">properties</span><span class="p">:</span> <span class="n">BasicProperties</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">consumer_tag</span> <span class="o">=</span> <span class="n">delivery</span><span class="o">.</span><span class="n">consumer_tag</span>
         <span class="n">delivery_tag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">delivery</span><span class="o">.</span><span class="n">delivery_tag</span>
         <span class="n">is_redelivered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">delivery</span><span class="o">.</span><span class="n">redelivered</span>
         <span class="n">message_headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">headers</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Consumer tag: </span><span class="si">{</span><span class="n">consumer_tag</span><span class="si">}</span><span class="s1">, &#39;</span>
-                       <span class="sa">f</span><span class="s1">&#39;message delivery tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">, &#39;</span>
-                       <span class="sa">f</span><span class="s1">&#39;redelivered: </span><span class="si">{</span><span class="n">is_redelivered</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Message headers: </span><span class="si">{</span><span class="n">message_headers</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">ack_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Acking message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">nack_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Nacking processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Consumer tag: </span><span class="si">{</span><span class="n">consumer_tag</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;, message delivery tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;, redelivered: </span><span class="si">{</span><span class="n">is_redelivered</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Message headers: </span><span class="si">{</span><span class="n">message_headers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trying to decode processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trying to decode processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">processing_message</span><span class="p">:</span> <span class="n">OcrdProcessingMessage</span> <span class="o">=</span> <span class="n">OcrdProcessingMessage</span><span class="o">.</span><span class="n">decode_yml</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to decode processing message body: </span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nacking processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to decode processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">nack_message</span><span class="p">)</span>
             <span class="n">channel</span><span class="o">.</span><span class="n">basic_nack</span><span class="p">(</span><span class="n">delivery_tag</span><span class="o">=</span><span class="n">delivery_tag</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requeue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to decode processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">, reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting to process the received message: </span><span class="si">{</span><span class="n">processing_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting to process the received message: </span><span class="si">{</span><span class="n">processing_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process_message</span><span class="p">(</span><span class="n">processing_message</span><span class="o">=</span><span class="n">processing_message</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to process processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nacking processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to process message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Processing message: </span><span class="si">{</span><span class="n">processing_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">nack_message</span><span class="p">)</span>
             <span class="n">channel</span><span class="o">.</span><span class="n">basic_nack</span><span class="p">(</span><span class="n">delivery_tag</span><span class="o">=</span><span class="n">delivery_tag</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requeue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to process processing message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">, reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully processed RabbitMQ message&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Acking message with tag: </span><span class="si">{</span><span class="n">delivery_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully processed RabbitMQ message&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">ack_message</span><span class="p">)</span>
         <span class="n">channel</span><span class="o">.</span><span class="n">basic_ack</span><span class="p">(</span><span class="n">delivery_tag</span><span class="o">=</span><span class="n">delivery_tag</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessingWorker.start_consuming"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.start_consuming">[docs]</a>    <span class="k">def</span> <span class="nf">start_consuming</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ProcessingWorker.start_consuming">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.start_consuming">[docs]</a>
+    <span class="k">def</span> <span class="nf">start_consuming</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Configuring consuming from queue: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuring consuming from queue: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span><span class="o">.</span><span class="n">configure_consuming</span><span class="p">(</span>
                 <span class="n">queue_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span>
                 <span class="n">callback_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_consumed_message</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting consuming from queue: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting consuming from queue: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="c1"># Starting consuming is a blocking action</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rmq_consumer</span><span class="o">.</span><span class="n">start_consuming</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;The RMQConsumer is not connected/configured properly&#39;</span><span class="p">)</span></div>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The RMQConsumer is not connected/configured properly.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
 
     <span class="c1"># TODO: Better error handling required to catch exceptions</span>
-<div class="viewcode-block" id="ProcessingWorker.process_message"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.process_message">[docs]</a>    <span class="k">def</span> <span class="nf">process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processing_message</span><span class="p">:</span> <span class="n">OcrdProcessingMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProcessingWorker.process_message">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.process_message">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processing_message</span><span class="p">:</span> <span class="n">OcrdProcessingMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Verify that the processor name in the processing message</span>
         <span class="c1"># matches the processor name of the current processing worker</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span> <span class="o">!=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">processor_name</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor name is not matching. Expected: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s1">,&#39;</span>
-                             <span class="sa">f</span><span class="s1">&#39;Got: </span><span class="si">{</span><span class="n">processing_message</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Processor name is not matching. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got: </span><span class="si">{</span><span class="n">processing_message</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
         <span class="c1"># All of this is needed because the OcrdProcessingMessage object</span>
         <span class="c1"># may not contain certain keys. Simply passing None in the OcrdProcessingMessage constructor</span>
@@ -217,31 +207,29 @@
         <span class="n">pm_keys</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">job_id</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">job_id</span>
         <span class="n">input_file_grps</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">input_file_grps</span>
-        <span class="n">output_file_grps</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">output_file_grps</span> <span class="k">if</span> <span class="s1">&#39;output_file_grps&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">path_to_mets</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">path_to_mets</span> <span class="k">if</span> <span class="s1">&#39;path_to_mets&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">workspace_id</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">workspace_id</span> <span class="k">if</span> <span class="s1">&#39;workspace_id&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">page_id</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">page_id</span> <span class="k">if</span> <span class="s1">&#39;page_id&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">result_queue_name</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">result_queue_name</span> <span class="k">if</span> <span class="s1">&#39;result_queue_name&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">callback_url</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">callback_url</span> <span class="k">if</span> <span class="s1">&#39;callback_url&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">internal_callback_url</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">internal_callback_url</span> <span class="k">if</span> <span class="s1">&#39;internal_callback_url&#39;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">output_file_grps</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">output_file_grps</span> <span class="k">if</span> <span class="s2">&quot;output_file_grps&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">path_to_mets</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">path_to_mets</span> <span class="k">if</span> <span class="s2">&quot;path_to_mets&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">workspace_id</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">workspace_id</span> <span class="k">if</span> <span class="s2">&quot;workspace_id&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">page_id</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">page_id</span> <span class="k">if</span> <span class="s2">&quot;page_id&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">parameters</span> <span class="k">if</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">parameters</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path_to_mets</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">workspace_id</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`path_to_mets` nor `workspace_id` was set in the ocrd processing message&#39;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Both &#39;path_to_mets&#39; and &#39;workspace_id&#39; are missing in the OcrdProcessingMessage.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">path_to_mets</span><span class="p">:</span>
-            <span class="n">mets_server_url</span> <span class="o">=</span> <span class="n">sync_db_get_workspace</span><span class="p">(</span><span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">path_to_mets</span><span class="p">)</span><span class="o">.</span><span class="n">mets_server_url</span>
+        <span class="n">mets_server_url</span> <span class="o">=</span> <span class="n">sync_db_get_workspace</span><span class="p">(</span><span class="n">workspace_mets_path</span><span class="o">=</span><span class="n">path_to_mets</span><span class="p">)</span><span class="o">.</span><span class="n">mets_server_url</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path_to_mets</span> <span class="ow">and</span> <span class="n">workspace_id</span><span class="p">:</span>
             <span class="n">path_to_mets</span> <span class="o">=</span> <span class="n">sync_db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">)</span><span class="o">.</span><span class="n">workspace_mets_path</span>
             <span class="n">mets_server_url</span> <span class="o">=</span> <span class="n">sync_db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">)</span><span class="o">.</span><span class="n">mets_server_url</span>
 
         <span class="n">execution_failed</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invoking processor: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invoking processor: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">job_log_file</span> <span class="o">=</span> <span class="n">get_processing_job_logging_file_path</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">)</span>
         <span class="n">sync_db_update_processing_job</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
-            <span class="n">state</span><span class="o">=</span><span class="n">StateEnum</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
+            <span class="n">state</span><span class="o">=</span><span class="n">JobState</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
             <span class="n">path_to_mets</span><span class="o">=</span><span class="n">path_to_mets</span><span class="p">,</span>
             <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
             <span class="n">log_file_path</span><span class="o">=</span><span class="n">job_log_file</span>
@@ -259,76 +247,73 @@
                 <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;processor_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, path_to_mets: </span><span class="si">{</span><span class="n">path_to_mets</span><span class="si">}</span><span class="s2">, &quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot;input_grps: </span><span class="si">{</span><span class="n">input_file_grps</span><span class="si">}</span><span class="s2">, output_file_grps: </span><span class="si">{</span><span class="n">output_file_grps</span><span class="si">}</span><span class="s2">, &quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot;page_id: </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">, parameters: </span><span class="si">{</span><span class="n">parameters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;processor_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;path_to_mets: </span><span class="si">{</span><span class="n">path_to_mets</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;input_file_grps: </span><span class="si">{</span><span class="n">input_file_grps</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;output_file_grps: </span><span class="si">{</span><span class="n">output_file_grps</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;page_id: </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;parameters: </span><span class="si">{</span><span class="n">parameters</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">, error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">execution_failed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">exec_duration</span> <span class="o">=</span> <span class="n">calculate_execution_time</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
-        <span class="n">job_state</span> <span class="o">=</span> <span class="n">StateEnum</span><span class="o">.</span><span class="n">success</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">execution_failed</span> <span class="k">else</span> <span class="n">StateEnum</span><span class="o">.</span><span class="n">failed</span>
+        <span class="n">job_state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">success</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">execution_failed</span> <span class="k">else</span> <span class="n">JobState</span><span class="o">.</span><span class="n">failed</span>
         <span class="n">sync_db_update_processing_job</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">job_state</span><span class="p">,</span>
             <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
-            <span class="n">exec_time</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exec_duration</span><span class="si">}</span><span class="s1"> ms&#39;</span>
+            <span class="n">exec_time</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exec_duration</span><span class="si">}</span><span class="s2"> ms&quot;</span>
         <span class="p">)</span>
         <span class="n">result_message</span> <span class="o">=</span> <span class="n">OcrdResultMessage</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">job_state</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
             <span class="n">path_to_mets</span><span class="o">=</span><span class="n">path_to_mets</span><span class="p">,</span>
             <span class="c1"># May not be always available</span>
-            <span class="n">workspace_id</span><span class="o">=</span><span class="n">workspace_id</span>
+            <span class="n">workspace_id</span><span class="o">=</span><span class="n">workspace_id</span> <span class="k">if</span> <span class="n">workspace_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Result message: </span><span class="si">{</span><span class="n">result_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">publish_result_to_all</span><span class="p">(</span><span class="n">processing_message</span><span class="o">=</span><span class="n">processing_message</span><span class="p">,</span> <span class="n">result_message</span><span class="o">=</span><span class="n">result_message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProcessingWorker.publish_result_to_all">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.publish_result_to_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">publish_result_to_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processing_message</span><span class="p">:</span> <span class="n">OcrdProcessingMessage</span><span class="p">,</span> <span class="n">result_message</span><span class="p">:</span> <span class="n">OcrdResultMessage</span><span class="p">):</span>
+        <span class="n">pm_keys</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">result_queue_name</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">result_queue_name</span> <span class="k">if</span> <span class="s2">&quot;result_queue_name&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">callback_url</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">callback_url</span> <span class="k">if</span> <span class="s2">&quot;callback_url&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">internal_callback_url</span> <span class="o">=</span> <span class="n">processing_message</span><span class="o">.</span><span class="n">internal_callback_url</span> <span class="k">if</span> <span class="s2">&quot;internal_callback_url&quot;</span> <span class="ow">in</span> <span class="n">pm_keys</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result message: </span><span class="si">{</span><span class="n">result_message</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># If the result_queue field is set, send the result message to a result queue</span>
         <span class="k">if</span> <span class="n">result_queue_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Publishing result to message queue: </span><span class="si">{</span><span class="n">result_queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">publish_to_result_queue</span><span class="p">(</span><span class="n">result_queue_name</span><span class="p">,</span> <span class="n">result_message</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">callback_url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Publishing result to user defined callback url: </span><span class="si">{</span><span class="n">callback_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="c1"># If the callback_url field is set,</span>
             <span class="c1"># post the result message (callback to a user defined endpoint)</span>
             <span class="n">post_to_callback_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">callback_url</span><span class="p">,</span> <span class="n">result_message</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">internal_callback_url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Publishing result to internal callback url (Processing Server): </span><span class="si">{</span><span class="n">callback_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="c1"># If the internal callback_url field is set,</span>
             <span class="c1"># post the result message (callback to Processing Server endpoint)</span>
             <span class="n">post_to_callback_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">internal_callback_url</span><span class="p">,</span> <span class="n">result_message</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProcessingWorker.publish_to_result_queue"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.publish_to_result_queue">[docs]</a>    <span class="k">def</span> <span class="nf">publish_to_result_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_queue</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result_message</span><span class="p">:</span> <span class="n">OcrdResultMessage</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ProcessingWorker.publish_to_result_queue">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.publish_to_result_queue">[docs]</a>
+    <span class="k">def</span> <span class="nf">publish_to_result_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_queue</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result_message</span><span class="p">:</span> <span class="n">OcrdResultMessage</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect_publisher</span><span class="p">()</span>
         <span class="c1"># create_queue method is idempotent - nothing happens if</span>
         <span class="c1"># a queue with the specified name already exists</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="o">=</span><span class="n">result_queue</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Publishing result message to queue: </span><span class="si">{</span><span class="n">result_queue</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">encoded_result_message</span> <span class="o">=</span> <span class="n">OcrdResultMessage</span><span class="o">.</span><span class="n">encode_yml</span><span class="p">(</span><span class="n">result_message</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">publish_to_queue</span><span class="p">(</span>
-            <span class="n">queue_name</span><span class="o">=</span><span class="n">result_queue</span><span class="p">,</span>
-            <span class="n">message</span><span class="o">=</span><span class="n">encoded_result_message</span>
-        <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">publish_to_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="o">=</span><span class="n">result_queue</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">encoded_result_message</span><span class="p">)</span></div>
+</div>
 
-<div class="viewcode-block" id="ProcessingWorker.create_queue"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.processing_worker.html#ocrd_network.processing_worker.ProcessingWorker.create_queue">[docs]</a>    <span class="k">def</span> <span class="nf">create_queue</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">connection_attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_NETWORK_WORKER_QUEUE_CONNECT_ATTEMPTS</span><span class="p">,</span>
-            <span class="n">retry_delay</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the queue for this worker</span>
-
-<span class="sd">        Originally only the processing-server created the queues for the workers according to the</span>
-<span class="sd">        configuration file. This is intended to make external deployment of workers possible.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attempts_left</span> <span class="o">=</span> <span class="n">connection_attempts</span> <span class="k">if</span> <span class="n">connection_attempts</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
-            <span class="k">while</span> <span class="n">attempts_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_publisher</span><span class="p">()</span>
-                    <span class="k">break</span>
-                <span class="k">except</span> <span class="n">AMQPConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">attempts_left</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">e</span>
-                    <span class="n">attempts_left</span> <span class="o">-=</span> <span class="mi">1</span>
-                    <span class="n">sleep</span><span class="p">(</span><span class="n">retry_delay</span><span class="p">)</span>
-
-        <span class="c1"># the following function is idempotent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmq_publisher</span><span class="o">.</span><span class="n">create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -339,7 +324,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -361,7 +348,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -373,7 +359,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -381,7 +367,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -396,11 +382,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

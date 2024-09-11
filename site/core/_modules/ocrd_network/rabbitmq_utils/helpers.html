@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.rabbitmq_utils.helpers &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/rabbitmq_utils/helpers.html" />
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.rabbitmq_utils.helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">pika</span> <span class="kn">import</span> <span class="n">URLParameters</span>
+<span class="kn">from</span> <span class="nn">pika.exceptions</span> <span class="kn">import</span> <span class="n">AMQPConnectionError</span><span class="p">,</span> <span class="n">ChannelClosedByBroker</span>
+<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">match</span> <span class="k">as</span> <span class="n">re_match</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">RABBITMQ_URI_PATTERN</span><span class="p">,</span> <span class="n">RECONNECT_TRIES</span><span class="p">,</span> <span class="n">RECONNECT_WAIT</span>
+<span class="kn">from</span> <span class="nn">.consumer</span> <span class="kn">import</span> <span class="n">RMQConsumer</span>
+<span class="kn">from</span> <span class="nn">.publisher</span> <span class="kn">import</span> <span class="n">RMQPublisher</span>
+
+
+<span class="k">def</span> <span class="nf">__connect_rabbitmq_client</span><span class="p">(</span>
+    <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">client_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">RECONNECT_TRIES</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">RECONNECT_WAIT</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">RMQConsumer</span><span class="p">,</span> <span class="n">RMQPublisher</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rmq_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span>
+        <span class="n">rmq_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span>
+        <span class="n">rmq_vhost</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s2">&quot;vhost&quot;</span><span class="p">]</span>
+        <span class="n">rmq_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span>
+        <span class="n">rmq_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rmq_data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed to parse RabbitMQ connection data&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting client to RabbitMQ server: </span><span class="si">{</span><span class="n">rmq_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">rmq_port</span><span class="si">}{</span><span class="n">rmq_vhost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RabbitMQ client authenticates with username: </span><span class="si">{</span><span class="n">rmq_username</span><span class="si">}</span><span class="s2">, password: </span><span class="si">{</span><span class="n">rmq_password</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">attempts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">client_type</span> <span class="o">==</span> <span class="s2">&quot;consumer&quot;</span><span class="p">:</span>
+                <span class="n">rmq_client</span> <span class="o">=</span> <span class="n">RMQConsumer</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">rmq_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">rmq_port</span><span class="p">,</span> <span class="n">vhost</span><span class="o">=</span><span class="n">rmq_vhost</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">client_type</span> <span class="o">==</span> <span class="s2">&quot;publisher&quot;</span><span class="p">:</span>
+                <span class="n">rmq_client</span> <span class="o">=</span> <span class="n">RMQPublisher</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">rmq_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">rmq_port</span><span class="p">,</span> <span class="n">vhost</span><span class="o">=</span><span class="n">rmq_vhost</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RabbitMQ client type can be either a consumer or publisher. Got: </span><span class="si">{</span><span class="n">client_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">rmq_client</span><span class="o">.</span><span class="n">authenticate_and_connect</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">rmq_username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">rmq_password</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rmq_client</span>
+        <span class="k">except</span> <span class="n">AMQPConnectionError</span><span class="p">:</span>
+            <span class="n">attempts</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+            <span class="k">continue</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to establish connection with the RabbitMQ Server. Connection data: </span><span class="si">{</span><span class="n">rmq_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="connect_rabbitmq_consumer">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.connect_rabbitmq_consumer">[docs]</a>
+<span class="k">def</span> <span class="nf">connect_rabbitmq_consumer</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RMQConsumer</span><span class="p">:</span>
+    <span class="n">rmq_consumer</span> <span class="o">=</span> <span class="n">__connect_rabbitmq_client</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">client_type</span><span class="o">=</span><span class="s2">&quot;consumer&quot;</span><span class="p">,</span> <span class="n">rmq_data</span><span class="o">=</span><span class="n">rmq_data</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully connected RMQConsumer&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rmq_consumer</span></div>
+
+
+
+<div class="viewcode-block" id="connect_rabbitmq_publisher">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.connect_rabbitmq_publisher">[docs]</a>
+<span class="k">def</span> <span class="nf">connect_rabbitmq_publisher</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">enable_acks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RMQPublisher</span><span class="p">:</span>
+    <span class="n">rmq_publisher</span> <span class="o">=</span> <span class="n">__connect_rabbitmq_client</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">client_type</span><span class="o">=</span><span class="s2">&quot;publisher&quot;</span><span class="p">,</span> <span class="n">rmq_data</span><span class="o">=</span><span class="n">rmq_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">enable_acks</span><span class="p">:</span>
+        <span class="n">rmq_publisher</span><span class="o">.</span><span class="n">enable_delivery_confirmations</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Delivery confirmations are enabled&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully connected RMQPublisher&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rmq_publisher</span></div>
+
+
+
+<div class="viewcode-block" id="check_if_queue_exists">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.check_if_queue_exists">[docs]</a>
+<span class="k">def</span> <span class="nf">check_if_queue_exists</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">rmq_publisher</span> <span class="o">=</span> <span class="n">connect_rabbitmq_publisher</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Passively checks whether the queue name exists, if not raises ChannelClosedByBroker</span>
+        <span class="n">rmq_publisher</span><span class="o">.</span><span class="n">create_queue</span><span class="p">(</span><span class="n">processor_name</span><span class="p">,</span> <span class="n">passive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">ChannelClosedByBroker</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="c1"># The created connection was forcibly closed by the RabbitMQ Server</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Process queue with id &#39;</span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; not existing: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="create_message_queues">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.create_message_queues">[docs]</a>
+<span class="k">def</span> <span class="nf">create_message_queues</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">rmq_publisher</span><span class="p">:</span> <span class="n">RMQPublisher</span><span class="p">,</span> <span class="n">queue_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># TODO: Reconsider and refactor this.</span>
+    <span class="c1">#  Added ocrd-dummy by default if not available for the integration tests.</span>
+    <span class="c1">#  A proper Processing Worker / Processor Server registration endpoint is needed on the Processing Server side</span>
+    <span class="k">if</span> <span class="s2">&quot;ocrd-dummy&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">queue_names</span><span class="p">:</span>
+        <span class="n">queue_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ocrd-dummy&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">queue_name</span> <span class="ow">in</span> <span class="n">queue_names</span><span class="p">:</span>
+        <span class="c1"># The existence/validity of the worker.name is not tested.</span>
+        <span class="c1"># Even if an ocr-d processor does not exist, the queue is created</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating a message queue with id: </span><span class="si">{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">rmq_publisher</span><span class="o">.</span><span class="n">create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="o">=</span><span class="n">queue_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="verify_and_parse_mq_uri">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.verify_and_parse_mq_uri">[docs]</a>
+<span class="k">def</span> <span class="nf">verify_and_parse_mq_uri</span><span class="p">(</span><span class="n">rabbitmq_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the full list of available parameters in the docs here:</span>
+<span class="sd">    https://pika.readthedocs.io/en/stable/_modules/pika/connection.html#URLParameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re_match</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">RABBITMQ_URI_PATTERN</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">rabbitmq_address</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The message queue server address is in wrong format: &#39;</span><span class="si">{</span><span class="n">rabbitmq_address</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="n">url_params</span> <span class="o">=</span> <span class="n">URLParameters</span><span class="p">(</span><span class="n">rabbitmq_address</span><span class="p">)</span>
+    <span class="n">parsed_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">url_params</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">url_params</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">url_params</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">url_params</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+        <span class="s2">&quot;vhost&quot;</span><span class="p">:</span> <span class="n">url_params</span><span class="o">.</span><span class="n">virtual_host</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">parsed_data</span></div>
+
+
+
+<div class="viewcode-block" id="verify_rabbitmq_available">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.rabbitmq_utils.helpers.html#ocrd_network.rabbitmq_utils.verify_rabbitmq_available">[docs]</a>
+<span class="k">def</span> <span class="nf">verify_rabbitmq_available</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">rabbitmq_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">rmq_data</span> <span class="o">=</span> <span class="n">verify_and_parse_mq_uri</span><span class="p">(</span><span class="n">rabbitmq_address</span><span class="o">=</span><span class="n">rabbitmq_address</span><span class="p">)</span>
+    <span class="n">temp_publisher</span> <span class="o">=</span> <span class="n">connect_rabbitmq_publisher</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">rmq_data</span><span class="p">,</span> <span class="n">enable_acks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">temp_publisher</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2018-2024, OCR-D.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

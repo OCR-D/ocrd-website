@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_utils.os &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_utils.os &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_utils/os.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_utils/os.html" />
+  
 
   </head><body>
   
@@ -52,12 +54,12 @@
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span><span class="p">,</span> <span class="n">gettempdir</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span><span class="p">,</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span>
-<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span>
 <span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">loads</span>
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span><span class="p">,</span> <span class="n">chdir</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">chmod</span><span class="p">,</span> <span class="n">umask</span><span class="p">,</span> <span class="n">environ</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">abspath</span> <span class="k">as</span> <span class="n">abspath_</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">isdir</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">abspath</span> <span class="k">as</span> <span class="n">abspath_</span><span class="p">,</span> <span class="n">join</span>
 <span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
 <span class="kn">from</span> <span class="nn">mimetypes</span> <span class="kn">import</span> <span class="n">guess_type</span> <span class="k">as</span> <span class="n">mimetypes_guess</span>
@@ -68,8 +70,11 @@
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">EXT_TO_MIME</span>
 <span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">.introspect</span> <span class="kn">import</span> <span class="n">resource_string</span>
 
-<div class="viewcode-block" id="abspath"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.abspath">[docs]</a><span class="k">def</span> <span class="nf">abspath</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<div class="viewcode-block" id="abspath">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.abspath">[docs]</a>
+<span class="k">def</span> <span class="nf">abspath</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a full path to a file or file URL</span>
 
@@ -79,7 +84,10 @@
         <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;file://&#39;</span><span class="p">):]</span>
     <span class="k">return</span> <span class="n">abspath_</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pushd_popd"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.pushd_popd">[docs]</a><span class="nd">@contextmanager</span>
+
+<div class="viewcode-block" id="pushd_popd">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.pushd_popd">[docs]</a>
+<span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">pushd_popd</span><span class="p">(</span><span class="n">newcwd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tempdir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">newcwd</span> <span class="ow">and</span> <span class="n">tempdir</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;pushd_popd can accept either newcwd or tempdir, not both&quot;</span><span class="p">)</span>
@@ -100,7 +108,10 @@
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">chdir</span><span class="p">(</span><span class="n">oldcwd</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="unzip_file_to_dir"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.unzip_file_to_dir">[docs]</a><span class="k">def</span> <span class="nf">unzip_file_to_dir</span><span class="p">(</span><span class="n">path_to_zip</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">):</span>
+
+<div class="viewcode-block" id="unzip_file_to_dir">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.unzip_file_to_dir">[docs]</a>
+<span class="k">def</span> <span class="nf">unzip_file_to_dir</span><span class="p">(</span><span class="n">path_to_zip</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract a ZIP archive to a directory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -108,29 +119,44 @@
     <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">output_directory</span><span class="p">)</span>
     <span class="n">z</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="get_ocrd_tool_json"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_ocrd_tool_json">[docs]</a><span class="nd">@lru_cache</span><span class="p">()</span>
+
+<div class="viewcode-block" id="get_ocrd_tool_json">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_ocrd_tool_json">[docs]</a>
+<span class="nd">@lru_cache</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">get_ocrd_tool_json</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the ``ocrd-tool`` description of ``executable``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">executable_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">run</span><span class="p">([</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.utils.get_ocrd_tool_json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s1"> --dump-json produced invalid JSON: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ocrd_all_tool</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">resource_string</span><span class="p">(</span><span class="s1">&#39;ocrd&#39;</span><span class="p">,</span> <span class="s1">&#39;ocrd-all-tool.json&#39;</span><span class="p">))</span>
+        <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">ocrd_all_tool</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">run</span><span class="p">([</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-json&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.utils.get_ocrd_tool_json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s1"> --dump-json produced invalid JSON: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;resource_locations&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ocrd_tool</span><span class="p">:</span>
         <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;resource_locations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;cwd&#39;</span><span class="p">,</span> <span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">ocrd_tool</span></div>
 
-<div class="viewcode-block" id="get_moduledir"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_moduledir">[docs]</a><span class="nd">@lru_cache</span><span class="p">()</span>
+
+<div class="viewcode-block" id="get_moduledir">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_moduledir">[docs]</a>
+<span class="nd">@lru_cache</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">get_moduledir</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
     <span class="n">moduledir</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">moduledir</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-module-dir&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.utils.get_moduledir&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s1"> --dump-module-dir failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">ocrd_all_moduledir</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">resource_string</span><span class="p">(</span><span class="s1">&#39;ocrd&#39;</span><span class="p">,</span> <span class="s1">&#39;ocrd-all-module-dir.json&#39;</span><span class="p">))</span>
+        <span class="n">moduledir</span> <span class="o">=</span> <span class="n">ocrd_all_moduledir</span><span class="p">[</span><span class="n">executable</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">moduledir</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;--dump-module-dir&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.utils.get_moduledir&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s1"> --dump-module-dir failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">moduledir</span></div>
+
 
 <span class="k">def</span> <span class="nf">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">moduled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xdg_data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -158,7 +184,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">resource_locations</span> <span class="o">=</span> <span class="n">get_ocrd_tool_json</span><span class="p">(</span><span class="n">executable</span><span class="p">)[</span><span class="s1">&#39;resource_locations&#39;</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="c1"># processor we&#39;re looking for ressource_locations of is not installed.</span>
+        <span class="c1"># processor we&#39;re looking for resource_locations of is not installed.</span>
         <span class="c1"># Assume the default</span>
         <span class="n">resource_locations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;cwd&#39;</span><span class="p">,</span> <span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">]</span>
     <span class="n">xdg_data_home</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">XDG_DATA_HOME</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">xdg_data_home</span> <span class="k">else</span> <span class="n">xdg_data_home</span>
@@ -200,7 +226,9 @@
             <span class="n">candidates</span> <span class="o">+=</span> <span class="n">parent</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">])</span>
 
-<div class="viewcode-block" id="get_processor_resource_types"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_processor_resource_types">[docs]</a><span class="k">def</span> <span class="nf">get_processor_resource_types</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_processor_resource_types">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.get_processor_resource_types">[docs]</a>
+<span class="k">def</span> <span class="nf">get_processor_resource_types</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine what type of resource parameters a processor needs.</span>
 
@@ -214,11 +242,12 @@
         <span class="n">ocrd_tool</span> <span class="o">=</span> <span class="n">get_ocrd_tool_json</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">next</span><span class="p">((</span><span class="kc">True</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ocrd_tool</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;content-type&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">),</span> <span class="kc">False</span><span class="p">):</span>
         <span class="c1"># None of the parameters for this processor are resources (or not</span>
-        <span class="c1"># the resource parametrs are not properly declared, so output both</span>
+        <span class="c1"># the resource parameters are not properly declared, so output both</span>
         <span class="c1"># directories and files</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;*/*&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="k">if</span> <span class="s1">&#39;content-type&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]</span></div>
+
 
 <span class="c1"># ht @pabs3</span>
 <span class="c1"># https://github.com/untitaker/python-atomicwrites/issues/42</span>
@@ -236,19 +265,25 @@
         <span class="n">chmod</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span>
 
-<div class="viewcode-block" id="atomic_write"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.atomic_write">[docs]</a><span class="nd">@contextmanager</span>
+<div class="viewcode-block" id="atomic_write">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.atomic_write">[docs]</a>
+<span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">atomic_write</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">atomic_write_</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">writer_cls</span><span class="o">=</span><span class="n">AtomicWriterPerms</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">f</span></div>
 
 
-<div class="viewcode-block" id="is_file_in_directory"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.is_file_in_directory">[docs]</a><span class="k">def</span> <span class="nf">is_file_in_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+
+<div class="viewcode-block" id="is_file_in_directory">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.is_file_in_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">is_file_in_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if ``file`` is in ``directory`` (by checking that all components of ``directory`` are in ``file.parts``)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
     <span class="n">file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">parts</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">parts</span><span class="p">)]</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span></div>
+
 
 <span class="k">def</span> <span class="nf">itertree</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -261,14 +296,19 @@
             <span class="k">yield from</span> <span class="n">itertree</span><span class="p">(</span><span class="n">subpath</span><span class="p">)</span>
     <span class="k">yield</span> <span class="n">path</span>
 
-<div class="viewcode-block" id="directory_size"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.directory_size">[docs]</a><span class="k">def</span> <span class="nf">directory_size</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="directory_size">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.directory_size">[docs]</a>
+<span class="k">def</span> <span class="nf">directory_size</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculcates size of all files in directory ``path``</span>
+<span class="sd">    Calculates size of all files in directory ``path``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;**/*&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="guess_media_type"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.guess_media_type">[docs]</a><span class="k">def</span> <span class="nf">guess_media_type</span><span class="p">(</span><span class="n">input_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fallback</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">application_xml</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;application/xml&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_media_type">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.guess_media_type">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_media_type</span><span class="p">(</span><span class="n">input_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fallback</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">application_xml</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;application/xml&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Guess the media type of a file path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -285,11 +325,15 @@
         <span class="n">mimetype</span> <span class="o">=</span> <span class="n">application_xml</span>
     <span class="k">return</span> <span class="n">mimetype</span></div>
 
-<div class="viewcode-block" id="redirect_stderr_and_stdout_to_file"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.redirect_stderr_and_stdout_to_file">[docs]</a><span class="nd">@contextmanager</span>
+
+<div class="viewcode-block" id="redirect_stderr_and_stdout_to_file">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.os.html#ocrd_utils.os.redirect_stderr_and_stdout_to_file">[docs]</a>
+<span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">redirect_stderr_and_stdout_to_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;at&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">redirect_stderr</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">yield</span></div>
+
 </pre></div>
 
           </div>
@@ -300,7 +344,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -322,7 +368,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -334,7 +379,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -342,7 +387,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -357,11 +402,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

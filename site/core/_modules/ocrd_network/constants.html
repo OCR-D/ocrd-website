@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ocrd_network.constants &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/constants.html" />
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ocrd_network.constants</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="n">DOCKER_IMAGE_MONGO_DB</span> <span class="o">=</span> <span class="s2">&quot;mongo&quot;</span>
+<span class="n">DOCKER_IMAGE_RABBIT_MQ</span> <span class="o">=</span> <span class="s2">&quot;rabbitmq:3.12-management&quot;</span>
+<span class="c1"># These feature flags are required by default to use the newer version</span>
+<span class="n">DOCKER_RABBIT_MQ_FEATURES</span> <span class="o">=</span> <span class="s2">&quot;quorum_queue,implicit_default_bindings,classic_mirrored_queue_version&quot;</span>
+
+<span class="n">NETWORK_PROTOCOLS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">]</span>
+<span class="n">OCRD_ALL_TOOL_JSON</span> <span class="o">=</span> <span class="s2">&quot;ocrd-all-tool.json&quot;</span>
+<span class="c1"># Used as a placeholder to lock all pages when no page_id is specified</span>
+<span class="n">SERVER_ALL_PAGES_PLACEHOLDER</span> <span class="o">=</span> <span class="s2">&quot;all_pages&quot;</span>
+
+
+<div class="viewcode-block" id="AgentType">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.constants.html#ocrd_network.constants.AgentType">[docs]</a>
+<span class="k">class</span> <span class="nc">AgentType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">PROCESSING_WORKER</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+    <span class="n">PROCESSOR_SERVER</span> <span class="o">=</span> <span class="s2">&quot;server&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="DeployType">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.constants.html#ocrd_network.constants.DeployType">[docs]</a>
+<span class="k">class</span> <span class="nc">DeployType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="c1"># Deployed by the Processing Server config file</span>
+    <span class="n">DOCKER</span> <span class="o">=</span> <span class="s2">&quot;docker&quot;</span>
+    <span class="n">NATIVE</span> <span class="o">=</span> <span class="s2">&quot;native&quot;</span>
+    <span class="c1"># Deployed through a registration endpoint of the Processing Server</span>
+    <span class="c1"># TODO: That endpoint is still not implemented</span>
+    <span class="n">EXTERNAL</span> <span class="o">=</span> <span class="s2">&quot;external&quot;</span></div>
+
+
+
+<span class="c1"># TODO: Make the states uppercase</span>
+<div class="viewcode-block" id="JobState">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.constants.html#ocrd_network.constants.JobState">[docs]</a>
+<span class="k">class</span> <span class="nc">JobState</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="c1"># The processing job is cached inside the Processing Server requests cache</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="s2">&quot;CACHED&quot;</span>
+    <span class="c1"># The processing job was cancelled due to failed dependencies</span>
+    <span class="n">cancelled</span> <span class="o">=</span> <span class="s2">&quot;CANCELLED&quot;</span>
+    <span class="c1"># Processing job failed</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="s2">&quot;FAILED&quot;</span>
+    <span class="c1"># The processing job is queued inside the RabbitMQ</span>
+    <span class="n">queued</span> <span class="o">=</span> <span class="s2">&quot;QUEUED&quot;</span>
+    <span class="c1"># Processing job is currently running in a Worker or Processor Server</span>
+    <span class="n">running</span> <span class="o">=</span> <span class="s2">&quot;RUNNING&quot;</span>
+    <span class="c1"># Processing job finished successfully</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="s2">&quot;SUCCESS&quot;</span>
+    <span class="c1"># Processing job has not been assigned yet</span>
+    <span class="n">unset</span> <span class="o">=</span> <span class="s2">&quot;UNSET&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NetworkLoggingDirs">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.constants.html#ocrd_network.constants.NetworkLoggingDirs">[docs]</a>
+<span class="k">class</span> <span class="nc">NetworkLoggingDirs</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">METS_SERVERS</span> <span class="o">=</span> <span class="s2">&quot;mets_servers&quot;</span>
+    <span class="n">PROCESSING_JOBS</span> <span class="o">=</span> <span class="s2">&quot;processing_jobs&quot;</span>
+    <span class="n">PROCESSING_SERVERS</span> <span class="o">=</span> <span class="s2">&quot;processing_servers&quot;</span>
+    <span class="n">PROCESSING_WORKERS</span> <span class="o">=</span> <span class="s2">&quot;processing_workers&quot;</span>
+    <span class="n">PROCESSOR_SERVERS</span> <span class="o">=</span> <span class="s2">&quot;processor_servers&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ServerApiTags">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.constants.html#ocrd_network.constants.ServerApiTags">[docs]</a>
+<span class="k">class</span> <span class="nc">ServerApiTags</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ADMIN</span> <span class="o">=</span> <span class="s2">&quot;admin&quot;</span>
+    <span class="n">DISCOVERY</span> <span class="o">=</span> <span class="s2">&quot;discovery&quot;</span>
+    <span class="n">PROCESSING</span> <span class="o">=</span> <span class="s2">&quot;processing&quot;</span>
+    <span class="n">TOOLS</span> <span class="o">=</span> <span class="s2">&quot;tools&quot;</span>
+    <span class="n">WORKFLOW</span> <span class="o">=</span> <span class="s2">&quot;workflow&quot;</span>
+    <span class="n">WORKSPACE</span> <span class="o">=</span> <span class="s2">&quot;workspace&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Software library for OCR-D</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2018-2024, OCR-D.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

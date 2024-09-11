@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_utils.str &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_utils.str &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_utils/str.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_utils/str.html" />
+  
 
   </head><body>
   
@@ -38,17 +40,21 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">REGEX_FILE_ID</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">REGEX_FILE_ID</span><span class="p">,</span> <span class="n">SPARKLINE_CHARS</span>
 <span class="kn">from</span> <span class="nn">.deprecate</span> <span class="kn">import</span> <span class="n">deprecation_warning</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array_split</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;assert_file_grp_cardinality&#39;</span><span class="p">,</span>
     <span class="s1">&#39;concat_padded&#39;</span><span class="p">,</span>
     <span class="s1">&#39;get_local_filename&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_local_filename&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;partition_list&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_string&#39;</span><span class="p">,</span>
     <span class="s1">&#39;make_file_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;make_xml_id&#39;</span><span class="p">,</span>
     <span class="s1">&#39;nth_url_segment&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parse_json_string_or_file&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parse_json_string_with_comments&#39;</span><span class="p">,</span>
@@ -57,7 +63,9 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="assert_file_grp_cardinality"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.assert_file_grp_cardinality">[docs]</a><span class="k">def</span> <span class="nf">assert_file_grp_cardinality</span><span class="p">(</span><span class="n">grps</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="assert_file_grp_cardinality">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.assert_file_grp_cardinality">[docs]</a>
+<span class="k">def</span> <span class="nf">assert_file_grp_cardinality</span><span class="p">(</span><span class="n">grps</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assert that a string of comma-separated fileGrps contains exactly ``n`` entries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -72,7 +80,10 @@
                 <span class="nb">len</span><span class="p">(</span><span class="n">grps</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="concat_padded"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.concat_padded">[docs]</a><span class="k">def</span> <span class="nf">concat_padded</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="concat_padded">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.concat_padded">[docs]</a>
+<span class="k">def</span> <span class="nf">concat_padded</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Concatenate string and zero-padded 4 digit number</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -84,7 +95,10 @@
             <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%04i</span><span class="s2">&quot;</span>  <span class="o">%</span> <span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="remove_non_path_from_url"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.remove_non_path_from_url">[docs]</a><span class="k">def</span> <span class="nf">remove_non_path_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+
+<div class="viewcode-block" id="remove_non_path_from_url">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.remove_non_path_from_url">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_non_path_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove everything from URL after path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -93,7 +107,10 @@
     <span class="n">url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;/+$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span> <span class="c1"># trailing slashes</span>
     <span class="k">return</span> <span class="n">url</span></div>
 
-<div class="viewcode-block" id="make_file_id"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.make_file_id">[docs]</a><span class="k">def</span> <span class="nf">make_file_id</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">,</span> <span class="n">output_file_grp</span><span class="p">):</span>
+
+<div class="viewcode-block" id="make_file_id">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.make_file_id">[docs]</a>
+<span class="k">def</span> <span class="nf">make_file_id</span><span class="p">(</span><span class="n">ocrd_file</span><span class="p">,</span> <span class="n">output_file_grp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Derive a new file ID for an output file from an existing input file ``ocrd_file``</span>
 <span class="sd">    and the name of the output file&#39;s ``fileGrp/@USE``, ``output_file_grp``.</span>
@@ -126,13 +143,26 @@
             <span class="n">ret</span> <span class="o">=</span> <span class="n">output_file_grp</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">pageId</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">output_file_grp</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">ocrd_file</span><span class="o">.</span><span class="n">ID</span>
+    <span class="k">return</span> <span class="n">make_xml_id</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_xml_id">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.make_xml_id">[docs]</a>
+<span class="k">def</span> <span class="nf">make_xml_id</span><span class="p">(</span><span class="n">idstr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn ``idstr`` into a valid ``xml:id`` literal by replacing ``:`` with ``_``, removing everything non-alphanumeric, ``.`` and ``-`` and prepending `id_` if ``idstr`` starts with a number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">idstr</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">REGEX_FILE_ID</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([^a-zA-Z_])&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;id_\1&#39;</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w.-]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="nth_url_segment"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.nth_url_segment">[docs]</a><span class="k">def</span> <span class="nf">nth_url_segment</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="nth_url_segment">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.nth_url_segment">[docs]</a>
+<span class="k">def</span> <span class="nf">nth_url_segment</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the last /-delimited segment of a URL-like string</span>
 
@@ -146,7 +176,10 @@
     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="get_local_filename"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.get_local_filename">[docs]</a><span class="k">def</span> <span class="nf">get_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_local_filename">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.get_local_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">get_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return local filename, optionally relative to ``start``</span>
 
@@ -169,28 +202,40 @@
         <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">):]</span>
     <span class="k">return</span> <span class="n">url</span></div>
 
-<div class="viewcode-block" id="is_local_filename"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.is_local_filename">[docs]</a><span class="k">def</span> <span class="nf">is_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+
+<div class="viewcode-block" id="is_local_filename">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.is_local_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">is_local_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Whether a url is a local filename.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># deprecation_warning(&quot;Deprecated so we spot inconsistent URL/file handling&quot;)</span>
     <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;file://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span><span class="p">(</span><span class="s1">&#39;://&#39;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="is_string"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.is_string">[docs]</a><span class="k">def</span> <span class="nf">is_string</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+
+<div class="viewcode-block" id="is_string">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.is_string">[docs]</a>
+<span class="k">def</span> <span class="nf">is_string</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return whether a value is a ``str``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="parse_json_string_with_comments"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.parse_json_string_with_comments">[docs]</a><span class="k">def</span> <span class="nf">parse_json_string_with_comments</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+
+<div class="viewcode-block" id="parse_json_string_with_comments">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.parse_json_string_with_comments">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_json_string_with_comments</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a string of JSON interspersed with #-prefixed full-line comments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">jsonstr</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*#.*$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="parse_json_string_or_file"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.parse_json_string_or_file">[docs]</a><span class="k">def</span> <span class="nf">parse_json_string_or_file</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
+
+<div class="viewcode-block" id="parse_json_string_or_file">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.parse_json_string_or_file">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_json_string_or_file</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">,</span> <span class="n">resolve_preset_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a string as either the path to a JSON object or a literal JSON object.</span>
 
@@ -204,7 +249,10 @@
             <span class="k">continue</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">resolve_preset_file</span><span class="p">):</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">resolve_preset_file</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">value_parsed</span> <span class="o">=</span> <span class="n">parse_json_string_with_comments</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
                 <span class="n">value_parsed</span> <span class="o">=</span> <span class="n">parse_json_string_with_comments</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
@@ -217,7 +265,10 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">ret</span><span class="p">,</span> <span class="o">**</span><span class="n">value_parsed</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="safe_filename"><a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.safe_filename">[docs]</a><span class="k">def</span> <span class="nf">safe_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+
+<div class="viewcode-block" id="safe_filename">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.safe_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">safe_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sanitize input to be safely used as the basename of a local file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -227,7 +278,8 @@
     <span class="c1">#  print(&#39;safe filename: %s -&gt; %s&#39; % (url, ret))</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
-<span class="k">def</span> <span class="nf">generate_range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">generate_range</span><span class="p">(</span><span class="n">start</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a list of strings by incrementing the number part of ``start`` until including ``end``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -236,11 +288,57 @@
         <span class="n">start_num</span><span class="p">,</span> <span class="n">end_num</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Range &#39;</span><span class="si">%s</span><span class="s2">..</span><span class="si">%s</span><span class="s2">&#39;: could not find numeric part&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">start</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">start_num</span><span class="p">)]</span> <span class="o">!=</span> <span class="n">end</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end_num</span><span class="p">)]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Range &#39;</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">&#39; differ in their non-numeric part: &#39;</span><span class="si">{</span><span class="n">start</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">start_num</span><span class="p">)]</span><span class="si">}</span><span class="s2">&#39; != &#39;</span><span class="si">{</span><span class="n">end</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end_num</span><span class="p">)]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">start_num</span> <span class="o">==</span> <span class="n">end_num</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Range &#39;</span><span class="si">%s</span><span class="s2">..</span><span class="si">%s</span><span class="s2">&#39;: evaluates to the same number&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start_num</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end_num</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">start_num</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_num</span><span class="p">))))</span>
     <span class="k">return</span> <span class="n">ret</span>
+
+
+<div class="viewcode-block" id="partition_list">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.str.html#ocrd_utils.str.partition_list">[docs]</a>
+<span class="k">def</span> <span class="nf">partition_list</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">chunks</span><span class="p">,</span> <span class="n">chunk_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Partition a list into roughly equally-sized chunks</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lst (list): list to partition</span>
+<span class="sd">        chunks (int): number of chunks to generate (not per chunk!)</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        chunk_index (None|int): If provided, return only a list consisting of this chunk</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list(list())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">lst</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="c1"># Catch potential empty ranges returned by numpy.array_split</span>
+    <span class="c1">#  which are problematic in the ocr-d scope</span>
+    <span class="k">if</span> <span class="n">chunks</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Amount of chunks bigger than list size&quot;</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">array_split</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">chunks</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">chunk_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ret</span><span class="p">[</span><span class="n">chunk_index</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<span class="k">def</span> <span class="nf">sparkline</span><span class="p">(</span><span class="n">values</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Render a list of points with block characters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># return an empty string on non-positive-int values, better not to</span>
+        <span class="c1"># output a sparkline than to cancel execution due to problematic input</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">max_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">max_mapping</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">SPARKLINE_CHARS</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="c1"># normalize to 0..1 and convert to index in SPARKLINE_CHARS</span>
+    <span class="n">mapped</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">max_value</span> <span class="o">*</span> <span class="n">max_mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SPARKLINE_CHARS</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mapped</span><span class="p">)</span>
+
 </pre></div>
 
           </div>
@@ -251,7 +349,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -273,7 +373,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -285,7 +384,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -293,7 +392,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -308,11 +407,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.task_sequence &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd.task_sequence &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/task_sequence.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd/task_sequence.html" />
+  
 
   </head><body>
   
@@ -34,8 +36,7 @@
   <h1>Source code for ocrd.task_sequence</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">split</span> <span class="k">as</span> <span class="n">shlex_split</span>
-<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span> <span class="k">as</span> <span class="n">which</span> <span class="c1"># pylint: disable=import-error,no-name-in-module</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">parse_json_string_or_file</span><span class="p">,</span> <span class="n">set_json_key_value_overrides</span><span class="p">,</span> <span class="n">get_ocrd_tool_json</span>
 <span class="c1"># from collections import Counter</span>
@@ -44,9 +45,13 @@
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">WorkspaceValidator</span>
 <span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">ValidationReport</span>
 
-<div class="viewcode-block" id="ProcessorTask"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask">[docs]</a><span class="k">class</span> <span class="nc">ProcessorTask</span><span class="p">():</span>
+<div class="viewcode-block" id="ProcessorTask">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask">[docs]</a>
+<span class="k">class</span> <span class="nc">ProcessorTask</span><span class="p">():</span>
 
-<div class="viewcode-block" id="ProcessorTask.parse"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.parse">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ProcessorTask.parse">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.parse">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">argstr</span><span class="p">):</span>
         <span class="n">tokens</span> <span class="o">=</span> <span class="n">shlex_split</span><span class="p">(</span><span class="n">argstr</span><span class="p">)</span>
         <span class="n">executable</span> <span class="o">=</span> <span class="s1">&#39;ocrd-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -69,8 +74,9 @@
                 <span class="n">set_json_key_value_overrides</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
                 <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed parsing task description &#39;</span><span class="si">%s</span><span class="s2">&#39; with tokens remaining: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">argstr</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed parsing task description &#39;</span><span class="si">%s</span><span class="s2">&#39; with tokens remaining: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">argstr</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
@@ -86,7 +92,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span> <span class="o">=</span> <span class="n">get_ocrd_tool_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ocrd_tool_json</span>
 
-<div class="viewcode-block" id="ProcessorTask.validate"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessorTask.validate">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.ProcessorTask.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">which</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Executable not found in PATH: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">:</span>
@@ -111,6 +119,7 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Processor requires output_file_grp but none was provided.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">report</span></div>
 
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> -I </span><span class="si">%s</span><span class="s1"> -O </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ocrd-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -120,7 +129,10 @@
             <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot; -p &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="validate_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.validate_tasks">[docs]</a><span class="k">def</span> <span class="nf">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="validate_tasks">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.validate_tasks">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">()</span>
     <span class="n">prev_output_file_grps</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span>
 
@@ -142,7 +154,7 @@
         <span class="c1"># TODO disable output_file_grps checks once CLI parameter &#39;overwrite&#39; is implemented</span>
         <span class="c1"># XXX Thu Jan 16 20:14:17 CET 2020 still not sufficiently clever.</span>
         <span class="c1">#  if len(prev_output_file_grps) != len(set(prev_output_file_grps)):</span>
-        <span class="c1">#      report.add_error(&quot;Output file group specified multiple times: %s&quot; % </span>
+        <span class="c1">#      report.add_error(&quot;Output file group specified multiple times: %s&quot; %</span>
         <span class="c1">#          [grp for grp, count in Counter(prev_output_file_grps).items() if count &gt;= 2])</span>
         <span class="n">prev_output_file_grps</span> <span class="o">+=</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
@@ -150,9 +162,14 @@
     <span class="k">return</span> <span class="n">report</span></div>
 
 
-<div class="viewcode-block" id="run_tasks"><a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.run_tasks">[docs]</a><span class="k">def</span> <span class="nf">run_tasks</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">log_level</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">task_strs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="run_tasks">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.task_sequence.html#ocrd.task_sequence.run_tasks">[docs]</a>
+<span class="k">def</span> <span class="nf">run_tasks</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">log_level</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">task_strs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">)</span>
+    <span class="n">workdir</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">resolve_mets_arguments</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">workdir</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span>
+                                            <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">)</span>
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.task_sequence.run_tasks&#39;</span><span class="p">)</span>
     <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProcessorTask</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">task_str</span> <span class="ow">in</span> <span class="n">task_strs</span><span class="p">]</span>
 
@@ -174,7 +191,8 @@
             <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
             <span class="n">input_file_grp</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">),</span>
             <span class="n">output_file_grp</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">),</span>
-            <span class="n">parameter</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="n">parameter</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">parameters</span><span class="p">),</span>
+            <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span>
         <span class="p">)</span>
 
         <span class="c1"># check return code</span>
@@ -184,12 +202,14 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished processing task &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
         <span class="c1"># reload mets</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">reload_mets</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mets_server_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">reload_mets</span><span class="p">()</span>
 
         <span class="c1"># check output file groups are in mets</span>
         <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid state: expected output file group &#39;</span><span class="si">%s</span><span class="s2">&#39; not in METS (despite processor success)&quot;</span> <span class="o">%</span> <span class="n">output_file_grp</span><span class="p">)</span></div>
+
 </pre></div>
 
           </div>
@@ -200,7 +220,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -222,7 +244,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -234,7 +255,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -242,7 +263,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -257,11 +278,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.server_utils &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.server_utils &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/server_utils.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/server_utils.html" />
+  
 
   </head><body>
   
@@ -32,101 +34,291 @@
           <div class="body" role="main">
             
   <h1>Source code for ocrd_network.server_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
+<span></span><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">UploadFile</span>
 <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">FileResponse</span>
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span><span class="p">,</span> <span class="n">Timeout</span>
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">dumps</span><span class="p">,</span> <span class="n">loads</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Logger</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span> <span class="k">as</span> <span class="n">requests_get</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
+
+<span class="kn">from</span> <span class="nn">ocrd.resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">ocrd.task_sequence</span> <span class="kn">import</span> <span class="n">ProcessorTask</span>
+<span class="kn">from</span> <span class="nn">ocrd.workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">generate_range</span><span class="p">,</span>
-    <span class="n">REGEX_PREFIX</span>
-<span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">db_create_workspace</span><span class="p">,</span>
     <span class="n">db_get_processing_job</span><span class="p">,</span>
-    <span class="n">db_get_workspace</span><span class="p">,</span>
+    <span class="n">db_get_workflow_job</span><span class="p">,</span>
+    <span class="n">db_get_workflow_script</span><span class="p">,</span>
+    <span class="n">db_get_workspace</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">PYJobOutput</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">DBProcessorJob</span><span class="p">,</span> <span class="n">DBWorkflowJob</span><span class="p">,</span> <span class="n">DBWorkspace</span><span class="p">,</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">PYJobOutput</span>
+<span class="kn">from</span> <span class="nn">.rabbitmq_utils</span> <span class="kn">import</span> <span class="n">OcrdProcessingMessage</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calculate_processing_request_timeout</span><span class="p">,</span>
+    <span class="n">expand_page_ids</span><span class="p">,</span>
+    <span class="n">generate_created_time</span><span class="p">,</span>
+    <span class="n">generate_workflow_content</span><span class="p">,</span>
+    <span class="n">get_ocrd_workspace_physical_pages</span>
+<span class="p">)</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">_get_processor_job</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
+<div class="viewcode-block" id="create_processing_message">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.create_processing_message">[docs]</a>
+<span class="k">def</span> <span class="nf">create_processing_message</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">DBProcessorJob</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OcrdProcessingMessage</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">processing_message</span> <span class="o">=</span> <span class="n">OcrdProcessingMessage</span><span class="p">(</span>
+            <span class="n">job_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
+            <span class="n">processor_name</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span>
+            <span class="n">created_time</span><span class="o">=</span><span class="n">generate_created_time</span><span class="p">(),</span>
+            <span class="n">path_to_mets</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">,</span>
+            <span class="n">workspace_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">,</span>
+            <span class="n">input_file_grps</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">input_file_grps</span><span class="p">,</span>
+            <span class="n">output_file_grps</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span>
+            <span class="n">page_id</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+            <span class="n">result_queue_name</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">result_queue_name</span><span class="p">,</span>
+            <span class="n">callback_url</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">callback_url</span><span class="p">,</span>
+            <span class="n">internal_callback_url</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">internal_callback_url</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">processing_message</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to create OcrdProcessingMessage from DBProcessorJob&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_workspace_if_not_exists">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.create_workspace_if_not_exists">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">create_workspace_if_not_exists</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Core cannot create workspaces by API, but the Processing Server needs</span>
+        <span class="c1"># the workspace in the database. The workspace is created if the path is</span>
+        <span class="c1"># available locally and not existing in the database - since it has not</span>
+        <span class="c1"># been uploaded through the Workspace Server.</span>
+        <span class="n">db_workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_create_workspace</span><span class="p">(</span><span class="n">mets_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db_workspace</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Mets file path not existing: </span><span class="si">{</span><span class="n">mets_path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_from_database_workflow_job">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.get_from_database_workflow_job">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_from_database_workflow_job</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">workflow_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkflowJob</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">workflow_job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_workflow_job</span><span class="p">(</span><span class="n">workflow_job_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">workflow_job</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Workflow job with id &#39;</span><span class="si">{</span><span class="n">workflow_job_id</span><span class="si">}</span><span class="s2">&#39; not found in the DB.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_from_database_workspace">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.get_from_database_workspace">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_from_database_workspace</span><span class="p">(</span>
+    <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span>
+    <span class="n">workspace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">workspace_mets_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBWorkspace</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db_workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">,</span> <span class="n">workspace_mets_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db_workspace</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Workspace with id &#39;</span><span class="si">{</span><span class="n">workspace_id</span><span class="si">}</span><span class="s2">&#39; not found in the DB.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_page_ids_list">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.get_page_ids_list">[docs]</a>
+<span class="k">def</span> <span class="nf">get_page_ids_list</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">page_id</span><span class="p">:</span>
+            <span class="n">page_range</span> <span class="o">=</span> <span class="n">expand_page_ids</span><span class="p">(</span><span class="n">page_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If no page_id is specified, all physical pages are assigned as page range</span>
+            <span class="n">page_range</span> <span class="o">=</span> <span class="n">get_ocrd_workspace_physical_pages</span><span class="p">(</span><span class="n">mets_path</span><span class="o">=</span><span class="n">mets_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">page_range</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to determine page range for mets path: </span><span class="si">{</span><span class="n">mets_path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_get_processor_job</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Return processing job-information from the database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_processing_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">job</span><span class="o">.</span><span class="n">to_job_output</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing job with id &#39;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&#39; of processor type &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; not existing, error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Processing job with id &#39;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&#39; of processor type &#39;</span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; not existing&quot;</span>
-        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Processing job with id &#39;</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&#39; not existing.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">_get_processor_job_log</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span><span class="p">:</span>
-    <span class="n">db_job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_get_processor_job</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_get_processor_job_log</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span><span class="p">:</span>
+    <span class="n">db_job</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_get_processor_job</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span>
     <span class="n">log_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">db_job</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">log_file_path</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">log_file_path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="validate_and_return_mets_path"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_and_return_mets_path">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">validate_and_return_mets_path</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="c1"># This check is done to return early in case the workspace_id is provided</span>
-    <span class="c1"># but the abs mets path cannot be queried from the DB</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">job_input</span><span class="o">.</span><span class="n">path_to_mets</span> <span class="ow">and</span> <span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">:</span>
+<div class="viewcode-block" id="request_processor_server_tool_json">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.request_processor_server_tool_json">[docs]</a>
+<span class="k">def</span> <span class="nf">request_processor_server_tool_json</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">processor_server_base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="c1"># Request the ocrd tool json from the Processor Server</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests_get</span><span class="p">(</span>
+            <span class="n">urljoin</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">processor_server_base_url</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to retrieve ocrd tool json from: </span><span class="si">{</span><span class="n">processor_server_base_url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to retrieve tool json from: </span><span class="si">{</span><span class="n">processor_server_base_url</span><span class="si">}</span><span class="s2">, code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="forward_job_to_processor_server">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.forward_job_to_processor_server">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">forward_job_to_processor_server</span><span class="p">(</span>
+    <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">,</span> <span class="n">processor_server_base_url</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">dumps</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to json dump the PYJobInput: </span><span class="si">{</span><span class="n">job_input</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+    <span class="c1"># TODO: The amount of pages should come as a request input</span>
+    <span class="c1"># TODO: cf https://github.com/OCR-D/core/pull/1030/files#r1152551161</span>
+    <span class="c1">#  currently, use 200 as a default</span>
+    <span class="n">request_timeout</span> <span class="o">=</span> <span class="n">calculate_processing_request_timeout</span><span class="p">(</span><span class="n">amount_pages</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">timeout_per_page</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+
+    <span class="c1"># Post a processing job to the Processor Server asynchronously</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">Timeout</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">request_timeout</span><span class="p">,</span> <span class="n">connect</span><span class="o">=</span><span class="mf">30.0</span><span class="p">))</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">urljoin</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">processor_server_base_url</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s2">&quot;run&quot;</span><span class="p">),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+            <span class="n">json</span><span class="o">=</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">202</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to post &#39;</span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; job to: </span><span class="si">{</span><span class="n">processor_server_base_url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">job_output</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">job_output</span></div>
+
+
+
+<div class="viewcode-block" id="get_workflow_content">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.get_workflow_content">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_workflow_content</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">workflow_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">UploadFile</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">workflow</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">workflow_id</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Either &#39;workflow&#39; must be uploaded as a file or &#39;workflow_id&#39; must be provided. Both are missing.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workflow_id</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">db_workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_workspace</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">)</span>
-            <span class="n">path_to_mets</span> <span class="o">=</span> <span class="n">db_workspace</span><span class="o">.</span><span class="n">workspace_mets_path</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Workspace with id &#39;</span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="si">}</span><span class="s2">&#39; not existing: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-                <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
-                <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Workspace with id &#39;</span><span class="si">{</span><span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="si">}</span><span class="s2">&#39; not existing&quot;</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">path_to_mets</span>
+            <span class="n">db_workflow</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_get_workflow_script</span><span class="p">(</span><span class="n">workflow_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">db_workflow</span><span class="o">.</span><span class="n">content</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Workflow with id &#39;</span><span class="si">{</span><span class="n">workflow_id</span><span class="si">}</span><span class="s2">&#39; not found&quot;</span>
+            <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">generate_workflow_content</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="validate_and_return_mets_path">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_and_return_mets_path">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">validate_and_return_mets_path</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">:</span>
+        <span class="n">db_workspace</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_from_database_workspace</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db_workspace</span><span class="o">.</span><span class="n">workspace_mets_path</span>
     <span class="k">return</span> <span class="n">job_input</span><span class="o">.</span><span class="n">path_to_mets</span></div>
 
 
-<div class="viewcode-block" id="expand_page_ids"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.expand_page_ids">[docs]</a><span class="k">def</span> <span class="nf">expand_page_ids</span><span class="p">(</span><span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="n">page_ids</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">page_id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">page_ids</span>
-    <span class="k">for</span> <span class="n">page_id_token</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">page_id_token</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">REGEX_PREFIX</span><span class="p">):</span>
-            <span class="n">page_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">page_id_token</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">REGEX_PREFIX</span><span class="p">):]))</span>
-        <span class="k">elif</span> <span class="s1">&#39;..&#39;</span> <span class="ow">in</span> <span class="n">page_id_token</span><span class="p">:</span>
-            <span class="n">page_ids</span> <span class="o">+=</span> <span class="n">generate_range</span><span class="p">(</span><span class="o">*</span><span class="n">page_id_token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">page_ids</span> <span class="o">+=</span> <span class="p">[</span><span class="n">page_id_token</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">page_ids</span></div>
+
+<div class="viewcode-block" id="parse_workflow_tasks">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.parse_workflow_tasks">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_workflow_tasks</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">workflow_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ProcessorTask</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tasks_list</span> <span class="o">=</span> <span class="n">workflow_content</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ProcessorTask</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">task_str</span> <span class="ow">in</span> <span class="n">tasks_list</span> <span class="k">if</span> <span class="n">task_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed parsing processing tasks from a workflow.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_job_input"><a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_job_input">[docs]</a><span class="k">def</span> <span class="nf">validate_job_input</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="raise_http_exception">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.raise_http_exception">[docs]</a>
+<span class="k">def</span> <span class="nf">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">message</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="validate_job_input">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_job_input">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_job_input</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">job_input</span><span class="p">:</span> <span class="n">PYJobInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># logger.warning(f&quot;Job input: {job_input}&quot;)</span>
     <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Either &#39;path_to_mets&#39; or &#39;workspace_id&#39; must be provided, but not both&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Either &#39;path_to_mets&#39; or &#39;workspace_id&#39; must be provided, but not both&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Wrong processing job input format. &quot;</span>
+            <span class="s2">&quot;Either &#39;path_to_mets&#39; or &#39;workspace_id&#39; must be provided. &quot;</span>
+            <span class="s2">&quot;Both are provided or both are missing.&quot;</span>
         <span class="p">)</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ocrd_tool</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor &#39;</span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; not available. Empty or missing ocrd_tool&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Processor &#39;</span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&#39; not available. Empty or missing ocrd_tool&quot;</span>
-        <span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed parsing processing tasks from a workflow.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">report</span> <span class="o">=</span> <span class="n">ParameterValidator</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">job_input</span><span class="o">.</span><span class="n">parameters</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to validate processing job against the ocrd_tool: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Failed to validate processing job against the ocrd_tool&#39;</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to validate processing job &#39;</span>
-                             <span class="sa">f</span><span class="s1">&#39;against the ocrd_tool, errors: </span><span class="si">{</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span></div>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to validate processing job input against the ocrd tool json of processor: </span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">report</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to validate processing job input against the tool json of processor: </span><span class="si">{</span><span class="n">processor_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}{</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="validate_workflow">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_workflow">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_workflow</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check whether workflow is not empty and parseable to a lists of ProcessorTask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">workflow</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Workflow is invalid, empty.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tasks_list</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="p">[</span><span class="n">ProcessorTask</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">task_str</span> <span class="ow">in</span> <span class="n">tasks_list</span> <span class="k">if</span> <span class="n">task_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Provided workflow script is invalid, failed to parse ProcessorTasks.&quot;</span>
+        <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="validate_first_task_input_file_groups_existence">
+<a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.server_utils.html#ocrd_network.server_utils.validate_first_task_input_file_groups_existence">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_first_task_input_file_groups_existence</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">mets_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="c1"># Validate the input file groups of the first task in the workflow</span>
+    <span class="n">available_groups</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">Resolver</span><span class="p">(),</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_path</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">input_file_grps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_groups</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Input file group &#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&#39; of the first processor not found: </span><span class="si">{</span><span class="n">input_file_grps</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">raise_http_exception</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
 </pre></div>
 
           </div>
@@ -137,7 +329,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -159,7 +353,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -171,7 +364,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -179,7 +372,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -194,11 +387,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 

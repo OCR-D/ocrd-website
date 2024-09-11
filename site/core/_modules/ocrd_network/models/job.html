@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.models.job &#8212; ocrd 2.58.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c89f9379"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <title>ocrd_network.models.job &#8212; ocrd 2.68.0
+ documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
+
   
-    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/models/job.html"/>
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="canonical" href="https://ocr-d.de_modules/ocrd_network/models/job.html" />
+  
 
   </head><body>
   
@@ -32,30 +34,16 @@
           <div class="body" role="main">
             
   <h1>Source code for ocrd_network.models.job</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-
-<span class="kn">from</span> <span class="nn">beanie</span> <span class="kn">import</span> <span class="n">Document</span>
+<span></span><span class="kn">from</span> <span class="nn">beanie</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">AgentType</span><span class="p">,</span> <span class="n">JobState</span>
 
 
-<div class="viewcode-block" id="StateEnum"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.StateEnum">[docs]</a><span class="k">class</span> <span class="nc">StateEnum</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="c1"># The processing job is cached inside the Processing Server requests cache</span>
-    <span class="n">cached</span> <span class="o">=</span> <span class="s1">&#39;CACHED&#39;</span>
-    <span class="c1"># The processing job was cancelled due to failed dependencies</span>
-    <span class="n">cancelled</span> <span class="o">=</span> <span class="s1">&#39;CANCELLED&#39;</span>
-    <span class="c1"># The processing job is queued inside the RabbitMQ</span>
-    <span class="n">queued</span> <span class="o">=</span> <span class="s1">&#39;QUEUED&#39;</span>
-    <span class="c1"># Processing job is currently running in a Worker or Processor Server</span>
-    <span class="n">running</span> <span class="o">=</span> <span class="s1">&#39;RUNNING&#39;</span>
-    <span class="c1"># Processing job finished successfully</span>
-    <span class="n">success</span> <span class="o">=</span> <span class="s1">&#39;SUCCESS&#39;</span>
-    <span class="c1"># Processing job failed</span>
-    <span class="n">failed</span> <span class="o">=</span> <span class="s1">&#39;FAILED&#39;</span></div>
-
-
-<div class="viewcode-block" id="PYJobInput"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobInput">[docs]</a><span class="k">class</span> <span class="nc">PYJobInput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PYJobInput">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobInput">[docs]</a>
+<span class="k">class</span> <span class="nc">PYJobInput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Wraps the parameters required to make a run-processor-request</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">processor_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -68,33 +56,39 @@
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Always set to empty dict when None, otherwise it fails ocr-d-validation</span>
     <span class="n">result_queue_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">callback_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1"># Used to toggle between sending requests to &#39;worker and &#39;server&#39;,</span>
-    <span class="c1"># i.e., Processing Worker and Processor Server, respectively</span>
-    <span class="n">agent_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;worker&#39;</span>
+    <span class="c1"># Used to toggle between sending requests to different network agents</span>
+    <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentType</span> <span class="o">=</span> <span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSING_WORKER</span>
     <span class="c1"># Auto generated by the Processing Server when forwarding to the Processor Server</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># If set, specifies a list of job ids this job depends on</span>
     <span class="n">depends_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="PYJobInput.Config"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobInput.Config">[docs]</a>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<div class="viewcode-block" id="PYJobInput.Config">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobInput.Config">[docs]</a>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">schema_extra</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;example&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;path_to_mets&#39;</span><span class="p">:</span> <span class="s1">&#39;/path/to/mets.xml&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;The description of this execution&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;input_file_grps&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;INPUT_FILE_GROUP&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;output_file_grps&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;OUTPUT_FILE_GROUP&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;page_id&#39;</span><span class="p">:</span> <span class="s1">&#39;PAGE_ID&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;input_file_grps&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;output_file_grps&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;OCR-D-BIN&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;agent_type&#39;</span><span class="p">:</span> <span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSING_WORKER</span><span class="p">,</span>
+                <span class="s1">&#39;page_id&#39;</span><span class="p">:</span> <span class="s1">&#39;PHYS_0001..PHYS_0003&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{}</span>
             <span class="p">}</span>
-        <span class="p">}</span></div></div>
+        <span class="p">}</span></div>
+</div>
 
 
-<div class="viewcode-block" id="PYJobOutput"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobOutput">[docs]</a><span class="k">class</span> <span class="nc">PYJobOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PYJobOutput">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYJobOutput">[docs]</a>
+<span class="k">class</span> <span class="nc">PYJobOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Wraps output information for a job-response</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">processor_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">state</span><span class="p">:</span> <span class="n">StateEnum</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">JobState</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">unset</span>
     <span class="n">path_to_mets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">workspace_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">input_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -103,7 +97,10 @@
     <span class="n">log_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="DBProcessorJob"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob">[docs]</a><span class="k">class</span> <span class="nc">DBProcessorJob</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DBProcessorJob">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob">[docs]</a>
+<span class="k">class</span> <span class="nc">DBProcessorJob</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Job representation in the database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
@@ -111,7 +108,7 @@
     <span class="n">path_to_mets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">workspace_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">state</span><span class="p">:</span> <span class="n">StateEnum</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">JobState</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">unset</span>
     <span class="n">input_file_grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">output_file_grps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="n">page_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -125,10 +122,15 @@
     <span class="n">exec_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">log_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 
-<div class="viewcode-block" id="DBProcessorJob.Settings"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob.Settings">[docs]</a>    <span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
+<div class="viewcode-block" id="DBProcessorJob.Settings">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob.Settings">[docs]</a>
+    <span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
         <span class="n">use_enum_values</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="DBProcessorJob.to_job_output"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob.to_job_output">[docs]</a>    <span class="k">def</span> <span class="nf">to_job_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DBProcessorJob.to_job_output">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBProcessorJob.to_job_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_job_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYJobOutput</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PYJobOutput</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">processor_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">processor_name</span><span class="p">,</span>
@@ -139,25 +141,32 @@
             <span class="n">output_file_grps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grps</span><span class="p">,</span>
             <span class="n">page_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span>
             <span class="n">log_file_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="PYWorkflowJobOutput"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYWorkflowJobOutput">[docs]</a><span class="k">class</span> <span class="nc">PYWorkflowJobOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PYWorkflowJobOutput">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.PYWorkflowJobOutput">[docs]</a>
+<span class="k">class</span> <span class="nc">PYWorkflowJobOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Wraps output information for a workflow job-response</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">page_wise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="c1"># A dictionary where each entry has:</span>
     <span class="c1"># key: page_id</span>
     <span class="c1"># value: List of and processing job ids sorted in dependency order</span>
-    <span class="n">processing_job_ids</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="n">processing_job_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">page_wise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">path_to_mets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">workspace_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="DBWorkflowJob"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob">[docs]</a><span class="k">class</span> <span class="nc">DBWorkflowJob</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DBWorkflowJob">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob">[docs]</a>
+<span class="k">class</span> <span class="nc">DBWorkflowJob</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Workflow job representation in the database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
@@ -172,10 +181,15 @@
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">workflow_callback_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 
-<div class="viewcode-block" id="DBWorkflowJob.Settings"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob.Settings">[docs]</a>    <span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
+<div class="viewcode-block" id="DBWorkflowJob.Settings">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob.Settings">[docs]</a>
+    <span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
         <span class="n">use_enum_values</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="DBWorkflowJob.to_job_output"><a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob.to_job_output">[docs]</a>    <span class="k">def</span> <span class="nf">to_job_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYWorkflowJobOutput</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DBWorkflowJob.to_job_output">
+<a class="viewcode-back" href="../../../api/ocrd_network/ocrd_network.models.job.html#ocrd_network.models.DBWorkflowJob.to_job_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_job_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PYWorkflowJobOutput</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PYWorkflowJobOutput</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
             <span class="n">page_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span>
@@ -184,7 +198,9 @@
             <span class="n">path_to_mets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_mets</span><span class="p">,</span>
             <span class="n">workspace_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_id</span><span class="p">,</span>
             <span class="n">workflow_callback_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_callback_url</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -195,7 +211,9 @@
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../../index.html">
-    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo"/>
+    <img class="logo" src="../../../_static/ocrd-logo-small.png" alt="Logo" />
+    
+    <h1 class="logo logo-name">OCR-D/core</h1>
     
   </a>
 </p>
@@ -217,7 +235,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -229,7 +246,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -237,7 +254,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -252,11 +269,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018-2023, OCR-D.
+      &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>
 
