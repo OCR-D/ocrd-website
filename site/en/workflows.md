@@ -1614,7 +1614,7 @@ results by configuring a more granular workflow like e.g. the
 ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
 ```
 
-## Best results for selected pages
+<!-- ## Best results for selected pages
 
 The following workflow has produced best results for 'simple' pages (e.g. [this
 page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))  (CER ~1%).
@@ -1767,6 +1767,6 @@ you need to adjust `-I OCR-D-IMG` in the second line of the call above with the 
 set to point to the directory where the used models are stored if they are not in the default location. If you downloaded your models
 with the [OCR-D resource manager](https://ocr-d.de/en/models), this is already taken care of.
 
-<!-- END-INCLUDE -->
+<-- END-INCLUDE --> -->
 
 <script src="/js/workflows.js"></script>
