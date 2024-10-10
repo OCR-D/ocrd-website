@@ -588,16 +588,6 @@ function ToggleSearchActive2() {
           <li><a href="#example-with-ocrd-process">Example with ocrd-process</a></li>
         </ul>
       </li>
-      <li><a href="#best-results-for-selected-pages">Best results for selected pages</a>
-        <ul>
-          <li><a href="#example-with-ocrd-process-1">Example with ocrd-process</a></li>
-        </ul>
-      </li>
-      <li><a href="#good-results-for-slower-processors">Good results for slower processors</a>
-        <ul>
-          <li><a href="#example-with-ocrd-process-2">Example with ocrd-process</a></li>
-        </ul>
-      </li>
     </ul>
   </li>
 </ul>
@@ -2293,10 +2283,10 @@ results by configuring a more granular workflow like e.g. the
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="s2">"tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"</span>
 </code></pre></div></div>
 
-<h2 id="best-results-for-selected-pages">Best results for selected pages</h2>
+<!-- ## Best results for selected pages
 
-<p>The following workflow has produced best results for ‘simple’ pages (e.g. <a href="https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif">this
-page</a>)  (CER ~1%).</p>
+The following workflow has produced best results for 'simple' pages (e.g. [this
+page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))  (CER ~1%).
 
 <table class="processor-table">
   <thead>
@@ -2350,32 +2340,34 @@ page</a>)  (CER ~1%).</p>
   </tbody>
 </table>
 
-<h3 id="example-with-ocrd-process-1">Example with ocrd-process</h3>
+### Example with ocrd-process
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
-  <span class="s2">"skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li"</span> <span class="se">\</span>
-  <span class="s2">"skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P level-of-operation page"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-LINE-RESEG-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint_dir qurator-gt4histocr-1.0"</span>
-</code></pre></div></div>
+```sh
+ocrd process \
+  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
+  "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
+  "skimage-binarize -I OCR-D-CROP -O OCR-D-BIN2 -P method li" \
+  "skimage-denoise -I OCR-D-BIN2 -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
+  "cis-ocropy-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P level-of-operation page" \
+  "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-LINE-RESEG-DEWARP" \
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint_dir qurator-gt4histocr-1.0"
+```
 
-<p><strong>Note:</strong>
-(1) This workflow expects your images to be stored in a folder called <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
-you need to adjust <code class="language-plaintext highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="language-plaintext highlighter-rouge">-I MAX</code>
-(2) For the last processor in this workflow, <code class="language-plaintext highlighter-rouge">ocrd-calamari-recognize</code>, you need to specify the model which is to be used. 
-If you didn’t download it via the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>, you have to use the <code class="language-plaintext highlighter-rouge">checkpoint</code> parameter
-and pass your local path to the model on your hard drive as parameter value! In this case, the last line of the <code class="language-plaintext highlighter-rouge">ocrd-process</code> call above could e.g. look like this:</p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="s2">"calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/</span><span class="se">\*</span><span class="s2">.ckpt.json"</span>
-</code></pre></div></div>
-<p>All the other lines can just be copied and pasted.</p>
+**Note:**
+(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I MAX`
+(2) For the last processor in this workflow, `ocrd-calamari-recognize`, you need to specify the model which is to be used. 
+If you didn't download it via the [OCR-D resource manager](https://ocr-d.de/en/models), you have to use the `checkpoint` parameter
+and pass your local path to the model on your hard drive as parameter value! In this case, the last line of the `ocrd-process` call above could e.g. look like this:
+```sh
+  "calamari-recognize -I OCR-D-SEG-LINE-RESEG-DEWARP -O OCR-D-OCR -P checkpoint /test/data/calamari_models/\*.ckpt.json"
+```
+All the other lines can just be copied and pasted.
 
-<h2 id="good-results-for-slower-processors">Good results for slower processors</h2>
+## Good results for slower processors
 
-<p>If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.</p>
+If your computer is not that powerful you may try this workflow. It works fine for simple pages and produces also good results in shorter time.
 
 <table class="processor-table">
   <thead>
@@ -2424,26 +2416,28 @@ and pass your local path to the model on your hard drive as parameter value! In 
   </tbody>
 </table>
 
-<h3 id="example-with-ocrd-process-2">Example with ocrd-process</h3>
+### Example with ocrd-process
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd process <span class="se">\</span>
-  <span class="s2">"cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN"</span> <span class="se">\</span>
-  <span class="s2">"anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP"</span> <span class="se">\</span>
-  <span class="s2">"skimage-denoise -I OCR-D-CROP -O OCR-D-BIN-DENOISE -P level-of-operation page"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P shrink_polygons true"</span> <span class="se">\</span>
-  <span class="s2">"cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-DEWARP"</span> <span class="se">\</span>
-  <span class="s2">"tesserocr-recognize -I OCR-D-SEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951"</span>
-</code></pre></div></div>
+```sh
+ocrd process \
+  "cis-ocropy-binarize -I OCR-D-IMG -O OCR-D-BIN" \
+  "anybaseocr-crop -I OCR-D-BIN -O OCR-D-CROP" \
+  "skimage-denoise -I OCR-D-CROP -O OCR-D-BIN-DENOISE -P level-of-operation page" \
+  "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
+  "tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P shrink_polygons true" \
+  "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-DEWARP" \
+  "tesserocr-recognize -I OCR-D-SEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951"
+```
 
-<p><strong>Note:</strong>
-(1) This workflow expects your images to be stored in a folder called <code class="language-plaintext highlighter-rouge">OCR-D-IMG</code>. If your images are saved in a different folder,
-you need to adjust <code class="language-plaintext highlighter-rouge">-I OCR-D-IMG</code> in the second line of the call above with the name of your folder, e.g. <code class="language-plaintext highlighter-rouge">-I my_images</code>
-(2) For the last processor in this workflow, <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code>, the environment variable TESSDATA_PREFIX has to be
+**Note:**
+(1) This workflow expects your images to be stored in a folder called `OCR-D-IMG`. If your images are saved in a different folder,
+you need to adjust `-I OCR-D-IMG` in the second line of the call above with the name of your folder, e.g. `-I my_images`
+(2) For the last processor in this workflow, `ocrd-tesserocr-recognize`, the environment variable TESSDATA_PREFIX has to be
 set to point to the directory where the used models are stored if they are not in the default location. If you downloaded your models
-with the <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>, this is already taken care of.</p>
+with the [OCR-D resource manager](https://ocr-d.de/en/models), this is already taken care of.
 
-<!-- END-INCLUDE -->
+<-- END-INCLUDE -->
+<p>–&gt;</p>
 
 <script src="/js/workflows.js"></script>
 
