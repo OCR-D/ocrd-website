@@ -52,7 +52,7 @@ Interested parties from academia and practice are just as welcome as private ind
 On our website you will also find a [collection of (scientific) publications and lectures](publications) on the topic of OCR(-D) by our current and former project participants.
 
 ## Results of past project phases
-OCR-D is currently in its third project phase. Results of past project phases can be found on these pages at any time:
+The third phase of OCR-D is currently being finalised. Results of past project phases can be found on these pages at any time:
 * [User survey [Phase I]](user_survey)
 * [Module projects from Phase II](phase2)
 * [Pilot study [Phase II]](initial-tests)
