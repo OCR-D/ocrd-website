@@ -988,9 +988,9 @@ the path to each model.
   <tbody>
     <tr data-processor="ocrd-tesserocr-recognize">
       <td>ocrd-tesserocr-recognize</td>
-      <td><code>-P model GT4HistOCR_50000000.997_191951</code>
+      <td><code>-P model frak2021</code>
       </td>
-      <td>Recommended <br/>Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_best/GT4HistOCR_50000000.997_191951.traineddata">here</a><br/>a faster variant is <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/ocrd-train/data/GT4HistOCR_5000000/tessdata_fast/">here</a></td>
+      <td>Recommended <br/>Model can be found <a href="https://ub-backup.bib.uni-mannheim.de/~stweil/tesstrain/frak2021/">here</a></td>
       <td><code>TESSDATA_PREFIX="/test/data/tesseractmodels/" ocrd-tesserocr-recognize -I OCR-D-DEWARP-LINE -O OCR-D-OCR -P model Fraktur+Latin</code></td>
     </tr>
     <tr data-processor="ocrd-calamari-recognize">
@@ -1596,7 +1596,7 @@ results by configuring a more granular workflow like e.g. the
     <tr>
       <td>1</td>
       <td>ocrd-tesserocr-recognize</td>
-      <td>-P segmentation_level region -P textequiv_level word -P find_tables true -P model Fraktur_GT4HistOCR</td>
+      <td>-P segmentation_level region -P textequiv_level word -P find_tables true -P model frak2021</td>
     </tr>
   </tbody>
 </table>
@@ -1605,7 +1605,7 @@ results by configuring a more granular workflow like e.g. the
 ### Example with ocrd-process
 
 ```sh
-ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
+ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model frak2021"
 ```
 
 <!--
@@ -1737,7 +1737,7 @@ If your computer is not that powerful you may try this workflow. It works fine f
     <tr>
       <td><a href="#step-14-text-recognition">14</a></td>
       <td>ocrd-tesserocr-recognize</td>
-      <td>-P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951</td>
+      <td>-P textequiv_level glyph -P overwrite_segments true -P model frak2021</td>
     </tr>
   </tbody>
 </table>
@@ -1752,7 +1752,7 @@ ocrd process \
   "tesserocr-deskew -I OCR-D-BIN-DENOISE -O OCR-D-BIN-DENOISE-DESKEW -P operation_level page" \
   "tesserocr-segment -I OCR-D-BIN-DENOISE-DESKEW -O OCR-D-SEG -P shrink_polygons true" \
   "cis-ocropy-dewarp -I OCR-D-SEG -O OCR-D-SEG-DEWARP" \
-  "tesserocr-recognize -I OCR-D-SEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model GT4HistOCR_50000000.997_191951"
+  "tesserocr-recognize -I OCR-D-SEG-DEWARP -O OCR-D-OCR -P textequiv_level glyph -P overwrite_segments true -P model frak2021"
 ```
 
 **Note:**
