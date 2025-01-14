@@ -219,8 +219,9 @@ We recommend using the `$XDG_DATA_HOME` location, which is also the default. But
 you can override the location to store data with the `--location` option, which can
 be `cwd`, `data`, `system` and `module` resp.
 
-In Docker though, `$XDG_CONFIG_HOME=$XDG_DATA_HOME/ocrd-resources=/usr/local/share/ocrd-resources` 
-gets symlinked to `/models` for easier volume handling (and persistency).
+In Docker though, `$XDG_CONFIG_HOME` (set to `$XDG_DATA_HOME/ocrd-resources`,
+which ultimately is `/usr/local/share/ocrd-resources`) gets symlinked to
+`/models` for easier volume handling (and persistency).
 
 ```sh
 # will download to $PWD/latest_net_G.pth
