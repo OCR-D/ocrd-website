@@ -65,11 +65,6 @@ Projektkoordinatorin
 Herzog August Bibliothek Wolfenbüttel
 [eckert[at]hab.de](mailto:eckert@hab.de?subject=Anfrage%20%C3%BCber%20OCR-D.de)
 
-### Matthias Boenig
-
-Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
-[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de?subject=Anfrage%20via%20OCR-D.de)
-
 ### Konstantin Baierer
 
 Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
@@ -106,8 +101,8 @@ Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen
 
 ## Ehemalige Projektbeteiligte
 
-### Lena Hinrichsen
-Herzog August Bibliothek Wolfenbüttel
+### Markus Brantl
+Bayerische Staatsbibliothek München
 
 ### Rainer Stotzka
 Karlsruhe Institute of Technology
@@ -115,10 +110,10 @@ Karlsruhe Institute of Technology
 ### Thomas Stäcker
 Herzog August Bibliothek Wolfenbüttel
 
-### Markus Brantl
-Bayerische Staatsbibliothek München
-
 ## Ehemalige Projektmitarbeitende
+
+### Matthias Boenig
+Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
 
 ### Elisabeth Engl
 Herzog August Bibliothek Wolfenbüttel
@@ -132,18 +127,21 @@ Karlsruher Institut für Technologie/Steinbuch Centre for Computing
 ### Elisa Herrmann
 Herzog August Bibliothek Wolfenbüttel
 
-### Kay-Michael Würzner
-Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
-
-### Ajinkya Prabhune
-Karlsruher Institut für Technologie
+### Lena Hinrichsen
+Herzog August Bibliothek Wolfenbüttel
 
 ### Sebastian Mangold
 Bayerische Staatsbibliothek München
 
+### Ajinkya Prabhune
+Karlsruher Institut für Technologie
+
+### Kay-Michael Würzner
+Berlin-Brandenburgische Akademie der Wissenschaften in Berlin
+
 ## Wissenschaftlicher Beirat
 
-Das Projekt wird von einem Wissenschaftlichen Beirat beraten, der sich derzeit aus den folgenden Personen zusammensetzt:
+Das Projekt wurde von einem wissenschaftlichen Beirat aus den folgenden Personen beraten:
 
 ### Max Kaiser
 
