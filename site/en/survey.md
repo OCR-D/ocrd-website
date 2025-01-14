@@ -1,6 +1,6 @@
 ---
 layout: page
-lang-ref: user survey
+lang-ref: survey
 lang: en
 title: Survey concerning usage of OCR texts
 toc: true
