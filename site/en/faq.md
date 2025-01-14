@@ -20,7 +20,8 @@ historical prints at scale.
 
 * Open an issue at the [OCR-D/core repository](https://github.com/OCR-D/core)
 * Chat with OCR-D project members and other OCR-D users in [OCR-D's chat room](https://gitter.im/OCR-D/Lobby).
-* Send an email to ...
+* Join us at our [regular calls](https://ocr-d.de/en/community).
+* Send an email to [eckert[at]hab.de](mailto:eckert@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### What is the difference between OCR-D and ABBYY?
 
@@ -61,9 +62,11 @@ server-client architecture with an Eclipse-based graphical user interface at
 its core whereas OCR-D's focus is on mass digitization and command line
 interaction.
 
-### What is the difference between OCR-D and ocr4all?
+<!--- ### What is the difference between OCR-D and ocr4all? --->
 
 ### Is OCR-D production-ready?
+
+Yes! Several libraries in Germany (e.g. Staatsbibliothek Berlin, ULB Göttingen, ULB Sachsen-Anhalt) are already using OCR-D at a large scale, with over 10 million pages digitized already.
 
 ### Which formats are supported by OCR-D?
 
@@ -92,7 +95,7 @@ tool offers simple ways to create new METS files or augment existing ones.
 OCR-D is Free Software, licensed under the terms of the Apache 2.0 license and
 will be free to use and adapt in perpetuity.
 
-### How are the full texts produced by OCR-D presented to the (library) user? Are they integrated into the library catalog and can therefore be used for full text search in the catalog?
+<!--- ### How are the full texts produced by OCR-D presented to the (library) user? Are they integrated into the library catalog and can therefore be used for full text search in the catalog? --->
 
 ### What are the system requirements for OCR-D-software?
 
@@ -172,7 +175,7 @@ This would instruct `ocrd-tesserocr-recognize` to take images from the
 `DEFAULT` group and region-segmented layout information from the `REGIONS`
 group.
 
-### How to configure logging?
+<!--- ### How to configure logging? --->
 
 ### How to stop tensorflow logging spam
 
@@ -189,50 +192,50 @@ shell (or even add it to your `$HOME/.bashrc` to set this permanently):
 export TF_CPP_MIN_LOG_LEVEL=3
 ```
 
-## OCR-D module project software
+<!--- ## OCR-D module project software -->
 
-### Where can I find official OCR-D module project software?
+<!--- ### Where can I find official OCR-D module project software? --->
 
-### Which third-party OCR-D-compatible software exists?
+<!--- ### Which third-party OCR-D-compatible software exists? --->
 
-### Which processors are available?
+<!--- ### Which processors are available? --->
 
-## Workflows and processors
+<!--- ## Workflows and processors --->
 
-### How can I define workflows?
+<!--- ### How can I define workflows? --->
 
-### Where can I find sample workflows to experiment with?
+<!--- ### Where can I find sample workflows to experiment with? --->
 
-### How to handle failing workflows?
+<!--- ### How to handle failing workflows? --->
 
-### Why do some processors have multiple input or output file groups?
+<!--- ### Why do some processors have multiple input or output file groups? --->
 
-### Where can I learn about the input and output file groups of a processor?
+<!--- ### Where can I learn about the input and output file groups of a processor? --->
 
-### How can I validate my workflow is correctly wired?
+<!--- ### How can I validate my workflow is correctly wired? --->
 
-### Where can I learn about the parameters of a processor?
+<!--- ### Where can I learn about the parameters of a processor? --->
 
-## `ocrd_all`
+<!--- ## `ocrd_all` --->
 
-### What is `ocrd_all`?
+<!--- ### What is `ocrd_all`? --->
 
-### How to update `ocrd_all`?
+<!--- ### How to update `ocrd_all`? --->
 
-### How to debug `ocrd_all` problems?
+<!--- ### How to debug `ocrd_all` problems? --->
 
-### I used `sudo` and now everything is broken
+<!--- ### I used `sudo` and now everything is broken --->
 
-## Training
+<!--- ## Training --->
 
-### I want to train a custom OCR model. Where do I start?
+<!--- ### I want to train a custom OCR model. Where do I start? --->
 
-## OCR-D-Ground Truth
+<!--- ## OCR-D-Ground Truth --->
 
-### Which of the three transcription levels specified in the Transcription Guidelines was used for the GT of OCR-D?
+<!--- ### Which of the three transcription levels specified in the Transcription Guidelines was used for the GT of OCR-D? --->
 
-### Are the three transcription levels designed hierarchically? Meaning, does level 3 include level 2 and level 1?
+<!--- ### Are the three transcription levels designed hierarchically? Meaning, does level 3 include level 2 and level 1? --->
 
-### I want to make some GT myself. Which level should I use? Can I mix levels?
+<!--- ### I want to make some GT myself. Which level should I use? Can I mix levels? --->
 
-### I have some transcriptions of early modern books, but I didn't stick to the OCR-D GT guidelines. Would my transcriptions still be useful for OCR-D?
+<!--- ### I have some transcriptions of early modern books, but I didn't stick to the OCR-D GT guidelines. Would my transcriptions still be useful for OCR-D? --->
