@@ -311,7 +311,7 @@ ocrd, version 2.13.2 # your version should be 2.13.2 or later
 
 ### Testing the native installation
 
-For example, let's fetch a document from the [OCR-D GT Repo](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit/):
+For example, let's fetch a document from the [OLA-HD Repo](https://ola-hd.ocr-d.de/):
 
 ```sh
 wget "https://ola-hd.ocr-d.de/api/export?id=21.11156/BFBAD520-65F4-430A-B4B2-C81A296C9E09&internalId=false" -O wundt_grundriss_1896.ocrd.zip

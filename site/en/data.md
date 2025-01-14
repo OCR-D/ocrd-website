@@ -33,7 +33,7 @@ The Ground Truth corpus offers three annotation depths:
 * Structure regions, text lines
 * Text lines
 
-[Overview](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit) (The list will be extended continuously.)
+[Overview](https://github.com/OCR-D/gt_structure_text/releasest)
 
 The special corpora contain:
 

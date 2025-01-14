@@ -30,7 +30,7 @@ Das Ground-Truth-Korpus bietet drei Annotationstiefen an:
 * Strukturregionen, Textzeilen
 * Textzeilen
 
-[Zur Übersicht](https://ocr-d-repo.scc.kit.edu/api/v1/metastore/bagit)
+[Zur Übersicht](https://github.com/OCR-D/gt_structure_text/releases)
 
 Die Spezialkorpora umfassen:
 
