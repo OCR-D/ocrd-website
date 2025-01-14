@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_network.client_utils &#8212; ocrd 2.68.0
+    <title>ocrd_network.client_utils &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -34,12 +34,13 @@
           <div class="body" role="main">
             
   <h1>Source code for ocrd_network.client_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span> <span class="k">as</span> <span class="n">request_get</span><span class="p">,</span> <span class="n">post</span> <span class="k">as</span> <span class="n">request_post</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span> <span class="k">as</span> <span class="n">request_get</span><span class="p">,</span> <span class="n">post</span> <span class="k">as</span> <span class="n">request_post</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">JobState</span><span class="p">,</span> <span class="n">NETWORK_PROTOCOLS</span>
 
 
-<span class="k">def</span> <span class="nf">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">print_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">job_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;workflow&quot;</span><span class="p">,</span> <span class="s2">&quot;processor&quot;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown job type &#39;</span><span class="si">{</span><span class="n">job_type</span><span class="si">}</span><span class="s2">&#39;, expected &#39;workflow&#39; or &#39;processor&#39;&quot;</span><span class="p">)</span>
     <span class="n">job_state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">unset</span>
@@ -49,6 +50,8 @@
             <span class="n">job_state</span> <span class="o">=</span> <span class="n">get_ps_processing_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">job_type</span> <span class="o">==</span> <span class="s2">&quot;workflow&quot;</span><span class="p">:</span>
             <span class="n">job_state</span> <span class="o">=</span> <span class="n">get_ps_workflow_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">print_state</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;State of the </span><span class="si">{</span><span class="n">job_type</span><span class="si">}</span><span class="s2"> job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">job_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">job_state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">success</span> <span class="ow">or</span> <span class="n">job_state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">failed</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="n">tries</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -57,15 +60,17 @@
 
 <div class="viewcode-block" id="poll_job_status_till_timeout_fail_or_success">
 <a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.client_utils.html#ocrd_network.client_utils.poll_job_status_till_timeout_fail_or_success">[docs]</a>
-<span class="k">def</span> <span class="nf">poll_job_status_till_timeout_fail_or_success</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;processor&quot;</span><span class="p">,</span> <span class="n">tries</span><span class="p">,</span> <span class="n">wait</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">poll_job_status_till_timeout_fail_or_success</span><span class="p">(</span>
+    <span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">print_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;processor&quot;</span><span class="p">,</span> <span class="n">tries</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">print_state</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="poll_wf_status_till_timeout_fail_or_success">
 <a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.client_utils.html#ocrd_network.client_utils.poll_wf_status_till_timeout_fail_or_success">[docs]</a>
-<span class="k">def</span> <span class="nf">poll_wf_status_till_timeout_fail_or_success</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;workflow&quot;</span><span class="p">,</span> <span class="n">tries</span><span class="p">,</span> <span class="n">wait</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">poll_wf_status_till_timeout_fail_or_success</span><span class="p">(</span>
+    <span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tries</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">print_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">_poll_endpoint_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">,</span> <span class="n">job_id</span><span class="p">,</span> <span class="s2">&quot;workflow&quot;</span><span class="p">,</span> <span class="n">tries</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">print_state</span><span class="p">)</span></div>
 
 
 
@@ -100,25 +105,24 @@
 
 <div class="viewcode-block" id="get_ps_processing_job_status">
 <a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.client_utils.html#ocrd_network.client_utils.get_ps_processing_job_status">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ps_processing_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">get_ps_processing_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processing_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
     <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ps_server_host</span><span class="si">}</span><span class="s2">/processor/job/</span><span class="si">{</span><span class="n">processing_job_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">request_get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">request_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json; charset=utf-8&quot;</span><span class="p">})</span>
     <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing server: </span><span class="si">{</span><span class="n">request_url</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">job_state</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span>
     <span class="k">assert</span> <span class="n">job_state</span>
-    <span class="k">return</span> <span class="n">job_state</span></div>
-
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">JobState</span><span class="p">,</span> <span class="n">job_state</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="get_ps_workflow_job_status">
 <a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.client_utils.html#ocrd_network.client_utils.get_ps_workflow_job_status">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ps_workflow_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workflow_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">get_ps_workflow_job_status</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workflow_job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobState</span><span class="p">:</span>
     <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ps_server_host</span><span class="si">}</span><span class="s2">/workflow/job-simple/</span><span class="si">{</span><span class="n">workflow_job_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">request_get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">request_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json; charset=utf-8&quot;</span><span class="p">})</span>
     <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing server: </span><span class="si">{</span><span class="n">request_url</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">job_state</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span>
     <span class="k">assert</span> <span class="n">job_state</span>
-    <span class="k">return</span> <span class="n">job_state</span></div>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">JobState</span><span class="p">,</span> <span class="n">job_state</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
 
@@ -138,11 +142,15 @@
 
 
 
-<span class="c1"># TODO: Can be extended to include other parameters such as page_wise</span>
 <div class="viewcode-block" id="post_ps_workflow_request">
 <a class="viewcode-back" href="../../api/ocrd_network/ocrd_network.client_utils.html#ocrd_network.client_utils.post_ps_workflow_request">[docs]</a>
-<span class="k">def</span> <span class="nf">post_ps_workflow_request</span><span class="p">(</span><span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_wf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_mets</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ps_server_host</span><span class="si">}</span><span class="s2">/workflow/run?mets_path=</span><span class="si">{</span><span class="n">path_to_mets</span><span class="si">}</span><span class="s2">&amp;page_wise=True&quot;</span>
+<span class="k">def</span> <span class="nf">post_ps_workflow_request</span><span class="p">(</span>
+    <span class="n">ps_server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">path_to_wf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">path_to_mets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">page_wise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ps_server_host</span><span class="si">}</span><span class="s2">/workflow/run?mets_path=</span><span class="si">{</span><span class="n">path_to_mets</span><span class="si">}</span><span class="s2">&amp;page_wise=</span><span class="si">{</span><span class="s1">&#39;True&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">page_wise</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;False&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">request_post</span><span class="p">(</span>
         <span class="n">url</span><span class="o">=</span><span class="n">request_url</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json; charset=utf-8&quot;</span><span class="p">},</span>
@@ -150,8 +158,11 @@
     <span class="p">)</span>
     <span class="c1"># print(response.json())</span>
     <span class="c1"># print(response.__dict__)</span>
+    <span class="n">json_resp_raw</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+    <span class="c1"># print(f&#39;post_ps_workflow_request &gt;&gt; {response.status_code}&#39;)</span>
+    <span class="c1"># print(f&#39;post_ps_workflow_request &gt;&gt; {json_resp_raw}&#39;)</span>
     <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing server: </span><span class="si">{</span><span class="n">request_url</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">wf_job_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;job_id&quot;</span><span class="p">]</span>
+    <span class="n">wf_job_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_resp_raw</span><span class="p">)[</span><span class="s2">&quot;job_id&quot;</span><span class="p">]</span>
     <span class="k">assert</span> <span class="n">wf_job_id</span>
     <span class="k">return</span> <span class="n">wf_job_id</span></div>
 
@@ -171,7 +182,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -196,9 +207,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -236,7 +248,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

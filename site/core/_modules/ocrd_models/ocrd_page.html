@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_models.ocrd_page &#8212; ocrd 2.68.0
+    <title>ocrd_models.ocrd_page &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -38,12 +38,16 @@
 <span class="sd">API to PAGE-XML, generated with generateDS from XML schema.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
+<span class="kn">from</span> <span class="nn">elementpath</span> <span class="kn">import</span> <span class="n">XPath2Parser</span><span class="p">,</span> <span class="n">XPathContext</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;parse&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parseEtree&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parseString&#39;</span><span class="p">,</span>
     <span class="s1">&#39;OcrdPage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;OcrdPageType&#39;</span><span class="p">,</span>
 
     <span class="s2">&quot;AdvertRegionType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AlternativeImageType&quot;</span><span class="p">,</span>
@@ -165,6 +169,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">NAMESPACES</span>
+<span class="kn">from</span> <span class="nn">.xpath_functions</span> <span class="kn">import</span> <span class="n">pc_functions</span>
 
 <span class="c1"># add docstrings</span>
 <span class="n">parse</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="p">(</span>
@@ -210,23 +215,64 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="p">)</span>
 
-<span class="c1"># add alias for DOM root</span>
-<span class="n">OcrdPage</span> <span class="o">=</span> <span class="n">PcGtsType</span>
+<div class="viewcode-block" id="OcrdPage">
+<a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.OcrdPage">[docs]</a>
+<span class="k">class</span> <span class="nc">OcrdPage</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Proxy object for :py:class:`ocrd_models.PcGtsType` (i.e. PRImA PAGE-XML</span>
+<span class="sd">    for page content, rendered as object model by generateDS) that also offers access</span>
+<span class="sd">    to the underlying etree, element-node mapping and reverse mapping, too (cf.</span>
+<span class="sd">    :py:func:`ocrd_models.ocrd_page.parseEtree`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pcgts</span> <span class="p">:</span> <span class="n">PcGtsType</span><span class="p">,</span>
+        <span class="n">etree</span> <span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">_Element</span><span class="p">,</span>
+        <span class="n">mapping</span> <span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ET</span><span class="o">.</span><span class="n">_Element</span><span class="p">],</span>
+        <span class="n">revmap</span> <span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ET</span><span class="o">.</span><span class="n">_Element</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pcgts</span> <span class="o">=</span> <span class="n">pcgts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etree</span> <span class="o">=</span> <span class="n">etree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revmap</span> <span class="o">=</span> <span class="n">revmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xpath_parser</span> <span class="o">=</span> <span class="n">XPath2Parser</span><span class="p">(</span><span class="n">namespaces</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;pc&#39;</span><span class="p">:</span> <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">]})</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">pc_functions</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;pc-&#39;</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;pc&#39;</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="c1"># register</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xpath_parser</span><span class="o">.</span><span class="n">external_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;pc&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xpath_context</span> <span class="o">=</span> <span class="n">XPathContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">etree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xpath</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">expression</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">xpath_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xpath_context</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pcgts</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<span class="n">OcrdPageType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">,</span> <span class="n">PcGtsType</span><span class="p">]</span>
 
 <div class="viewcode-block" id="to_xml">
 <a class="viewcode-back" href="../../api/ocrd_models/ocrd_models.ocrd_page.html#ocrd_models.ocrd_page.to_xml">[docs]</a>
-<span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">skip_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">skip_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serialize ``pc:PcGts`` document as string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># XXX remove potential empty ReadingOrder</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;prune_ReadingOrder&#39;</span><span class="p">):</span>
         <span class="n">el</span><span class="o">.</span><span class="n">prune_ReadingOrder</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;original_tagname_&#39;</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">original_tagname_</span> <span class="ow">or</span> <span class="s1">&#39;PcGts&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;PcGts&#39;</span>
     <span class="n">sio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
     <span class="n">el</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
             <span class="n">outfile</span><span class="o">=</span><span class="n">sio</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">name_</span><span class="o">=</span><span class="s1">&#39;PcGts&#39;</span><span class="p">,</span>
+            <span class="n">name_</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">namespaceprefix_</span><span class="o">=</span><span class="s1">&#39;pc:&#39;</span><span class="p">,</span>
             <span class="n">namespacedef_</span><span class="o">=</span><span class="s1">&#39;xmlns:pc=&quot;</span><span class="si">%s</span><span class="s1">&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">/pagecontent.xsd&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">NAMESPACES</span><span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">],</span>
@@ -244,7 +290,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -269,9 +315,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -309,7 +356,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

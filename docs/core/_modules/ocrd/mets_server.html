@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.mets_server &#8212; ocrd 2.68.0
+    <title>ocrd.mets_server &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -37,8 +37,10 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd"># METS server functionality</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">_exit</span><span class="p">,</span> <span class="n">chmod</span>
+<span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -57,7 +59,7 @@
 <span class="kn">import</span> <span class="nn">uvicorn</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_models</span> <span class="kn">import</span> <span class="n">OcrdFile</span><span class="p">,</span> <span class="n">ClientSideOcrdFile</span><span class="p">,</span> <span class="n">OcrdAgent</span><span class="p">,</span> <span class="n">ClientSideOcrdAgent</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">deprecated_alias</span>
+<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="n">getLogger</span>
 
 
 <span class="c1">#</span>
@@ -148,6 +150,20 @@
 
 
 
+<div class="viewcode-block" id="OcrdPageListModel">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdPageListModel">[docs]</a>
+<span class="k">class</span> <span class="nc">OcrdPageListModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">physical_pages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span>
+
+<div class="viewcode-block" id="OcrdPageListModel.create">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdPageListModel.create">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">physical_pages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">OcrdPageListModel</span><span class="p">(</span><span class="n">physical_pages</span><span class="o">=</span><span class="n">physical_pages</span><span class="p">)</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="OcrdAgentListModel">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdAgentListModel">[docs]</a>
 <span class="k">class</span> <span class="nc">OcrdAgentListModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -188,7 +204,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">workspace_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="s2">&quot;tcp&quot;</span> <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;uds&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ocrd.mets_client[</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ocrd.models.ocrd_mets.client.</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s2">&quot;tcp&quot;</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;http+unix://</span><span class="si">{</span><span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">%2F</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span> <span class="o">=</span> <span class="n">workspace_path</span> <span class="k">if</span> <span class="n">workspace_path</span> <span class="k">else</span> <span class="kc">None</span>
 
@@ -217,13 +233,13 @@
 <span class="sd">        Request writing the changes to the file system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
                 <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
                 <span class="n">json</span><span class="o">=</span><span class="n">MpxReq</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span><span class="p">)</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ClientSideOcrdMets.stop">
@@ -234,14 +250,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
-                <span class="k">return</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
                     <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
                     <span class="n">json</span><span class="o">=</span><span class="n">MpxReq</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
             <span class="c1"># Expected because we exit the process without returning</span>
             <span class="k">pass</span></div>
@@ -288,6 +303,17 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">physical_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">/physical_pages&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;physical_pages&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                <span class="n">json</span><span class="o">=</span><span class="n">MpxReq</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;physical_pages&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">/file_groups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;file_groups&quot;</span><span class="p">]</span>
@@ -315,7 +341,7 @@
 
 <div class="viewcode-block" id="ClientSideOcrdMets.add_agent">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.ClientSideOcrdMets.add_agent">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">/agent&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">OcrdAgentModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
@@ -329,11 +355,9 @@
 
 <div class="viewcode-block" id="ClientSideOcrdMets.find_files">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.ClientSideOcrdMets.find_files">[docs]</a>
-    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
-    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">pageId</span><span class="o">=</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
-    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">fileGrp</span><span class="o">=</span><span class="s2">&quot;file_grp&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;find_files(</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># translate from native OcrdMets kwargs to OcrdMetsServer REST params</span>
         <span class="k">if</span> <span class="s2">&quot;pageId&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;page_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pageId&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;ID&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -365,28 +389,31 @@
 
 <div class="viewcode-block" id="ClientSideOcrdMets.add_file">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.ClientSideOcrdMets.add_file">[docs]</a>
-    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">pageId</span><span class="o">=</span><span class="s2">&quot;page_id&quot;</span><span class="p">)</span>
-    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="s2">&quot;file_id&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file_grp</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">OcrdFileModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">file_grp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
-            <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span>
+            <span class="n">file_grp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
+            <span class="c1"># translate from native OcrdMets kwargs to OcrdMetsServer REST params</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">ID</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="n">pageId</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span>
         <span class="p">)</span>
+        <span class="c1"># add force+ignore</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">dict</span><span class="p">()}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplexing_mode</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">/file&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Add file failed. Please check provided parameters&quot;</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">/file&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to add file (</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">MpxReq</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">dict</span><span class="p">()))</span>
-            <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Add file failed: Msg: </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">MpxReq</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to add file (</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="n">errors</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ClientSideOcrdFile</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
-            <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
+            <span class="n">ID</span><span class="o">=</span><span class="n">ID</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="n">pageId</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span>
         <span class="p">)</span></div>
 </div>
 
@@ -395,7 +422,7 @@
 <div class="viewcode-block" id="MpxReq">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.MpxReq">[docs]</a>
 <span class="k">class</span> <span class="nc">MpxReq</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class wrapps the request bodies needed for the tcp forwarding</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class wraps the request bodies needed for the tcp forwarding</span>
 
 <span class="sd">    For every mets-server-call like find_files or workspace_path a special request_body is</span>
 <span class="sd">    needed to call `MetsServerProxy.forward_tcp_request`. These are created by this functions.</span>
@@ -420,7 +447,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">ws_dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MpxReq</span><span class="o">.</span><span class="n">__args_wrapper</span><span class="p">(</span>
-            <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;empty&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
+            <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
 
 
 <div class="viewcode-block" id="MpxReq.stop">
@@ -428,7 +455,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="n">ws_dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MpxReq</span><span class="o">.</span><span class="n">__args_wrapper</span><span class="p">(</span>
-            <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;empty&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
+            <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
 
 
 <div class="viewcode-block" id="MpxReq.reload">
@@ -453,6 +480,14 @@
     <span class="k">def</span> <span class="nf">workspace_path</span><span class="p">(</span><span class="n">ws_dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MpxReq</span><span class="o">.</span><span class="n">__args_wrapper</span><span class="p">(</span>
             <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;workspace_path&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
+
+
+<div class="viewcode-block" id="MpxReq.physical_pages">
+<a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.MpxReq.physical_pages">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">physical_pages</span><span class="p">(</span><span class="n">ws_dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MpxReq</span><span class="o">.</span><span class="n">__args_wrapper</span><span class="p">(</span>
+            <span class="n">ws_dir_path</span><span class="p">,</span> <span class="n">method_type</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">,</span> <span class="n">request_url</span><span class="o">=</span><span class="s2">&quot;physical_pages&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="p">{})</span></div>
 
 
 <div class="viewcode-block" id="MpxReq.file_groups">
@@ -533,25 +568,30 @@
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdMetsServer.kill_process">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">kill_process</span><span class="p">(</span><span class="n">mets_server_pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">subprocess_run</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;kill&quot;</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;SIGINT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mets_server_pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span></div>
+        <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">mets_server_pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">)</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">mets_server_pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ProcessLookupError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="OcrdMetsServer.shutdown">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdMetsServer.shutdown">[docs]</a>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shutdown method of mets server[</span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">] invoked, sending SIGTERM signal.&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_uds</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;UDS socket </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> still exists, removing it&#39;</span><span class="p">)</span>
-                <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-        <span class="c1"># os._exit because uvicorn catches SystemExit raised by sys.exit</span>
-        <span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Due to a server shutdown, removing the existing UDS socket file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="OcrdMetsServer.startup">
 <a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.OcrdMetsServer.startup">[docs]</a>
     <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting up METS server&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuring the Mets Server&quot;</span><span class="p">)</span>
 
         <span class="n">workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span>
 
@@ -577,47 +617,74 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Write current changes to the file system</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;The Mets Server is writing changes to disk.&quot;</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PUT / -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Stop the mets server</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.models.ocrd_mets&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shutting down METS Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;The Mets Server will shut down soon...&quot;</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DELETE / -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/reload&#39;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">workspace_reload_mets</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">workspace_reload_mets</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Reload mets file from the file system</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">workspace</span><span class="o">.</span><span class="n">reload_mets</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Reloaded from </span><span class="si">{</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Reloaded from </span><span class="si">{</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;POST /reload -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/unique_identifier&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">unique_identifier</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /unique_identifier -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/workspace_path&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">workspace_path</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /workspace_path -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
+
+        <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/physical_pages&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdPageListModel</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">physical_pages</span><span class="p">():</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;physical_pages&#39;</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /physical_pages -&gt; </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
+
+        <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/physical_pages&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdPageListModel</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">physical_pages</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;physical_pages&#39;</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">}</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/file_groups&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdFileGroupListModel</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">file_groups</span><span class="p">():</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;file_groups&#39;</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">}</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file_groups&#39;</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /file_groups -&gt; </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/agent&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdAgentListModel</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">agents</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">OcrdAgentListModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">OcrdAgentListModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /agent -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/agent&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdAgentModel</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">add_agent</span><span class="p">(</span><span class="n">agent</span><span class="p">:</span> <span class="n">OcrdAgentModel</span><span class="p">):</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
             <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">agent</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">agent</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;POST /agent -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/file&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdFileListModel</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span>
@@ -634,7 +701,9 @@
             <span class="n">found</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">(</span>
                 <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">OcrdFileListModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">OcrdFileListModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET /file -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/file&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">OcrdFileModel</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span>
@@ -643,7 +712,8 @@
             <span class="n">page_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(),</span>
             <span class="n">mimetype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(),</span>
             <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
-            <span class="n">local_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">local_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
         <span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Add a file</span>
@@ -655,8 +725,10 @@
             <span class="p">)</span>
             <span class="c1"># Add to workspace</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">file_resource</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-            <span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">file_resource</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">file_resource</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;POST /file -&gt; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="vm">__dict__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
 
         <span class="c1"># ------------- #</span>
 
@@ -664,9 +736,6 @@
             <span class="c1"># Create socket and change to world-readable and -writable to avoid permission errors</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;chmod 0o677 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_UNIX</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_socket_in_use</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">):</span>
-                <span class="c1"># remove leftover unused socket which blocks startup</span>
-                <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># creates the socket file</span>
             <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">)</span>
             <span class="n">server</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -678,23 +747,9 @@
         <span class="n">uvicorn_kwargs</span><span class="p">[</span><span class="s1">&#39;log_config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">uvicorn_kwargs</span><span class="p">[</span><span class="s1">&#39;access_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting uvicorn&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting the uvicorn Mets Server&quot;</span><span class="p">)</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">**</span><span class="n">uvicorn_kwargs</span><span class="p">)</span></div>
 </div>
-
-
-
-<div class="viewcode-block" id="is_socket_in_use">
-<a class="viewcode-back" href="../../api/ocrd/ocrd.mets_server.html#ocrd.mets_server.is_socket_in_use">[docs]</a>
-<span class="k">def</span> <span class="nf">is_socket_in_use</span><span class="p">(</span><span class="n">socket_path</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">socket_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">client</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_UNIX</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">socket_path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
 
 </pre></div>
 
@@ -702,7 +757,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -727,9 +782,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -767,7 +823,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

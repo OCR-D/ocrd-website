@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.processor.builtin.dummy_processor &#8212; ocrd 2.68.0
+    <title>ocrd.processor.builtin.dummy_processor &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -35,25 +35,22 @@
             
   <h1>Source code for ocrd.processor.builtin.dummy_processor</h1><div class="highlight"><pre>
 <span></span><span class="c1"># pylint: disable=missing-module-docstring,invalid-name</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">basename</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 
 <span class="kn">from</span> <span class="nn">ocrd</span> <span class="kn">import</span> <span class="n">Processor</span>
 <span class="kn">from</span> <span class="nn">ocrd.decorators</span> <span class="kn">import</span> <span class="n">ocrd_cli_options</span><span class="p">,</span> <span class="n">ocrd_cli_wrap_processor</span>
-<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">to_xml</span>
+<span class="kn">from</span> <span class="nn">ocrd.processor.ocrd_page_result</span> <span class="kn">import</span> <span class="n">OcrdPageResult</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_file</span> <span class="kn">import</span> <span class="n">OcrdFileType</span>
+<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="n">OcrdPage</span><span class="p">,</span> <span class="n">to_xml</span>
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">getLogger</span><span class="p">,</span>
-    <span class="n">assert_file_grp_cardinality</span><span class="p">,</span>
     <span class="n">make_file_id</span><span class="p">,</span>
     <span class="n">MIME_TO_EXT</span><span class="p">,</span>
     <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
-    <span class="n">parse_json_string_with_comments</span><span class="p">,</span>
-    <span class="n">resource_string</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="kn">import</span> <span class="n">page_from_file</span>
-
-<span class="n">OCRD_TOOL</span> <span class="o">=</span> <span class="n">parse_json_string_with_comments</span><span class="p">(</span><span class="n">resource_string</span><span class="p">(</span><span class="n">__package__</span> <span class="o">+</span> <span class="s1">&#39;.dummy&#39;</span><span class="p">,</span> <span class="s1">&#39;ocrd-tool.json&#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="DummyProcessor">
 <a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor">[docs]</a>
@@ -62,67 +59,65 @@
 <span class="sd">    Bare-bones processor creates PAGE-XML and optionally copies file from input group to output group</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DummyProcessor.process">
-<a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor.process">[docs]</a>
-    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.dummy&#39;</span><span class="p">)</span>
-        <span class="n">assert_file_grp_cardinality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">assert_file_grp_cardinality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">copy_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;copy_files&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files</span><span class="p">:</span>
-            <span class="n">input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+<div class="viewcode-block" id="DummyProcessor.process_page_pcgts">
+<a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor.process_page_pcgts">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_page_pcgts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_pcgts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">],</span> <span class="n">page_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OcrdPageResult</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">input_pcgts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># nothing to do here</span>
+        <span class="k">return</span> <span class="n">OcrdPageResult</span><span class="p">(</span><span class="n">input_pcgts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="DummyProcessor.process_page_file">
+<a class="viewcode-back" href="../../../../api/ocrd/ocrd.processor.builtin.dummy_processor.html#ocrd.processor.builtin.dummy_processor.DummyProcessor.process_page_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_page_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">input_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">input_file</span>
+        <span class="k">assert</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;copy_files&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">!=</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
+            <span class="c1"># we need to mimic the actual copying in addition to the PAGE boilerplate</span>
             <span class="n">file_id</span> <span class="o">=</span> <span class="n">make_file_id</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">)</span>
             <span class="n">ext</span> <span class="o">=</span> <span class="n">MIME_TO_EXT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">local_filename</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">file_id</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
-            <span class="n">pcgts</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
-            <span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> # </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-                <span class="c1"># Source file is PAGE-XML: Write out in-memory PcGtsType</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> # </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">output_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
                     <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
                     <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
                     <span class="n">page_id</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
                     <span class="n">mimetype</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
                     <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span>
-                    <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                    <span class="n">content</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;_PAGE&#39;</span>
+            <span class="n">pcgts</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcgts</span><span class="p">,</span> <span class="n">OcrdPage</span><span class="p">)</span>
+            <span class="n">pcgts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_page_pcgts</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span><span class="o">.</span><span class="n">pcgts</span>
+            <span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Add PAGE-XML </span><span class="si">%s</span><span class="s2"> generated for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
+                                    <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
+                                    <span class="n">page_id</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
+                                    <span class="n">local_filename</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">),</span>
+                                    <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+                                    <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;copy_files&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not copying </span><span class="si">%s</span><span class="s2"> because it is a PAGE-XML file, which gets identity-transformed&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Source file is not PAGE-XML: Copy byte-by-byte unless copy_files is False</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">copy_files</span><span class="p">:</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not copying </span><span class="si">%s</span><span class="s2"> because it is not a PAGE-XML file and copy_files was false&quot;</span> <span class="o">%</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> # </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
-                            <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
-                            <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
-                            <span class="n">pageId</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
-                            <span class="n">mimetype</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
-                            <span class="n">local_filename</span><span class="o">=</span><span class="n">local_filename</span><span class="p">,</span>
-                            <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/&#39;</span><span class="p">):</span>
-                    <span class="c1"># write out the PAGE-XML representation for this image</span>
-                    <span class="n">page_file_id</span> <span class="o">=</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;_PAGE&#39;</span>
-                    <span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">page_file_id</span><span class="p">)</span>
-                    <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Page</span><span class="p">()</span><span class="o">.</span><span class="n">set_imageFilename</span><span class="p">(</span><span class="n">local_filename</span> <span class="k">if</span> <span class="n">copy_files</span> <span class="k">else</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
-                    <span class="n">page_filename</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">file_id</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">)</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Add PAGE-XML </span><span class="si">%s</span><span class="s2"> generated for </span><span class="si">%s</span><span class="s2"> at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_file_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">page_filename</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
-                        <span class="n">file_id</span><span class="o">=</span><span class="n">page_file_id</span><span class="p">,</span>
-                        <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
-                        <span class="n">page_id</span><span class="o">=</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span>
-                        <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
-                        <span class="n">local_filename</span><span class="o">=</span><span class="n">page_filename</span><span class="p">,</span>
-                        <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">pcgts</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not copying </span><span class="si">%s</span><span class="s2"> because it is not a PAGE-XML file and copy_files was false&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span>
+            <span class="c1"># we can rely on base implementation verbatim</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process_page_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span></div>
 
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">metadata_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;processor/builtin/dummy/ocrd-tool.json&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ocrd_tool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OCRD_TOOL</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="s1">&#39;ocrd-dummy&#39;</span><span class="p">]</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.0.3&#39;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DummyProcessor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ocrd-dummy&#39;</span></div>
 
 
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
@@ -135,7 +130,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../../../index.html">
@@ -160,9 +155,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -200,7 +196,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

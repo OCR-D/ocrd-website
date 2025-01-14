@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_utils.image &#8212; ocrd 2.68.0
+    <title>ocrd_utils.image &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -106,10 +106,10 @@
 <span class="sd">    </span>
 <span class="sd">    Return a numpy array of the enlarged width and height.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
-                  <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span><span class="p">,</span>
-                  <span class="n">Image</span><span class="o">.</span><span class="n">TRANSPOSE</span><span class="p">,</span>
-                  <span class="n">Image</span><span class="o">.</span><span class="n">TRANSVERSE</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span>
+                  <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">ROTATE_270</span><span class="p">,</span>
+                  <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">TRANSPOSE</span><span class="p">,</span>
+                  <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">TRANSVERSE</span><span class="p">]:</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">size</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">size</span></div>
 
@@ -425,26 +425,26 @@
 <span class="sd">    calculate the affine coordinate transform corresponding to the composition</span>
 <span class="sd">    of both transformations, which is respectively:</span>
 
-<span class="sd">    - ``PIL.Image.FLIP_LEFT_RIGHT``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.FLIP_LEFT_RIGHT``:</span>
 <span class="sd">      entails translation to the center, followed by pure reflection</span>
 <span class="sd">      about the y-axis, and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.FLIP_TOP_BOTTOM``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.FLIP_TOP_BOTTOM``:</span>
 <span class="sd">      entails translation to the center, followed by pure reflection</span>
 <span class="sd">      about the x-axis, and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.ROTATE_180``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_180``:</span>
 <span class="sd">      entails translation to the center, followed by pure reflection</span>
 <span class="sd">      about the origin, and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.ROTATE_90``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_90``:</span>
 <span class="sd">      entails translation to the center, followed by pure rotation</span>
 <span class="sd">      by 90° counter-clockwise, and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.ROTATE_270``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_270``:</span>
 <span class="sd">      entails translation to the center, followed by pure rotation</span>
 <span class="sd">      by 270° counter-clockwise, and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.TRANSPOSE``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.TRANSPOSE``:</span>
 <span class="sd">      entails translation to the center, followed by pure rotation</span>
 <span class="sd">      by 90° counter-clockwise and pure reflection about the x-axis,</span>
 <span class="sd">      and subsequent translation back</span>
-<span class="sd">    - ``PIL.Image.TRANSVERSE``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.TRANSVERSE``:</span>
 <span class="sd">      entails translation to the center, followed by pure rotation</span>
 <span class="sd">      by 90° counter-clockwise and pure reflection about the y-axis,</span>
 <span class="sd">      and subsequent translation back</span>
@@ -465,13 +465,13 @@
                       <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
     <span class="n">transform</span> <span class="o">=</span> <span class="n">shift_coordinates</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="o">-</span><span class="n">orig</span><span class="p">)</span>
     <span class="n">operations</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">:</span> <span class="p">[</span><span class="n">refly</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">FLIP_TOP_BOTTOM</span><span class="p">:</span> <span class="p">[</span><span class="n">reflx</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">:</span> <span class="p">[</span><span class="n">reflx</span><span class="p">,</span> <span class="n">refly</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">reflx</span><span class="p">,</span> <span class="n">refly</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">TRANSPOSE</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">reflx</span><span class="p">],</span>
-        <span class="n">Image</span><span class="o">.</span><span class="n">TRANSVERSE</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">refly</span><span class="p">]</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">:</span> <span class="p">[</span><span class="n">refly</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">FLIP_TOP_BOTTOM</span><span class="p">:</span> <span class="p">[</span><span class="n">reflx</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">ROTATE_180</span><span class="p">:</span> <span class="p">[</span><span class="n">reflx</span><span class="p">,</span> <span class="n">refly</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">ROTATE_270</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">reflx</span><span class="p">,</span> <span class="n">refly</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">TRANSPOSE</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">reflx</span><span class="p">],</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Transpose</span><span class="o">.</span><span class="n">TRANSVERSE</span><span class="p">:</span> <span class="p">[</span><span class="n">rot90</span><span class="p">,</span> <span class="n">refly</span><span class="p">]</span>
     <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="p">)</span> <span class="c1"># no default</span>
     <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">:</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
@@ -489,29 +489,29 @@
 <span class="sd">    Given a PIL.Image ``image`` and a transposition mode ``method``,</span>
 <span class="sd">    apply the respective operation:</span>
 
-<span class="sd">    - ``PIL.Image.FLIP_LEFT_RIGHT``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.FLIP_LEFT_RIGHT``:</span>
 <span class="sd">      all pixels get mirrored at half the width of the image</span>
-<span class="sd">    - ``PIL.Image.FLIP_TOP_BOTTOM``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.FLIP_TOP_BOTTOM``:</span>
 <span class="sd">      all pixels get mirrored at half the height of the image</span>
-<span class="sd">    - ``PIL.Image.ROTATE_180``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_180``:</span>
 <span class="sd">      all pixels get mirrored at both, the width and half the height</span>
 <span class="sd">      of the image,</span>
 <span class="sd">      i.e. the image gets rotated by 180° counter-clockwise</span>
-<span class="sd">    - ``PIL.Image.ROTATE_90``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_90``:</span>
 <span class="sd">      rows become columns (but counted from the right) and</span>
 <span class="sd">      columns become rows,</span>
 <span class="sd">      i.e. the image gets rotated by 90° counter-clockwise;</span>
 <span class="sd">      width becomes height and vice versa</span>
-<span class="sd">    - ``PIL.Image.ROTATE_270``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.ROTATE_270``:</span>
 <span class="sd">      rows become columns and</span>
 <span class="sd">      columns become rows (but counted from the bottom),</span>
 <span class="sd">      i.e. the image gets rotated by 270° counter-clockwise;</span>
 <span class="sd">      width becomes height and vice versa</span>
-<span class="sd">    - ``PIL.Image.TRANSPOSE``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.TRANSPOSE``:</span>
 <span class="sd">      rows become columns and vice versa,</span>
 <span class="sd">      i.e. all pixels get mirrored at the main diagonal;</span>
 <span class="sd">      width becomes height and vice versa</span>
-<span class="sd">    - ``PIL.Image.TRANSVERSE``:</span>
+<span class="sd">    - ``PIL.Image.Transpose.TRANSVERSE``:</span>
 <span class="sd">      rows become columns (but counted from the right) and</span>
 <span class="sd">      columns become rows (but counted from the bottom),</span>
 <span class="sd">      i.e. all pixels get mirrored at the opposite diagonal;</span>
@@ -734,7 +734,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -759,9 +759,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -799,7 +800,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

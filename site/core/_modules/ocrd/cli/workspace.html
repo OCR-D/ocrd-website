@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.cli.workspace &#8212; ocrd 2.68.0
+    <title>ocrd.cli.workspace &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -42,7 +42,7 @@
 <span class="sd">    :nested: full</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span><span class="p">,</span> <span class="n">rmdir</span><span class="p">,</span> <span class="n">unlink</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">rmdir</span><span class="p">,</span> <span class="n">unlink</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">relpath</span><span class="p">,</span> <span class="n">normpath</span><span class="p">,</span> <span class="n">exists</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">isabs</span><span class="p">,</span> <span class="n">isdir</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">loads</span><span class="p">,</span> <span class="n">dumps</span>
@@ -50,7 +50,6 @@
 <span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>   <span class="c1"># XXX pathlib.Path.glob does not support absolute globs</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 
@@ -73,7 +72,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mets_server_url</span> \
                 <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolve_mets_arguments</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_url</span><span class="p">,</span> <span class="n">mets_basename</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span> <span class="o">=</span> <span class="n">automatic_backup</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span> <span class="o">=</span> <span class="n">automatic_backup</span>
+
+<div class="viewcode-block" id="WorkspaceCtx.workspace">
+<a class="viewcode-back" href="../../../api/ocrd/ocrd.cli.workspace.html#ocrd.cli.workspace.WorkspaceCtx.workspace">[docs]</a>
+    <span class="k">def</span> <span class="nf">workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Workspace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
+            <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+            <span class="n">mets_basename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
+            <span class="n">automatic_backup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">,</span>
+            <span class="n">mets_server_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkspaceCtx.backup_manager">
+<a class="viewcode-back" href="../../../api/ocrd/ocrd.cli.workspace.html#ocrd.cli.workspace.WorkspaceCtx.backup_manager">[docs]</a>
+    <span class="k">def</span> <span class="nf">backup_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">())</span></div>
+</div>
 
 
 
@@ -157,7 +173,7 @@
 <span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;clone&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">command_with_replaced_help</span><span class="p">(</span>
     <span class="p">(</span><span class="sa">r</span><span class="s1">&#39; \[WORKSPACE_DIR\]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span> <span class="c1"># XXX deprecated argument</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--clobber-mets&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite existing METS file&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--download&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Download all files and change location in METS file after cloning&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--download&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Download all selected files and add local path references in METS file afterwards&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;mets_url&#39;</span><span class="p">)</span>
 <span class="nd">@mets_find_options</span>
 <span class="c1"># XXX deprecated</span>
@@ -168,20 +184,25 @@
 <span class="sd">    Create a workspace from METS_URL and return the directory</span>
 
 <span class="sd">    METS_URL can be a URL, an absolute path or a path relative to $PWD.</span>
-<span class="sd">    If METS_URL is not provided, use --mets accordingly.</span>
 <span class="sd">    METS_URL can also be an OAI-PMH GetRecord URL wrapping a METS file.</span>
+
+<span class="sd">    Additional options pertain to the selection of files / fileGrps / pages</span>
+<span class="sd">    to be downloaded, if --download is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.workspace.clone&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">workspace_dir</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;Use &#39;ocrd workspace --directory DIR clone&#39; instead of argument &#39;WORKSPACE_DIR&#39; (&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="n">workspace_dir</span><span class="p">))</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">workspace_dir</span>
 
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;clone cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span>
         <span class="n">mets_url</span><span class="p">,</span>
         <span class="n">dst_dir</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
         <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
         <span class="n">clobber_mets</span><span class="o">=</span><span class="n">clobber_mets</span><span class="p">,</span>
         <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">,</span>
+        <span class="n">fileGrp</span><span class="o">=</span><span class="n">file_grp</span><span class="p">,</span>
         <span class="n">ID</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
         <span class="n">pageId</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
         <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
@@ -210,10 +231,12 @@
     <span class="k">if</span> <span class="n">directory</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;Use &#39;ocrd workspace --directory DIR init&#39; instead of argument &#39;DIRECTORY&#39; (&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="n">directory</span><span class="p">))</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;init cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_nothing</span><span class="p">(</span>
         <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
         <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
-        <span class="n">clobber_mets</span><span class="o">=</span><span class="n">clobber_mets</span>
+        <span class="n">clobber_mets</span><span class="o">=</span><span class="n">clobber_mets</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
@@ -237,13 +260,7 @@
 <span class="sd">    Add a file or http(s) URL FNAME to METS in a workspace.</span>
 <span class="sd">    If FNAME is not an http(s) URL and is not a workspace-local existing file, try to copy to workspace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
-        <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
-        <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">,</span>
-        <span class="n">mets_server_url</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
 
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.workspace.add&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mimetype</span><span class="p">:</span>
@@ -347,15 +364,10 @@
 <span class="sd">          echo PHYS_0002 BIN FILE_0002_BIN BIN/FILE_0002_BIN.xml; \\</span>
 <span class="sd">        } | ocrd workspace bulk-add -r &#39;(?P&lt;pageid&gt;.*) (?P&lt;filegrp&gt;.*) (?P&lt;fileid&gt;.*) (?P&lt;local_filename&gt;.*)&#39; \\</span>
 <span class="sd">          -G &#39;{{ filegrp }}&#39; -g &#39;{{ pageid }}&#39; -i &#39;{{ fileid }}&#39; -S &#39;{{ local_filename }}&#39; -</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.workspace.bulk-add&#39;</span><span class="p">)</span> <span class="c1"># pylint: disable=redefined-outer-name</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
-        <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
-        <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">,</span>
-        <span class="n">mets_server_url</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regex</span><span class="p">)</span>
@@ -446,7 +458,7 @@
         <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;workspace.add_file(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">file_dict</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">fileGrp</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="o">**</span><span class="n">file_dict</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">fileGrp</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="o">**</span><span class="n">file_dict</span><span class="p">)</span> <span class="c1"># pylint: disable=redundant-keyword-arg</span>
 
     <span class="c1"># save changes to disk</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
@@ -490,13 +502,8 @@
     <span class="n">snake_to_camel</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;page_id&quot;</span><span class="p">:</span> <span class="s2">&quot;pageId&quot;</span><span class="p">,</span> <span class="s2">&quot;file_grp&quot;</span><span class="p">:</span> <span class="s2">&quot;fileGrp&quot;</span><span class="p">}</span>
     <span class="n">output_field</span> <span class="o">=</span> <span class="p">[</span><span class="n">snake_to_camel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">output_field</span><span class="p">]</span>
     <span class="n">modified_mets</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
-        <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
-        <span class="n">mets_server_url</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
                 <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
@@ -546,7 +553,9 @@
 <span class="sd">    (If any ``ID`` starts with ``//``, then its remainder</span>
 <span class="sd">     will be interpreted as a regular expression.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;remove cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">id</span><span class="p">:</span>
         <span class="n">workspace</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">keep_file</span><span class="o">=</span><span class="n">keep_file</span><span class="p">)</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
@@ -564,7 +573,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rename fileGrp (USE attribute ``NEW`` to ``OLD``).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;rename-group cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">rename_file_group</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
 
@@ -585,7 +596,9 @@
 <span class="sd">    (If any ``GROUP`` starts with ``//``, then its remainder</span>
 <span class="sd">     will be interpreted as a regular expression.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;remove-group cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
         <span class="n">workspace</span><span class="o">.</span><span class="n">remove_file_group</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">keep_files</span><span class="o">=</span><span class="n">keep_files</span><span class="p">)</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
@@ -607,7 +620,9 @@
 <span class="sd">    (If any ``FILTER`` starts with ``//``, then its remainder</span>
 <span class="sd">     will be interpreted as a regular expression.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;prune-files cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">pushd_popd</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
             <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
@@ -644,8 +659,7 @@
 <span class="sd">    If no PATH_GLOB are specified, then all files and directories</span>
 <span class="sd">    may match.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli.workspace.clean&#39;</span><span class="p">)</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">allowed_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">normpath</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">local_filename</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">local_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
     <span class="n">allowed_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relpath</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets_target</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">workspace</span><span class="o">.</span><span class="n">directory</span><span class="p">))</span>
     <span class="n">allowed_dirs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">allowed_files</span><span class="p">)</span>
@@ -663,7 +677,7 @@
             <span class="k">if</span> <span class="n">normpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed_files</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;unlink(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;unlink(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">unlink</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">directories</span><span class="p">:</span>
@@ -673,7 +687,7 @@
             <span class="k">if</span> <span class="n">normpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed_dirs</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;rmdir(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;rmdir(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rmdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
@@ -687,7 +701,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List fileGrp USE attributes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">))</span>
 
 <span class="c1"># ----------------------------------------------------------------------</span>
@@ -713,20 +727,16 @@
 <span class="sd">    (If any ``FILTER`` starts with ``//``, then its remainder</span>
 <span class="sd">     will be interpreted as a regular expression.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
-    <span class="n">find_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">page_id_range</span> <span class="ow">and</span> <span class="s1">&#39;ID&#39;</span> <span class="ow">in</span> <span class="n">output_field</span><span class="p">:</span>
-        <span class="n">find_kwargs</span><span class="p">[</span><span class="s1">&#39;pageId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">page_id_range</span>
-    <span class="n">page_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">x</span><span class="o">.</span><span class="n">pageId</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="o">**</span><span class="n">find_kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">pageId</span><span class="p">})</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">if</span> <span class="n">output_field</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]:</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">page_ids</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">page_div</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">get_physical_pages</span><span class="p">(</span><span class="n">for_pageIds</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">page_ids</span><span class="p">),</span> <span class="n">return_divs</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">page_id_range</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="n">output_field</span><span class="p">)</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">page_div</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">get_physical_pages</span><span class="p">(</span><span class="n">for_pageIds</span><span class="o">=</span><span class="n">page_id_range</span><span class="p">,</span> <span class="n">return_divs</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">output_field</span><span class="p">:</span>
                 <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page_div</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">page_id</span> <span class="ow">in</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">page_id</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">numeric_range</span><span class="p">:</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">numeric_range</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">))</span>
@@ -760,7 +770,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get METS id if any</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">ID</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span>
     <span class="k">if</span> <span class="n">ID</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
@@ -780,13 +790,13 @@
 
 <span class="sd">    Otherwise will create a new &lt;mods:identifier type=&quot;purl&quot;&gt;{{ ID }}&lt;/mods:identifier&gt;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">unique_identifier</span> <span class="o">=</span> <span class="nb">id</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
 
 <span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;update-page&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--set&#39;</span><span class="p">,</span> <span class="s1">&#39;attr_value_pairs&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;set mets:div ATTR to VALUE. possible keys: </span><span class="si">{</span><span class="n">METS_PAGE_DIV_ATTRIBUTE</span><span class="o">.</span><span class="n">names</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;ATTR VALUE&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--order&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;[DEPRECATED - use --set ATTR VALUE&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;ORDER&#39;</span><span class="p">)</span>               
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--order&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;[DEPRECATED - use --set ATTR VALUE&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;ORDER&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--orderlabel&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;DEPRECATED - use --set ATTR VALUE&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;ORDERLABEL&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--contentids&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;DEPRECATED - use --set ATTR VALUE&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;ORDERLABEL&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;PAGE_ID&#39;</span><span class="p">)</span>
@@ -795,7 +805,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update the @ID, @ORDER, @ORDERLABEL, @LABEL or @CONTENTIDS attributes of the mets:div with @ID=PAGE_ID</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">update_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attr_value_pairs</span><span class="p">}</span>
+    <span class="n">update_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">attr_value_pairs</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">order</span><span class="p">:</span>
         <span class="n">update_kwargs</span><span class="p">[</span><span class="s1">&#39;ORDER&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span>
     <span class="k">if</span> <span class="n">orderlabel</span><span class="p">:</span>
@@ -803,7 +813,9 @@
     <span class="k">if</span> <span class="n">contentids</span><span class="p">:</span>
         <span class="n">update_kwargs</span><span class="p">[</span><span class="s1">&#39;CONTENTIDS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">contentids</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+            <span class="sa">f</span><span class="s2">&quot;update-page cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
         <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">update_physical_page_attributes</span><span class="p">(</span><span class="n">page_id</span><span class="p">,</span> <span class="o">**</span><span class="n">update_kwargs</span><span class="p">)</span>
         <span class="n">workspace</span><span class="o">.</span><span class="n">save_mets</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -841,7 +853,9 @@
     <span class="n">mets_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">mets_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">filegrp_mapping</span><span class="p">:</span>
         <span class="n">filegrp_mapping</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">filegrp_mapping</span><span class="p">)</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;merge cannot be performed with METS Server - stop server, rerun without -U </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">other_workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">mets_path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span> <span class="n">mets_basename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">mets_path</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
         <span class="n">other_workspace</span><span class="p">,</span>
@@ -865,11 +879,12 @@
 <span class="c1"># ----------------------------------------------------------------------</span>
 
 <span class="nd">@workspace_cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;backup&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+<span class="nd">@pass_workspace</span>
 <span class="k">def</span> <span class="nf">workspace_backup_cli</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Backing and restoring workspaces - dev edition</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span> <span class="s2">&quot;Workspace backups currently not interoperable with METS Server&quot;</span>
 
 <span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
 <span class="nd">@pass_workspace</span>
@@ -877,7 +892,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a new backup</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">backup_manager</span><span class="p">()</span>
     <span class="n">backup_manager</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
 
 <span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
@@ -886,7 +901,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List backups</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">backup_manager</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backup_manager</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 
@@ -898,7 +913,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Restore backup BAK</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">backup_manager</span><span class="p">()</span>
     <span class="n">backup_manager</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">bak</span><span class="p">,</span> <span class="n">choose_first</span><span class="p">)</span>
 
 <span class="nd">@workspace_backup_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
@@ -907,7 +922,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Restore the last backup</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">WorkspaceBackupManager</span><span class="p">(</span><span class="n">Workspace</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span> <span class="n">automatic_backup</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">automatic_backup</span><span class="p">))</span>
+    <span class="n">backup_manager</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">backup_manager</span><span class="p">()</span>
     <span class="n">backup_manager</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
 
 
@@ -924,14 +939,23 @@
 <span class="nd">@workspace_serve_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">)</span>
 <span class="nd">@pass_workspace</span>
 <span class="k">def</span> <span class="nf">workspace_serve_stop</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stop the METS server&quot;&quot;&quot;</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">resolver</span><span class="p">,</span>
-        <span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-        <span class="n">mets_basename</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_basename</span><span class="p">,</span>
-        <span class="n">mets_server_url</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">mets_server_url</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stop the METS server (saving changes to disk)&quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
     <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="nd">@workspace_serve_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;reload&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_serve_reload</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reload the METS server from disk&quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+
+<span class="nd">@workspace_serve_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;save&#39;</span><span class="p">)</span>
+<span class="nd">@pass_workspace</span>
+<span class="k">def</span> <span class="nf">workspace_serve_save</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the METS changes to disk&quot;&quot;&quot;</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">workspace</span><span class="p">()</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
 <span class="nd">@workspace_serve_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
 <span class="nd">@pass_workspace</span>
@@ -951,7 +975,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../../index.html">
@@ -976,9 +1000,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -1016,7 +1041,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd_utils.config &#8212; ocrd 2.68.0
+    <title>ocrd_utils.config &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -49,11 +49,17 @@
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">fill</span><span class="p">,</span> <span class="n">indent</span>
 
 
+<span class="k">def</span> <span class="nf">_validator_boolean</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_parser_boolean</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span> <span class="k">else</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+
 <div class="viewcode-block" id="OcrdEnvVariable">
 <a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvVariable">[docs]</a>
 <span class="k">class</span> <span class="nc">OcrdEnvVariable</span><span class="p">():</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        An environment variable for use in OCR-D.</span>
 
@@ -81,10 +87,19 @@
 <div class="viewcode-block" id="OcrdEnvVariable.describe">
 <a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvVariable.describe">[docs]</a>
     <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrap_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent_text</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Output help information on a config option.</span>
+
+<span class="sd">        If ``option.description`` is a multiline string with complex formatting</span>
+<span class="sd">        (e.g. markdown lists), replace empty lines with ``\b`` and set</span>
+<span class="sd">        ``wrap_text`` to ``False``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_default</span><span class="p">:</span>
             <span class="n">default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
-            <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; (Default: &quot;</span><span class="si">{</span><span class="n">default</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">desc</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+                <span class="n">desc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span>
+            <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;(Default: &quot;</span><span class="si">{</span><span class="n">default</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">ret</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">wrap_text</span><span class="p">:</span>
@@ -106,7 +121,11 @@
 <div class="viewcode-block" id="OcrdEnvConfig.add">
 <a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">OcrdEnvVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">OcrdEnvVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># make visible in ocrd_utils.config docstring (apidoc)</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">wrap_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> - &quot;</span> <span class="o">+</span> <span class="n">txt</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
 
@@ -118,6 +137,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">has_default</span></div>
 
 
+<div class="viewcode-block" id="OcrdEnvConfig.reset_defaults">
+<a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.reset_defaults">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># we cannot use hasattr, because that delegates to getattr,</span>
+                <span class="c1"># which we override and provide defaults for (which of course</span>
+                <span class="c1"># cannot be removed)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                    <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="OcrdEnvConfig.describe">
 <a class="viewcode-back" href="../../api/ocrd_utils/ocrd_utils.config.html#ocrd_utils.config.OcrdEnvConfig.describe">[docs]</a>
     <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -127,8 +160,9 @@
 
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># will be called if name is not accessible (has not been added directly yet)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unregistered env variable </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">var_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">raw_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_value</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -162,21 +196,33 @@
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_METS_CACHING&#39;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;If set to `true`, access to the METS file is cached, speeding in-memory search and modification.&#39;</span><span class="p">,</span>
-    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span>
-    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">))</span>
+    <span class="n">validator</span><span class="o">=</span><span class="n">_validator_boolean</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="n">_parser_boolean</span><span class="p">)</span>
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_MAX_PROCESSOR_CACHE&#39;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of processor instances (for each set of parameters) to be kept in memory (including loaded models) for processing workers or processor servers.&quot;</span><span class="p">,</span>
     <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
 
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_MAX_PARALLEL_PAGES&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of processor threads for page-parallel processing (within each Processor&#39;s selected page range, independent of the number of Processing Workers or Processor Servers). If set &gt;1, then a METS Server must be used for METS synchronisation.&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;OCRD_PROCESSING_PAGE_TIMEOUT&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timeout in seconds for processing a single page. If set &gt;0, when exceeded, the same as OCRD_MISSING_OUTPUT applies.&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_PROFILE&quot;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">Whether to enable gathering runtime statistics</span>
 <span class="s2">on the `ocrd.profile` logger (comma-separated):</span>
+<span class="se">\b</span>
 <span class="s2">- `CPU`: yields CPU and wall-time,</span>
 <span class="s2">- `RSS`: also yields peak memory (resident set size)</span>
 <span class="s2">- `PSS`: also yields peak memory (proportional set size)</span>
+<span class="se">\b</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
   <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span> <span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;CPU&#39;</span><span class="p">,</span> <span class="s1">&#39;RSS&#39;</span><span class="p">,</span> <span class="s1">&#39;PSS&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)),</span>
   <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
@@ -185,7 +231,7 @@
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If set, then the CPU profile is written to this file for later peruse with a analysis tools like snakeviz&quot;</span><span class="p">)</span>
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_DOWNLOAD_RETRIES&quot;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of times to retry failed attempts for downloads of workspace files.&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of times to retry failed attempts for downloads of resources or workspace files.&quot;</span><span class="p">,</span>
     <span class="n">validator</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
     <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
@@ -201,6 +247,58 @@
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timeout in seconds for connecting or reading (comma-separated) when downloading.&quot;</span><span class="p">,</span>
     <span class="n">parser</span><span class="o">=</span><span class="n">_ocrd_download_timeout_parser</span><span class="p">)</span>
 
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_DOWNLOAD_INPUT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to download files not present locally during processing&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">validator</span><span class="o">=</span><span class="n">_validator_boolean</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="n">_parser_boolean</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_MISSING_INPUT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">How to deal with missing input files</span>
+<span class="s2">(for some fileGrp/pageId) during processing:</span>
+<span class="se">\b</span>
+<span class="s2"> - `SKIP`: ignore and proceed with next page&#39;s input</span>
+<span class="s2"> - `ABORT`: throw :py:class:`.MissingInputFile`</span>
+<span class="se">\b</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">),</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SKIP&#39;</span><span class="p">,</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">],</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_MISSING_OUTPUT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">How to deal with missing output files</span>
+<span class="s2">(for some fileGrp/pageId) during processing:</span>
+<span class="se">\b</span>
+<span class="s2"> - `SKIP`: ignore and proceed processing next page</span>
+<span class="s2"> - `COPY`: fall back to copying input PAGE to output fileGrp for page</span>
+<span class="s2"> - `ABORT`: re-throw whatever caused processing to fail</span>
+<span class="se">\b</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">),</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SKIP&#39;</span><span class="p">,</span> <span class="s1">&#39;COPY&#39;</span><span class="p">,</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">],</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_MAX_MISSING_OUTPUTS&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximal rate of skipped/fallback pages among all processed pages before aborting (decimal fraction, ignored if negative).&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_EXISTING_OUTPUT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">How to deal with already existing output files</span>
+<span class="s2">(for some fileGrp/pageId) during processing:</span>
+<span class="se">\b</span>
+<span class="s2"> - `SKIP`: ignore and proceed processing next page</span>
+<span class="s2"> - `OVERWRITE`: force writing result to output fileGrp for page</span>
+<span class="s2"> - `ABORT`: re-throw :py:class:`FileExistsError`</span>
+<span class="se">\b</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">),</span>
+    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SKIP&#39;</span><span class="p">,</span> <span class="s1">&#39;OVERWRITE&#39;</span><span class="p">,</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">],</span>
+    <span class="n">parser</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_SERVER_ADDR_PROCESSING&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default address of Processing Server to connect to (for `ocrd network client processing`).&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
@@ -208,7 +306,7 @@
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_CLIENT_POLLING_SLEEP&quot;</span><span class="p">,</span>
            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;How many seconds to sleep before trying again.&quot;</span><span class="p">,</span>
            <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-           <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+           <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_CLIENT_POLLING_TIMEOUT&quot;</span><span class="p">,</span>
            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timeout for a blocking ocrd network client (in seconds).&quot;</span><span class="p">,</span>
@@ -224,9 +322,19 @@
         <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_NETWORK_RABBITMQ_CLIENT_CONNECT_ATTEMPTS&quot;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of attempts for a RabbitMQ client to connect before failing.&quot;</span><span class="p">,</span>
+           <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of attempts for a RabbitMQ client to connect before failing.&quot;</span><span class="p">,</span>
+           <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+           <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;OCRD_NETWORK_RABBITMQ_HEARTBEAT&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Controls AMQP heartbeat timeout (in seconds) negotiation during connection tuning. An integer value always overrides the value </span>
+<span class="s2">    proposed by broker. Use 0 to deactivate heartbeat.</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
     <span class="n">parser</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OCRD_NETWORK_SOCKETS_ROOT_DIR&quot;</span><span class="p">,</span>
            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The root directory where all mets server related socket files are created&quot;</span><span class="p">,</span>
@@ -260,15 +368,15 @@
 <span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;OCRD_LOGGING_DEBUG&quot;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Print information about the logging setup to STDERR&quot;</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-    <span class="n">validator</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span>
-    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span>  <span class="n">val</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span> <span class="k">else</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">))</span>
+    <span class="n">validator</span><span class="o">=</span><span class="n">_validator_boolean</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">=</span><span class="n">_parser_boolean</span><span class="p">)</span>
 </pre></div>
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -293,9 +401,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -333,7 +442,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

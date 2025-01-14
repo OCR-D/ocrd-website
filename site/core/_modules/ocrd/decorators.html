@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.decorators &#8212; ocrd 2.68.0
+    <title>ocrd.decorators &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -35,6 +35,7 @@
             
   <h1>Source code for ocrd.decorators</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 
 <span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">config</span><span class="p">,</span>
@@ -45,9 +46,9 @@
     <span class="n">parse_json_string_with_comments</span><span class="p">,</span>
     <span class="n">set_json_key_value_overrides</span><span class="p">,</span>
     <span class="n">parse_json_string_or_file</span><span class="p">,</span>
+    <span class="n">redirect_stderr_and_stdout_to_file</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">WorkspaceValidator</span>
-<span class="kn">from</span> <span class="nn">ocrd_network</span> <span class="kn">import</span> <span class="n">ProcessingWorker</span><span class="p">,</span> <span class="n">ProcessorServer</span><span class="p">,</span> <span class="n">AgentType</span>
 
 <span class="kn">from</span> <span class="nn">..resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
 <span class="kn">from</span> <span class="nn">..processor.base</span> <span class="kn">import</span> <span class="n">ResourceNotFoundError</span><span class="p">,</span> <span class="n">run_processor</span>
@@ -56,8 +57,6 @@
 <span class="kn">from</span> <span class="nn">.parameter_option</span> <span class="kn">import</span> <span class="n">parameter_option</span><span class="p">,</span> <span class="n">parameter_override_option</span>
 <span class="kn">from</span> <span class="nn">.ocrd_cli_options</span> <span class="kn">import</span> <span class="n">ocrd_cli_options</span>
 <span class="kn">from</span> <span class="nn">.mets_find_options</span> <span class="kn">import</span> <span class="n">mets_find_options</span>
-
-<span class="n">SUBCOMMANDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSING_WORKER</span><span class="p">,</span> <span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSOR_SERVER</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="ocrd_cli_wrap_processor">
@@ -74,6 +73,8 @@
     <span class="n">profile_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">resolve_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">show_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">list_resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="c1"># ocrd_network params start #</span>
@@ -85,82 +86,80 @@
     <span class="c1"># ocrd_network params end #</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="n">processorClass</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dump_json</span> <span class="ow">or</span> <span class="n">dump_module_dir</span> <span class="ow">or</span> <span class="n">help</span> <span class="ow">or</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">show_resource</span> <span class="ow">or</span> <span class="n">list_resources</span><span class="p">:</span>
-        <span class="n">processorClass</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span>
-            <span class="n">dump_json</span><span class="o">=</span><span class="n">dump_json</span><span class="p">,</span>
-            <span class="n">dump_module_dir</span><span class="o">=</span><span class="n">dump_module_dir</span><span class="p">,</span>
-            <span class="n">show_help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span>
-            <span class="n">subcommand</span><span class="o">=</span><span class="n">subcommand</span><span class="p">,</span>
-            <span class="n">show_version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
-            <span class="n">show_resource</span><span class="o">=</span><span class="n">show_resource</span><span class="p">,</span>
-            <span class="n">list_resources</span><span class="o">=</span><span class="n">list_resources</span>
-        <span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">subcommand</span><span class="p">:</span>
-        <span class="c1"># Used for checking/starting network agents for the WebAPI architecture</span>
-        <span class="n">check_and_run_network_agent</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">address</span> <span class="ow">or</span> <span class="n">queue</span> <span class="ow">or</span> <span class="n">database</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subcommand options --address --queue and --database are only valid for subcommands: </span><span class="si">{</span><span class="n">SUBCOMMANDS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+    <span class="c1"># init logging handlers so no imported libs can preempt ours</span>
     <span class="n">initLogging</span><span class="p">()</span>
 
-    <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.cli_wrap_processor&#39;</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-    <span class="k">assert</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-    <span class="c1"># LOG.info(&#39;kwargs=%s&#39; % kwargs)</span>
+    <span class="c1"># FIXME: remove workspace arg entirely</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">processorClass</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">show_help</span><span class="p">(</span><span class="n">subcommand</span><span class="o">=</span><span class="n">subcommand</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">help</span><span class="p">:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">show_help</span><span class="p">(</span><span class="n">subcommand</span><span class="o">=</span><span class="n">subcommand</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">show_version</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">dump_json</span><span class="p">:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">dump_json</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">dump_module_dir</span><span class="p">:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">dump_module_dir</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">resolve_resource</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">resolve_resource</span><span class="p">(</span><span class="n">resolve_resource</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">ResourceNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.base&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_resource</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">processor</span><span class="o">.</span><span class="n">show_resource</span><span class="p">(</span><span class="n">show_resource</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">ResourceNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ocrd.processor.base&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">list_resources</span><span class="p">:</span>
+        <span class="n">processor</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">subcommand</span> <span class="ow">or</span> <span class="n">address</span> <span class="ow">or</span> <span class="n">queue</span> <span class="ow">or</span> <span class="n">database</span><span class="p">:</span>
+        <span class="c1"># Used for checking/starting network agents for the WebAPI architecture</span>
+        <span class="n">check_and_run_network_agent</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="s1">&#39;parameter&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="c1"># Disambiguate parameter file/literal, and resolve file</span>
-        <span class="c1"># (but avoid entering processing context of constructor)</span>
-        <span class="k">class</span> <span class="nc">DisposableSubclass</span><span class="p">(</span><span class="n">processorClass</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">show_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">pass</span>
-        <span class="n">disposable</span> <span class="o">=</span> <span class="n">DisposableSubclass</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_version</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">disposable</span><span class="o">.</span><span class="n">resolve_resource</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">processor</span><span class="o">.</span><span class="n">resolve_resource</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">ResourceNotFoundError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_json_string_or_file</span><span class="p">(</span><span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">],</span>
                                                         <span class="n">resolve_preset_file</span><span class="o">=</span><span class="n">resolve</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Merge parameter overrides and parameters</span>
     <span class="k">if</span> <span class="s1">&#39;parameter_override&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">set_json_key_value_overrides</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter_override&#39;</span><span class="p">])</span>
-    <span class="c1"># TODO OCR-D/core#274</span>
+        <span class="n">set_json_key_value_overrides</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parameter_override&#39;</span><span class="p">))</span>
     <span class="c1"># Assert -I / -O</span>
-    <span class="c1"># if not kwargs[&#39;input_file_grp&#39;]:</span>
-    <span class="c1">#     raise ValueError(&#39;-I/--input-file-grp is required&#39;)</span>
-    <span class="c1"># if not kwargs[&#39;output_file_grp&#39;]:</span>
-    <span class="c1">#     raise ValueError(&#39;-O/--output-file-grp is required&#39;)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;-I/--input-file-grp is required&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;-O/--output-file-grp is required&#39;</span><span class="p">)</span>
     <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="p">()</span>
     <span class="n">working_dir</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mets_server_url</span> <span class="o">=</span> \
             <span class="n">resolver</span><span class="o">.</span><span class="n">resolve_mets_arguments</span><span class="p">(</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">mets</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="p">)</span>
     <span class="n">workspace</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">workspace_from_url</span><span class="p">(</span><span class="n">mets</span><span class="p">,</span> <span class="n">working_dir</span><span class="p">,</span> <span class="n">mets_server_url</span><span class="o">=</span><span class="n">mets_server_url</span><span class="p">)</span>
     <span class="n">page_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_id&#39;</span><span class="p">)</span>
-    <span class="c1"># XXX not possible while processors do not adhere to # https://github.com/OCR-D/core/issues/505</span>
-    <span class="c1"># if overwrite</span>
-    <span class="c1">#     if &#39;output_file_grp&#39; not in kwargs or not kwargs[&#39;output_file_grp&#39;]:</span>
-    <span class="c1">#         raise Exception(&quot;--overwrite requires --output-file-grp&quot;)</span>
-    <span class="c1">#     LOG.info(&quot;Removing files because of --overwrite&quot;)</span>
-    <span class="c1">#     for grp in kwargs[&#39;output_file_grp&#39;].split(&#39;,&#39;):</span>
-    <span class="c1">#         if page_id:</span>
-    <span class="c1">#             for one_page_id in kwargs[&#39;page_id&#39;].split(&#39;,&#39;):</span>
-    <span class="c1">#                 LOG.debug(&quot;Removing files in output file group %s with page ID %s&quot;, grp, one_page_id)</span>
-    <span class="c1">#                 for file in workspace.mets.find_files(pageId=one_page_id, fileGrp=grp):</span>
-    <span class="c1">#                     workspace.remove_file(file, force=True, keep_file=False, page_recursive=True)</span>
-    <span class="c1">#         else:</span>
-    <span class="c1">#             LOG.debug(&quot;Removing all files in output file group %s &quot;, grp)</span>
-    <span class="c1">#             # TODO: can be reduced to `page_same_group=True` as soon as core#505 has landed (in all processors)</span>
-    <span class="c1">#             workspace.remove_file_group(grp, recursive=True, force=True, keep_files=False, page_recursive=True, page_same_group=False)</span>
-    <span class="c1">#     workspace.save_mets()</span>
-    <span class="c1"># XXX While https://github.com/OCR-D/core/issues/505 is open, set &#39;overwrite_mode&#39; globally on the workspace</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_INPUT</span> <span class="o">=</span> <span class="s1">&#39;ABORT&#39;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_OUTPUT</span> <span class="o">=</span> <span class="s1">&#39;ABORT&#39;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="o">=</span> <span class="s1">&#39;ABORT&#39;</span>
     <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">overwrite_mode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="o">=</span> <span class="s1">&#39;OVERWRITE&#39;</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">WorkspaceValidator</span><span class="o">.</span><span class="n">check_file_grp</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;input_file_grp&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_file_grp&#39;</span><span class="p">],</span> <span class="n">page_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid input/output file grps:</span><span class="se">\n\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
@@ -177,17 +176,21 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Profiling...&quot;</span><span class="p">)</span>
         <span class="n">pr</span> <span class="o">=</span> <span class="n">cProfile</span><span class="o">.</span><span class="n">Profile</span><span class="p">()</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
-        <span class="k">def</span> <span class="nf">exit</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">goexit</span><span class="p">():</span>
             <span class="n">pr</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Profiling completed&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">profile_file</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">profile_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">pr</span><span class="o">.</span><span class="n">dump_stats</span><span class="p">(</span><span class="n">profile_file</span><span class="p">)</span>
+                <span class="n">pr</span><span class="o">.</span><span class="n">dump_stats</span><span class="p">(</span><span class="n">profile_file</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
             <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">sort_stats</span><span class="p">(</span><span class="s2">&quot;cumulative&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
-        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">exit</span><span class="p">)</span>
-    <span class="n">run_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">mets_url</span><span class="o">=</span><span class="n">mets</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">goexit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">log_filename</span><span class="p">:</span>
+        <span class="n">log_ctx</span> <span class="o">=</span> <span class="n">redirect_stderr_and_stdout_to_file</span><span class="p">(</span><span class="n">log_filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">log_ctx</span><span class="p">:</span>
+        <span class="n">run_processor</span><span class="p">(</span><span class="n">processorClass</span><span class="p">,</span> <span class="n">mets_url</span><span class="o">=</span><span class="n">mets</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
@@ -196,6 +199,11 @@
 <span class="k">def</span> <span class="nf">check_and_run_network_agent</span><span class="p">(</span><span class="n">ProcessorClass</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">ocrd_network</span> <span class="kn">import</span> <span class="n">ProcessingWorker</span><span class="p">,</span> <span class="n">ProcessorServer</span><span class="p">,</span> <span class="n">AgentType</span>
+    <span class="n">SUBCOMMANDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSING_WORKER</span><span class="p">,</span> <span class="n">AgentType</span><span class="o">.</span><span class="n">PROCESSOR_SERVER</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">subcommand</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subcommand options --address --queue and --database are only valid for subcommands: </span><span class="si">{</span><span class="n">SUBCOMMANDS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">subcommand</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SUBCOMMANDS</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SUBCOMMAND can only be one of </span><span class="si">{</span><span class="n">SUBCOMMANDS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -245,7 +253,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -270,9 +278,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd/modules.html">ocrd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_utils/modules.html">ocrd_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -310,7 +319,7 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

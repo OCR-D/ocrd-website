@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ocrd_utils.logging module &#8212; ocrd 2.68.0
+    <title>ocrd_utils.logging module &#8212; ocrd 3.0.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=2388e03a"></script>
+    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
@@ -42,9 +42,9 @@
 <p>By default: Log with lastResort logger, usually STDERR.</p>
 <p>Logging can be overridden either programmatically in code using the library or by creating one or more of</p>
 <ul class="simple">
-<li><p>/etc/ocrd_logging.py</p></li>
-<li><p>$HOME/ocrd_logging.py</p></li>
-<li><p>$PWD/ocrd_logging.py</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/ocrd_logging.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$HOME/ocrd_logging.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$PWD/ocrd_logging.py</span></code></p></li>
 </ul>
 <p>These files will be executed in the context of ocrd/ocrd_logging.py, with <cite>logging</cite> global set.</p>
 <p>Changes as of 2023-08-20:</p>
@@ -53,13 +53,13 @@
 <li><p>Try to be less intrusive with OCR-D specific logging conventions to
 make it easier and less surprising to define logging behavior when
 using OCR-D/core as a library</p></li>
-<li><p>Change setOverrideLogLevel to only override the log level of the <code class="docutils literal notranslate"><span class="pre">ocrd</span></code>
+<li><p>Change <a class="reference internal" href="#ocrd_utils.logging.setOverrideLogLevel" title="ocrd_utils.logging.setOverrideLogLevel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setOverrideLogLevel()</span></code></a> to only override the log level of the <code class="docutils literal notranslate"><span class="pre">ocrd</span></code>
 logger and its descendants</p></li>
-<li><p>initLogging will set exactly one handler, for the root logger or for the
+<li><p><a class="reference internal" href="#ocrd_utils.logging.initLogging" title="ocrd_utils.logging.initLogging"><code class="xref py py-meth docutils literal notranslate"><span class="pre">initLogging()</span></code></a> will set exactly one handler, for the root logger or for the
 <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> logger.</p></li>
 <li><p>Child loggers should propagate to the ancestor logging (default
-behavior of the logging library - no more PropagationShyLogger)</p></li>
-<li><p>disableLogging only removes any handlers from the <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> logger</p></li>
+behavior of the logging library - no more <code class="docutils literal notranslate"><span class="pre">PropagationShyLogger</span></code>)</p></li>
+<li><p><a class="reference internal" href="#ocrd_utils.logging.disableLogging" title="ocrd_utils.logging.disableLogging"><code class="xref py py-meth docutils literal notranslate"><span class="pre">disableLogging()</span></code></a> only removes any handlers from the <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> logger</p></li>
 </ul>
 </div></blockquote>
 <dl class="py function">
@@ -89,9 +89,9 @@ that wasn’t explicitly called before.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ocrd_utils.logging.initLogging">
 <span class="sig-prename descclassname"><span class="pre">ocrd_utils.logging.</span></span><span class="sig-name descname"><span class="pre">initLogging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builtin_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_reinit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocrd_utils/logging.html#initLogging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocrd_utils.logging.initLogging" title="Link to this definition">¶</a></dt>
-<dd><p>Reset <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> logger, read logging configuration if exists, otherwise use basicConfig</p>
+<dd><p>Reset <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> logger, read logging configuration if exists, otherwise use <code class="xref py py-meth docutils literal notranslate"><span class="pre">logging.basicConfig()</span></code></p>
 <dl class="simple">
-<dt>initLogging is to be called by OCR-D/core once, i.e.</dt><dd><ul class="simple">
+<dt>This is to be called by OCR-D/core only once, i.e.</dt><dd><ul class="simple">
 <li><p>for the <code class="docutils literal notranslate"><span class="pre">ocrd</span></code> CLI</p></li>
 <li><p>for the processor wrapper methods</p></li>
 </ul>
@@ -102,10 +102,10 @@ that wasn’t explicitly called before.</p>
 <dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>builtin_only</strong> (<em>-</em>) – Whether to search for logging configuration
-on-disk (<code class="docutils literal notranslate"><span class="pre">False</span></code>) or only use the
-hard-coded config (<code class="docutils literal notranslate"><span class="pre">True</span></code>). For testing</p></li>
-<li><p><strong>force_reinit</strong> (<em>-</em>) – Whether to ignore the module-level
-<code class="docutils literal notranslate"><span class="pre">_initialized_flag</span></code>. For testing only.</p></li>
+on-disk (<code class="docutils literal notranslate"><span class="pre">False</span></code>) or only use the hard-coded config (<code class="docutils literal notranslate"><span class="pre">True</span></code>).
+For testing</p></li>
+<li><p><strong>force_reinit</strong> (<em>-</em>) – Whether to ignore the module-level <code class="docutils literal notranslate"><span class="pre">_initialized_flag</span></code>.
+For testing only</p></li>
 <li><p><strong>silent</strong> (<em>-</em>) – Whether to log logging behavior by printing to stderr</p></li>
 </ul>
 </dd>
@@ -133,7 +133,7 @@ hard-coded config (<code class="docutils literal notranslate"><span class="pre">
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
@@ -181,9 +181,10 @@ hard-coded config (<code class="docutils literal notranslate"><span class="pre">
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ocrd_models/modules.html">ocrd_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ocrd_validators/modules.html">ocrd_validators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ocrd_modelfactory/modules.html">ocrd_modelfactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocrd_network/modules.html">ocrd_network</a></li>
 </ul>
 
 <div class="relations">
@@ -225,7 +226,7 @@ hard-coded config (<code class="docutils literal notranslate"><span class="pre">
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
