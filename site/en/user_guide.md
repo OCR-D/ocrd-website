@@ -96,6 +96,10 @@ the directory argument** if you want to use the current working directory
 as target. For repeated use, we recommend a `cd path/to/your/workspace` once,
 so in subsequent operations, the argument can be omitted.)
 
+Note: `URL_OF_METS` can also be an OAI-PMH `GetRecord` request that wraps a
+METS file, which OCR-D will extract. This way, you can generate OCR-D
+workspaces from harvesting OAI-PMH records.
+
 This will create a file `mets.xml` within the target directory.
 
 In most cases, METS files indicate several picture formats. For OCR-D you will
