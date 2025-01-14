@@ -25,20 +25,20 @@ Herzog August Library Wolfenbüttel
 Deputy head of department
 New Media, Digital Library
 
-Duke August Library Wolfenbüttel
+Herzog August Library Wolfenbüttel
 [simon[at]hab.de](mailto:simon@hab.de?subject=Request%20via%20OCR-D.de)
 
 #### Johannes Mangei
 Deputy Director of the Herzog August Library Wolfenbüttel
 Head of Department New Media, Digital Library
 
-Duke August Library Wolfenbüttel
+Herzog August Library Wolfenbüttel
 [mangei[at]hab.de](mailto:mangei@hab.de?subject=Request%20via%20OCR-D.de)
 
 ## Managers
 
 ### Johannes Mangei
-Duke August Library Wolfenbüttel
+Herzog August Library Wolfenbüttel
 [mangei[at]hab.de](mailto:mangei@hab.de?subject=Request%20via%20OCR-D.de)
 
 ### Alexander Geyken
@@ -65,10 +65,6 @@ Project coordination
 
 Herzog August Library Wolfenbüttel
 [eckert[at]hab.de](mailto:eckert@hab.de?subject=Request%20via%20OCR-D.de)
-
-### Matthias Boenig
-Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
-[ocrd[at]bbaw.de](mailto:ocrd@bbaw.de?subject=Request%20via%20OCR-D.de)
 
 ### Konstantin Baierer
 Berlin State Library - Prussian Cultural Heritage
@@ -115,33 +111,36 @@ Bavarian State Library Munich
 
 ## Former staff
 
-### Mareen Geestmann
-Göttingen State and University Library
-
-### Lena Hinrichsen
-Herzog August Library Wolfenbüttel
+### Matthias Boenig
+Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
 
 ### Elisabeth Engl
-Duke August Library Wolfenbüttel
+Herzog August Library Wolfenbüttel
+
+### Mareen Geestmann
+Göttingen State and University Library
 
 ### Volker Hartmann
 Karlsruhe Institute of Technology/Steinbuch Centre for Computing
 
 ### Elisa Herrmann
-Duke August Library Wolfenbüttel
+Herzog August Library Wolfenbüttel
 
-### Kay-Michael Würzner
-Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
-
-### Ajinkya Prabhune
-Karlsruhe Institute of Technology
+### Lena Hinrichsen
+Herzog August Library Wolfenbüttel
 
 ### Sebastian Mangold
 Bavarian State Library Munich
 
+### Ajinkya Prabhune
+Karlsruhe Institute of Technology
+
+### Kay-Michael Würzner
+Berlin-Brandenburg Academy of Sciences and Humanities in Berlin
+
 ## Scientific Advisory Board
 
-The project is counseled by a scientific advisory board, which is constituted by the following persons at the moment:
+The project was counseled by a scientific advisory board constituted by the following:
 
 ### Max Kaiser
 
