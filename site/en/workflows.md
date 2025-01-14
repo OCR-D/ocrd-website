@@ -432,12 +432,6 @@ The input images have to be binarized for this module to work.
       <td>Fast, also performs a decent orientation correction</td>
       <td><code>ocrd-tesserocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE -P operation_level page</code></td>
     </tr>
-    <tr data-processor="ocrd-anybaseocr-deskew">
-      <td>ocrd-anybaseocr-deskew</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td><code>ocrd-anybaseocr-deskew -I OCR-D-DENOISE -O OCR-D-DESKEW-PAGE</code></td>
-    </tr>
   </tbody>
 </table>
 
@@ -637,7 +631,7 @@ For detailed descriptions of behaviour and options, see [tesserocr's README](htt
     </tr>
     <tr data-processor="ocrd-anybaseocr-block-segmentation">
       <td>ocrd-anybaseocr-block-segmentation</td>
-      <td><code>-P block_segmentation_model mrcnn_name</code> -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
+      <td><code>-P block_segmentation_model mrcnn_name -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
       <td>For available models take a look at <a href="https://github.com/OCR-D/ocrd_anybaseocr/tree/master/ocrd_anybaseocr/models">this site</a> ocr download them via <a href="https://ocr-d.de/en/models">OCR-D resource manager</a>; 
       If you didn't use <code>resmgr</code>, you need to <strong>pass the local filesystem path</strong> as parameter value.</td>
       <td><code>ocrd-anybaseocr-block-segmentation -I OCR-D-DEWARP-PAGE -O OCR-D-SEG-REG -P block_segmentation_model mrcnn_name -P block_segmentation_weights /path/to/model/block_segmentation_weights.h5</code></td>
@@ -1614,7 +1608,8 @@ results by configuring a more granular workflow like e.g. the
 ocrd process "tesserocr-recognize -P segmentation_level region -P textequiv_level word -P find_tables true -P model GT4HistOCR_50000000.997_191951"
 ```
 
-<!-- ## Best results for selected pages
+<!--
+## Best results for selected pages
 
 The following workflow has produced best results for 'simple' pages (e.g. [this
 page](https://ocr-d-repo.scc.kit.edu/api/v1/dataresources/dda89351-7596-46eb-9736-593a5e9593d3/data/bagit/data/OCR-D-IMG/OCR-D-IMG_0004.tif))  (CER ~1%).
@@ -1767,6 +1762,8 @@ you need to adjust `-I OCR-D-IMG` in the second line of the call above with the 
 set to point to the directory where the used models are stored if they are not in the default location. If you downloaded your models
 with the [OCR-D resource manager](https://ocr-d.de/en/models), this is already taken care of.
 
-<-- END-INCLUDE --> -->
+-->
+
+<!-- END-INCLUDE -->
 
 <script src="/js/workflows.js"></script>
