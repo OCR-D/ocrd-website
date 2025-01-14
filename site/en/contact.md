@@ -82,10 +82,6 @@ Berlin State Library - Prussian Cultural Heritage
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
 [schima-voigt[at]sub.uni-goettingen.de](mailto:schima-voigt@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
-### Mareen Geestmann
-Göttingen State and University Library
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
-
 ### Michelle Weidling
 Göttingen State and University Library
 [weidling[at]sub.uni-goettingen.de](mailto:weidling@sub.uni-goettingen.de?subject=Request%20via%20OCR-D.de)
@@ -118,6 +114,9 @@ Duke August Library Wolfenbüttel
 Bavarian State Library Munich
 
 ## Former staff
+
+### Mareen Geestmann
+Göttingen State and University Library
 
 ### Lena Hinrichsen
 Herzog August Library Wolfenbüttel
