@@ -769,23 +769,23 @@ service waiting for the results of processing. That service can simply listen to
 notified when the results are available. Below is a simple Python script to demonstrate how a service can listen to
 the <code class="language-plaintext highlighter-rouge">result_queue_name</code> and act accordingly.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pika</span><span class="p">,</span> <span class="n">sys</span><span class="p">,</span> <span class="n">os</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pika</span><span class="p">,</span> <span class="n">sys</span><span class="p">,</span> <span class="n">os</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="n">PlainCredentials</span><span class="p">(</span><span class="s">'username'</span><span class="p">,</span> <span class="s">'password'</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="n">BlockingConnection</span><span class="p">(</span><span class="n">pika</span><span class="p">.</span><span class="n">ConnectionParameters</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'my.domain.name'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5672</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">))</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="n">connection</span><span class="p">.</span><span class="n">channel</span><span class="p">()</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="nc">PlainCredentials</span><span class="p">(</span><span class="sh">'</span><span class="s">username</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">password</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">pika</span><span class="p">.</span><span class="nc">BlockingConnection</span><span class="p">(</span><span class="n">pika</span><span class="p">.</span><span class="nc">ConnectionParameters</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="sh">'</span><span class="s">my.domain.name</span><span class="sh">'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5672</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">))</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">connection</span><span class="p">.</span><span class="nf">channel</span><span class="p">()</span>
 
     <span class="c1"># Create the result queue, in case it does not exist yet
-</span>    <span class="n">result_queue_name</span> <span class="o">=</span> <span class="s">'ocrd-cis-ocropy-binarize-result'</span>
-    <span class="n">channel</span><span class="p">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">)</span>
+</span>    <span class="n">result_queue_name</span> <span class="o">=</span> <span class="sh">'</span><span class="s">ocrd-cis-ocropy-binarize-result</span><span class="sh">'</span>
+    <span class="n">channel</span><span class="p">.</span><span class="nf">queue_declare</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">' [x] Received %r'</span> <span class="o">%</span> <span class="n">body</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s"> [x] Received %r</span><span class="sh">'</span> <span class="o">%</span> <span class="n">body</span><span class="p">)</span>
 
-    <span class="n">channel</span><span class="p">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">,</span> <span class="n">on_message_callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">auto_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">channel</span><span class="p">.</span><span class="nf">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">result_queue_name</span><span class="p">,</span> <span class="n">on_message_callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">auto_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">' [*] Waiting for job results.)
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s"> [*] Waiting for job results.)
     channel.start_consuming()
 </span></code></pre></div></div>
 
