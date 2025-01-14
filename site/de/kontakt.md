@@ -84,10 +84,6 @@ Staatsbibliothek zu Berlin - Preußischer Kulturbesitz
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
 [schima-voigt[at]sub.uni-goettingen.de](mailto:schima-voigt@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
 
-### Mareen Geestmann
-Niedersächsische Staats- und Universitätsbibliothek Göttingen
-[geestmann[at]sub.uni-goettingen.de](mailto:geestmann@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
-
 ### Michelle Weidling
 Niedersächsische Staats- und Universitätsbibliothek Göttingen
 [weidling[at]sub.uni-goettingen.de](mailto:weidling@sub.uni-goettingen.de?subject=Anfrage%20via%20OCR-D.de)
@@ -126,6 +122,9 @@ Bayerische Staatsbibliothek München
 
 ### Elisabeth Engl
 Herzog August Bibliothek Wolfenbüttel
+
+### Mareen Geestmann
+Niedersächsische Staats- und Universitätsbibliothek Göttingen
 
 ### Volker Hartmann
 Karlsruher Institut für Technologie/Steinbuch Centre for Computing
