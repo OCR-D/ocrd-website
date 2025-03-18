@@ -57,3 +57,4 @@ The OCR-D research data repository collects all versions of documents and (inter
 Similarly, there is a publicly available OCR-D repository, which contains all ground truth data provided by OCR-D. 
 * For further information about the metadata format, see [https://github.com/OCR-D/gt-labelling](https://github.com/OCR-D/gt-labelling)
 * The repository itself is available at [https://github.com/OCR-D/gt_structure_text/releases](https://github.com/OCR-D/gt_structure_text/releases)
+* All GT in the project are indexed in OLA-HD [https://ola-hd.ocr-d.de/](https://ola-hd.ocr-d.de/)

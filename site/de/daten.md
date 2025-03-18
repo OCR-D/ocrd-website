@@ -57,3 +57,4 @@ Der OCR-D-Forschungsdatenspeicher sammelt alle Versionen von Dokumenten und (Zwi
 Ebenso gibt es ein öffentlich zugängliches OCR-D Repositorium, das alle von OCR-D bereitgestellten Ground Truth Daten enthält. 
 * Weitere Informationen über das Metadatenformat finden Sie unter [https://github.com/OCR-D/gt-labelling](https://github.com/OCR-D/gt-labelling)
 * Das Repository selbst ist unter [https://github.com/OCR-D/gt_structure_text/releases](https://github.com/OCR-D/gt_structure_text/releases) verfügbar.
+* Alle GT im Projekt sind in OLA-HD [https://ola-hd.ocr-d.de/](https://ola-hd.ocr-d.de/) indiziert.
