@@ -36,55 +36,63 @@ If the command is not found, you may need to
 
 ## Further Requisites
 
-1. Install OCR-D via Docker and download example data from Github:
-```sh
-docker pull ocrd/all:maximum
-mk dir ocr-d
-cd ocr-d
-git clone https://github.com/OCR-D/assets
-mkdir workspace
-cp -r assets/data/kant_aufklaerung_1784 workspace/kant_aufklaerung_1784
-cd workspace/kant_aufklaerung_1784
-```
-2. Set up Docker :
+1. Set up Docker :
  ```sh
 sudo systemctl enable docker
 sudo usermod -aG docker $USER
-docker run --workdir /data --volume $PWD/.config:/.config --volume $PWD:/data --volume $PWD/models:/usr/local/share/ocrd-resources --volume $PWD/models:/usr/local/share/tessdata --volume $PWD/models:/usr/local/share/ocrd-resources -it ocrd/all bash
-```
-3. Download some models:
+ ```
+2. Install OCR-D via Docker
 ```sh
-mkdir -p $PWD/models/ocrd-tesserocr-recognize
-sudo mkdir -p /usr/local/share/ocrd-resources/ocrd-tesserocr-recognize/configs
-cd data
-ocrd resmgr download '*'
+docker pull ocrd/all:maximum
+```
+3. Download example data from Github
+```sh
+mkdir ocr-d
+wget https://github.com/OCR-D/gt_structure_text/releases/download/v1.5.0/euler_rechenkunst01_1738.ocrd.zip
+unzip euler_rechenkunst01_1738.ocrd.zip -d ocr-d/euler_rechenkunst01_1738
+```
+4. Start interactive shell in Docker
+```sh
+docker run --volume $PWD/ocr-d:/data --volume ocrd-resources:/models -it ocrd/all:maximum bash
+```
+5. Download some models:
+```sh
+ocrd resmgr download ocrd-tesserocr-recognize '*'
 ```
 
 ## First minimal workflow with OCR-D
 
 ```sh
-ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-TESSOCR -P segmentation_level region -P textequiv_level word -P find_tables true -P model ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-TESSOCR -P segmentation_level region -P textequiv_level word -P find_tables true -P model Fraktur_GT4HistOCR
+ocrd-tesserocr-recognize -w euler_rechenkunst01_1738 -I OCR-D-IMG -O OCR-D-OCR-TESS -P segmentation_level region -P find_tables true -P model frak2021
 ```
 
 Congratulations! You ran your first (minimal) OCR-D Workflow. 
-<br>
+
 You will find the results in the directory
-`workspace/kant_aufklaerung_1784` under `data`.
-<br>
+`/data/ocr-d/euler_rechenkunst01_1738` (in the container) or
+`ocr-d/euler_rechenkunst01_1738` (on the host side).
+
 Consult the [Setup Guide](/en/setup) for more details and other installation methods or jump into the 
-[User Guide](/en/user_guide) to learn more about OCR&#8209;D. Below you find a short explanation for the `ocrd-tesserocr-recognize` command.
-<br>
+[User Guide](/en/user_guide) to learn more about OCR&#8209;D. 
+
+Next we will explain the above `ocrd-tesserocr-recognize` command.
 
 ### Explanation
 
-The command`ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-TESSOCR -P segmentation_level region -P textequiv_level word -P find_tables true -P model Fraktur_GT4HistOCR`
-for the recognition contains the following parameters:
-<br><br>
-1. `ocrd-tesserocr-recognize` is the processor used.
-2. `-I` is followed by the name of the input folder, here images.
-3. `-O` is followed by the name of the output folder where you will find the results (here binarised images and mets files with the recognised text.
-4. `-P segmentation_level region` is a parameter for the processor which tells tesserocr to start the segmentation on the level of regions.
-5. `-P textequiv_level word` is a parameter for the processor which tells tesserocr to stop the segmentation on the level of words (meaning glyphs will not be segmented here).
-6. `-P find_tables true` is a parameter for the processor which tells tesserocr to recognise tables.
-7. `-P model Fraktur_GT4HistOCR` is a parameter for the processor which tells tesserocr to use the model `Fraktur_GT4HistOCR` 
-for recognition.
+The command that called the recognition processor consists of the following parts:
+```sh
+ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-OCR-TESS -P segmentation_level region -P find_tables true -P model frak2021
+╰─────── 1 ────────────╯ ╰─── 2 ────╯ ╰───── 3 ───────╯ ╰────────── 4 ─────────────╯ ╰────── 5 ────────╯ ╰───── 6 ───────╯
+```
+1. `ocrd-tesserocr-recognize` is the name of the processor executable used.
+2. `-I` is followed by the name of the input file group (and directory); 
+    here: images.
+3. `-O` is followed by the name of the output file group (and directory); 
+    here: binarised images and PAGE-XML files with the recognised text.
+4. `-P segmentation_level region` is a parameter name/value pair; 
+    here: tells the processor to start segmentation on the level of regions
+    (so no prior layout analysis annotating text lines in PAGE-XML is required).
+5. `-P find_tables true` ...
+    here: enables layout detection of tables.
+6. `-P model frak2021` ...
+    here: use the named resource `frak2021.traineddata` for recognition.
