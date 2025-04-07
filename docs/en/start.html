@@ -300,6 +300,18 @@ function ToggleSearchActive2() {
             
             
               
+              <a class="navbar-item" href="/en/start">Quick Start Guide</a>
+            
+
+          
+
+          
+
+          
+          
+            
+            
+              
               <a class="navbar-item" href="/en/setup">Setup Guide</a>
             
 
@@ -472,59 +484,66 @@ function ToggleSearchActive2() {
 <h2 id="further-requisites">Further Requisites</h2>
 
 <ol>
-  <li>Install OCR-D via Docker and download example data from Github:
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:maximum
-mk <span class="nb">dir </span>ocr-d
-<span class="nb">cd </span>ocr-d
-git clone https://github.com/OCR-D/assets
-<span class="nb">mkdir </span>workspace
-<span class="nb">cp</span> <span class="nt">-r</span> assets/data/kant_aufklaerung_1784 workspace/kant_aufklaerung_1784
-<span class="nb">cd </span>workspace/kant_aufklaerung_1784
-</code></pre></div>    </div>
-  </li>
   <li>Set up Docker :
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl <span class="nb">enable </span>docker
 <span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span>
-docker run <span class="nt">--workdir</span> /data <span class="nt">--volume</span> <span class="nv">$PWD</span>/.config:/.config <span class="nt">--volume</span> <span class="nv">$PWD</span>:/data <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/tessdata <span class="nt">--volume</span> <span class="nv">$PWD</span>/models:/usr/local/share/ocrd-resources <span class="nt">-it</span> ocrd/all bash
+</code></pre></div>    </div>
+  </li>
+  <li>Install OCR-D via Docker
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull ocrd/all:maximum
+</code></pre></div>    </div>
+  </li>
+  <li>Download example data from Github
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>ocr-d
+wget https://github.com/OCR-D/gt_structure_text/releases/download/v1.5.0/euler_rechenkunst01_1738.ocrd.zip
+unzip euler_rechenkunst01_1738.ocrd.zip <span class="nt">-d</span> ocr-d/euler_rechenkunst01_1738
+</code></pre></div>    </div>
+  </li>
+  <li>Start interactive shell in Docker
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--volume</span> <span class="nv">$PWD</span>/ocr-d:/data <span class="nt">--volume</span> ocrd-resources:/models <span class="nt">-it</span> ocrd/all:maximum bash
 </code></pre></div>    </div>
   </li>
   <li>Download some models:
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$PWD</span>/models/ocrd-tesserocr-recognize
-<span class="nb">sudo mkdir</span> <span class="nt">-p</span> /usr/local/share/ocrd-resources/ocrd-tesserocr-recognize/configs
-<span class="nb">cd </span>data
-ocrd resmgr download <span class="s1">'*'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd resmgr download ocrd-tesserocr-recognize <span class="s1">'*'</span>
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <h2 id="first-minimal-workflow-with-ocr-d">First minimal workflow with OCR-D</h2>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-TESSOCR <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> textequiv_level word <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-TESSOCR <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> textequiv_level word <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model Fraktur_GT4HistOCR
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-w</span> euler_rechenkunst01_1738 <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-OCR-TESS <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model frak2021
 </code></pre></div></div>
 
-<p>Congratulations! You ran your first (minimal) OCR-D Workflow. 
-<br />
-You will find the results in the directory
-<code class="language-plaintext highlighter-rouge">workspace/kant_aufklaerung_1784</code> under <code class="language-plaintext highlighter-rouge">data</code>.
-<br />
-Consult the <a href="/en/setup">Setup Guide</a> for more details and other installation methods or jump into the 
-<a href="/en/user_guide">User Guide</a> to learn more about OCR‑D. Below you find a short explanation for the <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> command.
-<br /></p>
+<p>Congratulations! You ran your first (minimal) OCR-D Workflow.</p>
+
+<p>You will find the results in the directory
+<code class="language-plaintext highlighter-rouge">/data/ocr-d/euler_rechenkunst01_1738</code> (in the container) or
+<code class="language-plaintext highlighter-rouge">ocr-d/euler_rechenkunst01_1738</code> (on the host side).</p>
+
+<p>Consult the <a href="/en/setup">Setup Guide</a> for more details and other installation methods or jump into the 
+<a href="/en/user_guide">User Guide</a> to learn more about OCR‑D.</p>
+
+<p>Next we will explain the above <code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> command.</p>
 
 <h3 id="explanation">Explanation</h3>
 
-<p>The command<code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize -I OCR-D-IMG -O OCR-D-TESSOCR -P segmentation_level region -P textequiv_level word -P find_tables true -P model Fraktur_GT4HistOCR</code>
-for the recognition contains the following parameters:
-<br /><br /></p>
+<p>The command that called the recognition processor consists of the following parts:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocrd-tesserocr-recognize <span class="nt">-I</span> OCR-D-IMG <span class="nt">-O</span> OCR-D-OCR-TESS <span class="nt">-P</span> segmentation_level region <span class="nt">-P</span> find_tables <span class="nb">true</span> <span class="nt">-P</span> model frak2021
+╰─────── 1 ────────────╯ ╰─── 2 ────╯ ╰───── 3 ───────╯ ╰────────── 4 ─────────────╯ ╰────── 5 ────────╯ ╰───── 6 ───────╯
+</code></pre></div></div>
 <ol>
-  <li><code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> is the processor used.</li>
-  <li><code class="language-plaintext highlighter-rouge">-I</code> is followed by the name of the input folder, here images.</li>
-  <li><code class="language-plaintext highlighter-rouge">-O</code> is followed by the name of the output folder where you will find the results (here binarised images and mets files with the recognised text.</li>
-  <li><code class="language-plaintext highlighter-rouge">-P segmentation_level region</code> is a parameter for the processor which tells tesserocr to start the segmentation on the level of regions.</li>
-  <li><code class="language-plaintext highlighter-rouge">-P textequiv_level word</code> is a parameter for the processor which tells tesserocr to stop the segmentation on the level of words (meaning glyphs will not be segmented here).</li>
-  <li><code class="language-plaintext highlighter-rouge">-P find_tables true</code> is a parameter for the processor which tells tesserocr to recognise tables.</li>
-  <li><code class="language-plaintext highlighter-rouge">-P model Fraktur_GT4HistOCR</code> is a parameter for the processor which tells tesserocr to use the model <code class="language-plaintext highlighter-rouge">Fraktur_GT4HistOCR</code> 
-for recognition.</li>
+  <li><code class="language-plaintext highlighter-rouge">ocrd-tesserocr-recognize</code> is the name of the processor executable used.</li>
+  <li><code class="language-plaintext highlighter-rouge">-I</code> is followed by the name of the input file group (and directory); 
+ here: images.</li>
+  <li><code class="language-plaintext highlighter-rouge">-O</code> is followed by the name of the output file group (and directory); 
+ here: binarised images and PAGE-XML files with the recognised text.</li>
+  <li><code class="language-plaintext highlighter-rouge">-P segmentation_level region</code> is a parameter name/value pair; 
+ here: tells the processor to start segmentation on the level of regions
+ (so no prior layout analysis annotating text lines in PAGE-XML is required).</li>
+  <li><code class="language-plaintext highlighter-rouge">-P find_tables true</code> …
+ here: enables layout detection of tables.</li>
+  <li><code class="language-plaintext highlighter-rouge">-P model frak2021</code> …
+ here: use the named resource <code class="language-plaintext highlighter-rouge">frak2021.traineddata</code> for recognition.</li>
 </ol>
 
       </main>
