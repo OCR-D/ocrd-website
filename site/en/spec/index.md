@@ -24,8 +24,8 @@ title: Specifications
   
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="nextflow">Nextflow</a></p>
-      <p class="subtitle">Usage of Nextflow in OCR&#8209;D</p>
+      <p class="title"><a href="ci">CI/CD</a></p>
+      <p class="subtitle">Continuous integration and continuous deployment in OCR-D</p>
     </article>
   </div>
 
@@ -51,6 +51,13 @@ title: Specifications
     <article class="tile is-child box">
       <p class="title"><a href="ocrd_tool">ocrd-tool.json</a></p>
       <p class="subtitle">OCR&#8209;D tool description</p>
+    </article>
+  </div>
+
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="glossarz">Glossary</a></p>
+      <p class="subtitle">Glossary of terms used in OCR-D</p>
     </article>
   </div>
 
