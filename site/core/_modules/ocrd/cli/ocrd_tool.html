@@ -4,13 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.cli.ocrd_tool &#8212; ocrd 3.0.0
+    <title>ocrd.cli.ocrd_tool &#8212; ocrd 3.12.1
  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../../_static/documentation_options.js?v=acc74ff5"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=bf028e07"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -42,27 +43,29 @@
 <span class="sd">    :nested: full</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getmodule</span>
-<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">dumps</span>
-<span class="kn">import</span> <span class="nn">codecs</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">json</span><span class="w"> </span><span class="kn">import</span> <span class="n">dumps</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">codecs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
 
-<span class="kn">from</span> <span class="nn">ocrd.decorators</span> <span class="kn">import</span> <span class="n">parameter_option</span><span class="p">,</span> <span class="n">parameter_override_option</span>
-<span class="kn">from</span> <span class="nn">ocrd.processor</span> <span class="kn">import</span> <span class="n">Processor</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">parameter_option</span><span class="p">,</span> <span class="n">parameter_override_option</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd.processor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Processor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">set_json_key_value_overrides</span><span class="p">,</span>
     <span class="n">parse_json_string_or_file</span><span class="p">,</span>
-    <span class="n">parse_json_string_with_comments</span> <span class="k">as</span> <span class="n">loads</span>
+    <span class="n">parse_json_string_with_comments</span> <span class="k">as</span> <span class="n">loads</span><span class="p">,</span>
+    <span class="n">get_moduledir</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">OcrdToolValidator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterValidator</span><span class="p">,</span> <span class="n">OcrdToolValidator</span>
+
 
 <div class="viewcode-block" id="OcrdToolCtx">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.cli.ocrd_tool.html#ocrd.cli.ocrd_tool.OcrdToolCtx">[docs]</a>
-<span class="k">class</span> <span class="nc">OcrdToolCtx</span><span class="p">():</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OcrdToolCtx</span><span class="p">():</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -71,27 +74,33 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tool_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-        <span class="k">class</span> <span class="nc">BashProcessor</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">BashProcessor</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
             <span class="nd">@property</span>
-            <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span> <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span>
+
             <span class="nd">@property</span>
-            <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span> <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">executable</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool_name</span>
+
             <span class="nd">@property</span>
-            <span class="k">def</span> <span class="nf">moduledir</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span> <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">moduledir</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
                 <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
             <span class="c1"># set docstrings to empty</span>
             <span class="vm">__doc__</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="c1"># HACK: override the module-level docstring, too</span>
             <span class="n">getmodule</span><span class="p">(</span><span class="n">OcrdToolCtx</span><span class="p">)</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span> <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">inner_self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument,arguments-renamed</span>
                 <span class="k">return</span> <span class="nb">super</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">BashProcessor</span></div>
 
 
+
 <span class="n">pass_ocrd_tool</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">make_pass_decorator</span><span class="p">(</span><span class="n">OcrdToolCtx</span><span class="p">)</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool</span>
@@ -100,8 +109,9 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;ocrd-tool&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Work with ocrd-tool.json JSON_FILE&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;json_file&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_cli</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">json_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_cli</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">json_file</span><span class="p">):</span>
     <span class="n">ctx</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">OcrdToolCtx</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool version</span>
@@ -109,8 +119,9 @@
 
 <span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Version of ocrd-tool.json&#39;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_version</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_version</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">])</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool validate</span>
@@ -118,11 +129,12 @@
 
 <span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;validate&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Validate an ocrd-tool.json&#39;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_validate</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_validate</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">OcrdToolValidator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_xml</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">128</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool list-tools</span>
@@ -130,9 +142,28 @@
 
 <span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-tools&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List tools&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_list</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_list</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">]:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span>
+
+
+<span class="c1"># ----------------------------------------------------------------------</span>
+<span class="c1"># ocrd ocrd-tool dump-tools</span>
+<span class="c1"># ----------------------------------------------------------------------</span>
+
+<span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;dump-tools&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump tools&quot;</span><span class="p">)</span>
+<span class="nd">@pass_ocrd_tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_dump</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+
+<span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;dump-module-dirs&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump module directory of each tool&quot;</span><span class="p">)</span>
+<span class="nd">@pass_ocrd_tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_dump_module_dirs</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dumps</span><span class="p">({</span><span class="n">tool_name</span><span class="p">:</span> <span class="n">get_moduledir</span><span class="p">(</span><span class="n">tool_name</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">tool_name</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">]},</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool</span>
@@ -141,10 +172,11 @@
 <span class="nd">@ocrd_tool_cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;tool&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Work with a single tool TOOL_NAME&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;tool_name&#39;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">tool_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No such tool: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tool_name</span><span class="p">)</span>
     <span class="n">ctx</span><span class="o">.</span><span class="n">tool_name</span> <span class="o">=</span> <span class="n">tool_name</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool description</span>
@@ -152,31 +184,36 @@
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Describe tool&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_description</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_description</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="n">ctx</span><span class="o">.</span><span class="n">tool_name</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">])</span>
+
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list-resources&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List tool&#39;s file resources&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_list_resources</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_list_resources</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="n">ctx</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
+
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;resolve-resource&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get a tool&#39;s file resource full path name&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;res_name&#39;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_resolve_resource</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">res_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_resolve_resource</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">res_name</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">resolve_resource</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span>
+
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;show-resource&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump a tool&#39;s file resource&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;res_name&#39;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_show_resource</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">res_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_show_resource</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">res_name</span><span class="p">):</span>
     <span class="n">ctx</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">show_resource</span><span class="p">(</span><span class="n">res_name</span><span class="p">)</span>
+
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;help&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Generate help for processors&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;subcommand&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_params_help</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_params_help</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
     <span class="n">ctx</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">show_help</span><span class="p">(</span><span class="n">subcommand</span><span class="o">=</span><span class="n">subcommand</span><span class="p">)</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool categories</span>
@@ -184,8 +221,9 @@
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Categories of tool&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_categories</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_categories</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="n">ctx</span><span class="o">.</span><span class="n">tool_name</span><span class="p">][</span><span class="s1">&#39;categories&#39;</span><span class="p">]))</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool steps</span>
@@ -193,8 +231,9 @@
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Steps of tool&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_steps</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_steps</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="n">ctx</span><span class="o">.</span><span class="n">tool_name</span><span class="p">][</span><span class="s1">&#39;steps&#39;</span><span class="p">]))</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool dump</span>
@@ -202,8 +241,9 @@
 
 <span class="nd">@ocrd_tool_tool</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;dump&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dump JSON of tool&quot;</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_dump</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_dump</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="n">ctx</span><span class="o">.</span><span class="n">tool_name</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
 
 <span class="c1"># ----------------------------------------------------------------------</span>
 <span class="c1"># ocrd ocrd-tool tool parse-params</span>
@@ -214,7 +254,7 @@
 <span class="nd">@parameter_override_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-j&#39;</span><span class="p">,</span> <span class="s1">&#39;--json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Output JSON instead of shell variables&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="nd">@pass_ocrd_tool</span>
-<span class="k">def</span> <span class="nf">ocrd_tool_tool_parse_params</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">parameter_override</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool_tool_parse_params</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">parameter_override</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse parameters with fallback to defaults and output as shell-eval&#39;able assignments to params var.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -255,7 +295,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
@@ -275,16 +324,6 @@
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -301,8 +340,8 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 
