@@ -54,6 +54,13 @@ title: Specifications
     </article>
   </div>
 
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="glossarz">Glossary</a></p>
+      <p class="subtitle">Glossary of terms used in OCR-D</p>
+    </article>
+  </div>
+
 </div>
 
 <div class="tile is-ancestor">
