@@ -4,13 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ocrd.processor.base &#8212; ocrd 3.0.0
+    <title>ocrd.processor.base &#8212; ocrd 3.12.1
  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../../_static/documentation_options.js?v=acc74ff5"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=bf028e07"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -45,54 +46,53 @@
     <span class="s1">&#39;run_processor&#39;</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">join</span>
-<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfileobj</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_args</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">logging.handlers</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">tarfile</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">frozendict</span> <span class="kn">import</span> <span class="n">frozendict</span>
-<span class="c1"># concurrent.futures is buggy in py38,</span>
-<span class="c1"># this is where the fixes came from:</span>
-<span class="kn">from</span> <span class="nn">loky</span> <span class="kn">import</span> <span class="n">Future</span><span class="p">,</span> <span class="n">ProcessPoolExecutor</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Timer</span>
-<span class="kn">from</span> <span class="nn">_thread</span> <span class="kn">import</span> <span class="n">interrupt_main</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">join</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copyfileobj</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">getcwd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_args</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">frozendict</span><span class="w"> </span><span class="kn">import</span> <span class="n">frozendict</span>
+<span class="c1"># concurrent.futures cannot timeout-kill workers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pebble</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessFuture</span> <span class="k">as</span> <span class="n">Future</span><span class="p">,</span> <span class="n">ProcessPool</span> <span class="k">as</span> <span class="n">ProcessPoolExecutor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="ne">TimeoutError</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 
-<span class="kn">from</span> <span class="nn">click</span> <span class="kn">import</span> <span class="n">wrap_text</span>
-<span class="kn">from</span> <span class="nn">deprecated</span> <span class="kn">import</span> <span class="n">deprecated</span>
-<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cysignals</span><span class="w"> </span><span class="kn">import</span> <span class="n">alarm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">click</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPError</span>
 
-<span class="kn">from</span> <span class="nn">..workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
-<span class="kn">from</span> <span class="nn">..mets_server</span> <span class="kn">import</span> <span class="n">ClientSideOcrdMets</span>
-<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_file</span> <span class="kn">import</span> <span class="n">OcrdFileType</span>
-<span class="kn">from</span> <span class="nn">.ocrd_page_result</span> <span class="kn">import</span> <span class="n">OcrdPageResult</span>
-<span class="kn">from</span> <span class="nn">ocrd_utils</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..workspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workspace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..mets_server</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientSideOcrdMets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_models.ocrd_file</span><span class="w"> </span><span class="kn">import</span> <span class="n">OcrdFileType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ocrd_page_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">OcrdPageResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">VERSION</span> <span class="k">as</span> <span class="n">OCRD_VERSION</span><span class="p">,</span>
     <span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
-    <span class="n">MIME_TO_EXT</span><span class="p">,</span>
     <span class="n">config</span><span class="p">,</span>
     <span class="n">getLogger</span><span class="p">,</span>
     <span class="n">list_resource_candidates</span><span class="p">,</span>
-    <span class="n">pushd_popd</span><span class="p">,</span>
     <span class="n">list_all_resources</span><span class="p">,</span>
     <span class="n">get_processor_resource_types</span><span class="p">,</span>
     <span class="n">resource_filename</span><span class="p">,</span>
     <span class="n">parse_json_file_with_comments</span><span class="p">,</span>
+    <span class="n">pushd_popd</span><span class="p">,</span>
     <span class="n">make_file_id</span><span class="p">,</span>
     <span class="n">deprecation_warning</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ocrd_validators</span> <span class="kn">import</span> <span class="n">ParameterValidator</span>
-<span class="kn">from</span> <span class="nn">ocrd_models.ocrd_page</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterValidator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_models.ocrd_page</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">PageType</span><span class="p">,</span>
     <span class="n">AlternativeImageType</span><span class="p">,</span>
     <span class="n">MetadataItemType</span><span class="p">,</span>
@@ -101,32 +101,33 @@
     <span class="n">OcrdPage</span><span class="p">,</span>
     <span class="n">to_xml</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ocrd_modelfactory</span> <span class="kn">import</span> <span class="n">page_from_file</span>
-<span class="kn">from</span> <span class="nn">ocrd_validators.ocrd_tool_validator</span> <span class="kn">import</span> <span class="n">OcrdToolValidator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_modelfactory</span><span class="w"> </span><span class="kn">import</span> <span class="n">page_from_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ocrd_validators.ocrd_tool_validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">OcrdToolValidator</span>
 
 <span class="c1"># XXX imports must remain for backwards-compatibility</span>
-<span class="kn">from</span> <span class="nn">.helpers</span> <span class="kn">import</span> <span class="n">run_cli</span><span class="p">,</span> <span class="n">run_processor</span> <span class="c1"># pylint: disable=unused-import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_cli</span><span class="p">,</span> <span class="n">run_processor</span>  <span class="c1"># pylint: disable=unused-import</span>
 
 
-<span class="k">class</span> <span class="nc">ResourceNotFoundError</span><span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResourceNotFoundError</span><span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An exception signifying the requested processor resource</span>
 <span class="sd">    cannot be resolved.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find resource &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; for executable &#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;Try &#39;ocrd resmgr download </span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to download this resource.&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">NonUniqueInputFile</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">NonUniqueInputFile</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An exception signifying the specified fileGrp / pageId / mimetype</span>
 <span class="sd">    selector yields multiple PAGE files, or no PAGE files but multiple images,</span>
 <span class="sd">    or multiple files of that mimetype.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fileGrp</span> <span class="o">=</span> <span class="n">fileGrp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
@@ -134,13 +135,14 @@
                         <span class="sa">f</span><span class="s2">&quot;and pageId </span><span class="si">{</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> under mimetype </span><span class="si">{</span><span class="n">mimetype</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;PAGE+image(s)&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">MissingInputFile</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MissingInputFile</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An exception signifying the specified fileGrp / pageId / mimetype</span>
 <span class="sd">    selector yields no PAGE files, or no PAGE and no image files,</span>
 <span class="sd">    or no files of that mimetype.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileGrp</span><span class="p">,</span> <span class="n">pageId</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fileGrp</span> <span class="o">=</span> <span class="n">fileGrp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pageId</span> <span class="o">=</span> <span class="n">pageId</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
@@ -148,34 +150,56 @@
                         <span class="sa">f</span><span class="s2">&quot;and pageId </span><span class="si">{</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> under mimetype </span><span class="si">{</span><span class="n">mimetype</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;PAGE+image(s)&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">DummyFuture</span><span class="p">:</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">IncompleteProcessorImplementation</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An exception signifying the Processor subclass is incomplete,</span>
+<span class="sd">    because either :py:meth:`Processor.process_page_pcgts()` or</span>
+<span class="sd">    :py:meth:`Processor.process()` was not overridden.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DummyFuture</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mimics some of `concurrent.futures.Future` but runs immediately.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DummyExecutor</span><span class="p">:</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DummyExecutor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mimics some of `concurrent.futures.ProcessPoolExecutor` but runs</span>
 <span class="sd">    everything immediately in this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">initializer</span><span class="p">(</span><span class="o">*</span><span class="n">initargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># allow gc to catch processor instance (unless cached)</span>
+        <span class="n">_page_worker_set_ctxt</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DummyFuture</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">DummyFuture</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DummyFuture</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">DummyFuture</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
 
 <span class="n">TFuture</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">DummyFuture</span><span class="p">,</span> <span class="n">Future</span><span class="p">]</span>
 <span class="n">TExecutor</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">DummyExecutor</span><span class="p">,</span> <span class="n">ProcessPoolExecutor</span><span class="p">]</span>
 
+
 <div class="viewcode-block" id="Processor">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor">[docs]</a>
-<span class="k">class</span> <span class="nc">Processor</span><span class="p">():</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Processor</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A processor is a tool that implements the uniform OCR-D</span>
 <span class="sd">    `command-line interface for run-time data processing &lt;https://ocr-d.de/en/spec/cli&gt;`_.</span>
@@ -187,7 +211,7 @@
 <span class="sd">    parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">max_instances</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">max_instances</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    maximum number of cached instances (ignored if negative), to be applied on top of</span>
 <span class="sd">    :py:data:`~ocrd_utils.config.OCRD_MAX_PROCESSOR_CACHE` (i.e. whatever is smaller).</span>
@@ -195,7 +219,7 @@
 <span class="sd">    (Override this if you know how many instances fit into memory - GPU / CPU RAM - at once.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">max_workers</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    maximum number of processor forks for page-parallel processing (ignored if negative),</span>
 <span class="sd">    to be applied on top of :py:data:`~ocrd_utils.config.OCRD_MAX_PARALLEL_PAGES` (i.e.</span>
@@ -205,7 +229,7 @@
 <span class="sd">    - at once, or if your class already creates threads prior to forking, e.g. during ``setup``.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">max_page_seconds</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">max_page_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    maximum number of seconds may be spent processing a single page (ignored if negative),</span>
 <span class="sd">    to be applied on top of :py:data:`~ocrd_utils.config.OCRD_PROCESSING_PAGE_TIMEOUT`</span>
@@ -216,7 +240,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metadata_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Relative location of the ``ocrd-tool.json`` file inside the package.</span>
 
@@ -228,7 +252,7 @@
         <span class="k">return</span> <span class="s1">&#39;ocrd-tool.json&#39;</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">metadata_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Absolute path of the ``ocrd-tool.json`` file as distributed with the package.</span>
 
@@ -246,7 +270,7 @@
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;cannot find top-level module prefix for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">module</span><span class="o">.</span><span class="n">__package__</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">metadata_rawdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata_rawdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Raw (unvalidated, unexpanded) ``ocrd-tool.json`` dict contents of the package.</span>
 
@@ -257,7 +281,7 @@
         <span class="k">return</span> <span class="n">parse_json_file_with_comments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_location</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The ``ocrd-tool.json`` dict contents of the package, according to the OCR-D</span>
 <span class="sd">        `spec &lt;https://ocr-d.de/en/spec/ocrd_tool&gt;`_ for processor tools.</span>
@@ -279,7 +303,7 @@
         <span class="k">return</span> <span class="n">metadata</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The program version of the package.</span>
 <span class="sd">        Usually the ``version`` part of :py:data:`metadata`.</span>
@@ -290,7 +314,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The executable name of this processor tool. Taken from the runtime</span>
 <span class="sd">        filename.</span>
@@ -303,7 +327,7 @@
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">ocrd_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ocrd_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The ``ocrd-tool.json`` dict contents of this processor tool.</span>
 <span class="sd">        Usually the :py:data:`executable` key of the ``tools`` part</span>
@@ -315,14 +339,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;the runtime parameter dict to be used by this processor&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_parameter&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@parameter</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
         <span class="n">parameterValidator</span> <span class="o">=</span> <span class="n">ParameterValidator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">)</span>
@@ -334,16 +358,15 @@
         <span class="c1"># (re-)run setup to load models etc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="c1"># FIXME: remove in favor of process_workspace(workspace)</span>
-            <span class="n">workspace</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Workspace</span><span class="p">],</span>
+            <span class="n">workspace</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Workspace</span><span class="p">],</span>
             <span class="n">ocrd_tool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">input_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">output_file_grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">page_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">download_files</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">OCRD_DOWNLOAD_INPUT</span><span class="p">,</span>
             <span class="n">version</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -368,8 +391,6 @@
 <span class="sd">                 (or empty for all pages). \</span>
 <span class="sd">                 Deprecated since version 3.0: Should be ``None`` here, but then needs to be set \</span>
 <span class="sd">                 before processing.</span>
-<span class="sd">             download_files (boolean): Whether input files will be downloaded prior to processing, \</span>
-<span class="sd">                 defaults to :py:attr:`ocrd_utils.config.OCRD_DOWNLOAD_INPUT` which is ``True`` by default</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ocrd_tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">deprecation_warning</span><span class="p">(</span><span class="s2">&quot;Passing &#39;ocrd_tool&#39; as keyword argument to Processor is deprecated - &quot;</span>
@@ -398,7 +419,7 @@
             <span class="n">deprecation_warning</span><span class="p">(</span><span class="s2">&quot;Passing a page_id kwarg other than &#39;None&#39; to Processor &quot;</span>
                                 <span class="s2">&quot;is deprecated - pass as argument to process_workspace instead&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">page_id</span> <span class="o">=</span> <span class="n">page_id</span> <span class="ow">or</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">download</span> <span class="o">=</span> <span class="n">download_files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_DOWNLOAD_INPUT</span>
         <span class="c1">#: The logger to be used by processor implementations.</span>
         <span class="c1"># `ocrd.processor.base` internals should use :py:attr:`self._base_logger`</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ocrd.processor.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -406,16 +427,18 @@
         <span class="k">if</span> <span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span>
         <span class="c1"># workaround for deprecated#72 (@deprecated decorator does not work for subclasses):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">,</span>
-                <span class="n">deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;3.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;process() should be replaced with process_page_pcgts() or process_page_file() or process_workspace()&#39;</span><span class="p">)(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">)))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">,</span> <span class="n">deprecated</span><span class="p">(</span>
+            <span class="n">version</span><span class="o">=</span><span class="s1">&#39;3.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;process() should be replaced &#39;</span>
+            <span class="s1">&#39;with process_page_pcgts() or process_page_file() or process_workspace()&#39;</span><span class="p">)(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;shutting down&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;shutting down </span><span class="si">%s</span><span class="s2"> in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Processor.show_help">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.show_help">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print a usage description including the standard CLI and all of this processor&#39;s ocrd-tool</span>
 <span class="sd">        parameters and docstrings.</span>
@@ -425,7 +448,7 @@
 
 <div class="viewcode-block" id="Processor.show_version">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.show_version">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print information on this processor&#39;s version and OCR-D version.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -434,7 +457,7 @@
 
 <div class="viewcode-block" id="Processor.verify">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.verify">[docs]</a>
-    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Verify that :py:attr:`input_file_grp` and :py:attr:`output_file_grp` fulfill the processor&#39;s requirements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -443,7 +466,8 @@
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">input_file_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
         <span class="n">output_file_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">assert_file_grp_cardinality</span><span class="p">(</span><span class="n">grps</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">spec</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">assert_file_grp_cardinality</span><span class="p">(</span><span class="n">grps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">msg</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">spec</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">grps</span><span class="p">)</span> <span class="o">==</span> <span class="n">spec</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grps</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
@@ -467,10 +491,10 @@
             <span class="k">assert</span> <span class="n">input_file_grp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span><span class="p">,</span> \
                 <span class="sa">f</span><span class="s2">&quot;input fileGrp </span><span class="si">{</span><span class="n">input_file_grp</span><span class="si">}</span><span class="s2"> does not exist in workspace </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">output_file_grp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span> \
-                <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;OVERWRITE&#39;</span><span class="p">,</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">]</span> \
-                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
-                    <span class="n">pageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">output_file_grp</span><span class="p">)),</span> \
+            <span class="k">assert</span> <span class="p">(</span><span class="n">output_file_grp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">file_groups</span>
+                    <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;OVERWRITE&#39;</span><span class="p">,</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">]</span>
+                    <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
+                        <span class="n">pageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="p">,</span> <span class="n">fileGrp</span><span class="o">=</span><span class="n">output_file_grp</span><span class="p">))),</span> \
                     <span class="sa">f</span><span class="s2">&quot;output fileGrp </span><span class="si">{</span><span class="n">output_file_grp</span><span class="si">}</span><span class="s2"> already exists in workspace </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="c1"># keep this for backwards compatibility:</span>
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -478,7 +502,7 @@
 
 <div class="viewcode-block" id="Processor.dump_json">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.dump_json">[docs]</a>
-    <span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dump_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print :py:attr:`ocrd_tool` on stdout.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -487,7 +511,7 @@
 
 <div class="viewcode-block" id="Processor.dump_module_dir">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.dump_module_dir">[docs]</a>
-    <span class="k">def</span> <span class="nf">dump_module_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dump_module_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print :py:attr:`moduledir` on stdout.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -496,7 +520,7 @@
 
 <div class="viewcode-block" id="Processor.list_resources">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.list_resources">[docs]</a>
-    <span class="k">def</span> <span class="nf">list_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find all installed resource files in the search paths and print their path names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -506,7 +530,7 @@
 
 <div class="viewcode-block" id="Processor.setup">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.setup">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the processor for actual data processing,</span>
 <span class="sd">        prior to changing to the workspace directory but</span>
@@ -519,7 +543,7 @@
 
 <div class="viewcode-block" id="Processor.shutdown">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.shutdown">[docs]</a>
-    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bring down the processor after data processing,</span>
 <span class="sd">        after to changing back from the workspace directory but</span>
@@ -532,8 +556,9 @@
 
 <div class="viewcode-block" id="Processor.process">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process">[docs]</a>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;3.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;process() should be replaced with process_page_pcgts() or process_page_file() or process_workspace()&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;3.0&#39;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;process() should be replaced &#39;</span>
+                <span class="s1">&#39;with process_page_pcgts() or process_page_file() or process_workspace()&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process all files of the :py:data:`workspace`</span>
 <span class="sd">        from the given :py:data:`input_file_grp`</span>
@@ -544,12 +569,12 @@
 <span class="sd">        (This contains the main functionality and needs to be</span>
 <span class="sd">        overridden by subclasses.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="n">IncompleteProcessorImplementation</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Processor.process_workspace">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_workspace">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace</span><span class="p">:</span> <span class="n">Workspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace</span><span class="p">:</span> <span class="n">Workspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process all files of the given ``workspace``,</span>
 <span class="sd">        from the given :py:data:`input_file_grp`</span>
@@ -572,7 +597,7 @@
                 <span class="c1"># set up multitasking</span>
                 <span class="n">max_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_PARALLEL_PAGES</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span> <span class="o">&lt;</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_PARALLEL_PAGES</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;limiting number of threads from </span><span class="si">%d</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;limiting number of workers from </span><span class="si">%d</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span><span class="p">)</span>
                     <span class="n">max_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span>
                 <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="p">,</span> <span class="n">ClientSideOcrdMets</span><span class="p">),</span> \
@@ -584,13 +609,10 @@
 
                 <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">executor_cls</span> <span class="o">=</span> <span class="n">ProcessPoolExecutor</span>
-                    <span class="n">log_queue</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-                    <span class="c1"># forward messages from log queue (in subprocesses) to all root handlers</span>
-                    <span class="n">log_listener</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">QueueListener</span><span class="p">(</span><span class="n">log_queue</span><span class="p">,</span> <span class="o">*</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">,</span> <span class="n">respect_handler_level</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">log_queue</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="s1">&#39;fork&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">executor_cls</span> <span class="o">=</span> <span class="n">DummyExecutor</span>
                     <span class="n">log_queue</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">log_listener</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">executor</span> <span class="o">=</span> <span class="n">executor_cls</span><span class="p">(</span>
                     <span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">,</span>
                     <span class="c1"># only forking method avoids pickling</span>
@@ -600,28 +622,40 @@
                     <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_queue</span><span class="p">),</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">executor</span><span class="o">.</span><span class="n">active</span> <span class="c1"># ensure pre-forking</span>
+                    <span class="c1"># forward messages from log queue (in subprocesses) to all root handlers</span>
+                    <span class="n">log_listener</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">QueueListener</span><span class="p">(</span><span class="n">log_queue</span><span class="p">,</span> <span class="o">*</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">,</span>
+                                                                  <span class="n">respect_handler_level</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">log_listener</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">tasks</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;started executor </span><span class="si">%s</span><span class="s2"> with </span><span class="si">%d</span><span class="s2"> workers&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">executor</span><span class="p">),</span> <span class="n">max_workers</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
                     <span class="n">tasks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_workspace_submit_tasks</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">max_seconds</span><span class="p">)</span>
                     <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_workspace_handle_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
                 <span class="k">finally</span><span class="p">:</span>
-                    <span class="n">executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">kill_workers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">log_listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                    <span class="n">executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                    <span class="n">executor</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span> <span class="c1"># raises TimeoutError</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;stopped executor </span><span class="si">%s</span><span class="s2"> after </span><span class="si">%d</span><span class="s2"> tasks&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">executor</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="k">if</span> <span class="n">tasks</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="p">,</span> <span class="n">ClientSideOcrdMets</span><span class="p">):</span>
+                        <span class="c1"># can cause deadlock:</span>
+                        <span class="c1">#log_listener.stop()</span>
+                        <span class="c1"># not much better:</span>
+                        <span class="c1">#log_listener.enqueue_sentinel()</span>
+                        <span class="k">pass</span>
 
-            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">IncompleteProcessorImplementation</span><span class="p">:</span>
                 <span class="c1"># fall back to deprecated method</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="c1"># suppress the NotImplementedError context</span>
-                    <span class="k">raise</span> <span class="n">err</span> <span class="kn">from</span> <span class="kc">None</span></div>
+                    <span class="c1"># suppress the IncompleteProcessorImplementation context</span>
+                    <span class="k">raise</span> <span class="n">err</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Processor.process_workspace_submit_tasks">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_workspace_submit_tasks">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_workspace_submit_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span> <span class="p">:</span> <span class="n">TExecutor</span><span class="p">,</span> <span class="n">max_seconds</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">TFuture</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_workspace_submit_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="n">TExecutor</span><span class="p">,</span> <span class="n">max_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="n">TFuture</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Look up all input files of the given ``workspace``</span>
 <span class="sd">        from the given :py:data:`input_file_grp`</span>
@@ -639,7 +673,7 @@
 <span class="sd">        Otherwise, tasks are run sequentially in the</span>
 <span class="sd">        current process.</span>
 
-<span class="sd">        Delegates to :py:meth:`.zip_input_files` to get </span>
+<span class="sd">        Delegates to :py:meth:`.zip_input_files` to get</span>
 <span class="sd">        the input files for each page, and then calls</span>
 <span class="sd">        :py:meth:`.process_workspace_submit_page_task`.</span>
 
@@ -657,11 +691,13 @@
 
 <div class="viewcode-block" id="Processor.process_workspace_submit_page_task">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_workspace_submit_page_task">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_workspace_submit_page_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span> <span class="p">:</span> <span class="n">TExecutor</span><span class="p">,</span> <span class="n">max_seconds</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_file_tuple</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TFuture</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_workspace_submit_page_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="n">TExecutor</span><span class="p">,</span> <span class="n">max_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                           <span class="n">input_file_tuple</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+                                               <span class="n">TFuture</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ensure all input files for a single page are</span>
 <span class="sd">        downloaded to the workspace, then schedule</span>
-<span class="sd">        :py:meth:`.process_process_file` to be run on</span>
+<span class="sd">        :py:meth:`.process_page_file` to be run on</span>
 <span class="sd">        them via `executor` (enforcing a per-page time</span>
 <span class="sd">        limit of `max_seconds`).</span>
 
@@ -675,7 +711,7 @@
 <span class="sd">        - the corresponding pageId,</span>
 <span class="sd">        - the corresponding input files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">input_files</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_file_tuple</span><span class="p">)</span>
+        <span class="n">input_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_file_tuple</span><span class="p">)</span>
         <span class="n">page_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span>
                        <span class="k">for</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="n">input_file_tuple</span>
                        <span class="k">if</span> <span class="n">input_file</span><span class="p">)</span>
@@ -694,12 +730,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed downloading file </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># process page</span>
         <span class="c1">#executor.submit(self.process_page_file, *input_files)</span>
-        <span class="k">return</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">_page_worker</span><span class="p">,</span> <span class="n">max_seconds</span><span class="p">,</span> <span class="o">*</span><span class="n">input_files</span><span class="p">),</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">input_files</span></div>
+        <span class="k">return</span> <span class="n">executor</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">_page_worker</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">input_files</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">max_seconds</span><span class="p">),</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">input_files</span></div>
 
 
 <div class="viewcode-block" id="Processor.process_workspace_handle_tasks">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_workspace_handle_tasks">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_workspace_handle_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span> <span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">TFuture</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_workspace_handle_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">TFuture</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]]]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+            <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Look up scheduled per-page futures one by one,</span>
 <span class="sd">        handle errors (exceptions) and gather results.</span>
@@ -724,7 +761,7 @@
         <span class="c1"># aggregate info for logging:</span>
         <span class="n">nr_succeeded</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">nr_failed</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">nr_errors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="c1"># count causes</span>
+        <span class="n">nr_errors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># count causes</span>
         <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_OUTPUT</span> <span class="o">==</span> <span class="s1">&#39;SKIP&#39;</span><span class="p">:</span>
             <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot;skipped&quot;</span>
         <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_OUTPUT</span> <span class="o">==</span> <span class="s1">&#39;COPY&#39;</span><span class="p">:</span>
@@ -740,25 +777,29 @@
                 <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_MISSING_OUTPUTS</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nr_failed</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_MISSING_OUTPUTS</span><span class="p">:</span>
                     <span class="c1"># already irredeemably many failures, stop short</span>
                     <span class="n">nr_errors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;too many failures with </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> output (</span><span class="si">{</span><span class="n">nr_failed</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">nr_failed</span><span class="o">+</span><span class="n">nr_succeeded</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;too many failures with </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> output (</span><span class="si">{</span><span class="n">nr_failed</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">nr_failed</span><span class="o">+</span><span class="n">nr_succeeded</span><span class="si">}</span><span class="s2">, &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">result</span><span class="p">:</span>
                 <span class="n">nr_succeeded</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="c1"># else skipped - already exists</span>
         <span class="n">nr_errors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">)</span>
+        <span class="n">nr_all</span> <span class="o">=</span> <span class="n">nr_succeeded</span> <span class="o">+</span> <span class="n">nr_failed</span>
         <span class="k">if</span> <span class="n">nr_failed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nr_all</span> <span class="o">=</span> <span class="n">nr_succeeded</span> <span class="o">+</span> <span class="n">nr_failed</span>
             <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_MISSING_OUTPUTS</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nr_failed</span> <span class="o">/</span> <span class="n">nr_all</span> <span class="o">&gt;</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MAX_MISSING_OUTPUTS</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;too many failures with </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> output (</span><span class="si">{</span><span class="n">nr_failed</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">nr_all</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> pages due to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">nr_failed</span><span class="p">,</span> <span class="n">nr_all</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;succeeded </span><span class="si">%d</span><span class="s2">, missed </span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> pages due to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">nr_succeeded</span><span class="p">,</span> <span class="n">nr_failed</span><span class="p">,</span> <span class="n">nr_all</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nr_errors</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">nr_succeeded</span><span class="p">,</span> <span class="n">nr_failed</span><span class="p">,</span> <span class="n">nr_errors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Processor.process_workspace_handle_page_task">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_workspace_handle_page_task">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_workspace_handle_page_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page_id</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_files</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]],</span> <span class="n">task</span> <span class="p">:</span> <span class="n">TFuture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_workspace_handle_page_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">]],</span>
+                                           <span class="n">task</span><span class="p">:</span> <span class="n">TFuture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        \b</span>
-<span class="sd">        Await a single page result and handle errors (exceptions), </span>
+<span class="sd">        Await a single page result and handle errors (exceptions),</span>
 <span class="sd">        enforcing policies configured by the following</span>
 <span class="sd">        environment variables:</span>
 <span class="sd">        - `OCRD_EXISTING_OUTPUT` (abort/skip/overwrite)</span>
@@ -781,11 +822,12 @@
             <span class="c1"># but does not stop the running process/thread, and executor itself</span>
             <span class="c1"># offers nothing to that effect:</span>
             <span class="c1"># task.result(timeout=max_seconds or None)</span>
-            <span class="c1"># so we instead applied the timeout within the worker function</span>
+            <span class="c1"># so we instead passed the timeout to the submit (schedule) function</span>
             <span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page worker completed for page </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-            <span class="c1"># exclude NotImplementedError, so we can try process() below</span>
+        <span class="k">except</span> <span class="n">IncompleteProcessorImplementation</span><span class="p">:</span>
+            <span class="c1"># pass this through, so we can try process() below</span>
             <span class="k">raise</span>
         <span class="c1"># handle input failures separately</span>
         <span class="k">except</span> <span class="ne">FileExistsError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -799,7 +841,9 @@
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="k">raise</span>
         <span class="c1"># broad coverage of output failures (including TimeoutError)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page worker timed out for page </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
             <span class="c1"># FIXME: add re-usable/actionable logging</span>
             <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_OUTPUT</span> <span class="o">==</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failure on page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">err</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -815,14 +859,14 @@
             <span class="k">return</span> <span class="n">err</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_copy_page_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span> <span class="p">:</span> <span class="n">OcrdFileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copy_page_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">:</span> <span class="n">OcrdFileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy the given ``input_file`` of the :py:data:`workspace`,</span>
 <span class="sd">        representing one physical page (passed as one opened</span>
 <span class="sd">        :py:class:`~ocrd_models.OcrdFile` per input fileGrp)</span>
 <span class="sd">        and add it as if it was a processing result.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">input_pcgts</span> <span class="p">:</span> <span class="n">OcrdPage</span>
+        <span class="n">input_pcgts</span><span class="p">:</span> <span class="n">OcrdPage</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">get_args</span><span class="p">(</span><span class="n">OcrdFileType</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing file </span><span class="si">{</span><span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">input_file</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -845,7 +889,7 @@
 
 <div class="viewcode-block" id="Processor.process_page_file">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_page_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_page_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_files</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_page_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdFileType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the given ``input_files`` of the :py:data:`workspace`,</span>
 <span class="sd">        representing one physical page (passed as one opened</span>
@@ -856,12 +900,21 @@
 <span class="sd">        (This uses :py:meth:`.process_page_pcgts`, but should be overridden by subclasses</span>
 <span class="sd">        to handle cases like multiple output fileGrps, non-PAGE input etc.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">input_pcgts</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">get_args</span><span class="p">(</span><span class="n">OcrdFileType</span><span class="p">))</span>
-        <span class="n">page_id</span> <span class="o">=</span> <span class="n">input_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pageId</span>
+        <span class="n">input_pcgts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span>
+        <span class="n">input_pos</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span> <span class="k">if</span> <span class="n">input_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">page_id</span> <span class="o">=</span> <span class="n">input_files</span><span class="p">[</span><span class="n">input_pos</span><span class="p">]</span><span class="o">.</span><span class="n">pageId</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;processing page </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_files</span><span class="p">):</span>
+            <span class="n">grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ignoring missing file for input fileGrp </span><span class="si">{</span><span class="n">grp</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">get_args</span><span class="p">(</span><span class="n">OcrdFileType</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">input_file</span><span class="o">.</span><span class="n">local_filename</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No local file exists for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s1"> in file group </span><span class="si">{</span><span class="n">grp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_INPUT</span> <span class="o">==</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">MissingInputFile</span><span class="p">(</span><span class="n">grp</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">input_file</span><span class="o">.</span><span class="n">mimetype</span><span class="p">)</span>
+                <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing file </span><span class="si">{</span><span class="n">input_file</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">page_</span> <span class="o">=</span> <span class="n">page_from_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
@@ -870,53 +923,67 @@
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="c1"># not PAGE and not an image to generate PAGE for</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;non-PAGE input for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">output_file_id</span> <span class="o">=</span> <span class="n">make_file_id</span><span class="p">(</span><span class="n">input_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">)</span>
-        <span class="n">output_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">output_file_id</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">output_file</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="o">!=</span> <span class="s1">&#39;OVERWRITE&#39;</span><span class="p">:</span>
-            <span class="c1"># short-cut avoiding useless computation:</span>
-            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;A file with ID==</span><span class="si">{</span><span class="n">output_file_id</span><span class="si">}</span><span class="s2"> already exists </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2"> and neither force nor ignore are set&quot;</span>
-            <span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_page_pcgts</span><span class="p">(</span><span class="o">*</span><span class="n">input_pcgts</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">image_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
-            <span class="n">image_file_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output_file_id</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">image_result</span><span class="o">.</span><span class="n">file_id_suffix</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="n">image_file_path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">image_file_id</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">,</span> <span class="n">PageType</span><span class="p">):</span>
-                <span class="c1"># special case: not an alternative image, but replacing the original image</span>
-                <span class="c1"># (this is needed by certain processors when the original&#39;s coordinate system</span>
-                <span class="c1">#  cannot or must not be kept)</span>
-                <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageFilename</span><span class="p">(</span><span class="n">image_file_path</span><span class="p">)</span>
-                <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageWidth</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
-                <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageHeight</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">,</span> <span class="n">AlternativeImageType</span><span class="p">):</span>
-                <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_filename</span><span class="p">(</span><span class="n">image_file_path</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">pass</span> <span class="c1"># do not reference in PAGE result</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;process_page_pcgts returned an OcrdPageResultImage of unknown type &quot;</span>
-                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">save_image_file</span><span class="p">(</span>
-                <span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="p">,</span>
-                <span class="n">image_file_id</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">input_pcgts</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">output_file_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">output_file_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_file_id</span><span class="p">(</span><span class="n">input_files</span><span class="p">[</span><span class="n">input_pos</span><span class="p">],</span> <span class="n">output_file_grp</span><span class="p">)</span>
+                           <span class="k">if</span> <span class="n">input_files</span><span class="p">[</span><span class="n">input_pos</span><span class="p">]</span><span class="o">.</span><span class="n">fileGrp</span> <span class="o">!=</span> <span class="n">output_file_grp</span> <span class="k">else</span>
+                           <span class="c1"># input=output fileGrp: re-use ID exactly</span>
+                           <span class="n">input_files</span><span class="p">[</span><span class="n">input_pos</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span>
+                           <span class="k">for</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="n">output_file_grps</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_EXISTING_OUTPUT</span> <span class="o">!=</span> <span class="s1">&#39;OVERWRITE&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">output_file_id</span> <span class="ow">in</span> <span class="n">output_file_ids</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">output_file</span> <span class="o">:=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">ID</span><span class="o">=</span><span class="n">output_file_id</span><span class="p">),</span> <span class="kc">None</span><span class="p">):</span>
+                    <span class="c1"># short-cut avoiding useless computation:</span>
+                    <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;A file with ID==</span><span class="si">{</span><span class="n">output_file_id</span><span class="si">}</span><span class="s2"> already exists </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="s2">&quot; and OCRD_EXISTING_OUTPUT != OVERWRITE&quot;</span>
+                    <span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_page_pcgts</span><span class="p">(</span><span class="o">*</span><span class="n">input_pcgts</span><span class="p">,</span> <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_file_grps</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;processor returned </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">output_file_grps</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;more results than specified output fileGrps for page </span><span class="si">{</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">result</span><span class="p">,</span> <span class="n">output_file_id</span><span class="p">,</span> <span class="n">output_file_grp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">output_file_ids</span><span class="p">,</span> <span class="n">output_file_grps</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">image_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
+                <span class="n">image_file_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output_file_id</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">image_result</span><span class="o">.</span><span class="n">file_id_suffix</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">image_file_path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">image_file_id</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">,</span> <span class="n">PageType</span><span class="p">):</span>
+                    <span class="c1"># special case: not an alternative image, but replacing the original image</span>
+                    <span class="c1"># (this is needed by certain processors when the original&#39;s coordinate system</span>
+                    <span class="c1">#  cannot or must not be kept, e.g. dewarping)</span>
+                    <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageFilename</span><span class="p">(</span><span class="n">image_file_path</span><span class="p">)</span>
+                    <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageWidth</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+                    <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_imageHeight</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">,</span> <span class="n">AlternativeImageType</span><span class="p">):</span>
+                    <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="o">.</span><span class="n">set_filename</span><span class="p">(</span><span class="n">image_file_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">pass</span>  <span class="c1"># do not reference in PAGE result</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;process_page_pcgts returned an OcrdPageResultImage of unknown type &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">image_result</span><span class="o">.</span><span class="n">alternative_image</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">save_image_file</span><span class="p">(</span>
+                    <span class="n">image_result</span><span class="o">.</span><span class="n">pil</span><span class="p">,</span>
+                    <span class="n">image_file_id</span><span class="p">,</span>
+                    <span class="n">output_file_grp</span><span class="p">,</span>
+                    <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
+                    <span class="n">file_path</span><span class="o">=</span><span class="n">image_file_path</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">output_file_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
+                <span class="n">file_id</span><span class="o">=</span><span class="n">output_file_id</span><span class="p">,</span>
+                <span class="n">file_grp</span><span class="o">=</span><span class="n">output_file_grp</span><span class="p">,</span>
                 <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
-                <span class="n">file_path</span><span class="o">=</span><span class="n">image_file_path</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="o">.</span><span class="n">set_pcGtsId</span><span class="p">(</span><span class="n">output_file_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span>
-            <span class="n">file_id</span><span class="o">=</span><span class="n">output_file_id</span><span class="p">,</span>
-            <span class="n">file_grp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span>
-            <span class="n">page_id</span><span class="o">=</span><span class="n">page_id</span><span class="p">,</span>
-            <span class="n">local_filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">output_file_id</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">),</span>
-            <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="p">),</span>
-        <span class="p">)</span></div>
+                <span class="n">local_filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_file_grp</span><span class="p">,</span> <span class="n">output_file_id</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">),</span>
+                <span class="n">mimetype</span><span class="o">=</span><span class="n">MIMETYPE_PAGE</span><span class="p">,</span>
+                <span class="n">content</span><span class="o">=</span><span class="n">to_xml</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pcgts</span><span class="p">),</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Processor.process_page_pcgts">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.process_page_pcgts">[docs]</a>
-    <span class="k">def</span> <span class="nf">process_page_pcgts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_pcgts</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">],</span> <span class="n">page_id</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OcrdPageResult</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_page_pcgts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">input_pcgts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OcrdPage</span><span class="p">],</span> <span class="n">page_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OcrdPageResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the given ``input_pcgts`` of the :py:data:`.workspace`,</span>
 <span class="sd">        representing one physical page (passed as one parsed</span>
@@ -934,41 +1001,42 @@
 <span class="sd">        (This contains the main functionality and must be overridden by subclasses,</span>
 <span class="sd">        unless it does not get called by some overriden :py:meth:`.process_page_file`.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="n">IncompleteProcessorImplementation</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Processor.add_metadata">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.add_metadata">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pcgts</span><span class="p">:</span> <span class="n">OcrdPage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pcgts</span><span class="p">:</span> <span class="n">OcrdPage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add PAGE-XML :py:class:`~ocrd_models.ocrd_page.MetadataItemType` ``MetadataItem`` describing</span>
 <span class="sd">        the processing step and runtime parameters to :py:class:`.OcrdPage` ``pcgts``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">metadata_obj</span> <span class="o">=</span> <span class="n">pcgts</span><span class="o">.</span><span class="n">get_Metadata</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">metadata_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">metadata_obj</span><span class="o">.</span><span class="n">add_MetadataItem</span><span class="p">(</span>
-                <span class="n">MetadataItemType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="s2">&quot;processingStep&quot;</span><span class="p">,</span>
-                    <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
-                    <span class="n">Labels</span><span class="o">=</span><span class="p">[</span><span class="n">LabelsType</span><span class="p">(</span>
-                        <span class="n">externalModel</span><span class="o">=</span><span class="s2">&quot;ocrd-tool&quot;</span><span class="p">,</span>
-                        <span class="n">externalId</span><span class="o">=</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span>
-                        <span class="n">Label</span><span class="o">=</span><span class="p">[</span><span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                                         <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
-                               <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">keys</span><span class="p">()]),</span>
-                            <span class="n">LabelsType</span><span class="p">(</span>
+        <span class="n">metadata_item</span> <span class="o">=</span> <span class="n">MetadataItemType</span><span class="p">(</span>
+            <span class="n">type_</span><span class="o">=</span><span class="s2">&quot;processingStep&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
+            <span class="n">Labels</span><span class="o">=</span><span class="p">[</span><span class="n">LabelsType</span><span class="p">(</span>
+                <span class="n">externalModel</span><span class="o">=</span><span class="s2">&quot;ocrd-tool&quot;</span><span class="p">,</span>
+                <span class="n">externalId</span><span class="o">=</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span>
+                <span class="n">Label</span><span class="o">=</span><span class="p">[</span><span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                                 <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">keys</span><span class="p">()]),</span>
+                    <span class="n">LabelsType</span><span class="p">(</span>
                         <span class="n">externalModel</span><span class="o">=</span><span class="s2">&quot;ocrd-tool&quot;</span><span class="p">,</span>
                         <span class="n">externalId</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
                         <span class="n">Label</span><span class="o">=</span><span class="p">[</span><span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span>
                                          <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">),</span>
                                <span class="n">LabelType</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="s1">&#39;ocrd/core&#39;</span><span class="p">,</span>
                                          <span class="n">value</span><span class="o">=</span><span class="n">OCRD_VERSION</span><span class="p">)])</span>
-                    <span class="p">]))</span></div>
+            <span class="p">])</span>
+        <span class="n">metadata_obj</span><span class="o">.</span><span class="n">add_MetadataItem</span><span class="p">(</span><span class="n">metadata_item</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Processor.resolve_resource">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.resolve_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">resolve_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve a resource name to an absolute file path with the algorithm in</span>
 <span class="sd">        `spec &lt;https://ocr-d.de/en/spec/ocrd_tool#file-parameters&gt;`_</span>
@@ -985,9 +1053,8 @@
             <span class="n">cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_pwd</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cwd</span> <span class="o">=</span> <span class="n">getcwd</span><span class="p">()</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span>
-                                                         <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">,</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">)</span>
-               <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">cand</span><span class="p">)]</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">exists</span><span class="p">,</span> <span class="n">list_resource_candidates</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span>
+                                                           <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">,</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Resolved </span><span class="si">%s</span><span class="s2"> to absolute path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -996,7 +1063,7 @@
 
 <div class="viewcode-block" id="Processor.show_resource">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.show_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve a resource name to a file path with the algorithm in</span>
 <span class="sd">        `spec &lt;https://ocr-d.de/en/spec/ocrd_tool#file-parameters&gt;`_,</span>
@@ -1020,25 +1087,17 @@
 
 <div class="viewcode-block" id="Processor.list_all_resources">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.list_all_resources">[docs]</a>
-    <span class="k">def</span> <span class="nf">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List all resources found in the filesystem and matching content-type by filename suffix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mimetypes</span> <span class="o">=</span> <span class="n">get_processor_resource_types</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">],</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">list_all_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">ocrd_tool</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">moduled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduledir</span><span class="p">):</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;*/*&#39;</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s1">&#39;text/directory&#39;</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="c1"># if we do not know all MIME types, then keep the file, otherwise require suffix match</span>
-                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MIME_TO_EXT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
-                                             <span class="k">for</span> <span class="n">mime</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="p">):</span>
-                    <span class="k">continue</span>
-            <span class="k">yield</span> <span class="n">res</span></div>
+            <span class="k">yield</span> <span class="n">res</span><span class="o">.</span><span class="n">name</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The top-level module this processor belongs to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1054,14 +1113,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">moduledir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">moduledir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The filesystem path of the module directory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">resource_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List the input files (for single-valued :py:attr:`input_file_grp`).</span>
 
@@ -1089,7 +1148,7 @@
 
 <div class="viewcode-block" id="Processor.zip_input_files">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.Processor.zip_input_files">[docs]</a>
-    <span class="k">def</span> <span class="nf">zip_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">require_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zip_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">require_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List tuples of input files (for multi-valued :py:attr:`input_file_grp`).</span>
 
@@ -1152,16 +1211,18 @@
                     <span class="k">continue</span>
                 <span class="n">ift</span> <span class="o">=</span> <span class="n">pages</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ifgs</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;another file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;another file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="c1"># fileGrp has multiple files for this page ID</span>
                     <span class="k">if</span> <span class="n">mimetype</span><span class="p">:</span>
                         <span class="c1"># filter was active, this must not happen</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;added file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2"> &quot;</span>
-                                                  <span class="sa">f</span><span class="s2">&quot;conflicts with file </span><span class="si">{</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> of same MIME type </span><span class="si">{</span><span class="n">mimetype</span><span class="si">}</span><span class="s2"> - on_error=</span><span class="si">{</span><span class="n">on_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;added file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;conflicts with file </span><span class="si">{</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> of same MIME type </span><span class="si">{</span><span class="n">mimetype</span><span class="si">}</span><span class="s2"> - on_error=</span><span class="si">{</span><span class="n">on_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
                             <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
-                            <span class="k">pass</span> <span class="c1"># keep first match</span>
+                            <span class="k">pass</span>  <span class="c1"># keep first match</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
                             <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;abort&#39;</span><span class="p">:</span>
@@ -1170,18 +1231,19 @@
                             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown &#39;on_error&#39; strategy &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">on_error</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="p">(</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span> <span class="ow">and</span>
                           <span class="n">file_</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">!=</span> <span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
-                        <span class="k">pass</span> <span class="c1"># keep PAGE match</span>
+                        <span class="k">pass</span>  <span class="c1"># keep PAGE match</span>
                     <span class="k">elif</span> <span class="p">(</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span> <span class="ow">and</span>
                           <span class="n">file_</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="n">MIMETYPE_PAGE</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="n">NonUniqueInputFile</span><span class="p">(</span><span class="n">ifg</span><span class="p">,</span> <span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># filter was inactive but no PAGE is in control, this must not happen</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;added file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2"> &quot;</span>
-                                                  <span class="sa">f</span><span class="s2">&quot;conflicts with file </span><span class="si">{</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> but no PAGE available - on_error=</span><span class="si">{</span><span class="n">on_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;added file </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> for page </span><span class="si">{</span><span class="n">file_</span><span class="o">.</span><span class="n">pageId</span><span class="si">}</span><span class="s2"> in input file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;conflicts with file </span><span class="si">{</span><span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2"> but no PAGE available - on_error=</span><span class="si">{</span><span class="n">on_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
                             <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
-                            <span class="k">pass</span> <span class="c1"># keep first match</span>
+                            <span class="k">pass</span>  <span class="c1"># keep first match</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
                             <span class="n">ift</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_</span>
                         <span class="k">elif</span> <span class="n">on_error</span> <span class="o">==</span> <span class="s1">&#39;abort&#39;</span><span class="p">:</span>
@@ -1196,12 +1258,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find any files for selected pageId </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
                                        <span class="sa">f</span><span class="s2">&quot;compare &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">page_id</span><span class="si">}</span><span class="s2">&#39; with the output of &#39;orcd workspace list-page&#39;.&quot;</span><span class="p">)</span>
         <span class="n">ifts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">page</span><span class="p">,</span> <span class="n">ifiles</span> <span class="ow">in</span> <span class="n">pages</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># use physical page order</span>
+        <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">mets</span><span class="o">.</span><span class="n">physical_pages</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">page</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">ifiles</span> <span class="o">=</span> <span class="n">pages</span><span class="p">[</span><span class="n">page</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ifg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ifgs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ifiles</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
                     <span class="c1"># could be from non-unique with on_error=skip or from true gap</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_base_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found no file for page </span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s1"> in file group </span><span class="si">{</span><span class="n">ifg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_INPUT</span> <span class="o">==</span> <span class="s1">&#39;abort&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">OCRD_MISSING_INPUT</span> <span class="o">==</span> <span class="s1">&#39;ABORT&#39;</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">MissingInputFile</span><span class="p">(</span><span class="n">ifg</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">ifiles</span><span class="p">):</span>
                 <span class="c1"># must be from non-unique with on_error=skip</span>
@@ -1211,6 +1277,7 @@
                 <span class="n">ifts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ifiles</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ifts</span></div>
 </div>
+
 
 
 <span class="n">_page_worker_processor</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1223,7 +1290,9 @@
 <span class="sd">objects, and with the METS Server we do not mutate the local</span>
 <span class="sd">processor instance anyway.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="k">def</span> <span class="nf">_page_worker_set_ctxt</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">log_queue</span><span class="p">):</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_page_worker_set_ctxt</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">log_queue</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overwrites `ocrd.processor.base._page_worker_processor` instance</span>
 <span class="sd">    for sharing with subprocesses in ProcessPoolExecutor initializer.</span>
@@ -1234,36 +1303,46 @@
         <span class="c1"># replace all log handlers with just one queue handler</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">QueueHandler</span><span class="p">(</span><span class="n">log_queue</span><span class="p">)]</span>
 
-<span class="k">def</span> <span class="nf">_page_worker</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="o">*</span><span class="n">input_files</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_page_worker</span><span class="p">(</span><span class="o">*</span><span class="n">input_files</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wraps a `Processor.process_page_file` call as payload (call target)</span>
-<span class="sd">    of the ProcessPoolExecutor workers, but also enforces the given timeout.</span>
+<span class="sd">    of the ProcessPoolExecutor workers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#_page_worker_processor.process_page_file(*input_files)</span>
     <span class="n">page_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">file</span><span class="o">.</span><span class="n">pageId</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">input_files</span>
                     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;pageId&#39;</span><span class="p">)),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">interrupt_main</span><span class="p">)</span>
-        <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">threading</span><span class="o">.</span><span class="n">main_thread</span><span class="p">():</span>
+            <span class="c1"># does not work outside of main thread</span>
+            <span class="c1"># (because the exception/interrupt goes there):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot apply page worker timeout outside main thread&quot;</span><span class="p">)</span>
+        <span class="c1"># based on setitimer() / SIGALRM - only available on Unix+Cygwin</span>
+        <span class="c1"># (but we need to interrupt even when in syscalls</span>
+        <span class="c1">#  and cannot rely on Timer threads, because</span>
+        <span class="c1">#  processor implementations might not work with threads),</span>
+        <span class="n">alarm</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_page_worker_processor</span><span class="o">.</span><span class="n">process_page_file</span><span class="p">(</span><span class="o">*</span><span class="n">input_files</span><span class="p">)</span>
         <span class="n">_page_worker_processor</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page worker completed for page </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">alarm</span><span class="o">.</span><span class="n">AlarmInterrupt</span><span class="p">:</span>
         <span class="n">_page_worker_processor</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;page worker timed out for page </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_id</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">TimeoutError</span>
     <span class="k">finally</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="n">alarm</span><span class="o">.</span><span class="n">cancel_alarm</span><span class="p">()</span>
+
 
 <div class="viewcode-block" id="generate_processor_help">
 <a class="viewcode-back" href="../../../api/ocrd/ocrd.processor.base.html#ocrd.processor.base.generate_processor_help">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_processor_help</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subcommand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_processor_help</span><span class="p">(</span><span class="n">ocrd_tool</span><span class="p">,</span> <span class="n">processor_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subcommand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a string describing the full CLI of this processor including params.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">         ocrd_tool (dict): this processor&#39;s ``tools`` section of the module&#39;s ``ocrd-tool.json``</span>
 <span class="sd">         processor_instance (object, optional): the processor implementation</span>
 <span class="sd">             (for adding any module/class/function docstrings)</span>
-<span class="sd">        subcommand (string): &#39;worker&#39; or &#39;server&#39;</span>
+<span class="sd">        subcommand (string, optional): &#39;worker&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">doc_help</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">if</span> <span class="n">processor_instance</span><span class="p">:</span>
@@ -1289,7 +1368,6 @@
                                           <span class="n">preserve_paragraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">subcommands</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
 <span class="s1">    worker      Start a processing worker rather than do local processing</span>
-<span class="s1">    server      Start a processor server rather than do local processing</span>
 <span class="s1">&#39;&#39;&#39;</span>
 
     <span class="n">processing_worker_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
@@ -1304,8 +1382,6 @@
 <span class="s1">&#39;&#39;&#39;</span>
 
     <span class="n">processing_server_options</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
-<span class="s1">  --address                       The Processor server address in format</span>
-<span class="s1">                                  &quot;</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">&quot;</span>
 <span class="s1">  --database                      The MongoDB server address in format</span>
 <span class="s1">                                  &quot;mongodb://</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">&quot;</span>
 <span class="s1">                                  [mongodb://localhost:27018]</span>
@@ -1349,9 +1425,9 @@
     <span class="k">if</span> <span class="s1">&#39;parameters&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ocrd_tool</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]:</span>
         <span class="n">parameter_help</span> <span class="o">=</span> <span class="s1">&#39;  NONE</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">wrap_text</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">initial_indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
-                             <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">wrap_text</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">initial_indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
+                             <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
                              <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">preserve_paragraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">parameter_help</span> <span class="o">+=</span> <span class="n">wrap</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; [</span><span class="si">%s%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span>
@@ -1390,17 +1466,6 @@
 <span class="s1">Options:</span>
 <span class="si">{</span><span class="n">processing_worker_options</span><span class="si">}</span>
 <span class="s1">&#39;&#39;&#39;</span>
-    <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s1">&#39;server&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
-<span class="s1">Usage: </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> server [OPTIONS]</span>
-
-<span class="s1">  Run </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> as a processor sever.</span>
-
-<span class="s1">  </span><span class="si">{</span><span class="n">ocrd_tool</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">doc_help</span><span class="si">}</span>
-
-<span class="s1">Options:</span>
-<span class="si">{</span><span class="n">processing_server_options</span><span class="si">}</span>
-<span class="s1">&#39;&#39;&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
@@ -1430,7 +1495,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ocrd/modules.html">ocrd</a></li>
@@ -1450,16 +1524,6 @@
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1476,8 +1540,8 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 

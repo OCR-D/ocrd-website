@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ocrd.cli package &#8212; ocrd 3.0.0
+    <title>ocrd.cli package &#8212; ocrd 3.12.1
  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/documentation_options.js?v=acc74ff5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=bf028e07"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/ocrd-custom.js?v=285d69d9"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -42,6 +43,7 @@
 <section id="ocrd">
 <h2>ocrd<a class="headerlink" href="#ocrd" title="Link to this heading">¶</a></h2>
 <p>Entry-point of multi-purpose CLI for OCR-D</p>
+<p class="rubric">Usage</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocrd<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 </pre></div>
 </div>
@@ -142,6 +144,27 @@
 <div class="line"></div>
 <div class="line">(Default: “SKIP”)</div>
 </div>
+<div class="line">OCRD_MAX_MISSING_OUTPUTS</div>
+<div class="line-block">
+<div class="line">Maximal rate of skipped/fallback pages among all</div>
+<div class="line">processed pages before aborting (decimal fraction,</div>
+<div class="line">ignored if negative). (Default: “0.1”)</div>
+</div>
+<div class="line">OCRD_MAX_PARALLEL_PAGES</div>
+<div class="line-block">
+<div class="line">Maximum number of processor workers for page-</div>
+<div class="line">parallel processing (within each Processor’s</div>
+<div class="line">selected page range, independent of the number of</div>
+<div class="line">Processing Workers). If set &gt;1, then a METS Server</div>
+<div class="line">must be used for METS synchronisation. (Default:</div>
+<div class="line">“1”)</div>
+</div>
+<div class="line">OCRD_PROCESSING_PAGE_TIMEOUT</div>
+<div class="line-block">
+<div class="line">Timeout in seconds for processing a single page.</div>
+<div class="line">If set &gt;0, when exceeded, the same as</div>
+<div class="line">OCRD_MISSING_OUTPUT applies. (Default: “0”)</div>
+</div>
 <div class="line">OCRD_METS_CACHING</div>
 <div class="line-block">
 <div class="line">If set to <cite>true</cite>, access to the METS file is</div>
@@ -152,8 +175,8 @@
 <div class="line-block">
 <div class="line">Maximum number of processor instances (for each</div>
 <div class="line">set of parameters) to be kept in memory (including</div>
-<div class="line">loaded models) for processing workers or processor</div>
-<div class="line">servers. (Default: “128”)</div>
+<div class="line">loaded models) for processing workers. (Default:</div>
+<div class="line">“128”)</div>
 </div>
 <div class="line">OCRD_NETWORK_CLIENT_POLLING_SLEEP</div>
 <div class="line-block">
@@ -194,7 +217,7 @@
 <div class="line">Controls AMQP heartbeat timeout (in seconds)</div>
 </div>
 <div class="line">negotiation during connection tuning. An integer</div>
-<div class="line">value always overrides the value      proposed by</div>
+<div class="line">value always overrides the value proposed by</div>
 <div class="line">broker. Use 0 to deactivate heartbeat.</div>
 <div class="line">(Default: “0”)</div>
 </div>
@@ -239,12 +262,6 @@
 <dt class="sig sig-object">
 <span class="sig-name descname"><span class="pre">bashlib</span></span></dt>
 <dd><p>Work with bash library</p>
-</dd></dl>
-
-<dl class="object">
-<dt class="sig sig-object">
-<span class="sig-name descname"><span class="pre">log</span></span></dt>
-<dd><p>Logging</p>
 </dd></dl>
 
 <dl class="object">
@@ -296,25 +313,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ocrd.cli.bashlib.html">ocrd.cli.bashlib module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ocrd.cli.bashlib.html#ocrd-bashlib">ocrd bashlib</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.bashlib.html#ocrd-bashlib-constants">constants</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ocrd.cli.bashlib.html#ocrd-bashlib-filename">filename</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.bashlib.html#ocrd-bashlib-input-files">input-files</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ocrd.cli.log.html">ocrd.cli.log module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log">ocrd log</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-critical">critical</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-debug">debug</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-error">error</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-info">info</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-trace">trace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd-log-warning">warning</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ocrd.cli.log.html#ocrd.cli.log.LogCtx"><code class="docutils literal notranslate"><span class="pre">LogCtx</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.log.html#ocrd.cli.log.LogCtx.log"><code class="docutils literal notranslate"><span class="pre">LogCtx.log()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -330,13 +329,15 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ocrd.cli.network.html#ocrd-network-processing-server">processing-server</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ocrd.cli.network.html#ocrd-network-processing-worker">processing-worker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.network.html#ocrd-network-processor-server">processor-server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.network.html#ocrd-network-resmgr-server">resmgr-server</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ocrd.cli.ocrd_tool.html">ocrd.cli.ocrd_tool module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool">ocrd ocrd-tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool-json-file-dump-module-dirs">dump-module-dirs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool-json-file-dump-tools">dump-tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool-json-file-list-tools">list-tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool-json-file-tool">tool</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ocrd.cli.ocrd_tool.html#ocrd-ocrd-tool-json-file-tool-tool-name-categories">categories</a></li>
@@ -464,7 +465,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ocrd</a><ul class="current">
@@ -504,16 +514,6 @@
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -530,8 +530,8 @@
       &#169;2018-2024, OCR-D.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../../_sources/api/ocrd/ocrd.cli.rst.txt"
