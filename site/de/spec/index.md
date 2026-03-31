@@ -22,8 +22,8 @@ lang-ref: spec
 
   <div class="tile is-parent">
     <article class="tile is-child box">
-      <p class="title"><a href="/en/spec/nextflow">Nextflow</a></p>
-      <p class="subtitle">Nextflow in OCR&#8209;D</p>
+      <p class="title"><a href="ci">CI/CD</a></p>
+      <p class="subtitle">Continuous integration and continuous deployment in OCR-D</p>
     </article>
   </div>
 
@@ -51,6 +51,12 @@ lang-ref: spec
       <p class="subtitle">Die Beschreibungssprache der OCR&#8209;D Werkzeuge</p>
     </article>
   </div>
+  <div class="tile is-parent">
+    <article class="tile is-child box">
+      <p class="title"><a href="glossary">Glossary</a></p>
+      <p class="subtitle">Glossar wichtiger Konzepte für OCR-D</p>
+    </article>
+  </div>
 
 </div>
 
@@ -59,7 +65,7 @@ lang-ref: spec
   <div class="tile is-parent">
     <article class="tile is-child box">
       <p class="title"><a href="/en/spec/page">PAGE</a></p>
-      <p class="subtitle">PAGE conventions</p>
+      <p class="subtitle">PAGE-XML Konventionen</p>
     </article>
   </div>
   <div class="tile is-parent">
