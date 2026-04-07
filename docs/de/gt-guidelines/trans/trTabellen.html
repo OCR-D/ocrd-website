@@ -2,8 +2,9 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <meta charset="UTF-8">
-      <meta name="copyright" content="(C) Copyright 2022">
+      <meta name="copyright" content="(C) Copyright 2026">
       <meta name="generator" content="DITA-OT">
+      <meta name="description" content="Die Erstellung und Einschätzung von GT der Tabellen umfasst, setzt voraus, dass vorhandene Tabellen als solche erkannt, definiert und zielorientiert transkribiert werden. Die Anwendung der Level soll helfen bedarfsgerechten GT zu erstellen oder vorhandenen GT in seiner Funktion und Anwendung einzuschätzen.">
       <link rel="stylesheet" type="text/css" href="../css/commonltr.css">
       <link rel="stylesheet" type="text/css" href="../css/dita-ot-doc.css">
       <title>Tabellen</title>
@@ -19,7 +20,7 @@
                   
                   <td class="td1"><a href="https://ocr-d.de"><img src="../resources/ocrd.png" class="logo" alt="Logo OCR-D"></a></td>
                   
-                  <td class="td2"><span class="title"><a href="https://ocr-d.de/de/gt-guidelines/trans/" class="nodeco">Ground Truth Richtlinien</a></span><span class="language"><a href="https://ocr-d.de/en/gt-guidelines/trans/">en</a></span><br>
+                  <td class="td2"><a href="https://ocr-d.de/de/gt-guidelines/trans/" class="nodeco">Ground Truth Richtlinien</a><span class="language"><a href="https://ocr-d.de/en/gt-guidelines/trans/">en</a></span><br>
                      <span class="small">OCR-D: Koordinierten Förderinitiative zur Weiterentwicklung von Verfahren der Optical
                         Character Recognition gefördert von der DFG</span>
                      <br>
@@ -42,20 +43,33 @@
                   <li><a href="../trans/level_2_2.html">Level 2</a></li>
                   <li><a href="../trans/level_3_1.html">Level 3</a></li>
                   <li><a href="../trans/trGrundsaetze.html">Grundsätzliches zur Transkription</a></li>
+                  <li><a href="../trans/sprache.html">Sprache</a></li>
                   <li><a href="../trans/trSchreibweisen.html">Schreibweisen und Sonderzeichen</a></li>
                   <li><a href="../trans/trSonderzeichen.html">Zahlen</a></li>
-                  <li class="active"><a href="../trans/trTabellen.html">Tabellen</a></li>
+                  <li class="active"><a href="../trans/trTabellen.html">Tabellen</a><ul>
+                        <li><a href="../trans/trTabellenTyp.html">Tabellen Level und Tabellen Typen</a></li>
+                        <li><a href="../trans/trTabellenLevel1.html">Tabellen Level 1 sparse text</a></li>
+                        <li><a href="../trans/trTabellenLevel2.html">Tabellen Level 2 table detection</a></li>
+                        <li><a href="../trans/trTabellenLevel3.html">Tabellen Level 3 table structure</a></li>
+                        <li><a href="../trans/trTabellenLevel4.html">Tabellen Level 4 full table structure</a></li>
+                        <li><a href="../trans/trTabellenWerkzeuge.html">Annotation oder Transkription von Tabellen</a></li>
+                        <li><a href="../trans/trTabellenFormat.html">Tabellen Formate</a></li>
+                        <li><a href="../trans/trTabellenLabelling.html">GT-Metadaten für Tabellen</a></li>
+                     </ul>
+                  </li>
                   <li><a href="../trans/trHandschrift.html">Handschriftliche Anmerkungen</a></li>
                   <li><a href="../trans/trZeichensetzung.html">Zeichensetzung Grundregeln</a></li>
                   <li><a href="../trans/trErsetzungen.html">Ersetzungen</a></li>
                   <li><a href="../trans/trBeispiele.html">Übersichten und Beispiele von Alphabeten, Kürzungs-, Sonderzeichen und Ligaturen.</a></li>
                </ul>
             </li>
+            <li><a href="../trans/hilfsmittel.html">🔧 Hilfsmittel</a></li>
             <li><a href="../trans/layout.html">📰 Layout und Struktur</a></li>
+            <li><a href="../trans/ruleset.html">📜 OCR-D-GT-Ruleset</a></li>
             <li><a href="../trans/structur_gt.html">📓 Struktur-Ground-Truth</a></li>
             <li><a href="../trans/trLabeling.html">📓 Dokumentation des OCR-D-GT-labelling</a></li>
-            <li><a href="../trans/trPage.html">📓 Dokumentation des PAGE XML Formats</a></li>
-            <li><a href="../trans/page_xml_erweiterungen.html">📚 Page XML Erweiterungen</a></li>
+            <li><a href="../trans/trPage.html">📓 Dokumentation des PAGE-XML-Formats</a></li>
+            <li><a href="../trans/page_xml_erweiterungen.html">📚 PAGE- XML-Erweiterungen</a></li>
             <li><a href="../trans/fa.html">❓ Fragen und Antworten</a></li>
             <li><a href="../trans/impressum.html">Impressum</a></li>
          </ul>
@@ -65,34 +79,211 @@
             
             <h1 class="title topictitle1" id="ariaid-title1">Tabellen</h1>
             
+            
             <div class="body">
-               
-               <p class="p">Die Erfassung des Textes in Tabellen erfolgt grundsätzlich vorlagengetreu im Unicode-Format
-                  (Kodierung in UTF-8) des zum Zeitpunkt der Erfassung gültigen Unicode-Standards. Die
-                  Schreibung von
-                  Zeichen, die nicht auf der Tastatur abgebildet sind, erfolgt entweder </p>
-               
-               <ul class="ul" id="trTabellen__ul_ynb_lcs_b1b">
+               <p class="shortdesc">Die Erstellung und Einschätzung von GT der Tabellen umfasst, setzt voraus, dass vorhandene
                   
-                  <li class="li">als Unicode Hexadezimal-Entität oder </li>
+                  Tabellen als solche erkannt, definiert und zielorientiert transkribiert werden. Die
+                  Anwendung der Level soll helfen bedarfsgerechten GT 
+                  zu erstellen oder vorhandenen GT in seiner Funktion und Anwendung einzuschätzen.</p>
+               
+               <p class="p"></p>
+               
+               <div class="bodydiv nav-pills">
                   
-                  <li class="li">als Zeichen.</li>
-                  </ul>
+                  <section class="section">
+                     <h2 class="title sectiontitle">Merkmale</h2>
+                     
+                     
+                     <div class="p">Tabellen können an folgenden <strong class="ph b">Merkmalen</strong> erkannt werden: 
+                        <ul class="ul" id="trTabellen__ul_sdh_5sq_wxb">
+                           
+                           <li class="li">an der Ausrichtung des Textes oder der Textblöcke in Zeilen (waagerecht) und
+                              Spalten (senkrecht).</li>
+                           
+                           <li class="li">Zeilen und Spalten werden ausgerichtet.</li>
+                           
+                           <li class="li">Zeilen und Spalten können durch Linien (Separatoren) voneinander getrennt
+                              werden, so ist ein Tabellen-Gitter sichtbar.</li>
+                           
+                           <li class="li">der Inhalt der ersten Zeile einer Tabelle kann typographisch hervorgehoben sein
+                              und bezeichnet den Inhalt der Spalten, diese Zeile bildet in diesem Fall den
+                              Tabellenkopf und kann auch als Kopfzeile bezeichnet werden.</li>
+                           </ul>
+                     </div>
+                     </section>
+                  <section class="section">
+                     <h2 class="title sectiontitle">Zielvorstellungen und Level</h2>
+                     
+                     
+                     <p class="p">Der GT mit Tabellen, kann sich nach unterschiedlichen Zielvorstellungen für den Gebrauch
+                        sowie
+                        die verwendeten Be- und Verarbeitungswerkzeuge des GT richten. Aus diesem Grund stehen
+                        unterschiedliche Level der Erfassung zur Verfügung.</p>
+                     
+                     <div class="p">
+                        <table class="table" id="trTabellen__simpletable_ikn_ykp_wxb">
+                           <caption><span class="table--title-label">Tabelle 1. </span><span class="title">Übersicht über die Erfassungslevel von Tabellen</span></caption>
+                           <colgroup>
+                              <col style="width:20%">
+                              <col style="width:20%">
+                              <col style="width:20%">
+                              <col style="width:20%">
+                              <col style="width:20%">
+                           </colgroup>
+                           <thead class="thead">
+                              
+                              <tr class="row">
+                                 
+                                 <th class="entry" id="trTabellen__simpletable_ikn_ykp_wxb__entry__1">Ziel</th>
+                                 
+                                 <th class="entry" id="trTabellen__simpletable_ikn_ykp_wxb__entry__2">Kommentar</th>
+                                 
+                                 <th class="entry" id="trTabellen__simpletable_ikn_ykp_wxb__entry__3">GT-Schwerpunkt</th>
+                                 
+                                 <th class="entry" id="trTabellen__simpletable_ikn_ykp_wxb__entry__4">Separator</th>
+                                 
+                                 <th class="entry" id="trTabellen__simpletable_ikn_ykp_wxb__entry__5">Level</th>
+                                 </tr>
+                              </thead>
+                           <tbody class="tbody">
+                              
+                              <tr class="row">
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__1">nur Texterkennung, 
+                                    <ul class="ul" id="trTabellen__ul_irg_clp_wxb">
+                                       
+                                       <li class="li">LSTM-geeignete Zeilensegmentierung (auch über Spalten
+                                          hinweg)</li>
+                                       </ul>
+                                 </td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__2">sparse text</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__3">OCR-Training</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__4">ohne</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__5">1</td>
+                                 </tr>
+                              
+                              <tr class="row">
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__1">Texterkennung mit Kontext,
+                                    <ul class="ul" id="trTabellen__ul_kgx_clp_wxb">
+                                       
+                                       <li class="li">Tabellen als <code class="ph codeph">TableRegion</code>
+                                          gekennzeichnet</li>
+                                       
+                                       <li class="li">innere Struktur wird ausschließlich mit
+                                          <code class="ph codeph">TextRegion</code> gekennzeichnet</li>
+                                       </ul>
+                                 </td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__2">table detection</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__3">OCR-Training</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__4">global</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__5">2</td>
+                                 </tr>
+                              
+                              <tr class="row">
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__1">Texterkennung mit Kontext und Struktur
+                                    <ul class="ul" id="trTabellen__ul_ut4_dlp_wxb">
+                                       
+                                       <li class="li">Tabellen als <code class="ph codeph">TableRegion</code>
+                                          gekennzeichnet</li>
+                                       
+                                       <li class="li">Zeilen und Zellen mit <code class="ph codeph">Roles</code> und
+                                          <code class="ph codeph">TableCellRole</code></li>
+                                       
+                                       <li class="li">Vergabe und Verwendung der Attribute:
+                                          <ul class="ul" id="trTabellen__ul_vt4_dlp_wxb">
+                                             
+                                             <li class="li"><code class="ph codeph">rows</code> und
+                                                <code class="ph codeph">columns</code></li>
+                                             
+                                             <li class="li"><code class="ph codeph">rowIndex</code> und
+                                                <code class="ph codeph">columnIndex</code></li>
+                                             </ul>
+                                       </li>
+                                       </ul>
+                                 </td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__2">table structure</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__3">OLR-Evaluierung</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__4">global/lokal?</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__5">3</td>
+                                 </tr>
+                              
+                              <tr class="row">
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__1">Texterkennung mit Kontext und Struktur und Semantik, d.h. zus.
+                                    <code class="ph codeph">@header</code> und rekursive Tabellen, sodaß jeweils
+                                    homogen (<code class="ph codeph">Grid</code>)</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__2">full table structure</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__3"></td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__4">lokal-rekursiv</td>
+                                 
+                                 <td class="entry" headers="trTabellen__simpletable_ikn_ykp_wxb__entry__5">4</td>
+                                 </tr>
+                              </tbody>
+                        </table>
+                     </div>
+                     </section>
+                  
+                  <section class="section">
+                     <h2 class="title sectiontitle">Erfassung des Tabelleninhaltes</h2>
+                     
+                     
+                     <p class="p">Grundsätzlich werden die Inhalte von Tabellen vorlagengetreu im Unicode-Format
+                        (Kodierung in UTF-8) des zum Zeitpunkt der Erfassung gültigen Unicode-Standards erfasst.
+                        Die Schreibung von
+                        Zeichen, die nicht auf der Tastatur abgebildet sind, erfolgt entweder </p>
+                     
+                     <ul class="ul" id="trTabellen__ul_ynb_lcs_b1b">
+                        
+                        <li class="li">als Unicode Hexadezimal-Entität oder Zeichen.</li>
+                        
+                        <li class="li">ebenfalls sind die Transkriptions-Level zu beachten.</li>
+                        </ul>
+                     
+                     <p class="p">Eine Mischung von verschiedenen Unicode-Schreibungen ist zu vermeiden. Auf modernisierende
+                        Veränderungen ist zu verzichten, sowie Druckfehler sind zu übernehmen. </p>
+                     </section>
+               </div>
                
-               <p class="p">Eine Mischung von verschiedenen Unicode-Schreibungen ist zu vermeiden. Auf modernisierende
-                  Veränderungen ist zu verzichten, sowie Druckfehler sind zu übernehmen.</p>
                
-               <p class="p">Ausnahmen und Abweichungen davon werden ausführlich in diesem Dokument besprochen.</p>
                
-               <p class="p">Die Struktur der Tabelle wird als Attributwerte im Element <strong class="ph b"><a class="xref" href="../pagexml/pagecontent_xsd_Complex_Type_pc_RegionType.html#RegionType_TableRegion">TableRegion</a></strong> angegeben. Sie dazu die Dokumentation des PageXML-Formates.</p>
+               
                </div>
             
             <nav role="navigation" class="related-links">
+               <ul class="ullinks">
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenTyp.html">Tabellen Level und Tabellen Typen</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenLevel1.html">Tabellen Level 1 sparse text</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenLevel2.html">Tabellen Level 2 table detection</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenLevel3.html">Tabellen Level 3 table structure</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenLevel4.html">Tabellen Level 4 full table structure</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenWerkzeuge.html">Annotation oder Transkription von Tabellen</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenFormat.html">Tabellen Formate</a></strong><br></li>
+                  <li class="link ulchildlink"><strong><a href="../trans/trTabellenLabelling.html">GT-Metadaten für Tabellen</a></strong><br></li>
+               </ul>
                <div class="familylinks">
                   <div class="parentlink"><strong>Übergeordnetes Thema:</strong> <a class="link" href="../trans/transkription.html" title="Richtlinien zur Transkription der Volltexte für die Nutzung als Ground Truth.">📑 Transkription</a></div>
                </div>
                <div class="linklist relinfo"><strong>Zugehörige Informationen</strong><br><ul class="linklist">
                      <li class="linklist"><a class="link" href="../pagexml/pagecontent_xsd_Complex_Type_pc_RegionType.html#RegionType_TextRegion">Element pc:RegionType / pc:TextRegion</a></li>
+                     <li class="linklist"><a class="link" href="../pagexml/pagecontent_xsd_Complex_Type_pc_RegionType.html#RegionType_TableRegion">Element pc:RegionType / pc:TableRegion</a></li>
                   </ul>
                </div>
             </nav>
