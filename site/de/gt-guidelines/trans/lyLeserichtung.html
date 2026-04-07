@@ -2,7 +2,7 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <meta charset="UTF-8">
-      <meta name="copyright" content="(C) Copyright 2022">
+      <meta name="copyright" content="(C) Copyright 2026">
       <meta name="generator" content="DITA-OT">
       <link rel="stylesheet" type="text/css" href="../css/commonltr.css">
       <link rel="stylesheet" type="text/css" href="../css/dita-ot-doc.css">
@@ -19,7 +19,7 @@
                   
                   <td class="td1"><a href="https://ocr-d.de"><img src="../resources/ocrd.png" class="logo" alt="Logo OCR-D"></a></td>
                   
-                  <td class="td2"><span class="title"><a href="https://ocr-d.de/de/gt-guidelines/trans/" class="nodeco">Ground Truth Richtlinien</a></span><span class="language"><a href="https://ocr-d.de/en/gt-guidelines/trans/">en</a></span><br>
+                  <td class="td2"><a href="https://ocr-d.de/de/gt-guidelines/trans/" class="nodeco">Ground Truth Richtlinien</a><span class="language"><a href="https://ocr-d.de/en/gt-guidelines/trans/">en</a></span><br>
                      <span class="small">OCR-D: Koordinierten Förderinitiative zur Weiterentwicklung von Verfahren der Optical
                         Character Recognition gefördert von der DFG</span>
                      <br>
@@ -38,20 +38,22 @@
             <li><a href="../trans/index.html">Die Ground Truth Richtlinien</a></li>
             <li><a href="../trans/trLevels.html">📢 Übersicht der Ground-Truth-Level</a></li>
             <li><a href="../trans/transkription.html">📑 Transkription</a></li>
+            <li><a href="../trans/hilfsmittel.html">🔧 Hilfsmittel</a></li>
             <li><a href="../trans/layout.html">📰 Layout und Struktur</a><ul>
                   <li><a href="../trans/lyAllgemein.html">Allgemeines</a></li>
-                  <li><a href="../trans/lySatzspiegel.html">Satzspiegel</a></li>
-                  <li><a href="../trans/lyRand.html">Seitenrand</a></li>
-                  <li class="active"><a href="../trans/lyLeserichtung.html">Leserichtung (ReadingOrder)</a></li>
+                  <li><a href="../trans/lySeitentypen.html">Seitentypen</a></li>
+                  <li><a href="../trans/lyRand.html">Seitenrand (Border)</a></li>
+                  <li><a href="../trans/lySatzspiegel.html">Satzspiegel (PrintSpace)</a></li>
+                  <li><a href="../trans/lyTextregionen.html">Seitenregionen</a></li>
                   <li><a href="../trans/lyTypographie.html">Typographische Besonderheiten</a></li>
-                  <li><a href="../trans/lySeitentypen.html">Erster Schritt : Die Seitentypen</a></li>
-                  <li><a href="../trans/lyTextregionen.html">Zweiter Schritt : Seitenregionen</a></li>
+                  <li class="active"><a href="../trans/lyLeserichtung.html">Leserichtung (ReadingOrder)</a></li>
                </ul>
             </li>
+            <li><a href="../trans/ruleset.html">📜 OCR-D-GT-Ruleset</a></li>
             <li><a href="../trans/structur_gt.html">📓 Struktur-Ground-Truth</a></li>
             <li><a href="../trans/trLabeling.html">📓 Dokumentation des OCR-D-GT-labelling</a></li>
-            <li><a href="../trans/trPage.html">📓 Dokumentation des PAGE XML Formats</a></li>
-            <li><a href="../trans/page_xml_erweiterungen.html">📚 Page XML Erweiterungen</a></li>
+            <li><a href="../trans/trPage.html">📓 Dokumentation des PAGE-XML-Formats</a></li>
+            <li><a href="../trans/page_xml_erweiterungen.html">📚 PAGE- XML-Erweiterungen</a></li>
             <li><a href="../trans/fa.html">❓ Fragen und Antworten</a></li>
             <li><a href="../trans/impressum.html">Impressum</a></li>
          </ul>
@@ -63,40 +65,55 @@
             
             <div class="body">
                
+               <p class="p">Um inhaltliche und formale Zusammenhänge nicht zu zerreißen, werden Regionen auf <strong class="ph b">einer
+                     Seite</strong> mit einer ReadingOrder (Leserichtung) geordnet und gruppiert. Eine
+                  ReadingOrder besteht ausschließlich nur zwischen <strong class="ph b">Regionen</strong>. Mit einer ReadingOrder
+                  wird eine Ordnung von Regionen festgelegt. Die Leserichtung in einer Zeile wird nur
+                  durch die Reihenfolge der einzelnen Word-Elemente bestimmt, eine explizite Auszeichnung
+                  ist nicht vorgesehen. </p>
                
-               <p class="p">Um inhaltliche und formale Zusammenhänge nicht zu zerreißen, werden einzelne Seitenelemente
-                  gruppiert. Für eine solche Gruppierung kann in der Regel eine Leserrichtung vorgegeben
-                  werden. Eine ReadingOrder besteht ausschließlich nur zwischen <strong class="ph b">Regionen</strong>. Die
-                  Leserichtung in einer Zeile wird nur durch die Reihenfolge der einzelnen Word-Elemente
-                  bestimmt, eine explizite Auszeichnung ist nicht vorgesehen. </p>
-               
-               <p class="p">Dies erfolgt mit dem Element <code class="ph codeph">&lt;ReadingOrder&gt;</code>. </p>
-               
-               <div class="p">
-                  <ul class="ul" id="lyLeserichtung__ul_j2l_lx1_vfb">
-                     <li class="li">Handelt es sich um in Beziehung stehende Elemente (z.B. bei  einer Überschrift und
-                        dem dazu
-                        folgenden Absatz), ist die Leserichtung vom Typ „geordnet“ in diesem Fall ist
-                        das Element <code class="ph codeph">&lt;OrderedGroup&gt;</code> zu verwenden.</li>
+               <section class="section">
+                  <h2 class="title sectiontitle">Festlegung der Leserichtung</h2>
+                  
+                  
+                  <p class="p">Die Festlegung erfolgt pragmatisch. Das bedeutet:</p>
+                  
+                  <ul class="ul" id="lyLeserichtung__ul_op1_rhp_ktb">
                      
-                     <li class="li">Handelt es sich um gleichberechtigte Elemente (z.B. bei Werbung), die für sich
-                        allein stehen, ist die Leserichtung vom Typ „ungeordnet“ in diesem Fall ist das
-                        Element <code class="ph codeph">&lt;UnorderedGroup&gt;</code> zu verwenden.</li>
+                     <li class="li">die Regionen einer Seite sind zunächst von links nach rechts (bei linksläufigen
+                        Schriften rechts nach links) </li>
+                     
+                     <li class="li">und von oben nach unten unter Beachtung einer Spaltenaufteilung zu ordnen.</li>
+                     
+                     <li class="li">Fußnoten, Endnoten sind in der Regel nach den Regionen wie Absätze zu
+                        zuordnen.</li>
+                     
+                     <li class="li">Regionen, die sich außerhalb des <a class="xref" href="lySatzspiegel.html">Satzspiegels</a> befinden wie Marginalien, Kustoden und Bogensignaturen,
+                        sind immer nach den Regionen wie Überschriften, Absätze oder Fußnoten zu
+                        betrachten und zu zuordnen.</li>
                      </ul>
-               </div>
+                  </section>
                
-               <p class="p">Durch eine laufende Nummerierung (beginnend bei Null) wird die Leserichtung festgelegt.
-                  Hierbei werden die Regionen einer Seite zunächst von links nach rechts (bei
-                  linksläufigen Schriften rechts nach links) und von oben nach unten unter Beachtung
-                  einer
-                  Spalteneinteilung geordnet. </p>
-               
-               <p class="p">Elemente, die außerhalb des Satzspiegels liegen (z.B. Marginalien oder Kustoden),
-                  sind immer nach
-                  dem „Lesen“ der Satzspiegelinhalte zu betrachten.</p>
-               
-               <div class="example">
-                  <h2 class="title sectiontitle">ReadingOrder in PAGE XML</h2><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
+               <section class="section">
+                  <h2 class="title sectiontitle">PAGE-XML-Kodierung</h2>
+                  
+                  
+                  <p class="p">Die Angabe der ReadingOrder erfolgt mit dem Element
+                     <code class="ph codeph">&lt;ReadingOrder&gt;</code>. </p>
+                  
+                  <div class="p">
+                     
+                     <ul class="ul" id="lyLeserichtung__ul_j2l_lx1_vfb">
+                        
+                        <li class="li">Handelt es sich um in Beziehung stehende Elemente (z. B. bei einer
+                           Überschrift und dem dazu folgenden Absatz), ist die Leserichtung vom Typ
+                           „geordnet“. In diesem Fall ist das Element
+                           <code class="ph codeph">&lt;OrderedGroup&gt;</code> zu verwenden.
+                           <ul class="ul" id="lyLeserichtung__ul_qzf_chp_ktb">
+                              
+                              <li class="li">Durch eine laufende Nummerierung (beginnend bei Null) wird die
+                                 Leserichtung bei einer „geordneten“ Leserichtung indiziert und
+                                 festgelegt.<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
         function htmlDecode(input)
             {
                var e = document.createElement('div');
@@ -109,38 +126,193 @@
         function copyToClipboard(element) 
             {
                var $temp = $("<textarea></textarea>");
-                     $("body").append($temp);
-                     var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
-                     var x = htmlDecode(a);
-                     $temp.val(x).select();
-                     document.execCommand("copy");
-                     $temp.remove();
-                     }
-                     </script><pre class="pre codeblock language-xml"><button onclick="copyToClipboard('#coded112248e86')" title="copy clipboard" class="ccb">📋</button><code id="coded112248e86">&lt;ReadingOrder&gt;
-            &lt;OrderedGroup id="ro_1542194237187" caption="Regions reading order"&gt;
-            &lt;RegionRefIndexed index="0" regionRef="r_1"/&gt;
-            &lt;RegionRefIndexed index="1" regionRef="r_2"/&gt;
-            &lt;/OrderedGroup&gt;
+                                    $("body").append($temp);
+                                    var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
+                                    var x = htmlDecode(a);
+                                    $temp.val(x).select();
+                                    document.execCommand("copy");
+                                    $temp.remove();
+                                    }
+                                    </script><pre class="pre codeblock language-xml" id="lyLeserichtung__codeblock_cwc_hz4_ktb"><button onclick="copyToClipboard('#coded115653e110')" title="copy clipboard" class="ccb">📋</button><code id="coded115653e110">&lt;ReadingOrder&gt;
+  &lt;OrderedGroup id="ro_1542194237187" caption="Regions reading order"&gt;
+      &lt;RegionRefIndexed index="0" regionRef="r_1"/&gt;
+      &lt;RegionRefIndexed index="1" regionRef="r_2"/&gt;
+  &lt;/OrderedGroup&gt;
 &lt;/ReadingOrder&gt;</code></pre>
-               </div>
+                              </li>
+                              
+                              <li class="li"><a class="xref" href="https://github.com/tboenig/gt-guideline-examples/blob/main/data/erasmus_testamenti_1523/GT-PAGE/erasmus_testamenti_1523_0012.xml" target="_blank" rel="external noopener"> Beispiel für eine ReadingOrder/OrderedGroup
+                                    </a>
+                                 </li>
+                              
+                              <li class="li">
+                                 
+                                 <figure class="fig fignone">
+                                    <figcaption><span class="fig--title-label">Abbildung 1. </span>linke Seite. <span class="desc figdesc"><a class="xref" href="https://github.com/tboenig/gt-guideline-examples/blob/main/data/erasmus_testamenti_1523/GT-PAGE/erasmus_testamenti_1523_0012.xml" target="_blank" rel="external noopener">erasmus_testamenti_1523_0012.xml</a></span></figcaption>
+                                    
+                                    
+                                    <img class="image" id="lyLeserichtung__image_l22_w2n_ytb" src="images/lyLeserichtung_links.png" height="737" width="485">
+                                    </figure>
+                              </li>
+                              
+                              <li class="li">
+                                 <figure class="fig fignone">
+                                    <figcaption><span class="fig--title-label">Abbildung 2. </span>rechte Seite. <span class="desc figdesc"><a class="xref" href="https://github.com/tboenig/gt-guideline-examples/blob/main/data/erasmus_testamenti_1523/GT-PAGE/erasmus_testamenti_1523_0013.xml" target="_blank" rel="external noopener">erasmus_testamenti_1523_0013.xml</a></span></figcaption>
+                                    
+                                    
+                                    <img class="image" id="lyLeserichtung__image_ncr_hfn_ytb" src="images/lyLeserichtung_rechts.png" height="733" width="477">
+                                    </figure>
+                              </li>
+                              </ul>
+                        </li>
+                        
+                        <li class="li">Handelt es sich um gleichberechtigte Elemente (z. B. bei Werbung), die für
+                           sich allein stehen kann, ist die Leserichtung vom Typ „ungeordnet“. In
+                           diesem Fall ist das Element <code class="ph codeph">&lt;UnorderedGroup&gt;</code> zu
+                           verwenden.
+                           <ul class="ul" id="lyLeserichtung__ul_z5m_chp_ktb">
+                              
+                              <li class="li">Bei der „ungeordneten“ Leserichtung wird <strong class="ph b">keine</strong> Indizierung
+                                 vorgenommen.
+                                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
+        function htmlDecode(input)
+            {
+               var e = document.createElement('div');
+               e.innerHTML = input;
+               return e.childNodes[0].nodeValue;
+            }
+        
+        
+        
+        function copyToClipboard(element) 
+            {
+               var $temp = $("<textarea></textarea>");
+                                    $("body").append($temp);
+                                    var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
+                                    var x = htmlDecode(a);
+                                    $temp.val(x).select();
+                                    document.execCommand("copy");
+                                    $temp.remove();
+                                    }
+                                    </script><pre class="pre codeblock language-xml" id="lyLeserichtung__codeblock_hhn_hz4_ktb"><button onclick="copyToClipboard('#coded115653e161')" title="copy clipboard" class="ccb">📋</button><code id="coded115653e161">&lt;ReadingOrder&gt;
+  &lt;UnorderedGroup id="ro_1542194237187" caption="Regions reading order"&gt;
+      &lt;RegionRef regionRef="r_1"/&gt;
+      &lt;RegionRef regionRef="r_2"/&gt;
+  &lt;/UnorderedGroup&gt;
+&lt;/ReadingOrder&gt;</code></pre>
+                              </li>
+                              </ul>
+                        </li>
+                        <li class="li">In einigen Fällen ist auch eine Mischform von <em class="ph i">ungeordnet</em> und <em class="ph i">geordnet</em> möglich.
+                           Innerhalb eines Anzeigenteils einer Zeitung sind die einzelnen Anzeigen
+                           <em class="ph i">ungeordnet</em>. Aber innerhalb der Anzeige kann davon ausgegangen
+                           werden, das u.a. Abstätze, Grafiken in <em class="ph i">geordneten Beziehungen</em> zu
+                           einander stehen. 
+                           <ul class="ul" id="lyLeserichtung__ul_g3q_wy4_ytb">
+                              
+                              <li class="li">
+                                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
+        function htmlDecode(input)
+            {
+               var e = document.createElement('div');
+               e.innerHTML = input;
+               return e.childNodes[0].nodeValue;
+            }
+        
+        
+        
+        function copyToClipboard(element) 
+            {
+               var $temp = $("<textarea></textarea>");
+                                    $("body").append($temp);
+                                    var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
+                                    var x = htmlDecode(a);
+                                    $temp.val(x).select();
+                                    document.execCommand("copy");
+                                    $temp.remove();
+                                    }
+                                    </script><pre class="pre codeblock language-xml" id="lyLeserichtung__codeblock_f15_dz4_ytb"><button onclick="copyToClipboard('#coded115653e182')" title="copy clipboard" class="ccb">📋</button><code id="coded115653e182">&lt;ReadingOrder&gt;
+	&lt;UnorderedGroup id="ab1"&gt;
+		&lt;UnorderedGroup id="ug19"&gt;
+			&lt;OrderedGroup id="og19"&gt;
+				&lt;OrderedGroupIndexed id="g19" index="0"&gt;
+					&lt;RegionRefIndexed regionRef="r2" index="0"/&gt;
+					&lt;RegionRefIndexed regionRef="r71" index="1"/&gt;
+				&lt;/OrderedGroupIndexed&gt;
+			&lt;/OrderedGroup&gt;
+		&lt;/UnorderedGroup&gt;
+		&lt;UnorderedGroup id="ug6"&gt;
+			&lt;OrderedGroup id="og6"&gt;
+				&lt;OrderedGroupIndexed id="g6" index="1"&gt;
+					&lt;RegionRefIndexed regionRef="r4" index="0"/&gt;
+					&lt;RegionRefIndexed regionRef="r5" index="1"/&gt;
+				&lt;/OrderedGroupIndexed&gt;
+			&lt;/OrderedGroup&gt;
+		&lt;/UnorderedGroup&gt;
+	&lt;/UnorderedGroup&gt;
+&lt;/ReadingOrder&gt;
+</code></pre>
+                                 </li>
+                              
+                              <li class="li">
+                                 
+                                 <figure class="fig fignone">
+                                    <figcaption><span class="fig--title-label">Abbildung 3. </span>Mischform von ungeordneter und geordneter
+                                       Leserichtung. <span class="desc figdesc"><a class="xref" href="https://github.com/tboenig/gt-guideline-examples/blob/main/data/werbung/GT-PAGE/werbung_unordered.xml" target="_blank" rel="external noopener">werbung_unordered.xml</a></span></figcaption>
+                                    
+                                    
+                                    <img class="image" id="lyLeserichtung__image_yxj_y2p_ytb" src="images/lyLeserichtung_misch.jpg" height="858" width="586">
+                                    </figure>
+                                 </li>
+                              </ul>
+                        </li>
+                        </ul>
+                     </div>
+                  </section>
                
                <div class="example">
                   <h2 class="title sectiontitle">Bildbeispiele</h2>
                   
-                  <p class="p"><img class="image" id="lyLeserichtung__image_oqf_ld4_4bb" src="images/lyLeserichtung.png"></p>
                   
-                  <p class="p"><img class="image" id="lyLeserichtung__image_y5g_cf4_4bb" src="images/lyLeserichtung2.png"></p>
+                  <ul class="ul" id="lyLeserichtung__ul_uhs_bxz_l5b">
+                     
+                     <li class="li">
+                        <figure class="fig fignone">
+                           <figcaption><span class="fig--title-label">Abbildung 4. </span>Mehrere Spaltenabschnitte</figcaption><img class="image" id="lyLeserichtung__image_oqf_ld4_4bb" src="images/lyLeserichtung.png" height="606" width="397"></figure>
+                     </li>
+                     
+                     <li class="li">
+                        <figure class="fig fignone">
+                           <figcaption><span class="fig--title-label">Abbildung 5. </span>Rechte Seite mit Marginalien</figcaption><img class="image" id="lyLeserichtung__image_y5g_cf4_4bb" src="images/lyLeserichtung2.png" height="546" width="364"></figure>
+                     </li>
+                     
+                     <li class="li">
+                        <figure class="fig fignone">
+                           <figcaption><span class="fig--title-label">Abbildung 6. </span>Spalten mit Abbildungen</figcaption><img class="image" id="lyLeserichtung__image_n43_qk4_4bb" src="images/lyLeserichtung3.png" height="499" width="361"></figure>
+                     </li>
+                     
+                     </ul>
                   
-                  <p class="p"><img class="image" id="lyLeserichtung__image_n43_qk4_4bb" src="images/lyLeserichtung3.png"></p>
-               </div>
+                  
+                  
+                  </div>
+               
+               
+               
+               
+               
                </div>
             
             <nav role="navigation" class="related-links">
                <div class="familylinks">
                   <div class="parentlink"><strong>Übergeordnetes Thema:</strong> <a class="link" href="../trans/layout.html" title="Richtlinien zur Erfassung des Layouts und der Struktur von gedruckten Texten für die Nutzung als Ground Truth">📰 Layout und Struktur</a></div>
                </div>
+               <div class="linklist relinfo"><strong>Zugehörige Informationen</strong><br><ul class="linklist">
+                     <li class="linklist"><a class="link" href="structur_gtlevel1.html">Struktur-GT Level Übersicht</a></li>
+                  </ul>
+               </div>
             </nav>
-         </article>
+            </article>
       </main>
       <footer role="contentinfo">
          <div class="footer">

@@ -1,0 +1,512 @@
+<html lang="de">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+      <meta name="copyright" content="(C) Copyright 2026">
+      <meta name="generator" content="DITA-OT">
+      <link rel="stylesheet" type="text/css" href="../css/commonltr.css">
+      <link rel="stylesheet" type="text/css" href="../css/dita-ot-doc.css">
+      <title>Tabellen Level 3 table structure</title>
+   </head>
+   <body id="trTabellenLevel3">
+      <header role="banner">
+         <div class="header">
+            <script src="https://prismjs.com/prism.js"><!--Prism javascript code for highlighting--></script>
+            
+            <table style="border: 0px;  width: 100%;" class="header">
+               
+               <tr>
+                  
+                  <td class="td1"><a href="https://ocr-d.de"><img src="../resources/ocrd.png" class="logo" alt="Logo OCR-D"></a></td>
+                  
+                  <td class="td2"><a href="https://ocr-d.de/de/gt-guidelines/trans/" class="nodeco">Ground Truth Richtlinien</a><span class="language"><a href="https://ocr-d.de/en/gt-guidelines/trans/">en</a></span><br>
+                     <span class="small">OCR-D: Koordinierten Förderinitiative zur Weiterentwicklung von Verfahren der Optical
+                        Character Recognition gefördert von der DFG</span>
+                     <br>
+                     <script src="https://cse.google.com/cse.js?cx=3ada0c76c580e944b" async=""></script>
+                     
+                     <div class="gcse-search"></div> 
+                     </td>
+                  </tr>
+               </table>
+            
+            <hr>
+            </div>
+      </header>
+      <nav role="toc">
+         <ul>
+            <li><a href="../trans/index.html">Die Ground Truth Richtlinien</a></li>
+            <li><a href="../trans/trLevels.html">📢 Übersicht der Ground-Truth-Level</a></li>
+            <li><a href="../trans/transkription.html">📑 Transkription</a><ul>
+                  <li><a href="../trans/level_1_4.html">Level 1</a></li>
+                  <li><a href="../trans/level_2_2.html">Level 2</a></li>
+                  <li><a href="../trans/level_3_1.html">Level 3</a></li>
+                  <li><a href="../trans/trGrundsaetze.html">Grundsätzliches zur Transkription</a></li>
+                  <li><a href="../trans/sprache.html">Sprache</a></li>
+                  <li><a href="../trans/trSchreibweisen.html">Schreibweisen und Sonderzeichen</a></li>
+                  <li><a href="../trans/trSonderzeichen.html">Zahlen</a></li>
+                  <li><a href="../trans/trTabellen.html">Tabellen</a><ul>
+                        <li><a href="../trans/trTabellenTyp.html">Tabellen Level und Tabellen Typen</a></li>
+                        <li><a href="../trans/trTabellenLevel1.html">Tabellen Level 1 sparse text</a></li>
+                        <li><a href="../trans/trTabellenLevel2.html">Tabellen Level 2 table detection</a></li>
+                        <li class="active"><a href="../trans/trTabellenLevel3.html">Tabellen Level 3 table structure</a></li>
+                        <li><a href="../trans/trTabellenLevel4.html">Tabellen Level 4 full table structure</a></li>
+                        <li><a href="../trans/trTabellenWerkzeuge.html">Annotation oder Transkription von Tabellen</a></li>
+                        <li><a href="../trans/trTabellenFormat.html">Tabellen Formate</a></li>
+                        <li><a href="../trans/trTabellenLabelling.html">GT-Metadaten für Tabellen</a></li>
+                     </ul>
+                  </li>
+                  <li><a href="../trans/trHandschrift.html">Handschriftliche Anmerkungen</a></li>
+                  <li><a href="../trans/trZeichensetzung.html">Zeichensetzung Grundregeln</a></li>
+                  <li><a href="../trans/trErsetzungen.html">Ersetzungen</a></li>
+                  <li><a href="../trans/trBeispiele.html">Übersichten und Beispiele von Alphabeten, Kürzungs-, Sonderzeichen und Ligaturen.</a></li>
+               </ul>
+            </li>
+            <li><a href="../trans/hilfsmittel.html">🔧 Hilfsmittel</a></li>
+            <li><a href="../trans/layout.html">📰 Layout und Struktur</a></li>
+            <li><a href="../trans/ruleset.html">📜 OCR-D-GT-Ruleset</a></li>
+            <li><a href="../trans/structur_gt.html">📓 Struktur-Ground-Truth</a></li>
+            <li><a href="../trans/trLabeling.html">📓 Dokumentation des OCR-D-GT-labelling</a></li>
+            <li><a href="../trans/trPage.html">📓 Dokumentation des PAGE-XML-Formats</a></li>
+            <li><a href="../trans/page_xml_erweiterungen.html">📚 PAGE- XML-Erweiterungen</a></li>
+            <li><a href="../trans/fa.html">❓ Fragen und Antworten</a></li>
+            <li><a href="../trans/impressum.html">Impressum</a></li>
+         </ul>
+      </nav>
+      <main role="main">
+         <article role="article" aria-labelledby="ariaid-title1">
+            
+            <h1 class="title topictitle1" id="ariaid-title1">Tabellen Level 3 <em class="ph i">table structure</em></h1>
+            
+            <div class="body">
+               
+               <p class="p">Das Tabellen Level 3 <em class="ph i">table structure</em> dient vorrangig der Erkennung, dem Training
+                  und der Validierung der Struktur von Tabellen. Die Struktur einer Tabelle definiert
+                  sich
+                  als Annotation von Zeilen und Spalten. Bei der Segmentierung wird die Tabellenregion
+                  (TableRegion) annotiert. Eine Rekursion der Annotation von TextRegion oder
+                  verschachtelte Regionen ist auszuschließen.</p>
+               
+               <div class="p">
+                  <figure class="fig fignone">
+                     <figcaption><span class="fig--title-label">Abbildung 1. </span>Tabellenannotation im Programm Aletheia. Die <em class="ph i">braun</em> gekennzeichnete
+                        Region ist die <em class="ph i">TableRegion</em>. Die als <em class="ph i">paragraph</em> bezeichneten
+                        Regionen sind einzelne <em class="ph i">TextRegion</em>. Die TableRegion besitzt die Attribute
+                        <span class="ph tt" style="font-family: monospace; ">@rows</span> und <span class="ph tt" style="font-family: monospace; ">@columns</span> mit den jeweiligen Angaben 8 Zeilen und
+                        3 Spalten.</figcaption>
+                     
+                     </figure><img class="image" id="trTabellenLevel3__image_byq_kdy_byb" src="images/trTabellenLevel3_table_structure.jpg" height="348" width="1380">
+                  
+                  <figure class="fig fignone">
+                     <figcaption><span class="fig--title-label">Abbildung 2. </span>Annotationsbeispiel im Tabellen Level 3. <span class="desc figdesc">Diese Daten können Sie im Beispiel Repositorium <a class="xref" href="https://github.com/tboenig/gt-guideline-examples/blob/main/data/table/GT-PAGE/buecher_volkswirtschaft_1893_0257_800px_table_structure.xml" target="_blank" rel="external noopener">gt-guideline-examples</a> finden.</span></figcaption>
+                     
+                     
+                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script>
+        function htmlDecode(input)
+            {
+               var e = document.createElement('div');
+               e.innerHTML = input;
+               return e.childNodes[0].nodeValue;
+            }
+        
+        
+        
+        function copyToClipboard(element) 
+            {
+               var $temp = $("<textarea></textarea>");
+                        $("body").append($temp);
+                        var a = $(element).html().trim().replace(/<br>/g, '\n').replace(/<\/?[^>]+>/g, '');
+                        var x = htmlDecode(a);
+                        $temp.val(x).select();
+                        document.execCommand("copy");
+                        $temp.remove();
+                        }
+                        </script><pre class="pre codeblock language-xml"><button onclick="copyToClipboard('#coded103727e96')" title="copy clipboard" class="ccb">📋</button><code id="coded103727e96">
+&lt;TableRegion id="r2" rows="8" columns="3"&gt;
+    &lt;Coords points="50,328 50,588 639,588 639,328"/&gt;
+    &lt;TextRegion id="r3" type="paragraph"&gt;
+        &lt;Coords points="53,331 444,331 444,359 53,359"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="0" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l29"&gt;
+            &lt;Coords points="53,331 444,331 444,359 53,359"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode/&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode/&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r4" type="paragraph"&gt;
+        &lt;Coords points="448,331 535,331 535,359 448,359"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="0" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l30"&gt;
+            &lt;Coords points="448,331 535,331 535,359 448,359"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Perſonen.&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Perſonen.&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r5" type="paragraph"&gt;
+        &lt;Coords points="539,331 637,331 637,359 539,359"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="0" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l31"&gt;
+            &lt;Coords points="539,331 637,331 637,359 539,359"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Prozent.&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Prozent.&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r6" type="paragraph"&gt;
+        &lt;Coords points="53,363 444,363 444,391 53,391"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="1" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l32"&gt;
+            &lt;Coords points="53,363 444,363 444,391 53,391"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;die Gewerbe im engeren Sinne&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;die Gewerbe im engeren Sinne&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r7" type="paragraph"&gt;
+        &lt;Coords points="448,363 535,363 535,391 448,391"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="1" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l33"&gt;
+            &lt;Coords points="448,363 535,363 535,391 448,391"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;1050&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;1050&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r9" type="paragraph"&gt;
+        &lt;Coords points="539,363 637,363 637,391 539,391"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="1" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l34"&gt;
+            &lt;Coords points="539,363 637,363 637,391 539,391"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;58,3&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;58,3&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r10" type="paragraph"&gt;
+        &lt;Coords points="53,395 444,395 444,424 53,424"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="2" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l35"&gt;
+            &lt;Coords points="53,395 444,395 444,424 53,424"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;die Urproduktion&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;die Urproduktion&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r11" type="paragraph"&gt;
+        &lt;Coords points="448,395 535,395 535,424 448,424"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="2" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l36"&gt;
+            &lt;Coords points="448,395 535,395 535,424 448,424"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;330&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;330&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r12" type="paragraph"&gt;
+        &lt;Coords points="539,395 637,395 637,424 539,424"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="2" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l37"&gt;
+            &lt;Coords points="539,395 637,395 637,424 539,424"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;18,3&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;18,3&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r14" type="paragraph"&gt;
+        &lt;Coords points="53,428 444,428 444,456 53,456"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="3" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l38"&gt;
+            &lt;Coords points="53,428 444,428 444,456 53,456"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Handel, Verkehr und Gaſtwirtſchaft&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Handel, Verkehr und Gaſtwirtſchaft&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r15" type="paragraph"&gt;
+        &lt;Coords points="448,428 535,428 535,456 448,456"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="3" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l39"&gt;
+            &lt;Coords points="448,428 535,428 535,456 448,456"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;230&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;230&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r16" type="paragraph"&gt;
+        &lt;Coords points="539,428 637,428 637,456 539,456"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="3" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l40"&gt;
+            &lt;Coords points="539,428 637,428 637,456 539,456"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;12,8&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;12,8&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r17" type="paragraph"&gt;
+        &lt;Coords points="53,460 444,460 444,488 53,488"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="4" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l41"&gt;
+            &lt;Coords points="53,460 444,460 444,488 53,488"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Lohnarbeit unbeſtimmter Art&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Lohnarbeit unbeſtimmter Art&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r18" type="paragraph"&gt;
+        &lt;Coords points="448,460 535,460 535,488 448,488"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="4" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l42"&gt;
+            &lt;Coords points="448,460 535,460 535,488 448,488"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;60&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;60&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r19" type="paragraph"&gt;
+        &lt;Coords points="539,460 637,460 637,488 539,488"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="4" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l43"&gt;
+            &lt;Coords points="539,460 637,460 637,488 539,488"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;3,3&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;3,3&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r20" type="paragraph"&gt;
+        &lt;Coords points="53,492 444,492 444,521 53,521"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="5" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l44"&gt;
+            &lt;Coords points="53,492 444,492 444,521 53,521"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Oeffentlichen Dienſt&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Oeffentlichen Dienſt&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r21" type="paragraph"&gt;
+        &lt;Coords points="448,492 535,492 535,521 448,521"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="5" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l45"&gt;
+            &lt;Coords points="448,492 535,492 535,521 448,521"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;60&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;60&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r22" type="paragraph"&gt;
+        &lt;Coords points="539,492 637,492 637,521 539,521"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="5" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l46"&gt;
+            &lt;Coords points="539,492 637,492 637,521 539,521"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;3,3&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;3,3&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r23" type="paragraph"&gt;
+        &lt;Coords points="53,525 444,525 444,553 53,553"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="6" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l47"&gt;
+            &lt;Coords points="53,525 444,525 444,553 53,553"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Liberale Berufsarten&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Liberale Berufsarten&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r24" type="paragraph"&gt;
+        &lt;Coords points="448,525 535,525 535,553 448,553"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="6" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l48"&gt;
+            &lt;Coords points="448,525 535,525 535,553 448,553"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;30&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;30&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r25" type="paragraph"&gt;
+        &lt;Coords points="539,525 637,525 637,553 539,553"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="6" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l49"&gt;
+            &lt;Coords points="539,525 637,525 637,553 539,553"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;1,7&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;1,7&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r26" type="paragraph"&gt;
+        &lt;Coords points="53,557 444,557 444,586 53,586"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="7" columnIndex="0"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l50"&gt;
+            &lt;Coords points="53,557 444,557 444,586 53,586"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;Verſchiedene&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;Verſchiedene&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r27" type="paragraph"&gt;
+        &lt;Coords points="448,557 535,557 535,586 448,586"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="7" columnIndex="1"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l51"&gt;
+            &lt;Coords points="448,557 535,557 535,586 448,586"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;40&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;40&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+    &lt;TextRegion id="r28" type="paragraph"&gt;
+        &lt;Coords points="539,557 637,557 637,586 539,586"/&gt;
+        &lt;Roles&gt;
+            &lt;TableCellRole rowIndex="7" columnIndex="2"/&gt;
+        &lt;/Roles&gt;
+        &lt;TextLine id="l52"&gt;
+            &lt;Coords points="539,557 637,557 637,586 539,586"/&gt;
+            &lt;TextEquiv&gt;
+                &lt;Unicode&gt;2,3&lt;/Unicode&gt;
+            &lt;/TextEquiv&gt;
+        &lt;/TextLine&gt;
+        &lt;TextEquiv&gt;
+            &lt;Unicode&gt;2,3&lt;/Unicode&gt;
+        &lt;/TextEquiv&gt;
+    &lt;/TextRegion&gt;
+&lt;/TableRegion&gt;            </code></pre>
+                     </figure>
+               </div>
+               </div>
+            
+            <nav role="navigation" class="related-links">
+               <div class="familylinks">
+                  <div class="parentlink"><strong>Übergeordnetes Thema:</strong> <a class="link" href="../trans/trTabellen.html" title="Die Erstellung und Einschätzung von GT der Tabellen umfasst, setzt voraus, dass vorhandene Tabellen als solche erkannt, definiert und zielorientiert transkribiert werden. Die Anwendung der Level soll helfen bedarfsgerechten GT zu erstellen oder vorhandenen GT in seiner Funktion und Anwendung einzuschätzen.">Tabellen</a></div>
+               </div>
+            </nav>
+         </article>
+      </main>
+      <footer role="contentinfo">
+         <div class="footer">
+            
+            
+            <details>
+               
+               <summary>Veröffentlicht von OCR-D.</summary>
+               
+               <p>Die Richtlinien für die Ground Truth Transkription basieren auf dem <a href="https://ocr-d.github.io/">OCR-D specs v3.4.0</a></p>
+               </details> 
+            </div>
+      </footer>
+   </body>
+</html>
