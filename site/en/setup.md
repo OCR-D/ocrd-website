@@ -30,19 +30,19 @@ Minimum system requirements
 
 </details>
 <details>
-<summary> Python 3.7</summary>
+<summary> Python 3.8</summary>
   
-  - OCR-D's target Python version is currently Python 3.7. Python 3.8 also works. Python < 3.7 is not supported.<br>
+  - OCR-D's target Python version is currently Python 3.8. Python < 3.8 is not supported.<br>
   - Python 3.9 and newer versions are not yet fully supported, since there are no pre-built Python packages for Tensorflow 2.5 and <2 and other related software. We expect to unconditionally support Python 3.9 once all processors and models are upgraded to work with a more recent Tensorflow.
   
 </details>
 <details>
-<summary> Operating system: Ubuntu 18.04 (or Docker)</summary>
+<summary> Operating system: Ubuntu 20.04 (or Docker)</summary>
   - For installation on Windows 10 (WSL) and macOS see the setup guides in the <a href="https://github.com/OCR-D/ocrd-website/wiki">OCR-D Wiki</a>
-  - Ubuntu 18.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
-  - Ubuntu 22.04 is now (2022) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
+  - Ubuntu 20.04 is our target platform because it was the most up-to-date Ubuntu LTS release when we started developing and <a href="https://ubuntu.com/about/release-cycle">will be supported for the foreseeable future</a><br>
+  - Ubuntu 24.04 is now (2024) the current Ubuntu LTS, seems to work, too, and will be our next target platform.<br />
   - Other Linux distributions or Ubuntu versions can also be used, though some instructions have to be adapted (e.g. package management, locations of some files)<br>
-  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 18.04 installation within Microsoft Windows</a>
+  - With Windows Subsystem for Linux (WSL), a feature of Windows 10, it is <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-Windows">also possible to set up an Ubuntu 20.04 installation within Microsoft Windows</a>
   - OCR-D can be deployed on an <a href="https://github.com/OCR-D/ocrd-website/wiki/OCR-D-on-macOS">Apple MacOSX machine using Homebrew</a>
 
 </details>
@@ -402,8 +402,8 @@ be resolved automatically by using the Python package manager `pip`.
 
 > **NOTE**
 >
-> ocrd_tesserocr requires **tesseract-ocr >= 4.1.0**. But the Tesseract packages
-> bundled with **Ubuntu < 19.10** are too old. If you are on Ubuntu 18.04 LTS,
+> ocrd_tesserocr requires **tesseract-ocr >= 4.2.0**. But the Tesseract packages
+> bundled with **Ubuntu < 22.04** are too old. If you are on Ubuntu 20.04 LTS,
 > please enable [Alexander Pozdnyakov PPA](https://launchpad.net/~alex-p/+archive/ubuntu/tesseract-ocr),
 > which has up-to-date builds of tesseract and its dependencies:
 >
@@ -444,7 +444,7 @@ This is the best option if you want to use the stable, released version of indiv
 
 However, many modules require a number of non-Python (system) packages. For the
 exact list of packages you need to look at the README of the module in
-question. (If you are not on Ubuntu >= 18.04, then your requirements may
+question. (If you are not on Ubuntu >= 20.04, then your requirements may
 deviate from that.)
 
 For example to install `ocrd_tesserocr` from PyPI:
